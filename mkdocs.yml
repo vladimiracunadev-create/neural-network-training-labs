@@ -1,6 +1,9 @@
 site_name: Neural Network Training Labs
 site_description: Plataforma profesional de redes neuronales con datasets reales, educación evaluable, MLOps y despliegue
 repo_url: https://github.com/vladimiracunadev-create/neural-network-training-labs
+# El sitio de estudio (GitHub Pages) lo genera scripts/generate_site.py en site/.
+# MkDocs construye su documentación técnica en un directorio propio para no colisionar.
+site_dir: site-docs
 theme:
   name: material
   language: es
@@ -11,9 +14,11 @@ theme:
 nav:
   - Inicio: index.md
   - Ruta de aprendizaje: learning-path.md
+  - Sitio de estudio y navegación: study-site.md
   - Arquitectura: architecture.md
   - Protocolo experimental: experiment-protocol.md
   - Datasets: datasets.md
+  - Kaggle: kaggle.md
   - Especializaciones avanzadas: advanced-tracks.md
   - Ética y licencias: ethics-and-licenses.md
   - Educación y nbgrader: education.md

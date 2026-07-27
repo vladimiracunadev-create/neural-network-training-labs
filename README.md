@@ -393,6 +393,7 @@ mkdocs serve
 
 Consulta especialmente:
 
+- `docs/study-site.md` — sitio de estudio (GitHub Pages) y navegación anterior/siguiente
 - `docs/experiment-protocol.md`
 - `docs/education.md`
 - `docs/model-registry-and-serving.md`
