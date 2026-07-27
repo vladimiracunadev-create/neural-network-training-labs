@@ -15,6 +15,9 @@
     "MD060": false, // estilo de columnas de tabla (tablas compactas)
     "MD034": false, // URLs desnudas (enlaces a datasets y papers en el material)
     "MD029": false, // estilo de numeración en listas ordenadas
+    "MD049": false, // estilo de énfasis: la notación matemática usa * (óptimo) y _ (subíndice)
+    "MD037": false, // espacios en marcadores de énfasis: colisiona con expresiones como "λ* = argmin_{...}"
+    "MD028": false, // línea en blanco dentro de blockquote (nota de redacción original + cita)
     "MD010": { "code_blocks": false } // permitir tabs dentro de bloques de código
   },
   "ignores": [

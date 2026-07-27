@@ -10,6 +10,7 @@
 [![Notebooks](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/notebooks.yml/badge.svg?branch=main)](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/notebooks.yml)
 [![Security](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/security.yml)
 [![Docs](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/docs.yml)
+[![Deploy Pages](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/deploy-pages.yml/badge.svg?branch=main)](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/deploy-pages.yml)
 
 [![Rutas](https://img.shields.io/badge/rutas-31%20·%2025%20labs%20%2B%206%20avanzadas-7c5cff?style=for-the-badge)](#laboratorios)
 [![Notebooks](https://img.shields.io/badge/notebooks-93-2e8b57?style=for-the-badge)](#notebooks-evaluables)
@@ -17,7 +18,7 @@
 [![Versión](https://img.shields.io/badge/versión-1.0.0-orange?style=for-the-badge)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-3fb950?style=for-the-badge)](LICENSE)
 
-[📚 Documentación](docs/index.md) · [🧭 Ruta de aprendizaje](docs/learning-path.md) · [🔬 Protocolo de experimento](docs/experiment-protocol.md) · [🗺️ Roadmap](ROADMAP.md) · [🤝 Contribuir](CONTRIBUTING.md) · [🔐 Seguridad](SECURITY.md)
+[🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/) · [📚 Documentación](docs/index.md) · [🧭 Ruta de aprendizaje](docs/learning-path.md) · [🔬 Protocolo de experimento](docs/experiment-protocol.md) · [🗺️ Roadmap](ROADMAP.md) · [🤝 Contribuir](CONTRIBUTING.md) · [🔐 Seguridad](SECURITY.md)
 
 </div>
 
@@ -63,6 +64,20 @@ API, ONNX, INT8 o edge
 - Los benchmarks usan una partición fija y varias semillas de entrenamiento.
 - Los datasets grandes no se guardan dentro del repositorio.
 - Cada modelo desplegable conserva su contrato de inferencia.
+
+## 📚 Fuentes y libros de referencia
+
+El contenido no sale de una plantilla: cada laboratorio ancla su teoría en la literatura de referencia del área y en los papers seminales de cada arquitectura. Las referencias apuntan a las obras; **no se reproduce su contenido, la redacción es original**. Cada laboratorio cita, en su `theory.md`, los libros y papers de su tema en una sección **🔗 Referencias**.
+
+| Área | Libros de referencia |
+|---|---|
+| **Espina dorsal (todo el programa)** | Géron — *Hands-On Machine Learning with Scikit-Learn, Keras & TensorFlow* (3.ª ed., O'Reilly 2022) · Goodfellow, Bengio & Courville — *Deep Learning* (MIT Press 2016, [deeplearningbook.org](https://www.deeplearningbook.org/)) |
+| **Fundamentos y teoría** | Bishop — *Pattern Recognition and Machine Learning* · Murphy — *Probabilistic Machine Learning* · Prince — *Understanding Deep Learning* (2024) · Nielsen — *Neural Networks and Deep Learning* (online) |
+| **Práctica con PyTorch** | Howard & Gugger — *Deep Learning for Coders with fastai & PyTorch* · Zhang et al. — *Dive into Deep Learning* ([d2l.ai](https://d2l.ai/)) · Stevens, Antiga & Viehmann — *Deep Learning with PyTorch* |
+| **Dominios especializados** | Sutton & Barto — *Reinforcement Learning: An Introduction* (RL) · Hamilton — *Graph Representation Learning* (GNN) · Hyndman & Athanasopoulos — *Forecasting: Principles and Practice* (series) · Foster — *Generative Deep Learning* (GAN/difusión) |
+| **Ingeniería y despliegue** | Huyen — *Designing Machine Learning Systems* · Molnar — *Interpretable Machine Learning* · Kuhn & Johnson — *Applied Predictive Modeling* |
+
+Cada `theory.md` complementa estos libros con los papers originales de su arquitectura (por ejemplo Vaswani et al. 2017 para transformers, He et al. 2015 para ResNet, Ho et al. 2020 para difusión).
 
 ## Laboratorios
 

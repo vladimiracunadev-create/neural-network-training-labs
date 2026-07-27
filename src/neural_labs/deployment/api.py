@@ -58,7 +58,7 @@ def create_app(server: ModelServer | None = None) -> FastAPI:
     prediction_log = Path(os.environ.get("NEURAL_LABS_PREDICTION_LOG", "monitoring/predictions.jsonl"))
     reference_stats = Path(os.environ.get("NEURAL_LABS_REFERENCE_STATS", "monitoring/reference_stats.json"))
     prediction_logger = PredictionLogger(prediction_log, model=model_name, reference=reference)
-    app = FastAPI(title="Neural Network Training Labs API", version="3.0.0")
+    app = FastAPI(title="Neural Network Training Labs API", version="1.0.0")
 
     @app.get("/health")
     def health() -> dict[str, Any]:

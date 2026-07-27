@@ -69,7 +69,7 @@ def main() -> None:
     if manifest.get("synthetic_datasets") != 0:
         fail("repository-manifest no confirma cero datasets sintéticos")
     print(json.dumps({
-        "ok": True, "version": "3.0.0", "core_labs": len(catalog), "advanced_tracks": len(advanced),
+        "ok": True, "version": "1.0.0", "core_labs": len(catalog), "advanced_tracks": len(advanced),
         "learning_paths": len(catalog) + len(advanced), "datasets": len(unique_datasets),
         "notebooks": (len(catalog) + len(advanced)) * 3,
         "schema_warnings": sum(issue.severity == "warning" for issue in issues),
