@@ -1,5 +1,9 @@
 # GNN sobre red de citas
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/08_gan_generation/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/10_dqn_reinforcement/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Clasificar publicaciones científicas usando texto y enlaces de citas.
@@ -88,3 +92,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🎨 GAN generativa](../../labs/08_gan_generation/README.md) | [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/09_gnn_graphs/index.html)
+<!-- /nav-bottom -->

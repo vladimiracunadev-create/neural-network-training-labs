@@ -1,5 +1,9 @@
 # Destilación de conocimiento
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/13_hyperparameter_search/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/15_federated_learning/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Transferir conocimiento de una CNN profesora a una estudiante compacta.
@@ -88,3 +92,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/README.md) | [🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/14_knowledge_distillation/index.html)
+<!-- /nav-bottom -->

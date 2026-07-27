@@ -1,5 +1,9 @@
 # WGAN-GP sobre Fashion-MNIST
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../advanced_labs/27_audio_speechcommands/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../advanced_labs/29_diffusion_ddpm/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Estudiar estabilidad generativa y gradient penalty con imágenes reales.
@@ -48,3 +52,13 @@ wasserstein_estimate, energy_distance_proxy, diversity, training_stability.
 ## Limitación principal
 
 Las métricas generativas aproximadas no sustituyen evaluación humana ni validación del uso previsto.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🎙️ Clasificación de audio con SpeechCommands](../../advanced_labs/27_audio_speechcommands/README.md) | [🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/28_wgan_gp/index.html)
+<!-- /nav-bottom -->

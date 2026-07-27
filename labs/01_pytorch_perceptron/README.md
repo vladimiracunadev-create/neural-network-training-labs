@@ -1,5 +1,9 @@
 # Perceptrón con PyTorch
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/00_numpy_neuron/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/02_mlp_nonlinear/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Aprender tensores, autograd, optimizadores y un clasificador lineal.
@@ -88,3 +92,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🔢 Neurona con NumPy](../../labs/00_numpy_neuron/README.md) | [🌀 MLP multiclase](../../labs/02_mlp_nonlinear/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/01_pytorch_perceptron/index.html)
+<!-- /nav-bottom -->

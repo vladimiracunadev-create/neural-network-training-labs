@@ -1,5 +1,9 @@
 # DQN para inventario con demanda real
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/09_gnn_graphs/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/11_transfer_learning/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Aprender una política de reposición usando una secuencia de demanda observada en transacciones reales.
@@ -55,3 +59,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/README.md) | [♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/10_dqn_reinforcement/index.html)
+<!-- /nav-bottom -->

@@ -1,5 +1,9 @@
 # Explicabilidad
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/20_data_augmentation/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/22_uncertainty_calibration/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Explicar predicciones con Integrated Gradients y permutación.
@@ -88,3 +92,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🔄 Aumento de datos](../../labs/20_data_augmentation/README.md) | [🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/21_explainability/index.html)
+<!-- /nav-bottom -->

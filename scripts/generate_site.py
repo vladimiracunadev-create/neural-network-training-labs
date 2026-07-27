@@ -128,9 +128,15 @@ def rewrite_links(html_body: str, repo_path: str) -> str:
     return re.sub(r'(href|src)="([^"]+)"', repl, html_body)
 
 
+# La navegación anterior/siguiente que vive en el README (scripts/add_lab_nav.py)
+# se elimina aquí: en el sitio la aporta el paginador propio, no debe duplicarse.
+NAV_RE = re.compile(r"\n?<!-- nav-(top|bottom) -->.*?<!-- /nav-\1 -->\n?", re.DOTALL)
+
+
 def render_doc(path: Path, repo_path: str) -> str:
     MD.reset()
-    body = MD.convert(path.read_text(encoding="utf-8"))
+    text = NAV_RE.sub("\n", path.read_text(encoding="utf-8"))
+    body = MD.convert(text)
     return rewrite_links(body, repo_path)
 
 

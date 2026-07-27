@@ -1,5 +1,9 @@
 # GAN generativa
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/07_transformer_attention/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/09_gnn_graphs/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Generar prendas a partir de imágenes reales de Fashion-MNIST.
@@ -88,3 +92,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) | [🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/08_gan_generation/index.html)
+<!-- /nav-bottom -->

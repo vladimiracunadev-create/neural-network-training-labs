@@ -1,5 +1,9 @@
 # Backpropagation manual
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/15_federated_learning/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/17_activations_and_losses/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Derivar y programar backpropagation en una MLP pequeña.
@@ -88,3 +92,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md) | [📐 Activaciones y funciones de pérdida](../../labs/17_activations_and_losses/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/16_backpropagation_manual/index.html)
+<!-- /nav-bottom -->

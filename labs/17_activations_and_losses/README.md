@@ -1,5 +1,9 @@
 # Activaciones y funciones de pérdida
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/16_backpropagation_manual/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/18_optimizers_and_schedulers/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Comparar ReLU, GELU, Tanh y pérdidas apropiadas en clases desbalanceadas.
@@ -88,3 +92,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md) | [⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/17_activations_and_losses/index.html)
+<!-- /nav-bottom -->

@@ -1,5 +1,9 @@
 # Clasificación de audio con SpeechCommands
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../advanced_labs/26_segmentation_unet/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../advanced_labs/28_wgan_gp/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Clasificar comandos hablados desde waveform y log-mel spectrograms.
@@ -48,3 +52,13 @@ accuracy, macro_f1, confusion_matrix, noise_robustness.
 ## Limitación principal
 
 Acentos, micrófonos y ambientes no están representados uniformemente.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🧷 Segmentación semántica con U-Net](../../advanced_labs/26_segmentation_unet/README.md) | [🖌️ WGAN-GP sobre Fashion-MNIST](../../advanced_labs/28_wgan_gp/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/27_audio_speechcommands/index.html)
+<!-- /nav-bottom -->

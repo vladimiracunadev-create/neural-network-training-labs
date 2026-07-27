@@ -1,5 +1,9 @@
 # Proyecto final: churn de telecomunicaciones
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/23_model_export_and_inference/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../advanced_labs/25_transformer_finetuning/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Resolver de extremo a extremo un problema real de abandono de clientes con documentación, evaluación y despliegue.
@@ -88,3 +92,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) | [🔧 Fine-tuning eficiente de transformer](../../advanced_labs/25_transformer_finetuning/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/24_capstone_real_project/index.html)
+<!-- /nav-bottom -->

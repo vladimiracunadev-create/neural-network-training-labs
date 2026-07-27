@@ -1,5 +1,9 @@
 # Exportación e inferencia
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/22_uncertainty_calibration/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/24_capstone_real_project/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Exportar ONNX, validar paridad y medir latencia por lotes.
@@ -88,3 +92,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md) | [🏁 Proyecto final: churn de telecomunicaciones](../../labs/24_capstone_real_project/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/23_model_export_and_inference/index.html)
+<!-- /nav-bottom -->

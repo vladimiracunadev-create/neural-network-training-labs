@@ -1,5 +1,9 @@
 # Aprendizaje autosupervisado SimCLR
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../advanced_labs/29_diffusion_ddpm/README.md) · [🏠 Índice](../../README.md#laboratorios)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Preentrenar representaciones con dos vistas reales y evaluar mediante linear probe.
@@ -48,3 +52,13 @@ nt_xent, linear_probe_accuracy, knn_accuracy, embedding_uniformity.
 ## Limitación principal
 
 La elección de aumentos define invariancias y puede borrar información relevante para tareas posteriores.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/README.md) | — (fin del recorrido) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/30_self_supervised_simclr/index.html)
+<!-- /nav-bottom -->

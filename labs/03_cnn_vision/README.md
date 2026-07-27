@@ -1,5 +1,9 @@
 # CNN para visión
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/02_mlp_nonlinear/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/04_rnn_sequences/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Entrenar una CNN y analizar errores sobre fotografías reales de diez clases.
@@ -88,3 +92,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🌀 MLP multiclase](../../labs/02_mlp_nonlinear/README.md) | [🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/03_cnn_vision/index.html)
+<!-- /nav-bottom -->

@@ -1,5 +1,9 @@
 # Segmentación semántica con U-Net
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../advanced_labs/25_transformer_finetuning/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../advanced_labs/27_audio_speechcommands/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Segmentar mascota, fondo y contorno con IoU por clase.
@@ -48,3 +52,13 @@ mean_iou, iou_per_class, pixel_accuracy, dice.
 ## Limitación principal
 
 Las imágenes se concentran en mascotas y fondos cotidianos; no generaliza a segmentación médica o industrial.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🔧 Fine-tuning eficiente de transformer](../../advanced_labs/25_transformer_finetuning/README.md) | [🎙️ Clasificación de audio con SpeechCommands](../../advanced_labs/27_audio_speechcommands/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/26_segmentation_unet/index.html)
+<!-- /nav-bottom -->

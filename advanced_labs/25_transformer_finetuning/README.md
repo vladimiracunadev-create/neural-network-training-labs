@@ -1,5 +1,9 @@
 # Fine-tuning eficiente de transformer
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/24_capstone_real_project/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../advanced_labs/26_segmentation_unet/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Comparar fine-tuning completo y LoRA sin tocar test durante selección.
@@ -48,3 +52,13 @@ accuracy, macro_f1, latency_ms, trainable_parameters.
 ## Limitación principal
 
 El corpus contiene titulares históricos y sesgos editoriales; no representa todo el lenguaje contemporáneo.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🏁 Proyecto final: churn de telecomunicaciones](../../labs/24_capstone_real_project/README.md) | [🧷 Segmentación semántica con U-Net](../../advanced_labs/26_segmentation_unet/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/25_transformer_finetuning/index.html)
+<!-- /nav-bottom -->

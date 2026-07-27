@@ -1,5 +1,9 @@
 # Regularización
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/18_optimizers_and_schedulers/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/20_data_augmentation/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Medir dropout, weight decay y batch normalization.
@@ -88,3 +92,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md) | [🔄 Aumento de datos](../../labs/20_data_augmentation/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/19_regularization_dropout_batchnorm/index.html)
+<!-- /nav-bottom -->

@@ -1,5 +1,9 @@
 # Autoencoder para fraude
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/05_lstm_time_series/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/07_transformer_attention/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Detectar transacciones fraudulentas mediante error de reconstrucción.
@@ -88,3 +92,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [📈 LSTM para series temporales](../../labs/05_lstm_time_series/README.md) | [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/06_autoencoder_anomaly/index.html)
+<!-- /nav-bottom -->

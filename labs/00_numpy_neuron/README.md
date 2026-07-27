@@ -1,5 +1,9 @@
 # Neurona con NumPy
 
+<!-- nav-top -->
+> 🧭 [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/01_pytorch_perceptron/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Implementar propagación, entropía cruzada y descenso de gradiente sin autograd.
@@ -88,3 +92,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| — (inicio del recorrido) | [🧩 Perceptrón con PyTorch](../../labs/01_pytorch_perceptron/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/00_numpy_neuron/index.html)
+<!-- /nav-bottom -->

@@ -1,5 +1,9 @@
 # RNN para texto
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/03_cnn_vision/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/05_lstm_time_series/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Clasificar sentimiento en reseñas reales usando embeddings y recurrencia.
@@ -88,3 +92,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🖼️ CNN para visión](../../labs/03_cnn_vision/README.md) | [📈 LSTM para series temporales](../../labs/05_lstm_time_series/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/04_rnn_sequences/index.html)
+<!-- /nav-bottom -->

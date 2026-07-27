@@ -1,5 +1,9 @@
 # Difusión DDPM sobre Fashion-MNIST
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../advanced_labs/28_wgan_gp/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../advanced_labs/30_self_supervised_simclr/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Aprender predicción de ruido y muestreo iterativo sobre imágenes reales.
@@ -48,3 +52,13 @@ noise_mse, sample_diversity, sampling_latency, reconstruction_proxy.
 ## Limitación principal
 
 El modelo pequeño sirve para estudio; no debe extrapolarse a generación fotográfica de alta resolución.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🖌️ WGAN-GP sobre Fashion-MNIST](../../advanced_labs/28_wgan_gp/README.md) | [🪞 Aprendizaje autosupervisado SimCLR](../../advanced_labs/30_self_supervised_simclr/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/29_diffusion_ddpm/index.html)
+<!-- /nav-bottom -->

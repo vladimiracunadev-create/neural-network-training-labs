@@ -1,5 +1,9 @@
 # Transformer para noticias
 
+<!-- nav-top -->
+> 🧭 [⬅️ Anterior](../../labs/06_autoencoder_anomaly/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/08_gan_generation/README.md)
+<!-- /nav-top -->
+
 ## Objetivo
 
 Aplicar atención multi-cabeza a clasificación de noticias reales.
@@ -88,3 +92,13 @@ neural-labs leaderboard
 ## Sellado del experimento
 
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del curso
+
+| ⬅️ Anterior | Siguiente ➡️ |
+|---|---|
+| [🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) | [🎨 GAN generativa](../../labs/08_gan_generation/README.md) |
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/07_transformer_attention/index.html)
+<!-- /nav-bottom -->
