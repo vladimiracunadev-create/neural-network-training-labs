@@ -1,0 +1,41 @@
+schema_version: '1.0'
+name: cifar10
+task: multiclass_classification
+architecture: cnn
+source: Torchvision / University of Toronto
+source_type: torchvision
+source_id: CIFAR10
+source_url: https://www.cs.toronto.edu/~kriz/cifar.html
+license: Consultar términos CIFAR-10
+provenance:
+  real_world_data: true
+  generated_data: false
+  reference: https://www.cs.toronto.edu/~kriz/cifar.html
+  description: CIFAR-10 contiene 60.000 imágenes reales de 32×32.
+retrieval:
+  downloaded_at_runtime: true
+  cache: data/raw and data/processed
+  credentials_required: false
+  large_files_committed: false
+  fallback_to_generated_data: false
+split:
+  strategy: official_test_plus_train_validation
+  transform_fit_scope: train_only
+  selection_scope: validation_only
+  test_policy: evaluate_once_after_model_selection
+  identity_audit: sha256 identifiers and overlap check at runtime
+integrity:
+  hash_generated_after_download: true
+  manifest_written_per_run: true
+  provider_metadata_preserved_when_available: true
+redistribution:
+  dataset_included_in_repository: false
+  code_license_does_not_override_dataset_license: true
+known_limitations:
+- CIFAR-10 contiene 60.000 imágenes reales de 32×32.
+real_world_data: true
+generated_data: false
+downloaded_at_runtime: true
+cache: data/raw and data/processed
+split_policy: evaluate_once_after_model_selection
+limitations: CIFAR-10 contiene 60.000 imágenes reales de 32×32.

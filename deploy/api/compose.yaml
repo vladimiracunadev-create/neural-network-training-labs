@@ -1,0 +1,14 @@
+services:
+  api:
+    build:
+      context: ../..
+      dockerfile: deploy/api/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      NEURAL_LABS_REGISTRY: /models/model-registry.json
+      NEURAL_LABS_MODEL: default
+      NEURAL_LABS_MODEL_REFERENCE: champion
+    volumes:
+      - ../../runs:/app/runs:ro
+      - ../../model-registry.json:/models/model-registry.json:ro

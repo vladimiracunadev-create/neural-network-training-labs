@@ -1,0 +1,17 @@
+id: 28_wgan_gp
+title: WGAN-GP sobre Fashion-MNIST
+domain: generative
+level: advanced
+prerequisites:
+- GAN
+- CNN
+- optimización adversarial
+learning_outcomes:
+- Estudiar estabilidad generativa y gradient penalty con imágenes reales.
+- Interpretar wasserstein_estimate, energy_distance_proxy
+- Aplicar sellado de test y reproducibilidad
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+dataset: fashion_mnist

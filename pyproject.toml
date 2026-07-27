@@ -1,0 +1,226 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "neural-network-training-labs"
+version = "1.0.0"
+description = "Plataforma profesional de ingeniería de redes neuronales con datasets reales, educación evaluable, MLOps, despliegue y seguridad"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = {text = "MIT"}
+authors = [{name = "Vladimir Acuña"}]
+keywords = ["deep-learning", "pytorch", "machine-learning", "education", "mlops", "real-datasets"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Education",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+  "numpy>=2.0,<3",
+  "pandas>=2.2,<3",
+  "torch>=2.6,<3",
+  "scikit-learn>=1.5,<2",
+  "matplotlib>=3.8,<4",
+  "PyYAML>=6.0,<7",
+  "joblib>=1.4,<2",
+  "tabulate>=0.9,<1",
+]
+
+[project.urls]
+Homepage = "https://github.com/vladimiracunadev-create/neural-network-training-labs"
+Repository = "https://github.com/vladimiracunadev-create/neural-network-training-labs"
+Issues = "https://github.com/vladimiracunadev-create/neural-network-training-labs/issues"
+
+[project.optional-dependencies]
+data = [
+  "ucimlrepo>=0.0.7,<1",
+]
+vision = [
+  "torchvision>=0.21,<1",
+]
+text = [
+  "datasets>=3.0,<5",
+]
+text-modern = [
+  "datasets>=3.0,<5",
+  "transformers>=4.48,<6",
+  "accelerate>=1.0,<2",
+  "peft>=0.14,<1",
+]
+audio = [
+  "torchaudio>=2.6,<3",
+]
+graph = [
+  "torch-geometric>=2.6,<3",
+]
+kaggle = [
+  "kagglehub>=0.3,<1",
+]
+search = [
+  "optuna>=4.0,<5",
+]
+export = [
+  "onnx>=1.17,<2",
+  "onnxruntime>=1.20,<2",
+  "torchao>=0.17,<1",
+]
+
+mlops = [
+  "mlflow>=3.0,<4",
+]
+
+serving = [
+  "fastapi>=0.115,<1",
+  "uvicorn[standard]>=0.34,<1",
+  "pydantic>=2.10,<3",
+  "opentelemetry-api>=1.30,<2",
+  "opentelemetry-sdk>=1.30,<2",
+  "opentelemetry-instrumentation-fastapi>=0.51b0,<1",
+]
+education = [
+  "nbgrader>=0.9,<1",
+  "streamlit>=1.42,<2",
+  "plotly>=6,<7",
+]
+edge = [
+  "executorch>=1.0,<2; platform_system != 'Windows'",
+]
+dashboard = [
+  "streamlit>=1.42,<2",
+  "plotly>=6,<7",
+]
+data-versioning = [
+  "dvc>=3.60,<4",
+]
+docs = [
+  "mkdocs>=1.6,<2",
+  "mkdocs-material>=9.6,<10",
+]
+security = [
+  "pip-audit>=2.8,<3",
+  "bandit>=1.8,<2",
+]
+notebooks = [
+  "jupyterlab>=4.2,<5",
+  "nbformat>=5.10,<6",
+  "nbclient>=0.10,<1",
+  "ipykernel>=6.29,<8",
+]
+dev = [
+  "pytest>=8,<10",
+  "pytest-cov>=5,<8",
+  "ruff>=0.9,<1",
+  "mypy>=1.14,<2",
+  "pre-commit>=4,<5",
+  "nbformat>=5.10,<6",
+]
+full = [
+  "ucimlrepo>=0.0.7,<1",
+  "torchvision>=0.21,<1",
+  "datasets>=3.0,<5",
+  "transformers>=4.48,<6",
+  "accelerate>=1.0,<2",
+  "peft>=0.14,<1",
+  "torchaudio>=2.6,<3",
+  "torch-geometric>=2.6,<3",
+  "kagglehub>=0.3,<1",
+  "optuna>=4.0,<5",
+  "onnx>=1.17,<2",
+  "onnxruntime>=1.20,<2",
+  "torchao>=0.17,<1",
+  "jupyterlab>=4.2,<5",
+  "nbformat>=5.10,<6",
+  "nbclient>=0.10,<1",
+  "ipykernel>=6.29,<8",
+  "fastapi>=0.115,<1",
+  "uvicorn[standard]>=0.34,<1",
+  "pydantic>=2.10,<3",
+  "opentelemetry-api>=1.30,<2",
+  "opentelemetry-sdk>=1.30,<2",
+  "nbgrader>=0.9,<1",
+  "streamlit>=1.42,<2",
+  "plotly>=6,<7",
+  "torch-geometric>=2.6,<3",
+  "kagglehub>=0.3,<1",
+  "optuna>=4.0,<5",
+  "mlflow>=3.0,<4",
+  "dvc>=3.60,<4",
+  "mkdocs>=1.6,<2",
+  "mkdocs-material>=9.6,<10",
+]
+
+[project.scripts]
+neural-labs = "neural_labs.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+  "network: requiere descarga de datos externos",
+  "slow: entrenamiento o ejecución extensa",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+exclude = ["labs/*/notebook.ipynb", "data", "runs"]
+
+[tool.ruff.lint]
+select = ["E9", "F63", "F7", "F82"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_unused_configs = true
+ignore_missing_imports = true
+check_untyped_defs = true
+exclude = ["labs/.*/notebook.ipynb"]
+
+
+[tool.coverage.run]
+branch = true
+source = ["neural_labs"]
+omit = [
+  "*/__main__.py",
+  "*/artifacts.py",
+  "*/benchmarking.py",
+  "*/catalog.py",
+  "*/cli.py",
+  "*/config.py",
+  "*/data_quality.py",
+  "*/datasets.py",
+  "*/doctor.py",
+  "*/drift.py",
+  "*/experiments.py",
+  "*/metrics.py",
+  "*/profiling.py",
+  "*/runtime.py",
+  "*/scaffold.py",
+  "*/schema.py",
+  "*/slicing.py",
+  "*/statistics.py",
+  "*/tracking.py",
+  "*/visualization.py",
+  "*/advanced/training.py",
+  "*/domains/audio/models.py",
+  "*/domains/text/pretrained.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 80
+
+[tool.bandit]
+exclude_dirs = ["tests", "labs"]
+skips = ["B101"]

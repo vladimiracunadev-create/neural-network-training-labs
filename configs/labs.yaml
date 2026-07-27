@@ -1,0 +1,572 @@
+version: 3.0.0
+labs:
+- id: 00_numpy_neuron
+  title: Neurona con NumPy
+  level: fundamentos
+  task: binary_classification
+  architecture: numpy_logistic
+  dataset: breast_cancer_wisconsin
+  source: UCI
+  source_type: uci
+  source_id: 17
+  source_ref: https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic
+  license: CC BY 4.0
+  baseline: DummyClassifier y regresión logística de scikit-learn
+  metrics:
+  - accuracy
+  - balanced_accuracy
+  - precision
+  - recall
+  - f1
+  - roc_auc
+  - pr_auc
+  objective: Implementar propagación, entropía cruzada y descenso de gradiente sin
+    autograd.
+  math: p(y=1|x)=σ(xw+b); gradiente de la entropía cruzada.
+  notes: Datos clínicos reales derivados de imágenes digitalizadas de aspirados de
+    masas mamarias.
+  selection_metric: f1
+  estimated_hours: 4
+- id: 01_pytorch_perceptron
+  title: Perceptrón con PyTorch
+  level: fundamentos
+  task: binary_classification
+  architecture: linear
+  dataset: banknote_authentication
+  source: UCI
+  source_type: uci
+  source_id: 267
+  source_ref: https://archive.ics.uci.edu/dataset/267/banknote+authentication
+  license: Consultar ficha UCI
+  baseline: Regresión logística
+  metrics:
+  - accuracy
+  - balanced_accuracy
+  - precision
+  - recall
+  - f1
+  - roc_auc
+  - pr_auc
+  objective: Aprender tensores, autograd, optimizadores y un clasificador lineal.
+  math: z=xW+b; BCEWithLogitsLoss.
+  notes: Características extraídas de imágenes reales de billetes.
+  selection_metric: f1
+  estimated_hours: 4
+- id: 02_mlp_nonlinear
+  title: MLP multiclase
+  level: fundamentos
+  task: multiclass_classification
+  architecture: mlp
+  dataset: dry_bean
+  source: UCI
+  source_type: uci
+  source_id: 602
+  source_ref: https://archive.ics.uci.edu/dataset/602/dry+bean+dataset
+  license: CC BY 4.0
+  baseline: Regresión logística multinomial y Random Forest
+  metrics:
+  - accuracy
+  - balanced_accuracy
+  - macro_precision
+  - macro_recall
+  - macro_f1
+  objective: Resolver clasificación no lineal con capas densas, activaciones y regularización.
+  math: h=ReLU(xW1+b1); logits=hW2+b2.
+  notes: 13.611 granos de siete variedades reales y 16 atributos de forma.
+  selection_metric: macro_f1
+  estimated_hours: 4
+- id: 03_cnn_vision
+  title: CNN para visión
+  level: intermedio
+  task: multiclass_classification
+  architecture: cnn
+  dataset: cifar10
+  source: Torchvision / University of Toronto
+  source_type: torchvision
+  source_id: CIFAR10
+  source_ref: https://www.cs.toronto.edu/~kriz/cifar.html
+  license: Consultar términos CIFAR-10
+  baseline: Clasificador lineal sobre píxeles
+  metrics:
+  - accuracy
+  - balanced_accuracy
+  - macro_precision
+  - macro_recall
+  - macro_f1
+  objective: Entrenar una CNN y analizar errores sobre fotografías reales de diez
+    clases.
+  math: Convolución, pooling, normalización y clasificación.
+  notes: CIFAR-10 contiene 60.000 imágenes reales de 32×32.
+  selection_metric: macro_f1
+  estimated_hours: 6
+- id: 04_rnn_sequences
+  title: RNN para texto
+  level: intermedio
+  task: binary_classification
+  architecture: rnn_text
+  dataset: imdb
+  source: Hugging Face / Stanford
+  source_type: huggingface
+  source_id: stanfordnlp/imdb
+  source_ref: https://huggingface.co/datasets/stanfordnlp/imdb
+  license: Consultar dataset card
+  baseline: TF-IDF + regresión logística
+  metrics:
+  - accuracy
+  - balanced_accuracy
+  - precision
+  - recall
+  - f1
+  - roc_auc
+  - pr_auc
+  objective: Clasificar sentimiento en reseñas reales usando embeddings y recurrencia.
+  math: h_t=tanh(W_x x_t + W_h h_{t-1}+b).
+  notes: Reseñas cinematográficas reales con partición oficial.
+  selection_metric: f1
+  estimated_hours: 6
+- id: 05_lstm_time_series
+  title: LSTM para series temporales
+  level: intermedio
+  task: regression
+  architecture: lstm_regression
+  dataset: seoul_bike
+  source: UCI
+  source_type: uci
+  source_id: 560
+  source_ref: https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand
+  license: CC BY 4.0
+  baseline: Persistencia, media móvil y Ridge
+  metrics:
+  - mae
+  - rmse
+  - mape
+  - r2
+  objective: Pronosticar demanda horaria respetando el orden temporal.
+  math: Puertas input, forget y output de una LSTM.
+  notes: 8.760 observaciones reales de arriendo de bicicletas y clima en Seúl.
+  selection_metric: rmse
+  estimated_hours: 6
+- id: 06_autoencoder_anomaly
+  title: Autoencoder para fraude
+  level: intermedio
+  task: anomaly_detection
+  architecture: autoencoder
+  dataset: credit_card_fraud
+  source: Kaggle / ULB
+  source_type: kaggle
+  source_id: mlg-ulb/creditcardfraud
+  source_ref: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
+  license: Uso sujeto a términos de Kaggle y autor
+  baseline: Isolation Forest
+  metrics:
+  - precision
+  - recall
+  - f1
+  - roc_auc
+  - pr_auc
+  objective: Detectar transacciones fraudulentas mediante error de reconstrucción.
+  math: Minimizar ||x-decoder(encoder(x))||² sobre transacciones normales.
+  notes: 284.807 transacciones reales; el laboratorio evita reequilibrar el conjunto
+    de test.
+  selection_metric: f1
+  estimated_hours: 6
+- id: 07_transformer_attention
+  title: Transformer para noticias
+  level: avanzado
+  task: multiclass_classification
+  architecture: transformer_text
+  dataset: ag_news
+  source: Hugging Face
+  source_type: huggingface
+  source_id: fancyzhx/ag_news
+  source_ref: https://huggingface.co/datasets/fancyzhx/ag_news
+  license: Consultar dataset card
+  baseline: TF-IDF + regresión logística
+  metrics:
+  - accuracy
+  - balanced_accuracy
+  - macro_precision
+  - macro_recall
+  - macro_f1
+  objective: Aplicar atención multi-cabeza a clasificación de noticias reales.
+  math: Attention(Q,K,V)=softmax(QKᵀ/√d)V.
+  notes: Noticias reales en cuatro categorías con particiones públicas.
+  selection_metric: macro_f1
+  estimated_hours: 8
+- id: 08_gan_generation
+  title: GAN generativa
+  level: avanzado
+  task: generation
+  architecture: dcgan
+  dataset: fashion_mnist
+  source: Torchvision / Zalando Research
+  source_type: torchvision
+  source_id: FashionMNIST
+  source_ref: https://github.com/zalandoresearch/fashion-mnist
+  license: MIT
+  baseline: PCA generativa y distribución real de referencia
+  metrics:
+  - generator_loss
+  - discriminator_loss
+  - mmd_rbf
+  - diversity
+  - nearest_real_distance
+  - moment_distance
+  objective: Generar prendas a partir de imágenes reales de Fashion-MNIST.
+  math: min_G max_D E[log D(x)] + E[log(1-D(G(z)))].
+  notes: No usa anillos ni puntos inventados; entrena con prendas reales etiquetadas.
+  selection_metric: f1
+  estimated_hours: 8
+- id: 09_gnn_graphs
+  title: GNN sobre red de citas
+  level: avanzado
+  task: node_classification
+  architecture: gcn
+  dataset: cora
+  source: PyTorch Geometric / Planetoid
+  source_type: pyg
+  source_id: Cora
+  source_ref: https://pytorch-geometric.readthedocs.io/en/stable/generated/torch_geometric.datasets.Planetoid.html
+  license: Consultar dataset original
+  baseline: MLP sin aristas
+  metrics:
+  - accuracy
+  - macro_f1
+  objective: Clasificar publicaciones científicas usando texto y enlaces de citas.
+  math: H^(l+1)=σ(D^-1/2 Â D^-1/2 H^l W^l).
+  notes: Usa las máscaras públicas fijas de train, validación y test.
+  selection_metric: f1
+  estimated_hours: 8
+- id: 10_dqn_reinforcement
+  title: DQN para inventario con demanda real
+  level: avanzado
+  task: reinforcement_learning
+  architecture: dqn_inventory
+  dataset: online_retail
+  source: UCI
+  source_type: uci_retail
+  source_id: 352
+  source_ref: https://archive.ics.uci.edu/dataset/352/online+retail
+  license: CC BY 4.0
+  baseline: Política de reposición periódica basada en demanda media histórica
+  metrics:
+  - mean_return
+  - stockout_rate
+  - holding_cost
+  - service_level
+  objective: Aprender una política de reposición usando una secuencia de demanda observada
+    en transacciones reales.
+  math: y=r+γ max_a Q_target(s′,a); la demanda de cada paso proviene del historial
+    real, no de un generador.
+  notes: La dinámica de inventario es un entorno educativo, pero la demanda diaria
+    se construye exclusivamente desde transacciones reales de Online Retail.
+  selection_metric: mean_return
+  estimated_hours: 8
+- id: 11_transfer_learning
+  title: Transfer learning con mascotas
+  level: avanzado
+  task: multiclass_classification
+  architecture: transfer_resnet18
+  dataset: oxford_iiit_pet
+  source: Torchvision / Oxford
+  source_type: torchvision
+  source_id: OxfordIIITPet
+  source_ref: https://www.robots.ox.ac.uk/~vgg/data/pets/
+  license: Uso académico según fuente
+  baseline: CNN pequeña entrenada desde cero
+  metrics:
+  - accuracy
+  - balanced_accuracy
+  - macro_f1
+  objective: Comparar extracción de características, fine-tuning y entrenamiento desde
+    cero.
+  math: Inicializar con pesos ImageNet y ajustar capas seleccionadas.
+  notes: 7.349 imágenes reales de 37 razas de perros y gatos.
+  selection_metric: macro_f1
+  estimated_hours: 8
+- id: 12_multimodal_fusion
+  title: Fusión de sensores
+  level: avanzado
+  task: multiclass_classification
+  architecture: sensor_fusion
+  dataset: uci_har
+  source: UCI
+  source_type: uci_har
+  source_id: 240
+  source_ref: https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones
+  license: CC BY 4.0
+  baseline: Acelerómetro solo, giroscopio solo y regresión logística
+  metrics:
+  - accuracy
+  - balanced_accuracy
+  - macro_f1
+  objective: Fusionar acelerómetro y giroscopio de smartphones para reconocer actividades.
+  math: f=[f_acc(x_acc); f_gyro(x_gyro)]; y=head(f).
+  notes: Señales inerciales reales de 30 participantes.
+  selection_metric: macro_f1
+  estimated_hours: 8
+- id: 13_hyperparameter_search
+  title: Búsqueda de hiperparámetros
+  level: avanzado
+  task: binary_classification
+  architecture: mlp_optuna
+  dataset: adult_census
+  source: UCI
+  source_type: uci
+  source_id: 2
+  source_ref: https://archive.ics.uci.edu/dataset/2/adult
+  license: CC BY 4.0
+  baseline: Regresión logística
+  metrics:
+  - accuracy
+  - balanced_accuracy
+  - f1
+  - roc_auc
+  - pr_auc
+  objective: Optimizar profundidad, ancho, dropout y learning rate sin tocar test.
+  math: Selección por validación; test se usa solo tras elegir la mejor prueba.
+  notes: 48.842 registros reales del censo de 1994.
+  selection_metric: f1
+  estimated_hours: 8
+- id: 14_knowledge_distillation
+  title: Destilación de conocimiento
+  level: avanzado
+  task: multiclass_classification
+  architecture: distillation_cnn
+  dataset: cifar10
+  source: Torchvision / University of Toronto
+  source_type: torchvision
+  source_id: CIFAR10
+  source_ref: https://www.cs.toronto.edu/~kriz/cifar.html
+  license: Consultar términos CIFAR-10
+  baseline: Estudiante entrenado solo con etiquetas
+  metrics:
+  - accuracy
+  - macro_f1
+  - parameters
+  - latency_ms
+  objective: Transferir conocimiento de una CNN profesora a una estudiante compacta.
+  math: L=α CE(y,s)+(1-α)T² KL(softmax(t/T)||softmax(s/T)).
+  notes: Mismo test real para profesor, estudiante base y estudiante destilada.
+  selection_metric: macro_f1
+  estimated_hours: 8
+- id: 15_federated_learning
+  title: Aprendizaje federado por participante
+  level: avanzado
+  task: multiclass_classification
+  architecture: fedavg_mlp
+  dataset: uci_har_subjects
+  source: UCI
+  source_type: uci_har
+  source_id: 240
+  source_ref: https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones
+  license: CC BY 4.0
+  baseline: Entrenamiento centralizado
+  metrics:
+  - accuracy
+  - macro_f1
+  - client_accuracy_std
+  objective: Aplicar FedAvg usando participantes reales como clientes naturales.
+  math: w_{t+1}=Σ_k(n_k/n)w_k.
+  notes: No crea clientes espaciales artificiales; conserva identificadores reales
+    de sujetos.
+  selection_metric: macro_f1
+  estimated_hours: 8
+- id: 16_backpropagation_manual
+  title: Backpropagation manual
+  level: fundamentos
+  task: multiclass_classification
+  architecture: numpy_mlp
+  dataset: iris
+  source: UCI
+  source_type: uci
+  source_id: 53
+  source_ref: https://archive.ics.uci.edu/dataset/53/iris
+  license: CC BY 4.0
+  baseline: Regresión logística multinomial
+  metrics:
+  - accuracy
+  - macro_f1
+  objective: Derivar y programar backpropagation en una MLP pequeña.
+  math: Regla de la cadena para W2, b2, W1 y b1.
+  notes: 150 mediciones botánicas reales de tres especies de Iris.
+  selection_metric: macro_f1
+  estimated_hours: 4
+- id: 17_activations_and_losses
+  title: Activaciones y funciones de pérdida
+  level: fundamentos
+  task: multiclass_classification
+  architecture: activation_comparison
+  dataset: wine_quality
+  source: UCI
+  source_type: uci
+  source_id: 186
+  source_ref: https://archive.ics.uci.edu/dataset/186/wine+quality
+  license: CC BY 4.0
+  baseline: Regresión ordinal y Random Forest
+  metrics:
+  - accuracy
+  - balanced_accuracy
+  - macro_f1
+  objective: Comparar ReLU, GELU, Tanh y pérdidas apropiadas en clases desbalanceadas.
+  math: Derivadas, saturación y sensibilidad de CrossEntropy/Focal Loss.
+  notes: Muestras reales de vinho verde con análisis fisicoquímico y evaluación sensorial.
+  selection_metric: macro_f1
+  estimated_hours: 4
+- id: 18_optimizers_and_schedulers
+  title: Optimizadores y schedulers
+  level: fundamentos
+  task: regression
+  architecture: optimizer_comparison
+  dataset: california_housing
+  source: scikit-learn / StatLib
+  source_type: sklearn
+  source_id: fetch_california_housing
+  source_ref: https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html
+  license: Consultar fuente StatLib
+  baseline: Media y Ridge
+  metrics:
+  - mae
+  - rmse
+  - r2
+  objective: Comparar SGD, Momentum, Adam y reducción de tasa de aprendizaje.
+  math: Actualizaciones de parámetros y programación de learning rate.
+  notes: Datos reales del censo de California de 1990.
+  selection_metric: rmse
+  estimated_hours: 4
+- id: 19_regularization_dropout_batchnorm
+  title: Regularización
+  level: intermedio
+  task: multiclass_classification
+  architecture: regularization_comparison
+  dataset: fashion_mnist
+  source: Torchvision / Zalando Research
+  source_type: torchvision
+  source_id: FashionMNIST
+  source_ref: https://github.com/zalandoresearch/fashion-mnist
+  license: MIT
+  baseline: MLP sin regularización
+  metrics:
+  - accuracy
+  - macro_f1
+  - generalization_gap
+  objective: Medir dropout, weight decay y batch normalization.
+  math: Regularización explícita e implícita; brecha train-validation.
+  notes: Prendas reales normalizadas en 28×28.
+  selection_metric: macro_f1
+  estimated_hours: 6
+- id: 20_data_augmentation
+  title: Aumento de datos
+  level: intermedio
+  task: multiclass_classification
+  architecture: augmentation_comparison
+  dataset: cifar10
+  source: Torchvision / University of Toronto
+  source_type: torchvision
+  source_id: CIFAR10
+  source_ref: https://www.cs.toronto.edu/~kriz/cifar.html
+  license: Consultar términos CIFAR-10
+  baseline: CNN sin aumento
+  metrics:
+  - accuracy
+  - macro_f1
+  - robust_accuracy
+  objective: Comparar recortes, volteos y perturbaciones sobre imágenes reales.
+  math: Invariancias y regularización por transformaciones.
+  notes: La evaluación usa imágenes de test sin aumento.
+  selection_metric: macro_f1
+  estimated_hours: 6
+- id: 21_explainability
+  title: Explicabilidad
+  level: avanzado
+  task: binary_classification
+  architecture: mlp_explainability
+  dataset: adult_census
+  source: UCI
+  source_type: uci
+  source_id: 2
+  source_ref: https://archive.ics.uci.edu/dataset/2/adult
+  license: CC BY 4.0
+  baseline: Regresión logística interpretable
+  metrics:
+  - accuracy
+  - f1
+  - roc_auc
+  - pr_auc
+  objective: Explicar predicciones con Integrated Gradients y permutación.
+  math: Atribución por integración del gradiente entre baseline y entrada.
+  notes: Incluye advertencias éticas sobre variables demográficas y sesgo.
+  selection_metric: f1
+  estimated_hours: 8
+- id: 22_uncertainty_calibration
+  title: Incertidumbre y calibración
+  level: avanzado
+  task: binary_classification
+  architecture: mlp_calibration
+  dataset: breast_cancer_wisconsin
+  source: UCI
+  source_type: uci
+  source_id: 17
+  source_ref: https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic
+  license: CC BY 4.0
+  baseline: Regresión logística calibrada
+  metrics:
+  - accuracy
+  - f1
+  - roc_auc
+  - brier
+  - ece
+  objective: Medir confianza, Brier score, ECE y temperature scaling.
+  math: Calibrar logits z/T en validación y evaluar una vez en test.
+  notes: No constituye una herramienta clínica ni consejo médico.
+  selection_metric: f1
+  estimated_hours: 8
+- id: 23_model_export_and_inference
+  title: Exportación e inferencia
+  level: avanzado
+  task: multiclass_classification
+  architecture: cnn_export
+  dataset: cifar10
+  source: Torchvision / University of Toronto
+  source_type: torchvision
+  source_id: CIFAR10
+  source_ref: https://www.cs.toronto.edu/~kriz/cifar.html
+  license: Consultar términos CIFAR-10
+  baseline: PyTorch eager
+  metrics:
+  - accuracy
+  - latency_ms
+  - throughput
+  - model_size_mb
+  objective: Exportar ONNX, validar paridad y medir latencia por lotes.
+  math: Paridad numérica y costo de inferencia.
+  notes: Incluye predicción, exportación y benchmark reproducible.
+  selection_metric: macro_f1
+  estimated_hours: 8
+- id: 24_capstone_real_project
+  title: 'Proyecto final: churn de telecomunicaciones'
+  level: proyecto
+  task: binary_classification
+  architecture: capstone_mlp
+  dataset: iranian_churn
+  source: UCI
+  source_type: uci
+  source_id: 563
+  source_ref: https://archive.ics.uci.edu/dataset/563/iranian+churn+dataset
+  license: CC BY 4.0
+  baseline: Regresión logística y Gradient Boosting
+  metrics:
+  - accuracy
+  - balanced_accuracy
+  - precision
+  - recall
+  - f1
+  - roc_auc
+  - pr_auc
+  objective: Resolver de extremo a extremo un problema real de abandono de clientes
+    con documentación, evaluación y despliegue.
+  math: Clasificación, calibración, selección de umbral y costo de errores.
+  notes: 3.150 clientes recolectados aleatoriamente de la base de una empresa iraní
+    de telecomunicaciones durante 12 meses.
+  selection_metric: f1
+  estimated_hours: 6

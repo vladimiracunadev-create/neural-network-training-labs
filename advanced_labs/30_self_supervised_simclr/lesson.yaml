@@ -1,0 +1,17 @@
+id: 30_self_supervised_simclr
+title: Aprendizaje autosupervisado SimCLR
+domain: vision
+level: advanced
+prerequisites:
+- CNN
+- embeddings
+- aprendizaje contrastivo
+learning_outcomes:
+- Preentrenar representaciones con dos vistas reales y evaluar mediante linear probe.
+- Interpretar nt_xent, linear_probe_accuracy
+- Aplicar sellado de test y reproducibilidad
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+dataset: cifar10

@@ -1,0 +1,42 @@
+name: Advanced real-data smoke
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '25 4 * * 0'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - track: 25_transformer_finetuning
+            extras: text-modern
+          - track: 26_segmentation_unet
+            extras: vision
+          - track: 27_audio_speechcommands
+            extras: audio
+          - track: 28_wgan_gp
+            extras: vision
+          - track: 29_diffusion_ddpm
+            extras: vision
+          - track: 30_self_supervised_simclr
+            extras: vision
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -e ".[${{ matrix.extras }}]"
+      - run: neural-labs train-advanced --track '${{ matrix.track }}' --quick --device cpu
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ${{ matrix.track }}
+          path: runs-advanced/${{ matrix.track }}

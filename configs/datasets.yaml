@@ -1,0 +1,204 @@
+version: 3.0.0
+datasets:
+  breast_cancer_wisconsin:
+    dataset: breast_cancer_wisconsin
+    source: UCI
+    source_type: uci
+    source_id: 17
+    source_ref: https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic
+    license: CC BY 4.0
+    notes: Datos clínicos reales derivados de imágenes digitalizadas de aspirados
+      de masas mamarias.
+    used_by:
+    - 00_numpy_neuron
+    - 22_uncertainty_calibration
+  banknote_authentication:
+    dataset: banknote_authentication
+    source: UCI
+    source_type: uci
+    source_id: 267
+    source_ref: https://archive.ics.uci.edu/dataset/267/banknote+authentication
+    license: Consultar ficha UCI
+    notes: Características extraídas de imágenes reales de billetes.
+    used_by:
+    - 01_pytorch_perceptron
+  dry_bean:
+    dataset: dry_bean
+    source: UCI
+    source_type: uci
+    source_id: 602
+    source_ref: https://archive.ics.uci.edu/dataset/602/dry+bean+dataset
+    license: CC BY 4.0
+    notes: 13.611 granos de siete variedades reales y 16 atributos de forma.
+    used_by:
+    - 02_mlp_nonlinear
+  cifar10:
+    dataset: cifar10
+    source: Torchvision / University of Toronto
+    source_type: torchvision
+    source_id: CIFAR10
+    source_ref: https://www.cs.toronto.edu/~kriz/cifar.html
+    license: Consultar términos CIFAR-10
+    notes: CIFAR-10 contiene 60.000 imágenes reales de 32×32.
+    used_by:
+    - 03_cnn_vision
+    - 14_knowledge_distillation
+    - 20_data_augmentation
+    - 23_model_export_and_inference
+  imdb:
+    dataset: imdb
+    source: Hugging Face / Stanford
+    source_type: huggingface
+    source_id: stanfordnlp/imdb
+    source_ref: https://huggingface.co/datasets/stanfordnlp/imdb
+    license: Consultar dataset card
+    notes: Reseñas cinematográficas reales con partición oficial.
+    used_by:
+    - 04_rnn_sequences
+  seoul_bike:
+    dataset: seoul_bike
+    source: UCI
+    source_type: uci
+    source_id: 560
+    source_ref: https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand
+    license: CC BY 4.0
+    notes: 8.760 observaciones reales de arriendo de bicicletas y clima en Seúl.
+    used_by:
+    - 05_lstm_time_series
+  credit_card_fraud:
+    dataset: credit_card_fraud
+    source: Kaggle / ULB
+    source_type: kaggle
+    source_id: mlg-ulb/creditcardfraud
+    source_ref: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
+    license: Uso sujeto a términos de Kaggle y autor
+    notes: 284.807 transacciones reales; el laboratorio evita reequilibrar el conjunto
+      de test.
+    used_by:
+    - 06_autoencoder_anomaly
+  ag_news:
+    dataset: ag_news
+    source: Hugging Face
+    source_type: huggingface
+    source_id: fancyzhx/ag_news
+    source_ref: https://huggingface.co/datasets/fancyzhx/ag_news
+    license: Consultar dataset card
+    notes: Noticias reales en cuatro categorías con particiones públicas.
+    used_by:
+    - 07_transformer_attention
+  fashion_mnist:
+    dataset: fashion_mnist
+    source: Torchvision / Zalando Research
+    source_type: torchvision
+    source_id: FashionMNIST
+    source_ref: https://github.com/zalandoresearch/fashion-mnist
+    license: MIT
+    notes: No usa anillos ni puntos inventados; entrena con prendas reales etiquetadas.
+    used_by:
+    - 08_gan_generation
+    - 19_regularization_dropout_batchnorm
+  cora:
+    dataset: cora
+    source: PyTorch Geometric / Planetoid
+    source_type: pyg
+    source_id: Cora
+    source_ref: https://pytorch-geometric.readthedocs.io/en/stable/generated/torch_geometric.datasets.Planetoid.html
+    license: Consultar dataset original
+    notes: Usa las máscaras públicas fijas de train, validación y test.
+    used_by:
+    - 09_gnn_graphs
+  online_retail:
+    dataset: online_retail
+    source: UCI
+    source_type: uci_retail
+    source_id: 352
+    source_ref: https://archive.ics.uci.edu/dataset/352/online+retail
+    license: CC BY 4.0
+    notes: La dinámica de inventario es un entorno educativo, pero la demanda diaria
+      se construye exclusivamente desde transacciones reales de Online Retail.
+    used_by:
+    - 10_dqn_reinforcement
+  oxford_iiit_pet:
+    dataset: oxford_iiit_pet
+    source: Torchvision / Oxford
+    source_type: torchvision
+    source_id: OxfordIIITPet
+    source_ref: https://www.robots.ox.ac.uk/~vgg/data/pets/
+    license: Uso académico según fuente
+    notes: 7.349 imágenes reales de 37 razas de perros y gatos.
+    used_by:
+    - 11_transfer_learning
+  uci_har:
+    dataset: uci_har
+    source: UCI
+    source_type: uci_har
+    source_id: 240
+    source_ref: https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones
+    license: CC BY 4.0
+    notes: Señales inerciales reales de 30 participantes.
+    used_by:
+    - 12_multimodal_fusion
+  adult_census:
+    dataset: adult_census
+    source: UCI
+    source_type: uci
+    source_id: 2
+    source_ref: https://archive.ics.uci.edu/dataset/2/adult
+    license: CC BY 4.0
+    notes: 48.842 registros reales del censo de 1994.
+    used_by:
+    - 13_hyperparameter_search
+    - 21_explainability
+  uci_har_subjects:
+    dataset: uci_har_subjects
+    source: UCI
+    source_type: uci_har
+    source_id: 240
+    source_ref: https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones
+    license: CC BY 4.0
+    notes: No crea clientes espaciales artificiales; conserva identificadores reales
+      de sujetos.
+    used_by:
+    - 15_federated_learning
+  iris:
+    dataset: iris
+    source: UCI
+    source_type: uci
+    source_id: 53
+    source_ref: https://archive.ics.uci.edu/dataset/53/iris
+    license: CC BY 4.0
+    notes: 150 mediciones botánicas reales de tres especies de Iris.
+    used_by:
+    - 16_backpropagation_manual
+  wine_quality:
+    dataset: wine_quality
+    source: UCI
+    source_type: uci
+    source_id: 186
+    source_ref: https://archive.ics.uci.edu/dataset/186/wine+quality
+    license: CC BY 4.0
+    notes: Muestras reales de vinho verde con análisis fisicoquímico y evaluación
+      sensorial.
+    used_by:
+    - 17_activations_and_losses
+  california_housing:
+    dataset: california_housing
+    source: scikit-learn / StatLib
+    source_type: sklearn
+    source_id: fetch_california_housing
+    source_ref: https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html
+    license: Consultar fuente StatLib
+    notes: Datos reales del censo de California de 1990.
+    used_by:
+    - 18_optimizers_and_schedulers
+  iranian_churn:
+    dataset: iranian_churn
+    source: UCI
+    source_type: uci
+    source_id: 563
+    source_ref: https://archive.ics.uci.edu/dataset/563/iranian+churn+dataset
+    license: CC BY 4.0
+    notes: 3.150 clientes recolectados aleatoriamente de la base de una empresa iraní
+      de telecomunicaciones durante 12 meses.
+    used_by:
+    - 24_capstone_real_project

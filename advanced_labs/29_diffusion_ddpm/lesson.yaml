@@ -1,0 +1,17 @@
+id: 29_diffusion_ddpm
+title: Difusión DDPM sobre Fashion-MNIST
+domain: generative
+level: advanced
+prerequisites:
+- CNN
+- probabilidad
+- modelos generativos
+learning_outcomes:
+- Aprender predicción de ruido y muestreo iterativo sobre imágenes reales.
+- Interpretar noise_mse, sample_diversity
+- Aplicar sellado de test y reproducibilidad
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+dataset: fashion_mnist

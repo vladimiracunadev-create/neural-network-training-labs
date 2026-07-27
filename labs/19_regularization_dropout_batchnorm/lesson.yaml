@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 19_regularization_dropout_batchnorm
+title: Regularización
+level: intermedio
+estimated_hours: 6
+prerequisites:
+- PyTorch básico
+- particiones train/validation/test
+- métricas de evaluación
+learning_outcomes:
+- Medir dropout, weight decay y batch normalization.
+- Preparar y auditar el dataset real fashion_mnist sin fuga de datos.
+- Entrenar y evaluar dropout, batch normalization y weight decay.
+- 'Comparar contra la línea base: MLP sin regularización.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: fashion_mnist
+  source: Torchvision / Zalando Research
+  reference: https://github.com/zalandoresearch/fashion-mnist
+  license: MIT

@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 17_activations_and_losses
+title: Activaciones y funciones de pérdida
+level: fundamentos
+estimated_hours: 4
+prerequisites:
+- Python básico
+- NumPy
+- álgebra lineal elemental
+learning_outcomes:
+- Comparar ReLU, GELU, Tanh y pérdidas apropiadas en clases desbalanceadas.
+- Preparar y auditar el dataset real wine_quality sin fuga de datos.
+- Entrenar y evaluar comparación controlada de activaciones y pérdidas.
+- 'Comparar contra la línea base: Regresión ordinal y Random Forest.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: wine_quality
+  source: UCI
+  reference: https://archive.ics.uci.edu/dataset/186/wine+quality
+  license: CC BY 4.0

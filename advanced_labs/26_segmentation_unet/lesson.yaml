@@ -1,0 +1,17 @@
+id: 26_segmentation_unet
+title: Segmentación semántica con U-Net
+domain: vision
+level: advanced
+prerequisites:
+- CNN
+- visión
+- métricas por píxel
+learning_outcomes:
+- Segmentar mascota, fondo y contorno con IoU por clase.
+- Interpretar mean_iou, iou_per_class
+- Aplicar sellado de test y reproducibilidad
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+dataset: oxford_iiit_pet_segmentation

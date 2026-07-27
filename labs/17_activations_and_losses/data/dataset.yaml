@@ -1,0 +1,43 @@
+schema_version: '1.0'
+name: wine_quality
+task: multiclass_classification
+architecture: activation_comparison
+source: UCI
+source_type: uci
+source_id: 186
+source_url: https://archive.ics.uci.edu/dataset/186/wine+quality
+license: CC BY 4.0
+provenance:
+  real_world_data: true
+  generated_data: false
+  reference: https://archive.ics.uci.edu/dataset/186/wine+quality
+  description: Muestras reales de vinho verde con análisis fisicoquímico y evaluación
+    sensorial.
+retrieval:
+  downloaded_at_runtime: true
+  cache: data/raw and data/processed
+  credentials_required: false
+  large_files_committed: false
+  fallback_to_generated_data: false
+split:
+  strategy: reproducible_stratified_or_random
+  transform_fit_scope: train_only
+  selection_scope: validation_only
+  test_policy: evaluate_once_after_model_selection
+  identity_audit: sha256 identifiers and overlap check at runtime
+integrity:
+  hash_generated_after_download: true
+  manifest_written_per_run: true
+  provider_metadata_preserved_when_available: true
+redistribution:
+  dataset_included_in_repository: false
+  code_license_does_not_override_dataset_license: true
+known_limitations:
+- Muestras reales de vinho verde con análisis fisicoquímico y evaluación sensorial.
+real_world_data: true
+generated_data: false
+downloaded_at_runtime: true
+cache: data/raw and data/processed
+split_policy: evaluate_once_after_model_selection
+limitations: Muestras reales de vinho verde con análisis fisicoquímico y evaluación
+  sensorial.

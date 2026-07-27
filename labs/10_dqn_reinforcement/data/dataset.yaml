@@ -1,0 +1,44 @@
+schema_version: '1.0'
+name: online_retail
+task: reinforcement_learning
+architecture: dqn_inventory
+source: UCI
+source_type: uci_retail
+source_id: 352
+source_url: https://archive.ics.uci.edu/dataset/352/online+retail
+license: CC BY 4.0
+provenance:
+  real_world_data: true
+  generated_data: false
+  reference: https://archive.ics.uci.edu/dataset/352/online+retail
+  description: La dinámica de inventario es un entorno educativo, pero la demanda
+    diaria se construye exclusivamente desde transacciones reales de Online Retail.
+retrieval:
+  downloaded_at_runtime: true
+  cache: data/raw and data/processed
+  credentials_required: false
+  large_files_committed: false
+  fallback_to_generated_data: false
+split:
+  strategy: chronological
+  transform_fit_scope: train_only
+  selection_scope: validation_only
+  test_policy: evaluate_once_after_model_selection
+  identity_audit: sha256 identifiers and overlap check at runtime
+integrity:
+  hash_generated_after_download: true
+  manifest_written_per_run: true
+  provider_metadata_preserved_when_available: true
+redistribution:
+  dataset_included_in_repository: false
+  code_license_does_not_override_dataset_license: true
+known_limitations:
+- La dinámica de inventario es un entorno educativo, pero la demanda diaria se construye
+  exclusivamente desde transacciones reales de Online Retail.
+real_world_data: true
+generated_data: false
+downloaded_at_runtime: true
+cache: data/raw and data/processed
+split_policy: evaluate_once_after_model_selection
+limitations: La dinámica de inventario es un entorno educativo, pero la demanda diaria
+  se construye exclusivamente desde transacciones reales de Online Retail.

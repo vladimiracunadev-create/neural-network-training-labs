@@ -1,0 +1,28 @@
+name: Proponer dataset o laboratorio
+description: Propuesta de una fuente real y trazable
+title: "[Dataset]: "
+labels: [dataset]
+body:
+  - type: input
+    id: source
+    attributes:
+      label: Fuente oficial
+    validations:
+      required: true
+  - type: input
+    id: license
+    attributes:
+      label: Licencia o condiciones
+    validations:
+      required: true
+  - type: textarea
+    id: educational
+    attributes:
+      label: Valor educativo
+      description: Explique qué arquitectura, línea base y pregunta enseña.
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Riesgos y limitaciones

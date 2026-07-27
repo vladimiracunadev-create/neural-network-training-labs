@@ -1,0 +1,31 @@
+stages:
+  validate:
+    cmd: python -m neural_labs.cli validate
+    deps:
+      - configs
+      - labs
+      - src
+      - scripts/validate_repository.py
+  smoke:
+    cmd: python scripts/dvc_smoke.py
+    deps:
+      - src
+      - configs
+      - labs
+      - scripts/dvc_smoke.py
+    params:
+      - lab
+      - config
+      - quick
+      - seed
+      - device
+    outs:
+      - reports/dvc-smoke:
+          cache: false
+  leaderboard:
+    cmd: python -m neural_labs.cli leaderboard --output reports/leaderboard
+    deps:
+      - runs
+    outs:
+      - reports/leaderboard:
+          cache: false

@@ -1,0 +1,37 @@
+name: Real data smoke
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 6 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  uci-and-vision:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e '.[data,vision,dev]'
+      - name: Verify real sources and splits
+        env:
+          RUN_NETWORK_TESTS: '1'
+        run: pytest tests/test_network_datasets.py -m network -q
+      - name: Train one real UCI laboratory
+        run: neural-labs train --lab 00_numpy_neuron --quick --device cpu
+      - name: Generate leaderboard
+        run: neural-labs leaderboard
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: real-data-smoke-artifacts
+          path: |
+            runs/00_numpy_neuron
+            reports/leaderboard
+          if-no-files-found: ignore

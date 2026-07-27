@@ -1,0 +1,37 @@
+lab: 05_lstm_time_series
+title: LSTM para series temporales
+task: regression
+architecture: lstm_regression
+dataset: seoul_bike
+split_seed: 42
+training_seed: 42
+seed: 42
+device: auto
+epochs: 50
+batch_size: 64
+learning_rate: 0.0005
+patience: 8
+quick:
+  max_train_samples: 1024
+  max_validation_samples: 256
+  max_test_samples: 256
+  epochs: 2
+selection_metric: rmse
+test_policy: evaluate_once_after_model_selection
+baseline: Persistencia, media móvil y Ridge
+metrics:
+- mae
+- rmse
+- mape
+- r2
+amp: true
+compile: false
+num_workers: 2
+gradient_clip_norm: 5.0
+deterministic: true
+tracking: json
+reporting:
+  bootstrap_samples: 500
+  subgroup_analysis: true
+  profile_inference: true
+notes: Configuración ampliada; revisar recursos antes de ejecutarla.

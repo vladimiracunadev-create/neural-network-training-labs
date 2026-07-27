@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 05_lstm_time_series
+title: LSTM para series temporales
+level: intermedio
+estimated_hours: 6
+prerequisites:
+- PyTorch básico
+- particiones train/validation/test
+- métricas de evaluación
+learning_outcomes:
+- Pronosticar demanda horaria respetando el orden temporal.
+- Preparar y auditar el dataset real seoul_bike sin fuga de datos.
+- Entrenar y evaluar memoria recurrente para pronóstico temporal.
+- 'Comparar contra la línea base: Persistencia, media móvil y Ridge.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: seoul_bike
+  source: UCI
+  reference: https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand
+  license: CC BY 4.0

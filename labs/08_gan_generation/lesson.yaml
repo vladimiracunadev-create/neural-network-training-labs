@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 08_gan_generation
+title: GAN generativa
+level: avanzado
+estimated_hours: 8
+prerequisites:
+- PyTorch intermedio
+- optimización
+- lectura de artículos técnicos
+learning_outcomes:
+- Generar prendas a partir de imágenes reales de Fashion-MNIST.
+- Preparar y auditar el dataset real fashion_mnist sin fuga de datos.
+- Entrenar y evaluar aprendizaje adversarial generativo.
+- 'Comparar contra la línea base: PCA generativa y distribución real de referencia.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: fashion_mnist
+  source: Torchvision / Zalando Research
+  reference: https://github.com/zalandoresearch/fashion-mnist
+  license: MIT

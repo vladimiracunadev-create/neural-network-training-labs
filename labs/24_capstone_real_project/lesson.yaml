@@ -1,0 +1,29 @@
+schema_version: '2.0'
+lab: 24_capstone_real_project
+title: 'Proyecto final: churn de telecomunicaciones'
+level: proyecto
+estimated_hours: 10
+prerequisites: []
+learning_outcomes:
+- Resolver de extremo a extremo un problema real de abandono de clientes con documentación,
+  evaluación y despliegue.
+- Preparar y auditar el dataset real iranian_churn sin fuga de datos.
+- Entrenar y evaluar proyecto integral de churn.
+- 'Comparar contra la línea base: Regresión logística y Gradient Boosting.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: iranian_churn
+  source: UCI
+  reference: https://archive.ics.uci.edu/dataset/563/iranian+churn+dataset
+  license: CC BY 4.0

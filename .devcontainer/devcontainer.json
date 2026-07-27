@@ -1,0 +1,10 @@
+{
+  "name": "Neural Network Training Labs",
+  "build": {"dockerfile": "../Dockerfile", "context": ".."},
+  "postCreateCommand": "pip install -e '.[full,dev]'",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "ms-toolsai.jupyter", "charliermarsh.ruff"]
+    }
+  }
+}

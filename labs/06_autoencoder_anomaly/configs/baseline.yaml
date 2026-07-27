@@ -1,0 +1,37 @@
+lab: 06_autoencoder_anomaly
+title: Autoencoder para fraude
+task: anomaly_detection
+architecture: autoencoder
+dataset: credit_card_fraud
+split_seed: 42
+training_seed: 42
+seed: 42
+device: auto
+epochs: 20
+batch_size: 64
+learning_rate: 0.001
+patience: 5
+quick:
+  max_train_samples: 1024
+  max_validation_samples: 256
+  max_test_samples: 256
+  epochs: 2
+selection_metric: f1
+test_policy: evaluate_once_after_model_selection
+baseline: Isolation Forest
+metrics:
+- precision
+- recall
+- f1
+- roc_auc
+- pr_auc
+amp: false
+compile: false
+num_workers: 0
+gradient_clip_norm: 5.0
+deterministic: true
+tracking: json
+reporting:
+  bootstrap_samples: 500
+  subgroup_analysis: true
+  profile_inference: true

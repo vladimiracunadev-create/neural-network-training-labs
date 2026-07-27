@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 07_transformer_attention
+title: Transformer para noticias
+level: avanzado
+estimated_hours: 8
+prerequisites:
+- PyTorch intermedio
+- optimización
+- lectura de artículos técnicos
+learning_outcomes:
+- Aplicar atención multi-cabeza a clasificación de noticias reales.
+- Preparar y auditar el dataset real ag_news sin fuga de datos.
+- Entrenar y evaluar autoatención para clasificación de texto.
+- 'Comparar contra la línea base: TF-IDF + regresión logística.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: ag_news
+  source: Hugging Face
+  reference: https://huggingface.co/datasets/fancyzhx/ag_news
+  license: Consultar dataset card

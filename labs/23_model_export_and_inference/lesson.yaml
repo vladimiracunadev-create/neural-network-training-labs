@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 23_model_export_and_inference
+title: Exportación e inferencia
+level: avanzado
+estimated_hours: 8
+prerequisites:
+- PyTorch intermedio
+- optimización
+- lectura de artículos técnicos
+learning_outcomes:
+- Exportar ONNX, validar paridad y medir latencia por lotes.
+- Preparar y auditar el dataset real cifar10 sin fuga de datos.
+- Entrenar y evaluar exportación y perfil de inferencia.
+- 'Comparar contra la línea base: PyTorch eager.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: cifar10
+  source: Torchvision / University of Toronto
+  reference: https://www.cs.toronto.edu/~kriz/cifar.html
+  license: Consultar términos CIFAR-10

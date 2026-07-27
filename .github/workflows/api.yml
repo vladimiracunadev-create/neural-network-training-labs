@@ -1,0 +1,27 @@
+name: Inference API
+
+on:
+  pull_request:
+    paths:
+      - 'src/neural_labs/deployment/**'
+      - 'src/neural_labs/inference.py'
+      - 'src/neural_labs/model_registry.py'
+      - 'deploy/api/**'
+      - 'tests/test_api_telemetry_v3.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -e '.[serving,dev]'
+      - run: pytest tests/test_api_telemetry_v3.py tests/test_inference_registry_v3.py -q
+      - run: docker build -f deploy/api/Dockerfile -t neural-labs-api:ci .

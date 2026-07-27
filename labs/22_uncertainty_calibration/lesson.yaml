@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 22_uncertainty_calibration
+title: Incertidumbre y calibración
+level: avanzado
+estimated_hours: 8
+prerequisites:
+- PyTorch intermedio
+- optimización
+- lectura de artículos técnicos
+learning_outcomes:
+- Medir confianza, Brier score, ECE y temperature scaling.
+- Preparar y auditar el dataset real breast_cancer_wisconsin sin fuga de datos.
+- Entrenar y evaluar calibración probabilística.
+- 'Comparar contra la línea base: Regresión logística calibrada.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: breast_cancer_wisconsin
+  source: UCI
+  reference: https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic
+  license: CC BY 4.0

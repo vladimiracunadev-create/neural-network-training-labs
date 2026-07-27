@@ -1,0 +1,43 @@
+name: Release artifacts
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip build uv
+      - name: Resolve and verify the dependency lock
+        run: |
+          uv lock
+          uv lock --check
+      - run: uv sync --locked --extra dev --extra serving
+      - run: uv run pytest -m 'not network and not slow' -q
+      - run: uv run python -m build
+      - run: uv run neural-labs supply-chain --output-dir dist/security
+      - name: Create source archive
+        run: git archive --format=zip --output=dist/neural-network-training-labs-${GITHUB_REF_NAME}.zip HEAD
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: dist
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            dist/*.zip
+            dist/*.whl
+            dist/*.tar.gz
+            dist/security/*

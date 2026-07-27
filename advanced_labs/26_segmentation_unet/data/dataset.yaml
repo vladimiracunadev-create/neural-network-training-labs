@@ -1,0 +1,12 @@
+name: oxford_iiit_pet_segmentation
+source: Torchvision / University of Oxford
+source_type: public_real
+license: Consultar términos Oxford-IIIT Pet
+download: managed_by_neural_labs_adapter
+redistribution: not_included_in_repository
+split_policy: official_test_or_reproducible_train_validation
+test_policy: sealed_until_model_selection
+synthetic: false
+known_limitations:
+- Las imágenes se concentran en mascotas y fondos cotidianos; no generaliza a segmentación
+  médica o industrial.

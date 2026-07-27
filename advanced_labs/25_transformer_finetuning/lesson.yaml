@@ -1,0 +1,17 @@
+id: 25_transformer_finetuning
+title: Fine-tuning eficiente de transformer
+domain: text
+level: advanced
+prerequisites:
+- PyTorch
+- NLP
+- Transformers
+learning_outcomes:
+- Comparar fine-tuning completo y LoRA sin tocar test durante selección.
+- Interpretar accuracy, macro_f1
+- Aplicar sellado de test y reproducibilidad
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+dataset: ag_news

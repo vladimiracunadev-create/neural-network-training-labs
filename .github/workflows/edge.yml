@@ -1,0 +1,31 @@
+name: Export and edge inference
+
+on:
+  workflow_dispatch:
+    inputs:
+      lab:
+        description: Exportable laboratory
+        required: true
+        default: 02_mlp_nonlinear
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -e '.[data,export]'
+      - run: neural-labs train --lab '${{ inputs.lab }}' --quick --device cpu
+      - run: neural-labs export --lab '${{ inputs.lab }}' --run latest --format onnx --verify
+      - run: neural-labs export --lab '${{ inputs.lab }}' --run latest --format int8
+      - run: neural-labs export --lab '${{ inputs.lab }}' --run latest --format benchmark
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exported-model
+          path: runs/${{ inputs.lab }}

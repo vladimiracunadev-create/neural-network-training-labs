@@ -1,0 +1,41 @@
+schema_version: '1.0'
+name: imdb
+task: binary_classification
+architecture: rnn_text
+source: Hugging Face / Stanford
+source_type: huggingface
+source_id: stanfordnlp/imdb
+source_url: https://huggingface.co/datasets/stanfordnlp/imdb
+license: Consultar dataset card
+provenance:
+  real_world_data: true
+  generated_data: false
+  reference: https://huggingface.co/datasets/stanfordnlp/imdb
+  description: Reseñas cinematográficas reales con partición oficial.
+retrieval:
+  downloaded_at_runtime: true
+  cache: data/raw and data/processed
+  credentials_required: false
+  large_files_committed: false
+  fallback_to_generated_data: false
+split:
+  strategy: official_test_plus_train_validation
+  transform_fit_scope: train_only
+  selection_scope: validation_only
+  test_policy: evaluate_once_after_model_selection
+  identity_audit: sha256 identifiers and overlap check at runtime
+integrity:
+  hash_generated_after_download: true
+  manifest_written_per_run: true
+  provider_metadata_preserved_when_available: true
+redistribution:
+  dataset_included_in_repository: false
+  code_license_does_not_override_dataset_license: true
+known_limitations:
+- Reseñas cinematográficas reales con partición oficial.
+real_world_data: true
+generated_data: false
+downloaded_at_runtime: true
+cache: data/raw and data/processed
+split_policy: evaluate_once_after_model_selection
+limitations: Reseñas cinematográficas reales con partición oficial.

@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+title: Neural Network Training Labs
+message: Cite este repositorio y la fuente original de cada dataset.
+type: software
+authors:
+  - family-names: Acuña
+    given-names: Vladimir
+version: 1.0.0
+license: MIT
+repository-code: https://github.com/vladimiracunadev-create/neural-network-training-labs

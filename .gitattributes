@@ -1,0 +1,39 @@
+# === Normalización de fin de línea ===
+# Por defecto, Git decide; el texto se normaliza a LF en el repositorio.
+* text=auto eol=lf
+
+# Contenido y configuración: siempre LF.
+*.md    text eol=lf
+*.py    text eol=lf
+*.ipynb text eol=lf
+*.json  text eol=lf
+*.jsonc text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.toml  text eol=lf
+*.cfg   text eol=lf
+*.txt   text eol=lf
+
+# Scripts de Windows: CRLF, o no se ejecutan bien.
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# === Binarios ===
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.zip  binary
+*.onnx binary
+*.pt   binary
+*.pth  binary
+*.npz  binary
+*.joblib binary
+
+# === Estadísticas de lenguaje en GitHub ===
+# Los notebooks y la documentación no son el código del proyecto.
+*.ipynb  linguist-documentation
+docs/**  linguist-documentation
+site/**  linguist-generated

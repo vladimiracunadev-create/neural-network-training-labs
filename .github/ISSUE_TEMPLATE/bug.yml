@@ -1,0 +1,24 @@
+name: Error
+description: Reportar un fallo reproducible
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema
+      description: Indique qué esperaba y qué ocurrió.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproducción
+      description: Incluya comandos mínimos y error completo, sin secretos.
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Diagnóstico
+      description: Pegue la salida de neural-labs doctor y la versión.

@@ -1,0 +1,68 @@
+{
+  "name": "neural-network-training-labs",
+  "version": "1.0.0",
+  "release_date": "2026-07-27",
+  "core_labs": 25,
+  "advanced_tracks": 6,
+  "learning_paths": 31,
+  "dataset_configurations": 21,
+  "public_dataset_families": 20,
+  "synthetic_datasets": 0,
+  "notebooks": 93,
+  "student_solution_pairs": 31,
+  "theory_files": 31,
+  "experiment_plans": 31,
+  "assessment_rubrics": 31,
+  "registered_model_factories": 23,
+  "test_protocol": "train_validation_freeze_test",
+  "separate_split_and_training_seeds": true,
+  "test_lock": "experiment.lock.json",
+  "multi_seed_benchmarking": true,
+  "cross_validation_without_final_test": true,
+  "serving": [
+    "FastAPI",
+    "batch inference",
+    "local model registry",
+    "MLflow optional"
+  ],
+  "monitoring": [
+    "Prometheus",
+    "OpenTelemetry optional",
+    "prediction summaries",
+    "drift endpoint",
+    "Streamlit dashboard"
+  ],
+  "export": [
+    "ONNX dynamo and verification",
+    "TorchAO INT8 when available",
+    "ONNX Runtime",
+    "ExecuTorch optional"
+  ],
+  "distributed": [
+    "DDP",
+    "FSDP2",
+    "portable checkpoint fallback"
+  ],
+  "security": [
+    "SBOM",
+    "SHA-256 manifest",
+    "provenance",
+    "Cosign release workflow"
+  ],
+  "supported_devices": [
+    "cpu",
+    "cuda",
+    "mps"
+  ],
+  "unit_tests_passed_at_build": 68,
+  "network_tests_separated": 2,
+  "coverage_percent": 84.62,
+  "github_workflows": 11,
+  "ci_python_versions": [
+    "3.11",
+    "3.12",
+    "3.13"
+  ],
+  "uv_lock_included": false,
+  "uv_lock_note": "No se generó en el entorno de empaquetado porque el índice configurado respondió HTTP 503; release.yml lo resuelve y verifica en CI."
+}

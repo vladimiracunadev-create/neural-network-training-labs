@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 20_data_augmentation
+title: Aumento de datos
+level: intermedio
+estimated_hours: 6
+prerequisites:
+- PyTorch básico
+- particiones train/validation/test
+- métricas de evaluación
+learning_outcomes:
+- Comparar recortes, volteos y perturbaciones sobre imágenes reales.
+- Preparar y auditar el dataset real cifar10 sin fuga de datos.
+- Entrenar y evaluar aumento de datos seleccionado por validation.
+- 'Comparar contra la línea base: CNN sin aumento.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: cifar10
+  source: Torchvision / University of Toronto
+  reference: https://www.cs.toronto.edu/~kriz/cifar.html
+  license: Consultar términos CIFAR-10

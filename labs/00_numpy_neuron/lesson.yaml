@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 00_numpy_neuron
+title: Neurona con NumPy
+level: fundamentos
+estimated_hours: 4
+prerequisites:
+- Python básico
+- NumPy
+- álgebra lineal elemental
+learning_outcomes:
+- Implementar propagación, entropía cruzada y descenso de gradiente sin autograd.
+- Preparar y auditar el dataset real breast_cancer_wisconsin sin fuga de datos.
+- Entrenar y evaluar regresión logística implementada sin autograd.
+- 'Comparar contra la línea base: DummyClassifier y regresión logística de scikit-learn.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: breast_cancer_wisconsin
+  source: UCI
+  reference: https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic
+  license: CC BY 4.0

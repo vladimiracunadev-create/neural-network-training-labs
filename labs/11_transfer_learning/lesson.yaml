@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 11_transfer_learning
+title: Transfer learning con mascotas
+level: avanzado
+estimated_hours: 8
+prerequisites:
+- PyTorch intermedio
+- optimización
+- lectura de artículos técnicos
+learning_outcomes:
+- Comparar extracción de características, fine-tuning y entrenamiento desde cero.
+- Preparar y auditar el dataset real oxford_iiit_pet sin fuga de datos.
+- Entrenar y evaluar reutilización de representaciones preentrenadas.
+- 'Comparar contra la línea base: CNN pequeña entrenada desde cero.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: oxford_iiit_pet
+  source: Torchvision / Oxford
+  reference: https://www.robots.ox.ac.uk/~vgg/data/pets/
+  license: Uso académico según fuente

@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 04_rnn_sequences
+title: RNN para texto
+level: intermedio
+estimated_hours: 6
+prerequisites:
+- PyTorch básico
+- particiones train/validation/test
+- métricas de evaluación
+learning_outcomes:
+- Clasificar sentimiento en reseñas reales usando embeddings y recurrencia.
+- Preparar y auditar el dataset real imdb sin fuga de datos.
+- Entrenar y evaluar recurrencia sobre secuencias tokenizadas.
+- 'Comparar contra la línea base: TF-IDF + regresión logística.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: imdb
+  source: Hugging Face / Stanford
+  reference: https://huggingface.co/datasets/stanfordnlp/imdb
+  license: Consultar dataset card

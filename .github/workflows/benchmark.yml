@@ -1,0 +1,50 @@
+name: Manual benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      lab:
+        description: Laboratory ID
+        required: true
+        default: 03_cnn_vision
+      config:
+        description: Configuration
+        required: true
+        default: baseline
+      split_seed:
+        description: Fixed dataset split seed
+        required: true
+        default: '42'
+      training_seeds:
+        description: Space-separated training seeds
+        required: true
+        default: '41 42 43'
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -e '.[full]'
+      - name: Run benchmark without changing the data split
+        shell: bash
+        run: >-
+          neural-labs benchmark
+          --lab '${{ inputs.lab }}'
+          --config '${{ inputs.config }}'
+          --split-seed '${{ inputs.split_seed }}'
+          --training-seeds ${{ inputs.training_seeds }}
+      - run: neural-labs leaderboard
+      - uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-${{ inputs.lab }}
+          path: |
+            runs/${{ inputs.lab }}
+            reports/leaderboard

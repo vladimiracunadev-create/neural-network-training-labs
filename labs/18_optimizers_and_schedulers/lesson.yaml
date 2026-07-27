@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 18_optimizers_and_schedulers
+title: Optimizadores y schedulers
+level: fundamentos
+estimated_hours: 4
+prerequisites:
+- Python básico
+- NumPy
+- álgebra lineal elemental
+learning_outcomes:
+- Comparar SGD, Momentum, Adam y reducción de tasa de aprendizaje.
+- Preparar y auditar el dataset real california_housing sin fuga de datos.
+- Entrenar y evaluar comparación controlada de optimizadores y schedulers.
+- 'Comparar contra la línea base: Media y Ridge.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: california_housing
+  source: scikit-learn / StatLib
+  reference: https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html
+  license: Consultar fuente StatLib

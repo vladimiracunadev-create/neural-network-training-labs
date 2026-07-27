@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 12_multimodal_fusion
+title: Fusión de sensores
+level: avanzado
+estimated_hours: 8
+prerequisites:
+- PyTorch intermedio
+- optimización
+- lectura de artículos técnicos
+learning_outcomes:
+- Fusionar acelerómetro y giroscopio de smartphones para reconocer actividades.
+- Preparar y auditar el dataset real uci_har sin fuga de datos.
+- Entrenar y evaluar fusión de ramas de sensores.
+- 'Comparar contra la línea base: Acelerómetro solo, giroscopio solo y regresión logística.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: uci_har
+  source: UCI
+  reference: https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones
+  license: CC BY 4.0

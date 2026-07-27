@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 16_backpropagation_manual
+title: Backpropagation manual
+level: fundamentos
+estimated_hours: 4
+prerequisites:
+- Python básico
+- NumPy
+- álgebra lineal elemental
+learning_outcomes:
+- Derivar y programar backpropagation en una MLP pequeña.
+- Preparar y auditar el dataset real iris sin fuga de datos.
+- Entrenar y evaluar backpropagation manual.
+- 'Comparar contra la línea base: Regresión logística multinomial.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: iris
+  source: UCI
+  reference: https://archive.ics.uci.edu/dataset/53/iris
+  license: CC BY 4.0

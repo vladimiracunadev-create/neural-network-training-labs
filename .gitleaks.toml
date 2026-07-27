@@ -1,0 +1,19 @@
+# Configuración de gitleaks para Neural Network Training Labs.
+#
+# Se usan las reglas por defecto de gitleaks sobre todo el repositorio
+# (src, scripts, workflows, configuración). Se excluye el material didáctico
+# (notebooks, cards de datasets, docs): algunos muestran cadenas de ejemplo
+# —tokens o claves ficticias— con fines pedagógicos. Nunca son secretos reales.
+
+title = "gitleaks — Neural Network Training Labs"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Contenido didáctico con valores de ejemplo (nunca reales): notebooks, cards y docs"
+paths = [
+  '''\.ipynb$''',
+  '''^data/cards/.*\.md$''',
+  '''^docs/.*\.md$''',
+]

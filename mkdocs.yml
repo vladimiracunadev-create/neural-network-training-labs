@@ -1,0 +1,39 @@
+site_name: Neural Network Training Labs
+site_description: Plataforma profesional de redes neuronales con datasets reales, educación evaluable, MLOps y despliegue
+repo_url: https://github.com/vladimiracunadev-create/neural-network-training-labs
+theme:
+  name: material
+  language: es
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+nav:
+  - Inicio: index.md
+  - Ruta de aprendizaje: learning-path.md
+  - Arquitectura: architecture.md
+  - Protocolo experimental: experiment-protocol.md
+  - Datasets: datasets.md
+  - Especializaciones avanzadas: advanced-tracks.md
+  - Ética y licencias: ethics-and-licenses.md
+  - Educación y nbgrader: education.md
+  - Benchmarking: benchmarking.md
+  - Reproducibilidad: reproducibility.md
+  - Versionado de datos: data-versioning.md
+  - MLOps: mlops.md
+  - Registro y API: model-registry-and-serving.md
+  - Monitoreo y panel: monitoring-and-dashboard.md
+  - Exportación y edge: export-and-edge.md
+  - Entrenamiento distribuido: distributed-training.md
+  - Rendimiento: performance.md
+  - Seguridad de suministro: supply-chain-security.md
+  - Agregar laboratorio: adding-a-lab.md
+  - Guía docente: teaching-guide.md
+  - Roadmap: roadmap.md
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences

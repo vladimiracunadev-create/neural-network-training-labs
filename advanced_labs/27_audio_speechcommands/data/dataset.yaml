@@ -1,0 +1,11 @@
+name: speechcommands_v0.02
+source: Torchaudio / Google Speech Commands
+source_type: public_real
+license: Creative Commons BY 4.0
+download: managed_by_neural_labs_adapter
+redistribution: not_included_in_repository
+split_policy: official_test_or_reproducible_train_validation
+test_policy: sealed_until_model_selection
+synthetic: false
+known_limitations:
+- Acentos, micrófonos y ambientes no están representados uniformemente.

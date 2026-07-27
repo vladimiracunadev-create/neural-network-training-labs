@@ -1,0 +1,40 @@
+name: Distributed training
+
+on:
+  workflow_dispatch:
+    inputs:
+      lab:
+        description: Supervised laboratory
+        required: true
+        default: 02_mlp_nonlinear
+      processes:
+        description: Number of local processes
+        required: true
+        default: '2'
+
+permissions:
+  contents: read
+
+jobs:
+  cpu-ddp-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -e '.[data]'
+      - run: neural-labs distributed
+      - name: Run a short CPU DDP job
+        shell: bash
+        run: >-
+          torchrun --standalone --nproc-per-node='${{ inputs.processes }}'
+          -m neural_labs.cli train-distributed
+          --lab '${{ inputs.lab }}'
+          --strategy ddp
+          --quick
+      - uses: actions/upload-artifact@v4
+        with:
+          name: distributed-runs
+          path: runs-distributed

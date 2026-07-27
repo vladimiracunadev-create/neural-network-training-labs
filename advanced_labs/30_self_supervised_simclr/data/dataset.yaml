@@ -1,0 +1,12 @@
+name: cifar10
+source: Torchvision / University of Toronto
+source_type: public_real
+license: Consultar términos CIFAR-10
+download: managed_by_neural_labs_adapter
+redistribution: not_included_in_repository
+split_policy: official_test_or_reproducible_train_validation
+test_policy: sealed_until_model_selection
+synthetic: false
+known_limitations:
+- La elección de aumentos define invariancias y puede borrar información relevante
+  para tareas posteriores.

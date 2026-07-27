@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 13_hyperparameter_search
+title: Búsqueda de hiperparámetros
+level: avanzado
+estimated_hours: 8
+prerequisites:
+- PyTorch intermedio
+- optimización
+- lectura de artículos técnicos
+learning_outcomes:
+- Optimizar profundidad, ancho, dropout y learning rate sin tocar test.
+- Preparar y auditar el dataset real adult_census sin fuga de datos.
+- Entrenar y evaluar búsqueda de hiperparámetros sin tocar test.
+- 'Comparar contra la línea base: Regresión logística.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: adult_census
+  source: UCI
+  reference: https://archive.ics.uci.edu/dataset/2/adult
+  license: CC BY 4.0

@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 09_gnn_graphs
+title: GNN sobre red de citas
+level: avanzado
+estimated_hours: 8
+prerequisites:
+- PyTorch intermedio
+- optimización
+- lectura de artículos técnicos
+learning_outcomes:
+- Clasificar publicaciones científicas usando texto y enlaces de citas.
+- Preparar y auditar el dataset real cora sin fuga de datos.
+- Entrenar y evaluar propagación de mensajes sobre grafos.
+- 'Comparar contra la línea base: MLP sin aristas.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: cora
+  source: PyTorch Geometric / Planetoid
+  reference: https://pytorch-geometric.readthedocs.io/en/stable/generated/torch_geometric.datasets.Planetoid.html
+  license: Consultar dataset original

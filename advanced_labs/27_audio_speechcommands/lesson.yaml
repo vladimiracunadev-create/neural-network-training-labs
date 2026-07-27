@@ -1,0 +1,17 @@
+id: 27_audio_speechcommands
+title: Clasificación de audio con SpeechCommands
+domain: audio
+level: advanced
+prerequisites:
+- CNN
+- señales
+- transformada tiempo-frecuencia
+learning_outcomes:
+- Clasificar comandos hablados desde waveform y log-mel spectrograms.
+- Interpretar accuracy, macro_f1
+- Aplicar sellado de test y reproducibilidad
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+dataset: speechcommands_v0.02

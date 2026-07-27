@@ -1,0 +1,6 @@
+quick: false
+split_seed: 42
+training_seed: 43
+device: auto
+selection_metric: noise_mse
+notes: Aumentar épocas, aplicar regularización y ejecutar al menos cinco semillas.

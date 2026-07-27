@@ -1,0 +1,12 @@
+name: ag_news
+source: Hugging Face Datasets
+source_type: public_real
+license: Consultar ficha AG News
+download: managed_by_neural_labs_adapter
+redistribution: not_included_in_repository
+split_policy: official_test_or_reproducible_train_validation
+test_policy: sealed_until_model_selection
+synthetic: false
+known_limitations:
+- El corpus contiene titulares históricos y sesgos editoriales; no representa todo
+  el lenguaje contemporáneo.

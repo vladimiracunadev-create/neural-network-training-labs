@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 02_mlp_nonlinear
+title: MLP multiclase
+level: fundamentos
+estimated_hours: 4
+prerequisites:
+- Python básico
+- NumPy
+- álgebra lineal elemental
+learning_outcomes:
+- Resolver clasificación no lineal con capas densas, activaciones y regularización.
+- Preparar y auditar el dataset real dry_bean sin fuga de datos.
+- Entrenar y evaluar red multicapa para relaciones no lineales.
+- 'Comparar contra la línea base: Regresión logística multinomial y Random Forest.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: dry_bean
+  source: UCI
+  reference: https://archive.ics.uci.edu/dataset/602/dry+bean+dataset
+  license: CC BY 4.0

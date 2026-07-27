@@ -1,0 +1,43 @@
+schema_version: '1.0'
+name: credit_card_fraud
+task: anomaly_detection
+architecture: autoencoder
+source: Kaggle / ULB
+source_type: kaggle
+source_id: mlg-ulb/creditcardfraud
+source_url: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
+license: Uso sujeto a términos de Kaggle y autor
+provenance:
+  real_world_data: true
+  generated_data: false
+  reference: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
+  description: 284.807 transacciones reales; el laboratorio evita reequilibrar el
+    conjunto de test.
+retrieval:
+  downloaded_at_runtime: true
+  cache: data/raw and data/processed
+  credentials_required: true
+  large_files_committed: false
+  fallback_to_generated_data: false
+split:
+  strategy: chronological
+  transform_fit_scope: train_only
+  selection_scope: validation_only
+  test_policy: evaluate_once_after_model_selection
+  identity_audit: sha256 identifiers and overlap check at runtime
+integrity:
+  hash_generated_after_download: true
+  manifest_written_per_run: true
+  provider_metadata_preserved_when_available: true
+redistribution:
+  dataset_included_in_repository: false
+  code_license_does_not_override_dataset_license: true
+known_limitations:
+- 284.807 transacciones reales; el laboratorio evita reequilibrar el conjunto de test.
+real_world_data: true
+generated_data: false
+downloaded_at_runtime: true
+cache: data/raw and data/processed
+split_policy: evaluate_once_after_model_selection
+limitations: 284.807 transacciones reales; el laboratorio evita reequilibrar el conjunto
+  de test.

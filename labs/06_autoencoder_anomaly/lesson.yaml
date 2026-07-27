@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 06_autoencoder_anomaly
+title: Autoencoder para fraude
+level: intermedio
+estimated_hours: 6
+prerequisites:
+- PyTorch básico
+- particiones train/validation/test
+- métricas de evaluación
+learning_outcomes:
+- Detectar transacciones fraudulentas mediante error de reconstrucción.
+- Preparar y auditar el dataset real credit_card_fraud sin fuga de datos.
+- Entrenar y evaluar reconstrucción para detección de anomalías.
+- 'Comparar contra la línea base: Isolation Forest.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: credit_card_fraud
+  source: Kaggle / ULB
+  reference: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
+  license: Uso sujeto a términos de Kaggle y autor

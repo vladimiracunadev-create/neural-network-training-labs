@@ -1,0 +1,31 @@
+schema_version: '2.0'
+lab: 14_knowledge_distillation
+title: Destilación de conocimiento
+level: avanzado
+estimated_hours: 8
+prerequisites:
+- PyTorch intermedio
+- optimización
+- lectura de artículos técnicos
+learning_outcomes:
+- Transferir conocimiento de una CNN profesora a una estudiante compacta.
+- Preparar y auditar el dataset real cifar10 sin fuga de datos.
+- Entrenar y evaluar transferencia de conocimiento profesor-estudiante.
+- 'Comparar contra la línea base: Estudiante entrenado solo con etiquetas.'
+- Interpretar intervalos de confianza, errores y limitaciones.
+deliverables:
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+success_criteria:
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+dataset:
+  name: cifar10
+  source: Torchvision / University of Toronto
+  reference: https://www.cs.toronto.edu/~kriz/cifar.html
+  license: Consultar términos CIFAR-10
