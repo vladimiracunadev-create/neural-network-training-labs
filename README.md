@@ -1,10 +1,15 @@
+
 <div align="center">
 
 # 🧠 Neural Network Training Labs
 
-## **31 rutas · 93 notebooks · el ciclo completo de ingeniería de IA, con datasets públicos reales**
+## **31 rutas · 93 notebooks · 21 datasets públicos reales · de la neurona en NumPy al modelo desplegado**
 
-**Plataforma evolutiva para aprender, experimentar, validar, exportar y desplegar redes neuronales — de la neurona en NumPy a difusión, transformers y aprendizaje autosupervisado — con semillas separadas, sellado del `test`, model/dataset cards, registro champion/challenger, API de inferencia, exportación ONNX/INT8/edge, entrenamiento distribuido y cadena de suministro verificable.**
+**Laboratorio evolutivo y verificable para entrenar, validar, explicar, exportar y
+desplegar redes neuronales: de la derivada escrita a mano a CNN, RNN, transformers,
+GAN, GNN, refuerzo, difusión y aprendizaje autosupervisado — con semillas separadas,
+sellado del `test`, model cards, registro champion/challenger, API de inferencia,
+ONNX/INT8/edge, entrenamiento distribuido y cadena de suministro firmable.**
 
 [![CI](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/ci.yml)
 [![Notebooks](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/notebooks.yml/badge.svg?branch=main)](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/notebooks.yml)
@@ -12,78 +17,193 @@
 [![Docs](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/docs.yml)
 [![Deploy Pages](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/deploy-pages.yml/badge.svg?branch=main)](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/deploy-pages.yml)
 
-[![Rutas](https://img.shields.io/badge/rutas-31%20·%2025%20labs%20%2B%206%20avanzadas-7c5cff?style=for-the-badge)](#laboratorios)
-[![Notebooks](https://img.shields.io/badge/notebooks-93-2e8b57?style=for-the-badge)](#notebooks-evaluables)
-[![Python](https://img.shields.io/badge/python-3.11%20·%203.12%20·%203.13-3776ab?style=for-the-badge)](pyproject.toml)
 [![Versión](https://img.shields.io/badge/versión-1.0.0-orange?style=for-the-badge)](CHANGELOG.md)
+[![Rutas](https://img.shields.io/badge/rutas-31%20·%2025%20labs%20%2B%206%20avanzadas-7c5cff?style=for-the-badge)](labs/)
+[![Notebooks](https://img.shields.io/badge/notebooks-93-2e8b57?style=for-the-badge)](#-notebooks-evaluables)
+[![Nivel](https://img.shields.io/badge/nivel-neurona%20→%20despliegue-8957e5?style=for-the-badge)](docs/learning-path.md)
+[![Idioma](https://img.shields.io/badge/idioma-español-1f6feb?style=for-the-badge)](labs/)
 [![License](https://img.shields.io/badge/license-MIT-3fb950?style=for-the-badge)](LICENSE)
 
-[🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/) · [📚 Documentación](docs/index.md) · [🧭 Ruta de aprendizaje](docs/learning-path.md) · [🔬 Protocolo de experimento](docs/experiment-protocol.md) · [🗺️ Roadmap](ROADMAP.md) · [🤝 Contribuir](CONTRIBUTING.md) · [🔐 Seguridad](SECURITY.md)
+[![Python](https://img.shields.io/badge/Python-3.11%20·%203.12%20·%203.13-3776AB?style=flat-square&logo=python&logoColor=white)](pyproject.toml)
+[![PyTorch](https://img.shields.io/badge/PyTorch-entrenamiento%20real-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)](pyproject.toml)
+[![Jupyter](https://img.shields.io/badge/Jupyter-93%20notebooks-F37626?style=flat-square&logo=jupyter&logoColor=white)](labs/)
+[![ONNX](https://img.shields.io/badge/ONNX-export%20%2B%20INT8%20%2B%20edge-005CED?style=flat-square&logo=onnx&logoColor=white)](docs/export-and-edge.md)
+[![Docker](https://img.shields.io/badge/Docker-imagen%20lista-2496ED?style=flat-square&logo=docker&logoColor=white)](Dockerfile)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-sitio%20vivo-222?style=flat-square&logo=githubpages&logoColor=white)](https://vladimiracunadev-create.github.io/neural-network-training-labs/)
+
+[🌐 **Sitio de estudio (vivo)**](https://vladimiracunadev-create.github.io/neural-network-training-labs/) ·
+[🧭 Ruta](docs/learning-path.md) ·
+[🔬 Protocolo de experimento](docs/experiment-protocol.md) ·
+[📚 Documentación](docs/index.md) ·
+[🗄️ Datasets](docs/datasets.md) ·
+[🏗️ Arquitectura](docs/architecture.md) ·
+[🗺️ Roadmap](ROADMAP.md) ·
+[🤝 Contribuir](CONTRIBUTING.md) ·
+[🔐 Seguridad](SECURITY.md)
+
+<br>
+
+| 🧪 Rutas | 📓 Notebooks | 🗄️ Datasets reales | 🧰 Comandos CLI | 📖 Guías | ⚙️ Workflows |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| **31** | **93** | **21** | **26** | **23** | **12** |
 
 </div>
 
 ---
 
-> 🧭 **Estado del proyecto (v1.0.0).** Las **31 rutas están construidas**: 25 laboratorios centrales y 6 especializaciones avanzadas, con **93 notebooks** (recorrido, versión estudiante y solución por ruta). Todas comparten el mismo contrato de ingeniería: `split_seed` y `training_seed` independientes, `validation` decide el modelo, `test` se abre solo tras sellar `experiment.lock.json`.
->
-> **Qué verifica una máquina y qué no**, para que sepas de qué te fías: la **CI** compila el código, ejecuta las pruebas sin red (`pytest -m "not network and not slow"`), valida la estructura del repositorio y los contratos de notebooks/nbgrader, y corre `ruff` y una auditoría de cadena de suministro (SBOM + SHA-256). Los **datasets son descargas reales** desde sus proveedores (UCI, Torchvision, Torchaudio, Hugging Face, PyG, Kaggle): no se generan datos sintéticos para tapar una descarga fallida, y los entrenamientos largos y las descargas quedan en pruebas externas marcadas para no esconder fallos de red.
+> [!IMPORTANT]
+> Este repositorio **no reemplaza** al programa general de IA: es su
+> profundización de entrenamiento profundo. Donde
+> [`artificial-intelligence-evolution-program`](https://github.com/vladimiracunadev-create/artificial-intelligence-evolution-program)
+> recorre la evolución completa del campo, aquí se baja al taller: una ruta, un
+> dataset público real, un contrato de experimento y un artefacto desplegable.
+> `python-data-science-program` y `langgraph-realworld` cubren el resto de la cadena.
 
-## Qué resuelve
+## ✅ Estado verificable (v1.0.0)
 
-Cada laboratorio cubre el ciclo completo:
+| Superficie | Estado |
+|---|---|
+| Rutas | ✅ 31/31 construidas — 25 laboratorios centrales + 6 especializaciones avanzadas |
+| Notebooks | ✅ 31 recorridos + 31 estudiante + 31 solución (93 en total) |
+| Datasets | ✅ 21 fuentes públicas reales (UCI, Torchvision, Torchaudio, Hugging Face, PyG, Kaggle); **sin fallback sintético silencioso** |
+| Protocolo | ✅ `split_seed` ≠ `training_seed`, selección por `validation`, `test` sellado con `experiment.lock.json` |
+| CLI | ✅ 26 comandos: `catalog`, `dataset`, `audit`, `train`, `benchmark`, `registry`, `serve`, `export`, `supply-chain`… |
+| Registro | ✅ champion/challenger local + backend MLflow opcional |
+| Servicio | ✅ API FastAPI con `/predict`, `/drift`, `/metrics` Prometheus y OpenTelemetry opcional |
+| Exportación | ✅ ONNX con verificación de paridad e INT8; ⚪ ExecuTorch opcional según toolchain |
+| Distribuido | ✅ DDP y FSDP2 vía `torchrun`; ⚪ requiere varias GPU para valer de verdad |
+| Sitio | ✅ GitHub Pages con navegación anterior/siguiente por laboratorio |
+| CI | ✅ estructura, contratos de notebooks/nbgrader, `ruff`, tests sin red y auditoría SBOM + SHA-256 |
+| Entrenamientos largos y descargas | ⚪ pruebas externas marcadas aparte — **no se fingen en CI** |
 
-```text
-fuente pública real
-      ↓
-descarga y licencia
-      ↓
-train / validation / test
-      ↓
-línea base en validation
-      ↓
-selección del modelo
-      ↓
-experiment.lock.json
-      ↓
-evaluación final en test
-      ↓
-model card + dataset card
-      ↓
-registro champion/challenger
-      ↓
-API, ONNX, INT8 o edge
+**Qué verifica una máquina y qué no**, para que sepas de qué te fías: la CI compila el
+código, corre `pytest -m "not network and not slow"`, valida la estructura del repositorio
+y los contratos educativos, y ejecuta `ruff` más la auditoría de cadena de suministro. Las
+descargas y los entrenamientos largos viven en workflows separados (`real-data-smoke`,
+`advanced-smoke`, `benchmark`, `distributed`, `edge`) precisamente para que un fallo de red
+se vea como lo que es, y no quede tapado por un dataset sintético.
+
+## 🌟 Qué hace diferente a este laboratorio
+
+- Enseña el **protocolo de experimento antes que la arquitectura**: sin `experiment.lock.json`, ningún resultado en `test` cuenta.
+- Separa dos aleatoriedades que casi todo el material mezcla: **la partición** (`split_seed`) y **el entrenamiento** (`training_seed`).
+- Cada ruta termina en un **artefacto verificable**: model card, contrato de inferencia, métricas con intervalos y reporte.
+- Los cuadernos **no son la misma plantilla repintada**: visión mira errores por clase, texto mira atención, series hace backtesting, grafos compara GCN/GraphSAGE/GAT, generación mide colapso.
+- Los datasets se **descargan de su fuente**, con licencia declarada; una descarga fallida falla, no se disfraza.
+- No declara “producción” sin evidencia: calibración, subgrupos, deriva y latencia se miden, no se prometen.
+
+## 🧬 El recorrido, de la derivada al despliegue
+
+```mermaid
+flowchart LR
+    A["🔢 Mecánica<br/>neurona · backprop"] --> B["🏗️ Arquitecturas<br/>CNN · RNN · Transformer · GNN"]
+    B --> C["🎨 Generación<br/>y decisión<br/>GAN · DQN"]
+    B --> D["🎛️ Régimen de<br/>entrenamiento<br/>regularización · HPO · transferencia"]
+    C --> E["🔍 Confianza<br/>explicabilidad · calibración"]
+    D --> E
+    E --> F["🚀 Despliegue<br/>ONNX · INT8 · API · capstone"]
+    F --> G["🔬 Especializaciones<br/>LoRA · U-Net · audio · WGAN-GP · DDPM · SimCLR"]
 ```
 
-## Principios
+Y dentro de **cada** ruta, siempre el mismo contrato:
 
-- No se generan datasets sintéticos para reemplazar una descarga fallida.
-- Los transformadores, escaladores y vocabularios se ajustan solo con `train`.
-- `validation` decide arquitectura, hiperparámetros, umbrales y checkpoint.
-- `test` se abre después de generar `experiment.lock.json`.
-- `split_seed` y `training_seed` son independientes.
-- Los benchmarks usan una partición fija y varias semillas de entrenamiento.
-- Los datasets grandes no se guardan dentro del repositorio.
-- Cada modelo desplegable conserva su contrato de inferencia.
+```text
+fuente pública real → descarga y licencia → train / validation / test
+      → línea base en validation → selección del modelo
+      → experiment.lock.json (sellado)
+      → evaluación final en test (una sola vez)
+      → model card + dataset card → registro champion/challenger
+      → API, ONNX, INT8 o edge
+```
 
-## 📚 Fuentes y libros de referencia
+<a id="laboratorios"></a>
 
-El contenido no sale de una plantilla: cada laboratorio ancla su teoría en la literatura de referencia del área y en los papers seminales de cada arquitectura. Las referencias apuntan a las obras; **no se reproduce su contenido, la redacción es original**. Cada laboratorio cita, en su `theory.md`, los libros y papers de su tema en una sección **🔗 Referencias**.
+## 🗂️ Las 31 rutas, en 6 etapas de madurez
 
-| Área | Libros de referencia |
-|---|---|
-| **Espina dorsal (todo el programa)** | Géron — *Hands-On Machine Learning with Scikit-Learn, Keras & TensorFlow* (3.ª ed., O'Reilly 2022) · Goodfellow, Bengio & Courville — *Deep Learning* (MIT Press 2016, [deeplearningbook.org](https://www.deeplearningbook.org/)) |
-| **Fundamentos y teoría** | Bishop — *Pattern Recognition and Machine Learning* · Murphy — *Probabilistic Machine Learning* · Prince — *Understanding Deep Learning* (2024) · Nielsen — *Neural Networks and Deep Learning* (online) |
-| **Práctica con PyTorch** | Howard & Gugger — *Deep Learning for Coders with fastai & PyTorch* · Zhang et al. — *Dive into Deep Learning* ([d2l.ai](https://d2l.ai/)) · Stevens, Antiga & Viehmann — *Deep Learning with PyTorch* |
-| **Dominios especializados** | Sutton & Barto — *Reinforcement Learning: An Introduction* (RL) · Hamilton — *Graph Representation Learning* (GNN) · Hyndman & Athanasopoulos — *Forecasting: Principles and Practice* (series) · Foster — *Generative Deep Learning* (GAN/difusión) |
-| **Ingeniería y despliegue** | Huyen — *Designing Machine Learning Systems* · Molnar — *Interpretable Machine Learning* · Kuhn & Johnson — *Applied Predictive Modeling* |
+Cada laboratorio tiene su propio `README.md`, `theory.md`, `experiments.md` y
+`assessment.md`. Las etapas no son decorativas: lo que cada una deja resuelto es lo
+que la siguiente da por supuesto.
 
-Cada `theory.md` complementa estos libros con los papers originales de su arquitectura (por ejemplo Vaswani et al. 2017 para transformers, He et al. 2015 para ResNet, Ho et al. 2020 para difusión).
+### 🟢 Etapa 1 — La mecánica visible
 
-## Laboratorios
+Antes de llamar a una librería, entender qué hace. **Salida: derivar, actualizar pesos y elegir función de pérdida con criterio.**
 
-El repositorio ofrece **31 rutas de aprendizaje**: 25 laboratorios centrales y 6 especializaciones avanzadas. Los centrales cubren fundamentos, CNN, RNN/LSTM, transformer desde cero, DCGAN, GNN, Double Dueling DQN, transferencia, destilación, federado, explicabilidad, calibración, exportación y proyecto final.
+| # | Ruta | Qué resuelve | Dataset |
+|---:|---|---|---|
+| 00 | [Neurona con NumPy](labs/00_numpy_neuron/) | Propagación, entropía cruzada y descenso de gradiente sin autograd | Breast Cancer Wisconsin |
+| 16 | [Backpropagation manual](labs/16_backpropagation_manual/) | Derivar y programar la retropropagación de una MLP | Iris |
+| 01 | [Perceptrón con PyTorch](labs/01_pytorch_perceptron/) | Tensores, autograd, optimizadores, clasificador lineal | Banknote Authentication |
+| 02 | [MLP multiclase](labs/02_mlp_nonlinear/) | Clasificación no lineal con capas densas | Dry Bean |
+| 17 | [Activaciones y pérdidas](labs/17_activations_and_losses/) | ReLU, GELU, Tanh y pérdidas en clases desbalanceadas | Wine Quality |
+| 18 | [Optimizadores y schedulers](labs/18_optimizers_and_schedulers/) | SGD, Momentum, Adam y reducción de tasa de aprendizaje | California Housing |
 
-Las especializaciones agregan fine-tuning de DistilBERT con LoRA, segmentación U-Net, audio SpeechCommands, WGAN-GP, difusión DDPM y aprendizaje autosupervisado SimCLR.
+### 🔵 Etapa 2 — Arquitecturas por tipo de dato
+
+Cada estructura de datos pide su inductive bias. **Salida: elegir arquitectura por la forma del problema, no por la moda.**
+
+| # | Ruta | Qué resuelve | Dataset |
+|---:|---|---|---|
+| 03 | [CNN para visión](labs/03_cnn_vision/) | Convolución, mapas de activación y errores por clase | CIFAR-10 |
+| 04 | [RNN para texto](labs/04_rnn_sequences/) | Embeddings, padding y recurrencia sobre sentimiento | IMDb |
+| 05 | [LSTM para series temporales](labs/05_lstm_time_series/) | Pronóstico horario respetando el orden temporal | Seoul Bike |
+| 06 | [Autoencoder para fraude](labs/06_autoencoder_anomaly/) | Anomalías por error de reconstrucción | Credit Card Fraud |
+| 07 | [Transformer para noticias](labs/07_transformer_attention/) | Atención multi-cabeza implementada desde cero | AG News |
+| 09 | [GNN sobre red de citas](labs/09_gnn_graphs/) | GCN, GraphSAGE y GAT sobre texto + enlaces | Cora |
+| 12 | [Fusión de sensores](labs/12_multimodal_fusion/) | Acelerómetro y giroscopio para reconocer actividad | UCI HAR |
+
+### 🟣 Etapa 3 — Generar y decidir
+
+Dos regímenes donde la métrica de test deja de contarlo todo. **Salida: evaluar sistemas sin etiqueta única correcta.**
+
+| # | Ruta | Qué resuelve | Dataset |
+|---:|---|---|---|
+| 08 | [GAN generativa](labs/08_gan_generation/) | Generación adversarial, diversidad y colapso de modo | Fashion-MNIST |
+| 10 | [DQN para inventario](labs/10_dqn_reinforcement/) | Double Dueling DQN sobre demanda real observada | Online Retail |
+
+### 🟠 Etapa 4 — Régimen de entrenamiento
+
+Lo que separa un modelo que ajusta de uno que generaliza. **Salida: mejorar sin tocar `test` ni una vez.**
+
+| # | Ruta | Qué resuelve | Dataset |
+|---:|---|---|---|
+| 19 | [Regularización](labs/19_regularization_dropout_batchnorm/) | Dropout, weight decay y batch normalization medidos | Fashion-MNIST |
+| 20 | [Aumento de datos](labs/20_data_augmentation/) | Recortes, volteos y perturbaciones sobre imágenes reales | CIFAR-10 |
+| 13 | [Búsqueda de hiperparámetros](labs/13_hyperparameter_search/) | Profundidad, ancho, dropout y learning rate sin filtrar test | Adult Census |
+| 11 | [Transfer learning](labs/11_transfer_learning/) | Extracción de features vs. fine-tuning vs. desde cero | Oxford-IIIT Pet |
+| 14 | [Destilación de conocimiento](labs/14_knowledge_distillation/) | Profesora profunda → estudiante compacta | CIFAR-10 |
+| 15 | [Aprendizaje federado](labs/15_federated_learning/) | FedAvg con participantes reales como clientes naturales | UCI HAR (por sujeto) |
+
+### 🔴 Etapa 5 — Confiar en el modelo
+
+Un acierto sin confianza calibrada ni explicación no es evidencia. **Salida: responder “¿por qué?” y “¿cuánto te fías?”.**
+
+| # | Ruta | Qué resuelve | Dataset |
+|---:|---|---|---|
+| 21 | [Explicabilidad](labs/21_explainability/) | Integrated Gradients e importancia por permutación | Adult Census |
+| 22 | [Incertidumbre y calibración](labs/22_uncertainty_calibration/) | Brier score, ECE y temperature scaling | Breast Cancer Wisconsin |
+
+### ⚫ Etapa 6 — Sacarlo del cuaderno
+
+El modelo se vuelve servicio, artefacto y contrato. **Salida: un despliegue con latencia medida y paridad verificada.**
+
+| # | Ruta | Qué resuelve | Dataset |
+|---:|---|---|---|
+| 23 | [Exportación e inferencia](labs/23_model_export_and_inference/) | ONNX, paridad de salidas y latencia por lotes | CIFAR-10 |
+| 24 | [Proyecto final: churn](labs/24_capstone_real_project/) | Extremo a extremo con documentación, evaluación y despliegue | Iranian Churn |
+
+### 🔬 Especializaciones avanzadas
+
+Mismo contrato de semillas, selección por validación y sellado del test — con
+arquitecturas de frontera y pesos preentrenados descargados desde su proveedor.
+
+| # | Ruta | Qué resuelve | Dataset |
+|---:|---|---|---|
+| 25 | [Fine-tuning eficiente](advanced_labs/25_transformer_finetuning/) | DistilBERT completo vs. LoRA | AG News |
+| 26 | [Segmentación U-Net](advanced_labs/26_segmentation_unet/) | Mascota, fondo y borde píxel a píxel | Oxford-IIIT Pet (seg.) |
+| 27 | [Audio SpeechCommands](advanced_labs/27_audio_speechcommands/) | Comandos reales vía espectrogramas log-mel | SpeechCommands v0.02 |
+| 28 | [WGAN-GP](advanced_labs/28_wgan_gp/) | Estabilidad generativa con penalización de gradiente | Fashion-MNIST |
+| 29 | [Difusión DDPM](advanced_labs/29_diffusion_ddpm/) | Predicción de ruido y muestreo iterativo | Fashion-MNIST |
+| 30 | [SimCLR autosupervisado](advanced_labs/30_self_supervised_simclr/) | Preentrenamiento contrastivo + linear probe | CIFAR-10 |
 
 ```bash
 neural-labs catalog
@@ -91,27 +211,33 @@ neural-labs advanced
 neural-labs models
 ```
 
-En total se incluyen **93 notebooks**: recorrido completo, versión estudiante y solución para cada ruta. Los datasets proceden de UCI, Torchvision, Torchaudio, Hugging Face, PyTorch Geometric, Kaggle y repositorios académicos. Ejemplos: CIFAR-10, Fashion-MNIST, IMDb, AG News, Cora, SpeechCommands, UCI HAR, Online Retail, Oxford-IIIT Pet, Adult Census, Wine Quality e Iranian Churn.
-
-## Especializaciones avanzadas
+## 🚀 Inicio rápido
 
 ```bash
-neural-labs train-advanced --track 25_transformer_finetuning --quick --lora
-neural-labs train-advanced --track 26_segmentation_unet --quick
-neural-labs train-advanced --track 27_audio_speechcommands --quick
-neural-labs train-advanced --track 28_wgan_gp --quick
-neural-labs train-advanced --track 29_diffusion_ddpm --quick
-neural-labs train-advanced --track 30_self_supervised_simclr --quick
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -e ".[dev,notebooks]"
+
+neural-labs doctor
+neural-labs catalog
+neural-labs dataset --lab 03_cnn_vision --quick --split-seed 42
+neural-labs train --lab 03_cnn_vision --config improved --split-seed 42 --training-seed 43 --device auto
 ```
 
-Estas rutas mantienen el mismo contrato de semillas, selección por validación y sellado del test. Los modelos preentrenados y datasets se descargan desde sus proveedores; no se incluyen pesos ni datos grandes dentro del ZIP.
+Entorno completo (serving, MLOps, versionado de datos):
 
-## Estructura de cada laboratorio
+```bash
+pip install -e ".[full,dev,serving,mlops,data-versioning]"
+```
+
+Se recomienda Python 3.11 o 3.12 para la mayor compatibilidad de extras científicos.
+
+## 📦 Contrato de un laboratorio
 
 ```text
 labs/03_cnn_vision/
 ├── README.md
-├── theory.md
+├── theory.md            ← teoría anclada en libros y papers, con 🔗 Referencias
 ├── experiments.md
 ├── assessment.md
 ├── lesson.yaml
@@ -119,164 +245,65 @@ labs/03_cnn_vision/
 ├── notebook.ipynb
 ├── notebook_student.ipynb
 ├── notebook_solution.ipynb
-├── configs/
-│   ├── baseline.yaml
-│   └── improved.yaml
-└── data/
-    └── dataset.yaml
+├── configs/{baseline,improved}.yaml
+└── data/dataset.yaml
 ```
 
-Los cuadernos no son copias de una misma plantilla. Visión incluye mapas de activación y errores por clase; texto trabaja tokenización, padding y atención; series temporales incorporan backtesting; grafos comparan GCN, GraphSAGE y GAT; generación analiza diversidad y colapso; refuerzo compara políticas e indicadores de inventario.
-
-## Instalación
-
-### Entorno básico
-
-```bash
-python -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-pip install -e ".[dev,notebooks]"
-```
-
-### Entorno completo
-
-```bash
-pip install -e ".[full,dev,serving,mlops,data-versioning]"
-```
-
-Se recomienda usar Python 3.11 o 3.12 para la mayor compatibilidad de extras científicos.
-
-## Flujo de entrenamiento
-
-```bash
-neural-labs dataset \
-  --lab 03_cnn_vision \
-  --quick \
-  --split-seed 42
-
-neural-labs audit \
-  --lab 03_cnn_vision \
-  --quick \
-  --split-seed 42
-
-neural-labs train \
-  --lab 03_cnn_vision \
-  --config improved \
-  --split-seed 42 \
-  --training-seed 43 \
-  --device auto
-```
-
-Cada ejecución genera, según el laboratorio:
+Y el contrato de una **ejecución** — lo que queda en disco cuando el entrenamiento termina:
 
 ```text
-best_model.pt
-last_model.pt
-experiment.lock.json
-inference_contract.json
-preprocessor.joblib
-vocabulary.json
-model_spec.json
-metrics.json
-baseline_validation_metrics.json
-baseline_metrics.json
-confidence_intervals.json
-subgroup_metrics.json
-data_quality.json
-drift_report.json
-predictions.csv
-history.csv
-history.png
-confusion_matrix.png
-model_card.md
-report.md
-tracking.jsonl
+best_model.pt · last_model.pt · experiment.lock.json · inference_contract.json
+preprocessor.joblib · vocabulary.json · model_spec.json
+metrics.json · baseline_validation_metrics.json · baseline_metrics.json
+confidence_intervals.json · subgroup_metrics.json · data_quality.json · drift_report.json
+predictions.csv · history.csv · history.png · confusion_matrix.png
+model_card.md · report.md · tracking.jsonl
 ```
 
-## Benchmark sin mezclar variabilidades
+## 🔒 El protocolo, en cuatro reglas
+
+1. Los transformadores, escaladores y vocabularios se ajustan **solo con `train`**.
+2. `validation` decide arquitectura, hiperparámetros, umbrales y checkpoint.
+3. `test` se abre **después** de generar `experiment.lock.json`, y una sola vez.
+4. `split_seed` y `training_seed` son independientes — los benchmarks fijan la partición y varían solo el entrenamiento.
 
 ```bash
-neural-labs benchmark \
-  --lab 02_mlp_nonlinear \
-  --split-seed 42 \
-  --training-seeds 41 42 43 44 45 \
-  --config improved
+neural-labs audit --lab 03_cnn_vision --quick --split-seed 42
+
+neural-labs benchmark --lab 02_mlp_nonlinear \
+  --split-seed 42 --training-seeds 41 42 43 44 45 --config improved
+
+neural-labs cross-validate --lab 24_capstone_real_project \
+  --folds 5 --split-seed 42 --training-seeds 41 42 43
 ```
 
-La partición permanece fija. Solo cambia la aleatoriedad del entrenamiento.
+La validación cruzada trabaja sobre desarrollo y **no** utiliza el conjunto final de test.
+Detalles en [`docs/experiment-protocol.md`](docs/experiment-protocol.md).
 
-Para problemas tabulares:
-
-```bash
-neural-labs cross-validate \
-  --lab 24_capstone_real_project \
-  --folds 5 \
-  --split-seed 42 \
-  --training-seeds 41 42 43
-```
-
-La validación cruzada trabaja sobre desarrollo y no utiliza el conjunto final de test.
-
-## Notebooks evaluables
+## 📓 Notebooks evaluables
 
 ```bash
 pip install -e ".[education,notebooks]"
 nbgrader validate assignments/source/03_cnn_vision/notebook.ipynb
 ```
 
-- `notebook_student.ipynb`: ejercicios incompletos.
-- `notebook_solution.ipynb`: solución docente.
-- `assignments/source`: material del instructor.
-- `assignments/release`: material para estudiantes.
+- `notebook.ipynb` — recorrido completo comentado.
+- `notebook_student.ipynb` — ejercicios incompletos.
+- `notebook_solution.ipynb` — solución docente.
+- `assignments/source` y `assignments/release` — material de instructor y de estudiante.
 
-## Registro de modelos
+Guía didáctica en [`docs/teaching-guide.md`](docs/teaching-guide.md) y [`docs/education.md`](docs/education.md).
 
-### Registro local
-
-```bash
-neural-labs registry register \
-  --name cifar-classifier \
-  --run runs/03_cnn_vision/<run> \
-  --alias challenger
-
-neural-labs registry promote \
-  --name cifar-classifier \
-  --version 2 \
-  --alias champion \
-  --metric macro_f1 \
-  --minimum 0.80 \
-  --max-latency-ms 20
-
-neural-labs registry resolve \
-  --name cifar-classifier \
-  --alias champion
-```
-
-### MLflow
+## 🏷️ Registro, servicio e inferencia
 
 ```bash
-neural-labs registry register \
-  --backend mlflow \
-  --tracking-uri http://localhost:5000 \
-  --name cifar-classifier \
-  --run runs/03_cnn_vision/<run> \
-  --alias challenger
+neural-labs registry register --name cifar-classifier --run runs/03_cnn_vision/<run> --alias challenger
+neural-labs registry promote  --name cifar-classifier --version 2 --alias champion \
+  --metric macro_f1 --minimum 0.80 --max-latency-ms 20
+neural-labs registry resolve  --name cifar-classifier --alias champion
 ```
 
-## Inferencia externa
-
-```bash
-neural-labs predict \
-  --lab 03_cnn_vision \
-  --run latest \
-  --input sample.png
-```
-
-También admite JSON, CSV y NumPy cuando el contrato del modelo corresponde.
-
-## API de inferencia
-
-Registrar un modelo con alias `champion` y ejecutar:
+Con backend MLflow: `--backend mlflow --tracking-uri http://localhost:5000`.
 
 ```bash
 export NEURAL_LABS_REGISTRY=model-registry.json
@@ -285,28 +312,23 @@ export NEURAL_LABS_MODEL_REFERENCE=champion
 neural-labs serve --host 0.0.0.0 --port 8000
 ```
 
-Endpoints:
+| Endpoint | Para qué |
+|---|---|
+| `GET /health` · `GET /model` | Estado y contrato del modelo servido |
+| `POST /predict` · `POST /predict-batch` | Inferencia unitaria y por lotes |
+| `GET /drift` · `GET /metrics` | Deriva respecto de referencia y métricas Prometheus |
 
-```text
-GET  /health
-GET  /model
-GET  /drift
-POST /predict
-POST /predict-batch
-GET  /metrics
-```
-
-La API expone métricas en formato Prometheus, registra resúmenes estadísticos de predicción sin conservar las entradas crudas y activa OpenTelemetry cuando están instalados sus SDK.
-
-Inferencia por lotes y panel operativo:
+La API registra resúmenes estadísticos de predicción **sin conservar las entradas crudas**
+y activa OpenTelemetry cuando sus SDK están instalados.
 
 ```bash
+neural-labs predict --lab 03_cnn_vision --run latest --input sample.png
 neural-labs batch-predict --lab 03_cnn_vision --run latest --input batch.npy --output predictions.csv
 neural-labs monitor
 neural-labs dashboard
 ```
 
-## Exportación y edge
+## 🚢 Exportación, edge y distribuido
 
 ```bash
 neural-labs export --lab 23_model_export_and_inference --run latest --format onnx --verify
@@ -315,54 +337,96 @@ neural-labs export --lab 23_model_export_and_inference --run latest --format ben
 neural-labs export --lab 23_model_export_and_inference --run latest --format executorch
 ```
 
-El flujo ONNX usa el exportador basado en `torch.export`, puede verificar equivalencia con ONNX Runtime y guarda un informe. La cuantización dinámica registra tamaño y latencia. ExecuTorch es opcional porque requiere dependencias y toolchains específicas de la plataforma objetivo.
-
-## Entrenamiento distribuido
-
-Diagnóstico:
+El flujo ONNX usa el exportador basado en `torch.export`, puede verificar equivalencia con
+ONNX Runtime y guarda informe. La cuantización dinámica registra tamaño y latencia.
+ExecuTorch es opcional: depende de toolchains de la plataforma objetivo.
 
 ```bash
-neural-labs distributed
-```
+neural-labs distributed                       # diagnóstico del entorno
 
-DDP:
+torchrun --standalone --nproc-per-node=2 -m neural_labs train-distributed \
+  --lab 03_cnn_vision --strategy ddp --quick
 
-```bash
-torchrun --standalone --nproc-per-node=2 \
-  -m neural_labs train-distributed \
-  --lab 03_cnn_vision \
-  --strategy ddp \
-  --quick
-```
-
-FSDP2:
-
-```bash
-torchrun --standalone --nproc-per-node=2 \
-  -m neural_labs train-distributed \
-  --lab 07_transformer_attention \
-  --strategy fsdp2
+torchrun --standalone --nproc-per-node=2 -m neural_labs train-distributed \
+  --lab 07_transformer_attention --strategy fsdp2
 ```
 
 Cada rango guarda su shard y el rango cero genera el manifiesto de ejecución.
 
-## Seguridad y procedencia
+## 🛡️ Seguridad y procedencia
 
 ```bash
 neural-labs supply-chain
+# → dist/security/SHA256SUMS · sbom.cdx.json · provenance.json
 ```
 
-Genera:
+Los workflows de release incluyen instrucciones para firmar artefactos con Cosign y
+publicar procedencia. Ver [`docs/supply-chain-security.md`](docs/supply-chain-security.md).
 
-```text
-dist/security/SHA256SUMS
-dist/security/sbom.cdx.json
-dist/security/provenance.json
-```
+## 📚 Fuentes y libros de referencia
 
-Los workflows de release incluyen instrucciones para firmar artefactos con Cosign y publicar procedencia.
+El contenido no sale de una plantilla: cada laboratorio ancla su teoría en la literatura de
+referencia del área y en los papers seminales de su arquitectura. Las referencias apuntan a
+las obras; **no se reproduce su contenido, la redacción es original**.
 
-## Calidad
+| Área | Libros de referencia |
+|---|---|
+| **Espina dorsal** | Géron — *Hands-On Machine Learning* (3.ª ed.) · Goodfellow, Bengio & Courville — *Deep Learning* ([deeplearningbook.org](https://www.deeplearningbook.org/)) |
+| **Fundamentos y teoría** | Bishop — *Pattern Recognition and Machine Learning* · Murphy — *Probabilistic Machine Learning* · Prince — *Understanding Deep Learning* · Nielsen — *Neural Networks and Deep Learning* |
+| **Práctica con PyTorch** | Howard & Gugger — *Deep Learning for Coders with fastai & PyTorch* · Zhang et al. — *Dive into Deep Learning* ([d2l.ai](https://d2l.ai/)) · Stevens, Antiga & Viehmann — *Deep Learning with PyTorch* |
+| **Dominios especializados** | Sutton & Barto — *Reinforcement Learning* · Hamilton — *Graph Representation Learning* · Hyndman & Athanasopoulos — *Forecasting: Principles and Practice* · Foster — *Generative Deep Learning* |
+| **Ingeniería y despliegue** | Huyen — *Designing Machine Learning Systems* · Molnar — *Interpretable Machine Learning* · Kuhn & Johnson — *Applied Predictive Modeling* |
+
+Cada `theory.md` los complementa con los papers originales de su arquitectura (Vaswani et al.
+2017 para transformers, He et al. 2015 para ResNet, Ho et al. 2020 para difusión).
+
+## 🔗 Especializaciones conectadas
+
+| Repositorio | Rol |
+|---|---|
+| [AI Evolution Program](https://github.com/vladimiracunadev-create/artificial-intelligence-evolution-program) | Mapa maestro: la evolución completa de la IA, de la lógica simbólica a los agentes |
+| [Python Data Science Program](https://github.com/vladimiracunadev-create/python-data-science-program) | Python, estadística, ML clásico y datos |
+| [LangGraph Realworld](https://github.com/vladimiracunadev-create/langgraph-realworld) | Casos empresariales de orquestación con LLM |
+| [Claude Skills Toolkit](https://github.com/vladimiracunadev-create/claude-skills-toolkit) | Skills operativos reutilizables |
+
+## ⚖️ Qué es y qué no es este repositorio
+
+<table>
+<tr>
+<td valign="top" width="50%">
+
+### ✅ Lo que sí es
+
+- 🧪 un **taller completo de entrenamiento**: 31 rutas de la neurona en NumPy a difusión y SimCLR, cada una con teoría, laboratorio, evaluación y notebook;
+- 🔬 material **ejecutable y verificable**: 93 notebooks, 21 datasets públicos reales y un contrato de experimento que se sella antes de mirar `test`;
+- 🚢 el **ciclo entero de ingeniería**: model card, registro champion/challenger, API de inferencia, ONNX/INT8, distribuido y SBOM firmable;
+- 📖 contenido **abierto y en español**, legible en GitHub o en un sitio de estudio con navegación anterior/siguiente;
+- 🔍 material **honesto sobre sus límites**: cada ejecución declara intervalos de confianza, subgrupos y deriva.
+
+</td>
+<td valign="top" width="50%">
+
+### ❌ Lo que no es
+
+- 🚫 una certificación: terminar los laboratorios no acredita competencia clínica, financiera, laboral ni de seguridad;
+- 🚫 un zoo de datasets sintéticos: si la descarga real falla, **falla** — no se rellena con ruido para que el notebook se vea verde;
+- 🚫 entrenamiento a escala de frontera: los modelos grandes, multi-GPU y las APIs comerciales exigen entornos externos;
+- 🚫 un modelo listo para decidir sobre personas: licencias, privacidad, representatividad, calibración, deriva y supervisión humana se revisan en cada despliegue;
+- 🚫 un repositorio de pesos: los modelos preentrenados y los datasets grandes se descargan de su proveedor, no viven aquí dentro.
+
+</td>
+</tr>
+</table>
+
+## 💡 Idea fuerza
+
+> El valor de este laboratorio no está en acumular arquitecturas, sino en
+> **entrenar con un protocolo que resista ser auditado**: partición sellada,
+> validación que decide, test que se abre una sola vez y un artefacto que declara
+> lo que sabe y lo que no. Una métrica sin `experiment.lock.json` no es un
+> resultado — es una anécdota.
+
+## 🧪 Calidad
 
 ```bash
 pytest -m "not network and not slow" --cov=neural_labs --cov-report=term-missing
@@ -371,38 +435,67 @@ python -m compileall -q src labs scripts tests
 neural-labs validate --warnings-as-errors
 ```
 
-La cobertura obligatoria del núcleo de producción es 80 %. Los adaptadores de descarga y los entrenamientos largos tienen pruebas externas o programadas separadas para no esconder fallos de red.
+La cobertura obligatoria del núcleo de producción es **80 %**. Los adaptadores de descarga
+y los entrenamientos largos tienen pruebas externas o programadas separadas para no
+esconder fallos de red.
 
-## Reproducibilidad con uv
-
-El proyecto está preparado para:
+Reproducibilidad con `uv`:
 
 ```bash
 uv lock
 uv sync --locked --extra dev --extra notebooks
 ```
 
-Si el índice de paquetes no está disponible, no se fabrica un lockfile incompleto. `requirements/core-tested.txt` conserva el entorno validado y el workflow comprueba que `uv.lock` esté actualizado cuando pueda resolverse desde un índice normal.
+Si el índice de paquetes no está disponible, **no se fabrica un lockfile incompleto**:
+`requirements/core-tested.txt` conserva el entorno validado.
 
-## Documentación
+Documentación local:
 
 ```bash
 pip install -e ".[docs]"
 mkdocs serve
 ```
 
-Consulta especialmente:
+Empieza por [`docs/study-site.md`](docs/study-site.md),
+[`docs/experiment-protocol.md`](docs/experiment-protocol.md),
+[`docs/model-registry-and-serving.md`](docs/model-registry-and-serving.md),
+[`docs/export-and-edge.md`](docs/export-and-edge.md),
+[`docs/distributed-training.md`](docs/distributed-training.md) y
+[`docs/datasets.md`](docs/datasets.md).
 
-- `docs/study-site.md` — sitio de estudio (GitHub Pages) y navegación anterior/siguiente
-- `docs/experiment-protocol.md`
-- `docs/education.md`
-- `docs/model-registry-and-serving.md`
-- `docs/export-and-edge.md`
-- `docs/distributed-training.md`
-- `docs/supply-chain-security.md`
-- `docs/architecture.md`
-- `docs/datasets.md`
+## 🧭 Alcance responsable
 
-## Alcance responsable
+Los laboratorios sirven para aprendizaje, investigación y prototipos. **No** convierten
+automáticamente un modelo en una solución apta para decisiones médicas, financieras,
+laborales o de seguridad. Cada despliegue debe revisar licencias, privacidad,
+representatividad, calibración, deriva, subgrupos, seguridad y supervisión humana.
+Ver [`docs/ethics-and-licenses.md`](docs/ethics-and-licenses.md).
 
-Los laboratorios sirven para aprendizaje, investigación y prototipos. No convierten automáticamente un modelo en una solución apta para decisiones médicas, financieras, laborales o de seguridad. Cada despliegue debe revisar licencias, privacidad, representatividad, calibración, deriva, subgrupos, seguridad y supervisión humana.
+## 📄 Licencia
+
+Código y documentación original bajo [MIT](LICENSE). Datasets, papers, modelos preentrenados
+y servicios externos conservan sus propias licencias y términos.
+
+---
+
+<div align="center">
+
+**Hecho para quien quiere entrenar redes que resistan una auditoría, no solo una demo.**
+
+[⬆️ Empezar por la neurona en NumPy](labs/00_numpy_neuron/) ·
+[🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/) ·
+[🧭 Ruta de aprendizaje](docs/learning-path.md) ·
+[🔬 Protocolo de experimento](docs/experiment-protocol.md) ·
+[🗺️ Roadmap](ROADMAP.md)
+
+<br>
+
+**¿Te resulta útil? ⭐ Dale una estrella al repo.**
+
+[![GitHub stars](https://img.shields.io/github/stars/vladimiracunadev-create/neural-network-training-labs?style=social)](https://github.com/vladimiracunadev-create/neural-network-training-labs/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/vladimiracunadev-create/neural-network-training-labs?style=social)](https://github.com/vladimiracunadev-create/neural-network-training-labs/network/members)
+[![Follow](https://img.shields.io/github/followers/vladimiracunadev-create?style=social&label=Follow)](https://github.com/vladimiracunadev-create)
+
+Hecho con 🧠 y ☕ por [Vladimir Acuña](https://github.com/vladimiracunadev-create)
+
+</div>
