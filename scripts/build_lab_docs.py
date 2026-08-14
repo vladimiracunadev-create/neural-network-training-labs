@@ -512,6 +512,103 @@ def _quick_note(lab: dict) -> str | None:
     return " · ".join(pieces) if pieces else None
 
 
+def _notebook_stats(lab: dict) -> dict | None:
+    """Mide los tres cuadernos del laboratorio leyéndolos, no suponiéndolos.
+
+    Devuelve el número de celdas, cuántas son de código, cuántas cambian entre la
+    versión de estudiante y la de solución —esos son los ejercicios— y si el
+    cuaderno de recorrido coincide con el de solución.
+    """
+    import json
+
+    def sources(name: str) -> list[str] | None:
+        path = lab["dir"] / name
+        if not path.exists():
+            return None
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (ValueError, OSError):
+            return None
+        return ["".join(cell.get("source") or []) for cell in payload.get("cells", [])]
+
+    walkthrough = sources("notebook.ipynb")
+    student = sources("notebook_student.ipynb")
+    solution = sources("notebook_solution.ipynb")
+    if not (walkthrough and student and solution):
+        return None
+
+    import json as _json
+    cells = _json.loads((lab["dir"] / "notebook.ipynb").read_text(encoding="utf-8"))["cells"]
+    # La primera celda solo cambia la etiqueta de versión; no cuenta como ejercicio.
+    differing = [
+        index for index, (a, b) in enumerate(zip(student, solution))
+        if a != b and "**Versión:**" not in a
+    ]
+    return {
+        "cells": len(cells),
+        "code_cells": sum(cell.get("cell_type") == "code" for cell in cells),
+        "exercises": len(differing),
+        "walkthrough_equals_solution": walkthrough == solution,
+    }
+
+
+def _notebooks_section(lab: dict) -> list[str]:
+    """Explica los tres cuadernos: qué trae cada uno y cómo abrirlos."""
+    stats = _notebook_stats(lab)
+    if not stats:
+        return []
+    slug, base = lab["slug"], lab["base"]
+
+    lines = [
+        "## 📓 Los tres cuadernos",
+        "",
+        f"El laboratorio incluye tres cuadernos Jupyter de **{stats['cells']} celdas** cada uno, "
+        f"de las cuales **{stats['code_cells']} son de código ejecutable**. Los tres recorren el "
+        "mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el "
+        "experimento y evaluar `test` una vez— y se diferencian en cuánto viene resuelto:",
+        "",
+        "| Cuaderno | Qué trae | Cuándo usarlo |",
+        "|---|---|---|",
+        "| [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con **todo el código escrito y ejecutable**, celda a celda, intercalado con las explicaciones. | Para leer y ejecutar de principio a fin, entendiendo qué hace cada paso. |",
+        f"| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con **{stats['exercises']} celdas vaciadas**, marcadas con `# YOUR CODE HERE`, que hay que completar. | Para practicar: se ejecuta igual, pero falla hasta que completas los huecos. |",
+        "| [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Las celdas anteriores ya resueltas, marcadas con `# SOLUCIÓN DE REFERENCIA`. | Para contrastar tu respuesta después de intentarlo. |",
+        "",
+    ]
+
+    if stats["walkthrough_equals_solution"]:
+        lines += [
+            "> **Aviso honesto sobre el estado actual.** Hoy `notebook.ipynb` y "
+            "`notebook_solution.ipynb` tienen **el mismo contenido**, y los ejercicios que los "
+            f"separan del cuaderno de estudiante son **{stats['exercises']}**. Es decir: el código "
+            "del laboratorio está completo y es ejecutable en los tres, pero la versión de "
+            "estudiante todavía no propone una práctica extensa. Está anotado en el "
+            "[roadmap](../../ROADMAP.md) y se dice aquí para que nadie descubra el límite después "
+            "de abrir el archivo.",
+            "",
+        ]
+
+    lines += [
+        "### Cómo abrirlos",
+        "",
+        "Los cuadernos necesitan el extra `notebooks`, que instala Jupyter junto con el paquete:",
+        "",
+        "```bash",
+        'pip install -e ".[dev,notebooks]"',
+        f"jupyter lab {base}/{slug}/notebook.ipynb",
+        "```",
+        "",
+        "También se abren desde VS Code —con la extensión de Jupyter— haciendo doble clic en el "
+        "archivo, o desde la interfaz clásica con `jupyter notebook`. El primer arranque descarga "
+        "el dataset real desde su proveedor, así que la primera ejecución tarda más y **requiere "
+        "conexión**.",
+        "",
+        "Si prefieres ejecutar sin abrir un cuaderno, `train.py` hace exactamente lo mismo desde la "
+        "terminal, y la sección de comandos de arriba explica cada opción.",
+        "",
+    ]
+    return lines
+
+
 def _step(number: int, title: str, what: str, why: str,
           command: str | None = None, check: str | None = None) -> list[str]:
     block = [f"### Paso {number} — {title}", "", f"**Qué ocurre.** {what}", "", f"**Por qué.** {why}", ""]
@@ -1033,6 +1130,7 @@ def guia_doc(lab: dict, index: int, total: int, prev: dict | None, nxt: dict | N
             "",
         ]
 
+    parts += _notebooks_section(lab)
     parts += _commands_section(lab)
 
     parts += ["## 🪜 Paso a paso", ""]
@@ -1100,23 +1198,37 @@ def guia_doc(lab: dict, index: int, total: int, prev: dict | None, nxt: dict | N
             references,
             "",
         ]
+    resources = [
+        ("📄 `README.md`", "README.md", "Esta guía."),
+        ("🧠 `theory.md`", "theory.md", "La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba."),
+        ("🔬 `experiments.md`", "experiments.md", "El plan experimental y la tabla multi-semilla que hay que completar."),
+        ("📝 `assessment.md`", "assessment.md", "Las preguntas de evaluación y la rúbrica con la que se corrigen."),
+        ("📓 `notebook.ipynb`", "notebook.ipynb", "El recorrido completo con todo el código escrito y ejecutable."),
+        ("✏️ `notebook_student.ipynb`", "notebook_student.ipynb", "El mismo recorrido con las celdas de ejercicio vacías."),
+        ("✅ `notebook_solution.ipynb`", "notebook_solution.ipynb", "Los ejercicios resueltos, para contrastar."),
+        ("🖥️ `train.py`", "train.py", "El mismo entrenamiento desde la terminal, sin abrir un cuaderno."),
+        ("🎛️ `configs/baseline.yaml`", "configs/baseline.yaml", "Épocas, lote, tasa de aprendizaje y qué recorta `--quick`."),
+        ("🎚️ `configs/improved.yaml`", "configs/improved.yaml", "La configuración ampliada que se compara contra la base."),
+        ("🗄️ `data/dataset.yaml`", "data/dataset.yaml", "Fuente, licencia, política de partición y límites del dataset."),
+        ("🧾 `lesson.yaml`", "lesson.yaml", "Nivel, prerrequisitos, resultados de aprendizaje y criterios."),
+        ("🖥️ `index.html`", "index.html", "Esta misma clase como página autocontenida, para leerla sin conexión."),
+    ]
+    rows = [f"| [{name}]({path}) | {description} |"
+            for name, path, description in resources if (lab["dir"] / path).exists()]
+
     parts += [
-        "### Cómo comprobar lo que dice esta guía",
+        "### Los archivos de este laboratorio",
         "",
-        "Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede "
-        "verificar en un archivo del repositorio:",
+        "Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directamente:",
         "",
-        "| Lo que dice la guía | Dónde comprobarlo |",
+        "| Archivo | Qué es |",
         "|---|---|",
-        f"| Objetivo, línea base, métricas y arquitectura | `{catalog_file}` |",
-        "| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |",
-        "| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | "
-        "`configs/baseline.yaml` y `configs/improved.yaml` |",
-        "| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |",
-        "| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |",
-        f"| El orden de los pasos y los archivos que escribe cada ejecución | `{code_file}` |",
-        "| La teoría y su bibliografía | `theory.md` |",
-        "| La regla general del protocolo | `docs/experiment-protocol.md` |",
+        *rows,
+        "",
+        "Y fuera de la carpeta, tres referencias que esta guía usa: el catálogo "
+        f"`{catalog_file}` —de donde salen el objetivo, la línea base y las métricas—, el código "
+        f"`{code_file}` —que define el orden de los pasos y los archivos que escribe cada "
+        "ejecución— y `docs/experiment-protocol.md`, con la regla general del protocolo.",
         "",
         "Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio "
         "no los redistribuye ni sustituye una descarga fallida por datos generados.",

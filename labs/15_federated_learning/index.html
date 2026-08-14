@@ -201,6 +201,44 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 </blockquote>
 <h3 id="que-se-mide-y-con-que-se-decide">Qué se mide y con qué se decide</h3>
 <p>El laboratorio reporta <code>accuracy</code>, <code>macro_f1</code>, <code>client_accuracy_std</code>. De todas ellas, la que <strong>decide</strong> qué modelo se conserva es <code>macro_f1</code>, y se mide siempre sobre <code>validation</code>: es la única forma de que <code>test</code> siga siendo una estimación honesta de lo que pasará con datos nuevos.</p>
+<h2 id="los-tres-cuadernos">📓 Los tres cuadernos</h2>
+<p>El laboratorio incluye tres cuadernos Jupyter de <strong>26 celdas</strong> cada uno, de las cuales <strong>13 son de código ejecutable</strong>. Los tres recorren el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar <code>test</code> una vez— y se diferencian en cuánto viene resuelto:</p>
+<table>
+<thead>
+<tr>
+<th>Cuaderno</th>
+<th>Qué trae</th>
+<th>Cuándo usarlo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="notebook.ipynb">📓 <code>notebook.ipynb</code></a></td>
+<td>El recorrido completo con <strong>todo el código escrito y ejecutable</strong>, celda a celda, intercalado con las explicaciones.</td>
+<td>Para leer y ejecutar de principio a fin, entendiendo qué hace cada paso.</td>
+</tr>
+<tr>
+<td><a href="notebook_student.ipynb">✏️ <code>notebook_student.ipynb</code></a></td>
+<td>El mismo recorrido con <strong>2 celdas vaciadas</strong>, marcadas con <code># YOUR CODE HERE</code>, que hay que completar.</td>
+<td>Para practicar: se ejecuta igual, pero falla hasta que completas los huecos.</td>
+</tr>
+<tr>
+<td><a href="notebook_solution.ipynb">✅ <code>notebook_solution.ipynb</code></a></td>
+<td>Las celdas anteriores ya resueltas, marcadas con <code># SOLUCIÓN DE REFERENCIA</code>.</td>
+<td>Para contrastar tu respuesta después de intentarlo.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Aviso honesto sobre el estado actual.</strong> Hoy <code>notebook.ipynb</code> y <code>notebook_solution.ipynb</code> tienen <strong>el mismo contenido</strong>, y los ejercicios que los separan del cuaderno de estudiante son <strong>2</strong>. Es decir: el código del laboratorio está completo y es ejecutable en los tres, pero la versión de estudiante todavía no propone una práctica extensa. Está anotado en el <a href="../../ROADMAP.md">roadmap</a> y se dice aquí para que nadie descubra el límite después de abrir el archivo.</p>
+</blockquote>
+<h3 id="como-abrirlos">Cómo abrirlos</h3>
+<p>Los cuadernos necesitan el extra <code>notebooks</code>, que instala Jupyter junto con el paquete:</p>
+<pre><code class="language-bash">pip install -e &quot;.[dev,notebooks]&quot;
+jupyter lab labs/15_federated_learning/notebook.ipynb
+</code></pre>
+<p>También se abren desde VS Code —con la extensión de Jupyter— haciendo doble clic en el archivo, o desde la interfaz clásica con <code>jupyter notebook</code>. El primer arranque descarga el dataset real desde su proveedor, así que la primera ejecución tarda más y <strong>requiere conexión</strong>.</p>
+<p>Si prefieres ejecutar sin abrir un cuaderno, <code>train.py</code> hace exactamente lo mismo desde la terminal, y la sección de comandos de arriba explica cada opción.</p>
 <h2 id="los-comandos-explicados">🖥️ Los comandos, explicados</h2>
 <p>Todo el laboratorio se maneja con una sola herramienta de terminal, <code>neural-labs</code>, que se instala junto con el paquete (<code>pip install -e ".[dev,notebooks]"</code>). Cada subcomando hace <strong>una</strong> cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.</p>
 <p>La forma general es siempre la misma:</p>
@@ -463,50 +501,71 @@ neural-labs train --lab 15_federated_learning --config baseline --split-seed 42 
 <li>Fuente del dataset: https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones</li>
 <li>Consulte <code>docs/experiment-protocol.md</code>, <code>docs/reproducibility.md</code> y <code>docs/ethics-and-licenses.md</code>.</li>
 </ul>
-<h3 id="como-comprobar-lo-que-dice-esta-guia">Cómo comprobar lo que dice esta guía</h3>
-<p>Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:</p>
+<h3 id="los-archivos-de-este-laboratorio">Los archivos de este laboratorio</h3>
+<p>Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directamente:</p>
 <table>
 <thead>
 <tr>
-<th>Lo que dice la guía</th>
-<th>Dónde comprobarlo</th>
+<th>Archivo</th>
+<th>Qué es</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Objetivo, línea base, métricas y arquitectura</td>
-<td><code>configs/labs.yaml</code></td>
+<td><a href="#README">📄 <code>README.md</code></a></td>
+<td>Esta guía.</td>
 </tr>
 <tr>
-<td>Fuente, licencia, procedencia y límites del dataset</td>
-<td><code>data/dataset.yaml</code></td>
+<td><a href="#theory">🧠 <code>theory.md</code></a></td>
+<td>La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba.</td>
 </tr>
 <tr>
-<td>Épocas, tamaño de lote, tasa de aprendizaje y recorte de <code>--quick</code></td>
-<td><code>configs/baseline.yaml</code> y <code>configs/improved.yaml</code></td>
+<td><a href="#experiments">🔬 <code>experiments.md</code></a></td>
+<td>El plan experimental y la tabla multi-semilla que hay que completar.</td>
 </tr>
 <tr>
-<td>Nivel, prerrequisitos, resultados de aprendizaje y criterios</td>
-<td><code>lesson.yaml</code></td>
+<td><a href="#assessment">📝 <code>assessment.md</code></a></td>
+<td>Las preguntas de evaluación y la rúbrica con la que se corrigen.</td>
 </tr>
 <tr>
-<td>Opciones de los comandos y sus valores por defecto</td>
-<td><code>src/neural_labs/cli.py</code></td>
+<td><a href="notebook.ipynb">📓 <code>notebook.ipynb</code></a></td>
+<td>El recorrido completo con todo el código escrito y ejecutable.</td>
 </tr>
 <tr>
-<td>El orden de los pasos y los archivos que escribe cada ejecución</td>
-<td><code>src/neural_labs/experiments.py</code></td>
+<td><a href="notebook_student.ipynb">✏️ <code>notebook_student.ipynb</code></a></td>
+<td>El mismo recorrido con las celdas de ejercicio vacías.</td>
 </tr>
 <tr>
-<td>La teoría y su bibliografía</td>
-<td><code>theory.md</code></td>
+<td><a href="notebook_solution.ipynb">✅ <code>notebook_solution.ipynb</code></a></td>
+<td>Los ejercicios resueltos, para contrastar.</td>
 </tr>
 <tr>
-<td>La regla general del protocolo</td>
-<td><code>docs/experiment-protocol.md</code></td>
+<td><a href="train.py">🖥️ <code>train.py</code></a></td>
+<td>El mismo entrenamiento desde la terminal, sin abrir un cuaderno.</td>
+</tr>
+<tr>
+<td><a href="configs/baseline.yaml">🎛️ <code>configs/baseline.yaml</code></a></td>
+<td>Épocas, lote, tasa de aprendizaje y qué recorta <code>--quick</code>.</td>
+</tr>
+<tr>
+<td><a href="configs/improved.yaml">🎚️ <code>configs/improved.yaml</code></a></td>
+<td>La configuración ampliada que se compara contra la base.</td>
+</tr>
+<tr>
+<td><a href="data/dataset.yaml">🗄️ <code>data/dataset.yaml</code></a></td>
+<td>Fuente, licencia, política de partición y límites del dataset.</td>
+</tr>
+<tr>
+<td><a href="lesson.yaml">🧾 <code>lesson.yaml</code></a></td>
+<td>Nivel, prerrequisitos, resultados de aprendizaje y criterios.</td>
+</tr>
+<tr>
+<td><a href="index.html">🖥️ <code>index.html</code></a></td>
+<td>Esta misma clase como página autocontenida, para leerla sin conexión.</td>
 </tr>
 </tbody>
 </table>
+<p>Y fuera de la carpeta, tres referencias que esta guía usa: el catálogo <code>configs/labs.yaml</code> —de donde salen el objetivo, la línea base y las métricas—, el código <code>src/neural_labs/experiments.py</code> —que define el orden de los pasos y los archivos que escribe cada ejecución— y <code>docs/experiment-protocol.md</code>, con la regla general del protocolo.</p>
 <p>Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.</p><h2 class="doc-sep" id="experiments">🔬 Experimentos</h2><h1 id="plan-de-experimentos-aprendizaje-federado-por-participante">Plan de experimentos — Aprendizaje federado por participante</h1>
 <h2 id="que-significa-experimentar-aqui">Qué significa «experimentar» aquí</h2>
 <p>Entrenar un modelo y mirar el número que sale <strong>no</strong> es un experimento: es una observación. Un experimento empieza por una afirmación que podría resultar falsa, sigue fijando todo lo que no se está poniendo a prueba, y termina midiendo si la afirmación se sostiene cuando se repite.</p>

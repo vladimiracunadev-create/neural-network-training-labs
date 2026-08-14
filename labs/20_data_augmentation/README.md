@@ -96,6 +96,31 @@ Y hay dos resultados que reportar por separado. El primero es la métrica **limp
 
 El laboratorio reporta `accuracy`, `macro_f1`, `robust_accuracy`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
+## 📓 Los tres cuadernos
+
+El laboratorio incluye tres cuadernos Jupyter de **26 celdas** cada uno, de las cuales **13 son de código ejecutable**. Los tres recorren el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez— y se diferencian en cuánto viene resuelto:
+
+| Cuaderno | Qué trae | Cuándo usarlo |
+|---|---|---|
+| [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con **todo el código escrito y ejecutable**, celda a celda, intercalado con las explicaciones. | Para leer y ejecutar de principio a fin, entendiendo qué hace cada paso. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con **2 celdas vaciadas**, marcadas con `# YOUR CODE HERE`, que hay que completar. | Para practicar: se ejecuta igual, pero falla hasta que completas los huecos. |
+| [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Las celdas anteriores ya resueltas, marcadas con `# SOLUCIÓN DE REFERENCIA`. | Para contrastar tu respuesta después de intentarlo. |
+
+> **Aviso honesto sobre el estado actual.** Hoy `notebook.ipynb` y `notebook_solution.ipynb` tienen **el mismo contenido**, y los ejercicios que los separan del cuaderno de estudiante son **2**. Es decir: el código del laboratorio está completo y es ejecutable en los tres, pero la versión de estudiante todavía no propone una práctica extensa. Está anotado en el [roadmap](../../ROADMAP.md) y se dice aquí para que nadie descubra el límite después de abrir el archivo.
+
+### Cómo abrirlos
+
+Los cuadernos necesitan el extra `notebooks`, que instala Jupyter junto con el paquete:
+
+```bash
+pip install -e ".[dev,notebooks]"
+jupyter lab labs/20_data_augmentation/notebook.ipynb
+```
+
+También se abren desde VS Code —con la extensión de Jupyter— haciendo doble clic en el archivo, o desde la interfaz clásica con `jupyter notebook`. El primer arranque descarga el dataset real desde su proveedor, así que la primera ejecución tarda más y **requiere conexión**.
+
+Si prefieres ejecutar sin abrir un cuaderno, `train.py` hace exactamente lo mismo desde la terminal, y la sección de comandos de arriba explica cada opción.
+
 ## 🖥️ Los comandos, explicados
 
 Todo el laboratorio se maneja con una sola herramienta de terminal, `neural-labs`, que se instala junto con el paquete (`pip install -e ".[dev,notebooks]"`). Cada subcomando hace **una** cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.
@@ -335,20 +360,27 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
-### Cómo comprobar lo que dice esta guía
+### Los archivos de este laboratorio
 
-Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:
+Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directamente:
 
-| Lo que dice la guía | Dónde comprobarlo |
+| Archivo | Qué es |
 |---|---|
-| Objetivo, línea base, métricas y arquitectura | `configs/labs.yaml` |
-| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |
-| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | `configs/baseline.yaml` y `configs/improved.yaml` |
-| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |
-| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |
-| El orden de los pasos y los archivos que escribe cada ejecución | `src/neural_labs/experiments.py` |
-| La teoría y su bibliografía | `theory.md` |
-| La regla general del protocolo | `docs/experiment-protocol.md` |
+| [📄 `README.md`](README.md) | Esta guía. |
+| [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
+| [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
+| [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
+| [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
+| [🖥️ `train.py`](train.py) | El mismo entrenamiento desde la terminal, sin abrir un cuaderno. |
+| [🎛️ `configs/baseline.yaml`](configs/baseline.yaml) | Épocas, lote, tasa de aprendizaje y qué recorta `--quick`. |
+| [🎚️ `configs/improved.yaml`](configs/improved.yaml) | La configuración ampliada que se compara contra la base. |
+| [🗄️ `data/dataset.yaml`](data/dataset.yaml) | Fuente, licencia, política de partición y límites del dataset. |
+| [🧾 `lesson.yaml`](lesson.yaml) | Nivel, prerrequisitos, resultados de aprendizaje y criterios. |
+| [🖥️ `index.html`](index.html) | Esta misma clase como página autocontenida, para leerla sin conexión. |
+
+Y fuera de la carpeta, tres referencias que esta guía usa: el catálogo `configs/labs.yaml` —de donde salen el objetivo, la línea base y las métricas—, el código `src/neural_labs/experiments.py` —que define el orden de los pasos y los archivos que escribe cada ejecución— y `docs/experiment-protocol.md`, con la regla general del protocolo.
 
 Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
 
