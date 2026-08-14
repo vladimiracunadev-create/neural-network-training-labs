@@ -1,5 +1,11 @@
 # Plan de experimentos — Autoencoder para fraude
 
+<!-- nav-top -->
+> 🧭 **Ruta 7 / 31** · [⬅️ 📈 LSTM para series temporales](../../labs/05_lstm_time_series/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [🔭 Transformer para noticias ➡️](../../labs/07_transformer_attention/experiments.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Detectar transacciones fraudulentas mediante error de reconstrucción. La hipótesis debe aceptarse o rechazarse comparando el modelo con **Isolation Forest** y no solo observando que la pérdida disminuye.
@@ -39,3 +45,15 @@ Seleccionar el umbral usando validation y no test.
 ## Criterio de conclusión
 
 La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [📈 LSTM para series temporales](../../labs/05_lstm_time_series/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/06_autoencoder_anomaly/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

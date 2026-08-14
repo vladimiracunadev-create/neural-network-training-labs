@@ -1,8 +1,91 @@
 # GNN sobre red de citas
 
 <!-- nav-top -->
-> 🧭 [⬅️ Anterior](../../labs/08_gan_generation/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/10_dqn_reinforcement/README.md)
+> 🧭 **Ruta 10 / 31** · [⬅️ 🎨 GAN generativa](../../labs/08_gan_generation/README.md) · [🏠 Índice](../../README.md#laboratorios) · [🕹️ DQN para inventario con demanda real ➡️](../../labs/10_dqn_reinforcement/README.md)
+>
+> **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
+
+<!-- ficha -->
+## 📋 Ficha del laboratorio
+
+![ruta](https://img.shields.io/badge/ruta-10%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-avanzado-8957e5?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Central-2e8b57?style=flat-square) ![horas](https://img.shields.io/badge/horas-~8%20h-f0b429?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-cora-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-f1-8957e5?style=flat-square)
+
+| Campo | Valor |
+|---|---|
+| 🧭 Posición | Ruta **10 de 31** del recorrido · categoría central |
+| 🎚️ Nivel | avanzado |
+| ⏱️ Dedicación estimada | 8 horas |
+| 🧩 Tarea | `node_classification` |
+| 🏗️ Arquitectura | `gcn` |
+| 🗄️ Dataset | [`cora`](https://pytorch-geometric.readthedocs.io/en/stable/generated/torch_geometric.datasets.Planetoid.html) — PyTorch Geometric / Planetoid |
+| ⚖️ Licencia del dataset | Consultar dataset original |
+| 🎯 Métrica de selección | `f1` sobre `validation` |
+| 📏 Línea base a superar | MLP sin aristas |
+| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+
+### 🎯 Qué vas a poder hacer al terminar
+
+- Clasificar publicaciones científicas usando texto y enlaces de citas.
+- Preparar y auditar el dataset real cora sin fuga de datos.
+- Entrenar y evaluar propagación de mensajes sobre grafos.
+- Comparar contra la línea base: MLP sin aristas.
+- Interpretar intervalos de confianza, errores y limitaciones.
+
+### 🧩 Prerrequisitos
+
+- PyTorch intermedio
+- optimización
+- lectura de artículos técnicos
+
+> Si alguno te falta, retrocede antes de continuar. Viniendo de [🎨 GAN generativa](../../labs/08_gan_generation/README.md).
+
+### ⚙️ `baseline` frente a `improved`
+
+| Parámetro | [`baseline.yaml`](configs/baseline.yaml) | [`improved.yaml`](configs/improved.yaml) |
+|---|---|---|
+| Épocas | `20` | `50` |
+| Tasa de aprendizaje | `0.001` | `0.0005` |
+| Paciencia (early stopping) | `5` | `8` |
+| Precisión mixta (AMP) | no | sí |
+| Procesos de carga | `0` | `2` |
+
+> Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con `validation`, nunca con `test`.
+
+### 📦 Entregables y criterios de aceptación
+
+**Entregables**
+
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+
+**Criterios de éxito**
+
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+
+### 🗂️ Recursos del laboratorio
+
+| Recurso | Archivo |
+|---|---|
+| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
+| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
+| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
+| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
+| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
+| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
+| 🖥️ Script de terminal | [`train.py`](train.py) |
+| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
+| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
+| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
+| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+
+<!-- /ficha -->
 
 ## Objetivo
 
@@ -73,7 +156,6 @@ accuracy, macro_f1.
 - Comparar costo, precisión y latencia.
 - Documentar sesgos, limitaciones y usos no recomendados.
 
-
 ## Material formativo v3
 
 - [`theory.md`](theory.md): fundamento, protocolo y riesgos de interpretación.
@@ -94,11 +176,13 @@ neural-labs leaderboard
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
 
 <!-- nav-bottom -->
-## 🧭 Navegación del curso
+## 🧭 Navegación del recorrido
 
-| ⬅️ Anterior | Siguiente ➡️ |
-|---|---|
-| [🎨 GAN generativa](../../labs/08_gan_generation/README.md) | [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) |
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🎨 GAN generativa](../../labs/08_gan_generation/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) |
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/09_gnn_graphs/index.html)
+**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/09_gnn_graphs/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

@@ -1,5 +1,11 @@
 # Plan de experimentos — Explicabilidad
 
+<!-- nav-top -->
+> 🧭 **Ruta 22 / 31** · [⬅️ 🔄 Aumento de datos](../../labs/20_data_augmentation/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [🎯 Incertidumbre y calibración ➡️](../../labs/22_uncertainty_calibration/experiments.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Explicar predicciones con Integrated Gradients y permutación. La hipótesis debe aceptarse o rechazarse comparando el modelo con **Regresión logística interpretable** y no solo observando que la pérdida disminuye.
@@ -39,3 +45,15 @@ Contrastar explicaciones con permutaciones.
 ## Criterio de conclusión
 
 La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🔄 Aumento de datos](../../labs/20_data_augmentation/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/21_explainability/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

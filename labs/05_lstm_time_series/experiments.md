@@ -1,5 +1,11 @@
 # Plan de experimentos — LSTM para series temporales
 
+<!-- nav-top -->
+> 🧭 **Ruta 6 / 31** · [⬅️ 🔁 RNN para texto](../../labs/04_rnn_sequences/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [🧬 Autoencoder para fraude ➡️](../../labs/06_autoencoder_anomaly/experiments.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Pronosticar demanda horaria respetando el orden temporal. La hipótesis debe aceptarse o rechazarse comparando el modelo con **Persistencia, media móvil y Ridge** y no solo observando que la pérdida disminuye.
@@ -39,3 +45,15 @@ Comparar ventanas, variables y horizonte.
 ## Criterio de conclusión
 
 La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/05_lstm_time_series/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

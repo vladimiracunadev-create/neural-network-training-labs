@@ -1,5 +1,11 @@
 # Plan de experimentos — Transfer learning con mascotas
 
+<!-- nav-top -->
+> 🧭 **Ruta 12 / 31** · [⬅️ 🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [🔀 Fusión de sensores ➡️](../../labs/12_multimodal_fusion/experiments.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Comparar extracción de características, fine-tuning y entrenamiento desde cero. La hipótesis debe aceptarse o rechazarse comparando el modelo con **CNN pequeña entrenada desde cero** y no solo observando que la pérdida disminuye.
@@ -39,3 +45,15 @@ Comparar congelamiento parcial y fine-tuning.
 ## Criterio de conclusión
 
 La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/11_transfer_learning/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

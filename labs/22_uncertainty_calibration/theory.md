@@ -1,5 +1,11 @@
 # Teoría — Incertidumbre y calibración
 
+<!-- nav-top -->
+> 🧭 **Ruta 23 / 31** · [⬅️ 🔍 Explicabilidad](../../labs/21_explainability/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [📦 Exportación e inferencia ➡️](../../labs/23_model_export_and_inference/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Medir confianza, Brier score, ECE y temperature scaling.
@@ -51,3 +57,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Lakshminarayanan, Pritzel y Blundell (2017), *Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles*, NeurIPS — ensambles como estimador robusto de incertidumbre predictiva.
 - Fuente del dataset: https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🔍 Explicabilidad](../../labs/21_explainability/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/22_uncertainty_calibration/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

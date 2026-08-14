@@ -1,5 +1,11 @@
 # Teoría — Aprendizaje federado por participante
 
+<!-- nav-top -->
+> 🧭 **Ruta 16 / 31** · [⬅️ ⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [∂ Backpropagation manual ➡️](../../labs/16_backpropagation_manual/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Aplicar FedAvg usando participantes reales como clientes naturales.
@@ -56,3 +62,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - McMahan et al. (2017), *Communication-Efficient Learning of Deep Networks from Decentralized Data (FedAvg)*, AISTATS — artículo que introduce el algoritmo FedAvg implementado en este laboratorio.
 - Fuente del dataset: https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/15_federated_learning/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

@@ -1,5 +1,11 @@
 # Plan de experimentos — RNN para texto
 
+<!-- nav-top -->
+> 🧭 **Ruta 5 / 31** · [⬅️ 🖼️ CNN para visión](../../labs/03_cnn_vision/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [📈 LSTM para series temporales ➡️](../../labs/05_lstm_time_series/experiments.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Clasificar sentimiento en reseñas reales usando embeddings y recurrencia. La hipótesis debe aceptarse o rechazarse comparando el modelo con **TF-IDF + regresión logística** y no solo observando que la pérdida disminuye.
@@ -39,3 +45,15 @@ Comparar longitud máxima, embedding y regularización.
 ## Criterio de conclusión
 
 La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🖼️ CNN para visión](../../labs/03_cnn_vision/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [📈 LSTM para series temporales](../../labs/05_lstm_time_series/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/04_rnn_sequences/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

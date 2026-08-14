@@ -1,5 +1,11 @@
 # Plan de experimentos — Neurona con NumPy
 
+<!-- nav-top -->
+> 🧭 **Ruta 1 / 31** · ⬅️ *inicio del recorrido* · [🏠 Índice](../../README.md#laboratorios) · [🧩 Perceptrón con PyTorch ➡️](../../labs/01_pytorch_perceptron/experiments.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Implementar propagación, entropía cruzada y descenso de gradiente sin autograd. La hipótesis debe aceptarse o rechazarse comparando el modelo con **DummyClassifier y regresión logística de scikit-learn** y no solo observando que la pérdida disminuye.
@@ -39,3 +45,15 @@ Comparar el gradiente analítico con diferencias finitas.
 ## Criterio de conclusión
 
 La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| *— inicio del recorrido* | [Las 31 rutas](../../README.md#laboratorios) | [🧩 Perceptrón con PyTorch](../../labs/01_pytorch_perceptron/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/00_numpy_neuron/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

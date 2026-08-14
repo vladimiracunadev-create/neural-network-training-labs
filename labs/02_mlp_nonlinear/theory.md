@@ -1,5 +1,11 @@
 # Teoría — MLP multiclase
 
+<!-- nav-top -->
+> 🧭 **Ruta 3 / 31** · [⬅️ 🧩 Perceptrón con PyTorch](../../labs/01_pytorch_perceptron/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🖼️ CNN para visión ➡️](../../labs/03_cnn_vision/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Resolver clasificación no lineal con capas densas, activaciones y regularización.
@@ -61,3 +67,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Hornik (1991), *Approximation capabilities of multilayer feedforward networks*, Neural Networks — generalización del teorema a activaciones arbitrarias.
 - Fuente del dataset: https://archive.ics.uci.edu/dataset/602/dry+bean+dataset
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🧩 Perceptrón con PyTorch](../../labs/01_pytorch_perceptron/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🖼️ CNN para visión](../../labs/03_cnn_vision/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/02_mlp_nonlinear/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

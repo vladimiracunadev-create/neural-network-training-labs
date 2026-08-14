@@ -1,5 +1,11 @@
 # Teoría — GNN sobre red de citas
 
+<!-- nav-top -->
+> 🧭 **Ruta 10 / 31** · [⬅️ 🎨 GAN generativa](../../labs/08_gan_generation/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🕹️ DQN para inventario con demanda real ➡️](../../labs/10_dqn_reinforcement/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Clasificar publicaciones científicas usando texto y enlaces de citas.
@@ -54,3 +60,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Veličković et al. (2018), *Graph Attention Networks*, ICLR — atención sobre vecinos para ponderar mensajes de forma aprendida.
 - Fuente del dataset: https://pytorch-geometric.readthedocs.io/en/stable/generated/torch_geometric.datasets.Planetoid.html
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🎨 GAN generativa](../../labs/08_gan_generation/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/09_gnn_graphs/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

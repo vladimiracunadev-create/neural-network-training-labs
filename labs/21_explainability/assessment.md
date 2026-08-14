@@ -1,5 +1,11 @@
 # Evaluación — Explicabilidad
 
+<!-- nav-top -->
+> 🧭 **Ruta 22 / 31** · [⬅️ 🔄 Aumento de datos](../../labs/20_data_augmentation/assessment.md) · [🏠 Índice](../../README.md#laboratorios) · [🎯 Incertidumbre y calibración ➡️](../../labs/22_uncertainty_calibration/assessment.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación**
+<!-- /nav-top -->
+
 ## Evidencias obligatorias
 
 - Dataset preparado y auditoría sin solapamientos.
@@ -28,3 +34,15 @@
 | Comunicación | incompleta | reporte entendible | model card y conclusiones verificables | 15% |
 
 La aprobación exige al menos 70% y cero errores críticos de fuga de datos.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🔄 Aumento de datos](../../labs/20_data_augmentation/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación** · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/21_explainability/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

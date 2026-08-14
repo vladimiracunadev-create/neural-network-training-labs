@@ -1,5 +1,11 @@
 # Evaluación — Perceptrón con PyTorch
 
+<!-- nav-top -->
+> 🧭 **Ruta 2 / 31** · [⬅️ 🔢 Neurona con NumPy](../../labs/00_numpy_neuron/assessment.md) · [🏠 Índice](../../README.md#laboratorios) · [🌀 MLP multiclase ➡️](../../labs/02_mlp_nonlinear/assessment.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación**
+<!-- /nav-top -->
+
 ## Evidencias obligatorias
 
 - Dataset preparado y auditoría sin solapamientos.
@@ -28,3 +34,15 @@
 | Comunicación | incompleta | reporte entendible | model card y conclusiones verificables | 15% |
 
 La aprobación exige al menos 70% y cero errores críticos de fuga de datos.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🔢 Neurona con NumPy](../../labs/00_numpy_neuron/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🌀 MLP multiclase](../../labs/02_mlp_nonlinear/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación** · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/01_pytorch_perceptron/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

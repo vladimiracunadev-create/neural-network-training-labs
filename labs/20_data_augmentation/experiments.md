@@ -1,5 +1,11 @@
 # Plan de experimentos — Aumento de datos
 
+<!-- nav-top -->
+> 🧭 **Ruta 21 / 31** · [⬅️ 🛡️ Regularización](../../labs/19_regularization_dropout_batchnorm/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [🔍 Explicabilidad ➡️](../../labs/21_explainability/experiments.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Comparar recortes, volteos y perturbaciones sobre imágenes reales. La hipótesis debe aceptarse o rechazarse comparando el modelo con **CNN sin aumento** y no solo observando que la pérdida disminuye.
@@ -39,3 +45,15 @@ Medir precisión limpia y robustez.
 ## Criterio de conclusión
 
 La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🛡️ Regularización](../../labs/19_regularization_dropout_batchnorm/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🔍 Explicabilidad](../../labs/21_explainability/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/20_data_augmentation/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

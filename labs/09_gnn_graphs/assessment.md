@@ -1,5 +1,11 @@
 # Evaluación — GNN sobre red de citas
 
+<!-- nav-top -->
+> 🧭 **Ruta 10 / 31** · [⬅️ 🎨 GAN generativa](../../labs/08_gan_generation/assessment.md) · [🏠 Índice](../../README.md#laboratorios) · [🕹️ DQN para inventario con demanda real ➡️](../../labs/10_dqn_reinforcement/assessment.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación**
+<!-- /nav-top -->
+
 ## Evidencias obligatorias
 
 - Dataset preparado y auditoría sin solapamientos.
@@ -28,3 +34,15 @@
 | Comunicación | incompleta | reporte entendible | model card y conclusiones verificables | 15% |
 
 La aprobación exige al menos 70% y cero errores críticos de fuga de datos.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🎨 GAN generativa](../../labs/08_gan_generation/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación** · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/09_gnn_graphs/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

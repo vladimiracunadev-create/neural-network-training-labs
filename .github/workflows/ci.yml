@@ -25,6 +25,26 @@ jobs:
       - name: markdownlint-cli2
         run: npx --yes markdownlint-cli2 "**/*.md"
 
+  study-surfaces:
+    name: Navegación y páginas de estudio
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install --quiet "markdown>=3.6" "PyYAML>=6"
+      # La ficha y la navegación del Markdown, y las páginas HTML versionadas,
+      # se generan desde el mismo Markdown: si alguien edita una sin regenerar la
+      # otra, las superficies se desincronizan y este paso lo detiene.
+      - name: Markdown de los laboratorios al día
+        run: python scripts/build_lab_docs.py --check
+      - name: Páginas HTML de los laboratorios al día
+        run: python scripts/generate_lab_html.py --check
+      - name: El sitio de Pages se genera sin errores
+        run: python scripts/generate_site.py
+
   quality:
     runs-on: ubuntu-latest
     strategy:

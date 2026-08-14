@@ -96,13 +96,12 @@ se vea como lo que es, y no quede tapado por un dataset sintético.
 
 ```mermaid
 flowchart LR
-    A["🔢 Mecánica<br/>neurona · backprop"] --> B["🏗️ Arquitecturas<br/>CNN · RNN · Transformer · GNN"]
-    B --> C["🎨 Generación<br/>y decisión<br/>GAN · DQN"]
-    B --> D["🎛️ Régimen de<br/>entrenamiento<br/>regularización · HPO · transferencia"]
-    C --> E["🔍 Confianza<br/>explicabilidad · calibración"]
-    D --> E
-    E --> F["🚀 Despliegue<br/>ONNX · INT8 · API · capstone"]
-    F --> G["🔬 Especializaciones<br/>LoRA · U-Net · audio · WGAN-GP · DDPM · SimCLR"]
+    A["🟢 00–02<br/>Fundamentos<br/>neurona · tensor · MLP"] --> B["🔵 03–07<br/>Arquitecturas<br/>CNN · RNN · LSTM · AE · Transformer"]
+    B --> C["🟣 08–12<br/>Familias especializadas<br/>GAN · GNN · DQN · transfer · multimodal"]
+    C --> D["🟠 13–15<br/>Entrenar mejor<br/>HPO · destilación · federado"]
+    D --> E["🔴 16–20<br/>Mecánica fina<br/>backprop · optimizadores · regularización"]
+    E --> F["⚫ 21–24<br/>Confianza y despliegue<br/>XAI · calibración · ONNX · capstone"]
+    F --> G["🔬 25–30<br/>Especializaciones<br/>LoRA · U-Net · audio · WGAN-GP · DDPM · SimCLR"]
 ```
 
 Y dentro de **cada** ruta, siempre el mismo contrato:
@@ -118,92 +117,106 @@ fuente pública real → descarga y licencia → train / validation / test
 
 <a id="laboratorios"></a>
 
-## 🗂️ Las 31 rutas, en 6 etapas de madurez
+## 🗂️ Las 31 rutas, en orden
 
-Cada laboratorio tiene su propio `README.md`, `theory.md`, `experiments.md` y
-`assessment.md`. Las etapas no son decorativas: lo que cada una deja resuelto es lo
-que la siguiente da por supuesto.
+> **El número es el orden.** Se estudia de la **00** a la **30**, sin saltos: la
+> navegación *anterior / siguiente* de cada laboratorio —en el Markdown, en el sitio
+> y en la página HTML local— sigue exactamente esta secuencia. Los siete bloques de
+> abajo son tramos **contiguos** de ese mismo recorrido, no un orden alternativo.
 
-### 🟢 Etapa 1 — La mecánica visible
+Cada laboratorio publica cuatro documentos enlazados entre sí —
+[`README.md`](labs/03_cnn_vision/README.md) (guía),
+[`theory.md`](labs/03_cnn_vision/theory.md) (teoría y referencias),
+[`experiments.md`](labs/03_cnn_vision/experiments.md) (plan experimental) y
+[`assessment.md`](labs/03_cnn_vision/assessment.md) (evaluación y rúbrica) —
+más sus tres cuadernos y su página `index.html` autocontenida.
 
-Antes de llamar a una librería, entender qué hace. **Salida: derivar, actualizar pesos y elegir función de pérdida con criterio.**
+### 🟢 Rutas 00–02 · Fundamentos: de la derivada a la primera red
 
-| # | Ruta | Qué resuelve | Dataset |
-|---:|---|---|---|
-| 00 | [Neurona con NumPy](labs/00_numpy_neuron/) | Propagación, entropía cruzada y descenso de gradiente sin autograd | Breast Cancer Wisconsin |
-| 16 | [Backpropagation manual](labs/16_backpropagation_manual/) | Derivar y programar la retropropagación de una MLP | Iris |
-| 01 | [Perceptrón con PyTorch](labs/01_pytorch_perceptron/) | Tensores, autograd, optimizadores, clasificador lineal | Banknote Authentication |
-| 02 | [MLP multiclase](labs/02_mlp_nonlinear/) | Clasificación no lineal con capas densas | Dry Bean |
-| 17 | [Activaciones y pérdidas](labs/17_activations_and_losses/) | ReLU, GELU, Tanh y pérdidas en clases desbalanceadas | Wine Quality |
-| 18 | [Optimizadores y schedulers](labs/18_optimizers_and_schedulers/) | SGD, Momentum, Adam y reducción de tasa de aprendizaje | California Housing |
-
-### 🔵 Etapa 2 — Arquitecturas por tipo de dato
-
-Cada estructura de datos pide su inductive bias. **Salida: elegir arquitectura por la forma del problema, no por la moda.**
+Se construye una red desde cero antes de usar cualquier abstracción.
+**Al terminar:** entiendes qué calcula, qué deriva y qué actualiza un entrenamiento.
 
 | # | Ruta | Qué resuelve | Dataset |
 |---:|---|---|---|
-| 03 | [CNN para visión](labs/03_cnn_vision/) | Convolución, mapas de activación y errores por clase | CIFAR-10 |
-| 04 | [RNN para texto](labs/04_rnn_sequences/) | Embeddings, padding y recurrencia sobre sentimiento | IMDb |
-| 05 | [LSTM para series temporales](labs/05_lstm_time_series/) | Pronóstico horario respetando el orden temporal | Seoul Bike |
-| 06 | [Autoencoder para fraude](labs/06_autoencoder_anomaly/) | Anomalías por error de reconstrucción | Credit Card Fraud |
-| 07 | [Transformer para noticias](labs/07_transformer_attention/) | Atención multi-cabeza implementada desde cero | AG News |
-| 09 | [GNN sobre red de citas](labs/09_gnn_graphs/) | GCN, GraphSAGE y GAT sobre texto + enlaces | Cora |
-| 12 | [Fusión de sensores](labs/12_multimodal_fusion/) | Acelerómetro y giroscopio para reconocer actividad | UCI HAR |
+| 00 | [🔢 Neurona con NumPy](labs/00_numpy_neuron/) | Propagación, entropía cruzada y descenso de gradiente sin autograd | Breast Cancer Wisconsin |
+| 01 | [🧩 Perceptrón con PyTorch](labs/01_pytorch_perceptron/) | Tensores, autograd, optimizadores y clasificador lineal | Banknote Authentication |
+| 02 | [🌀 MLP multiclase](labs/02_mlp_nonlinear/) | Capas densas, activaciones y la primera frontera no lineal | Dry Bean |
 
-### 🟣 Etapa 3 — Generar y decidir
+### 🔵 Rutas 03–07 · Arquitecturas según la forma del dato
 
-Dos regímenes donde la métrica de test deja de contarlo todo. **Salida: evaluar sistemas sin etiqueta única correcta.**
+Cada estructura —imagen, secuencia, serie, señal sin etiqueta, texto— pide su propio
+sesgo inductivo. **Al terminar:** eliges arquitectura por la forma del problema, no por la moda.
 
 | # | Ruta | Qué resuelve | Dataset |
 |---:|---|---|---|
-| 08 | [GAN generativa](labs/08_gan_generation/) | Generación adversarial, diversidad y colapso de modo | Fashion-MNIST |
-| 10 | [DQN para inventario](labs/10_dqn_reinforcement/) | Double Dueling DQN sobre demanda real observada | Online Retail |
+| 03 | [🖼️ CNN para visión](labs/03_cnn_vision/) | Convolución, pooling y análisis de errores por clase | CIFAR-10 |
+| 04 | [🔁 RNN para texto](labs/04_rnn_sequences/) | Embeddings, padding y recurrencia sobre sentimiento | IMDb |
+| 05 | [📈 LSTM para series temporales](labs/05_lstm_time_series/) | Memoria larga y pronóstico que respeta el orden temporal | Seoul Bike |
+| 06 | [🧬 Autoencoder para fraude](labs/06_autoencoder_anomaly/) | Anomalías por error de reconstrucción, sin etiquetas de fraude | Credit Card Fraud |
+| 07 | [🔭 Transformer para noticias](labs/07_transformer_attention/) | Atención multi-cabeza implementada desde cero | AG News |
 
-### 🟠 Etapa 4 — Régimen de entrenamiento
+### 🟣 Rutas 08–12 · Familias especializadas: generar, decidir, relacionar
 
-Lo que separa un modelo que ajusta de uno que generaliza. **Salida: mejorar sin tocar `test` ni una vez.**
-
-| # | Ruta | Qué resuelve | Dataset |
-|---:|---|---|---|
-| 19 | [Regularización](labs/19_regularization_dropout_batchnorm/) | Dropout, weight decay y batch normalization medidos | Fashion-MNIST |
-| 20 | [Aumento de datos](labs/20_data_augmentation/) | Recortes, volteos y perturbaciones sobre imágenes reales | CIFAR-10 |
-| 13 | [Búsqueda de hiperparámetros](labs/13_hyperparameter_search/) | Profundidad, ancho, dropout y learning rate sin filtrar test | Adult Census |
-| 11 | [Transfer learning](labs/11_transfer_learning/) | Extracción de features vs. fine-tuning vs. desde cero | Oxford-IIIT Pet |
-| 14 | [Destilación de conocimiento](labs/14_knowledge_distillation/) | Profesora profunda → estudiante compacta | CIFAR-10 |
-| 15 | [Aprendizaje federado](labs/15_federated_learning/) | FedAvg con participantes reales como clientes naturales | UCI HAR (por sujeto) |
-
-### 🔴 Etapa 5 — Confiar en el modelo
-
-Un acierto sin confianza calibrada ni explicación no es evidencia. **Salida: responder “¿por qué?” y “¿cuánto te fías?”.**
+Tres regímenes donde una métrica de acierto ya no cuenta toda la historia, más las
+dos formas de reutilizar y combinar información. **Al terminar:** evalúas sistemas
+sin una única etiqueta correcta.
 
 | # | Ruta | Qué resuelve | Dataset |
 |---:|---|---|---|
-| 21 | [Explicabilidad](labs/21_explainability/) | Integrated Gradients e importancia por permutación | Adult Census |
-| 22 | [Incertidumbre y calibración](labs/22_uncertainty_calibration/) | Brier score, ECE y temperature scaling | Breast Cancer Wisconsin |
+| 08 | [🎨 GAN generativa](labs/08_gan_generation/) | Juego adversarial, diversidad y colapso de modo | Fashion-MNIST |
+| 09 | [🕸️ GNN sobre red de citas](labs/09_gnn_graphs/) | GCN, GraphSAGE y GAT sobre texto más enlaces | Cora |
+| 10 | [🕹️ DQN para inventario](labs/10_dqn_reinforcement/) | Double Dueling DQN sobre demanda real observada | Online Retail |
+| 11 | [♻️ Transfer learning](labs/11_transfer_learning/) | Extracción de features vs. fine-tuning vs. desde cero | Oxford-IIIT Pet |
+| 12 | [🔀 Fusión de sensores](labs/12_multimodal_fusion/) | Combinar acelerómetro y giroscopio para reconocer actividad | UCI HAR |
 
-### ⚫ Etapa 6 — Sacarlo del cuaderno
+### 🟠 Rutas 13–15 · Entrenar mejor, más barato y sin centralizar datos
 
-El modelo se vuelve servicio, artefacto y contrato. **Salida: un despliegue con latencia medida y paridad verificada.**
-
-| # | Ruta | Qué resuelve | Dataset |
-|---:|---|---|---|
-| 23 | [Exportación e inferencia](labs/23_model_export_and_inference/) | ONNX, paridad de salidas y latencia por lotes | CIFAR-10 |
-| 24 | [Proyecto final: churn](labs/24_capstone_real_project/) | Extremo a extremo con documentación, evaluación y despliegue | Iranian Churn |
-
-### 🔬 Especializaciones avanzadas
-
-Mismo contrato de semillas, selección por validación y sellado del test — con
-arquitecturas de frontera y pesos preentrenados descargados desde su proveedor.
+**Al terminar:** mejoras un modelo sin tocar `test` y sabes qué cuesta cada mejora.
 
 | # | Ruta | Qué resuelve | Dataset |
 |---:|---|---|---|
-| 25 | [Fine-tuning eficiente](advanced_labs/25_transformer_finetuning/) | DistilBERT completo vs. LoRA | AG News |
-| 26 | [Segmentación U-Net](advanced_labs/26_segmentation_unet/) | Mascota, fondo y borde píxel a píxel | Oxford-IIIT Pet (seg.) |
-| 27 | [Audio SpeechCommands](advanced_labs/27_audio_speechcommands/) | Comandos reales vía espectrogramas log-mel | SpeechCommands v0.02 |
-| 28 | [WGAN-GP](advanced_labs/28_wgan_gp/) | Estabilidad generativa con penalización de gradiente | Fashion-MNIST |
-| 29 | [Difusión DDPM](advanced_labs/29_diffusion_ddpm/) | Predicción de ruido y muestreo iterativo | Fashion-MNIST |
-| 30 | [SimCLR autosupervisado](advanced_labs/30_self_supervised_simclr/) | Preentrenamiento contrastivo + linear probe | CIFAR-10 |
+| 13 | [🎛️ Búsqueda de hiperparámetros](labs/13_hyperparameter_search/) | Profundidad, ancho, dropout y learning rate sin filtrar test | Adult Census |
+| 14 | [⚗️ Destilación de conocimiento](labs/14_knowledge_distillation/) | Profesora profunda → estudiante compacta y desplegable | CIFAR-10 |
+| 15 | [🌐 Aprendizaje federado](labs/15_federated_learning/) | FedAvg con participantes reales como clientes naturales | UCI HAR (por sujeto) |
+
+### 🔴 Rutas 16–20 · La mecánica fina, ahora en profundidad
+
+Segunda pasada por el motor, ya con la experiencia de haber entrenado modelos reales:
+lo que en la ruta 00 era una fórmula, aquí es una decisión de diseño medible.
+**Al terminar:** explicas *por qué* un entrenamiento converge, se estanca o sobreajusta.
+
+| # | Ruta | Qué resuelve | Dataset |
+|---:|---|---|---|
+| 16 | [∂ Backpropagation manual](labs/16_backpropagation_manual/) | Derivar y programar la retropropagación paso a paso | Iris |
+| 17 | [📐 Activaciones y pérdidas](labs/17_activations_and_losses/) | ReLU, GELU y Tanh; pérdidas para clases desbalanceadas | Wine Quality |
+| 18 | [⚙️ Optimizadores y schedulers](labs/18_optimizers_and_schedulers/) | SGD, Momentum, Adam y planificación de la tasa | California Housing |
+| 19 | [🛡️ Regularización](labs/19_regularization_dropout_batchnorm/) | Dropout, weight decay y batch normalization, medidos | Fashion-MNIST |
+| 20 | [🔄 Aumento de datos](labs/20_data_augmentation/) | Recortes, volteos y perturbaciones sobre imágenes reales | CIFAR-10 |
+
+### ⚫ Rutas 21–24 · Confiar en el modelo y sacarlo del cuaderno
+
+**Al terminar:** respondes «¿por qué predijo esto?», «¿cuánto te fías?» y «¿cuánto tarda en producción?».
+
+| # | Ruta | Qué resuelve | Dataset |
+|---:|---|---|---|
+| 21 | [🔍 Explicabilidad](labs/21_explainability/) | Integrated Gradients e importancia por permutación | Adult Census |
+| 22 | [🎯 Incertidumbre y calibración](labs/22_uncertainty_calibration/) | Brier score, ECE y temperature scaling | Breast Cancer Wisconsin |
+| 23 | [📦 Exportación e inferencia](labs/23_model_export_and_inference/) | ONNX, paridad de salidas y latencia por lotes | CIFAR-10 |
+| 24 | [🏁 Proyecto final: churn](labs/24_capstone_real_project/) | Extremo a extremo, con documentación, evaluación y despliegue | Iranian Churn |
+
+### 🔬 Rutas 25–30 · Especializaciones avanzadas
+
+Mismo contrato de semillas, selección por validación y sellado del test, con
+arquitecturas de frontera y pesos preentrenados descargados de su proveedor.
+
+| # | Ruta | Qué resuelve | Dataset |
+|---:|---|---|---|
+| 25 | [🔧 Fine-tuning eficiente](advanced_labs/25_transformer_finetuning/) | DistilBERT completo frente a LoRA | AG News |
+| 26 | [🧷 Segmentación U-Net](advanced_labs/26_segmentation_unet/) | Mascota, fondo y borde, píxel a píxel | Oxford-IIIT Pet (seg.) |
+| 27 | [🎙️ Audio SpeechCommands](advanced_labs/27_audio_speechcommands/) | Comandos reales vía espectrogramas log-mel | SpeechCommands v0.02 |
+| 28 | [🖌️ WGAN-GP](advanced_labs/28_wgan_gp/) | Estabilidad generativa con penalización de gradiente | Fashion-MNIST |
+| 29 | [🌫️ Difusión DDPM](advanced_labs/29_diffusion_ddpm/) | Predicción de ruido y muestreo iterativo | Fashion-MNIST |
+| 30 | [🪞 SimCLR autosupervisado](advanced_labs/30_self_supervised_simclr/) | Preentrenamiento contrastivo y linear probe | CIFAR-10 |
 
 ```bash
 neural-labs catalog
@@ -236,10 +249,11 @@ Se recomienda Python 3.11 o 3.12 para la mayor compatibilidad de extras científ
 
 ```text
 labs/03_cnn_vision/
-├── README.md
+├── README.md            ← guía: ficha, prerrequisitos, entregables y navegación
 ├── theory.md            ← teoría anclada en libros y papers, con 🔗 Referencias
-├── experiments.md
-├── assessment.md
+├── experiments.md       ← hipótesis, variables controladas y tabla multi-semilla
+├── assessment.md        ← preguntas y rúbrica de evaluación
+├── index.html           ← la misma clase como página autocontenida (offline)
 ├── lesson.yaml
 ├── train.py
 ├── notebook.ipynb
@@ -247,6 +261,20 @@ labs/03_cnn_vision/
 ├── notebook_solution.ipynb
 ├── configs/{baseline,improved}.yaml
 └── data/dataset.yaml
+```
+
+Los cuatro documentos están **enlazados entre sí y con el recorrido**: cada uno abre con
+su posición (`Ruta 4 / 31`), los saltos al laboratorio anterior y siguiente, el vínculo al
+índice y una barra con los otros tres documentos; y cierra con la tabla de navegación,
+los cuadernos y las salidas al sitio de estudio. La misma navegación existe en la página
+`index.html`, que además funciona sin conexión.
+
+Ambas capas se generan desde la misma fuente y se verifican en CI:
+
+```bash
+python scripts/build_lab_docs.py       # ficha + navegación en los 124 documentos
+python scripts/generate_lab_html.py    # 31 páginas HTML + índice offline
+python scripts/generate_site.py        # sitio de GitHub Pages en site/
 ```
 
 Y el contrato de una **ejecución** — lo que queda en disco cuando el entrenamiento termina:

@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DQN para inventario con demanda real · Neural Network Training Labs</title>
+<meta name="description" content="Laboratorio 10 — DQN para inventario con demanda real">
+<meta name="theme-color" content="#7c5cff">
+<style>
+/* Neural Network Training Labs — sitio de estudio */
+:root {
+  --bg: #0d1117; --bg-soft: #131a24; --card: #161f2e; --line: #263041;
+  --ink: #e6edf3; --ink-soft: #9fb0c3; --muted: #6b7d92;
+  --accent: #7c5cff; --accent-soft: #9d86ff; --green: #2e8b57; --gold: #f0b429;
+  --radius: 14px; --radius-sm: 9px;
+  --shadow: 0 2px 10px rgba(0,0,0,0.35); --shadow-h: 0 8px 26px rgba(124,92,255,0.28);
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f7f8fb; --bg-soft: #eef1f7; --card: #ffffff; --line: #e2e6ee;
+    --ink: #1a2233; --ink-soft: #48566b; --muted: #7a889c;
+    --shadow: 0 2px 10px rgba(20,30,50,0.08); --shadow-h: 0 10px 28px rgba(124,92,255,0.20);
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif; line-height: 1.65; }
+
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 26px; background: color-mix(in srgb, var(--bg-soft) 88%, transparent);
+  border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); }
+.brand { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.02rem;
+  color: var(--ink); text-decoration: none; }
+.crumbs { font-size: 0.9rem; color: var(--ink-soft); }
+.crumbs a { color: var(--accent-soft); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; }
+.crumbs .sep { margin: 0 8px; opacity: 0.4; }
+
+.prose { max-width: 900px; margin: 0 auto; padding: 34px 26px 72px; }
+
+/* Portada */
+.home-hero { text-align: center; padding: 30px 0 14px; }
+.home-kicker { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+  color: var(--accent-soft); background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  padding: 5px 14px; border-radius: 999px; letter-spacing: 0.02em; }
+.home-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.9rem, 4.6vw, 2.9rem);
+  line-height: 1.14; margin: 18px 0 10px; letter-spacing: -0.02em;
+  background: linear-gradient(120deg, var(--ink), var(--accent-soft));
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lede { max-width: 680px; margin: 0 auto; color: var(--ink-soft); font-size: 1.08rem; }
+.home-actions, .lab-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 24px 0 8px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 999px;
+  background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; font-size: 0.95rem;
+  box-shadow: var(--shadow); transition: transform 0.15s, box-shadow 0.15s; }
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-h); }
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); box-shadow: none; }
+.btn-ghost:hover { border-color: var(--accent); }
+
+.home-sec { font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; margin: 44px 0 18px;
+  display: flex; align-items: center; gap: 12px; }
+.home-sec .count { font-size: 0.8rem; font-weight: 600; color: var(--accent-soft);
+  background: color-mix(in srgb, var(--accent) 15%, transparent); padding: 2px 11px; border-radius: 999px; }
+.lab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.lab-card { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; background: var(--card);
+  border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; color: var(--ink);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); }
+.lab-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: var(--shadow-h); }
+.lab-num { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent-soft); font-weight: 600; }
+.lab-name { font-weight: 600; font-size: 1.0rem; line-height: 1.3; }
+
+/* Página de laboratorio */
+.lab-hero { padding: 8px 0 6px; }
+.lab-kicker { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent-soft);
+  text-transform: uppercase; letter-spacing: 0.05em; }
+.lab-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.7rem, 3.8vw, 2.4rem);
+  line-height: 1.16; margin: 8px 0 16px; letter-spacing: -0.01em; }
+.lab-actions { justify-content: flex-start; margin: 0 0 6px; }
+
+/* Paginador anterior / siguiente */
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0; }
+.pg { display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; border-radius: var(--radius);
+  background: var(--card); border: 1px solid var(--line); text-decoration: none; color: var(--ink);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); }
+.pg-next { text-align: right; }
+.pg:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-h); }
+.pg-empty { background: transparent; border: none; box-shadow: none; }
+.pg-dir { font-size: 0.8rem; color: var(--accent-soft); font-weight: 600; }
+.pg-title { font-weight: 600; font-size: 0.98rem; }
+
+/* Contenido renderizado */
+.content { margin-top: 8px; }
+.content h1 { display: none; } /* el título ya está en el hero */
+.doc-sep { font-family: 'Space Grotesk', sans-serif; margin: 2.4em 0 0.6em; padding-top: 1.2em;
+  border-top: 2px solid var(--line); font-size: 1.5rem; color: var(--accent-soft); }
+.content h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 1.8em 0 0.5em;
+  padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.content h3 { font-size: 1.14rem; margin: 1.5em 0 0.4em; }
+.content p, .content li { color: var(--ink-soft); }
+.content a { color: var(--accent-soft); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); text-underline-offset: 3px; }
+.content a:hover { text-decoration-color: var(--accent); }
+.content code { font-family: 'JetBrains Mono', monospace; font-size: 0.88em;
+  background: var(--bg-soft); border: 1px solid var(--line); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
+.content pre { background: #0b1220; color: #d7e0ee; padding: 16px 18px; border-radius: var(--radius-sm);
+  overflow-x: auto; border: 1px solid var(--line); box-shadow: var(--shadow); }
+.content pre code { background: transparent; border: none; padding: 0; color: inherit; }
+.content blockquote { border-left: 4px solid var(--accent); background: var(--bg-soft);
+  padding: 12px 18px; margin: 1.4em 0; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; color: var(--ink); }
+.content table { border-collapse: collapse; width: 100%; margin: 1.4em 0; background: var(--card);
+  border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow); display: block; overflow-x: auto; }
+.content th, .content td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+.content th { background: color-mix(in srgb, var(--accent) 20%, var(--card)); color: var(--ink); font-weight: 600; }
+.content tr:last-child td { border-bottom: none; }
+.content img { max-width: 100%; height: auto; border-radius: var(--radius-sm); }
+.content hr { border: none; border-top: 1px solid var(--line); margin: 2.2em 0; }
+
+.foot { max-width: 900px; margin: 0 auto; padding: 26px; border-top: 1px solid var(--line);
+  color: var(--muted); font-size: 0.88rem; text-align: center; }
+.foot a { color: var(--accent-soft); text-decoration: none; }
+.foot code { font-family: 'JetBrains Mono', monospace; }
+
+@media (max-width: 620px) {
+  .pager { grid-template-columns: 1fr; }
+  .pg-next { text-align: left; }
+}
+
+
+/* Distintivos: chips locales que reemplazan las imágenes de shields.io */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 18px; }
+.chip { display: inline-flex; align-items: stretch; border-radius: 999px; overflow: hidden;
+  font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.78rem; font-weight: 600;
+  border: 1px solid var(--line); box-shadow: var(--shadow); }
+.chip b { background: var(--bg-soft); color: var(--ink-soft); padding: 4px 10px; font-weight: 600; }
+.chip span { padding: 4px 11px; color: #fff; }
+
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span aria-hidden="true">🧠</span> Neural Network Training Labs</a>
+    <nav class="crumbs"><a href="../../index.html">🏠 Índice</a><span class="sep">›</span>🕹️ DQN para inventario con demanda real</nav>
+  </header>
+  <main class="prose">
+    <div class="lab-hero">
+      <div class="lab-kicker">Laboratorio 10 · Central · Ruta 11 / 31</div>
+      <h1>🕹️ DQN para inventario con demanda real</h1>
+      <div class="lab-actions"><a class="btn btn-ghost" href="#README">📄 Guía</a><a class="btn btn-ghost" href="#theory">🧠 Teoría</a><a class="btn btn-ghost" href="#experiments">🔬 Experimentos</a><a class="btn btn-ghost" href="#assessment">📝 Evaluación</a><a class="btn btn-ghost" href="notebook.ipynb">📓 Recorrido</a><a class="btn btn-ghost" href="notebook_student.ipynb">✏️ Estudiante</a><a class="btn btn-ghost" href="notebook_solution.ipynb">✅ Solución</a></div>
+    </div>
+    <nav class="pager"><a class="pg pg-prev" href="../../labs/09_gnn_graphs/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🕸️ GNN sobre red de citas</span></a><a class="pg pg-next" href="../../labs/11_transfer_learning/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">♻️ Transfer learning con mascotas</span></a></nav>
+    <article class="content">
+      <span id="README"></span><h1 id="dqn-para-inventario-con-demanda-real">DQN para inventario con demanda real</h1>
+<!-- ficha -->
+<h2 id="ficha-del-laboratorio">📋 Ficha del laboratorio</h2>
+<div class="chips"><span class="chip"><b>ruta</b><span style="background:#7c5cff">11 de 31</span></span> <span class="chip"><b>nivel</b><span style="background:#8957e5">avanzado</span></span> <span class="chip"><b>categoría</b><span style="background:#2e8b57">Central</span></span> <span class="chip"><b>horas</b><span style="background:#f0b429">~8 h</span></span> <span class="chip"><b>dataset</b><span style="background:#1f6feb">online_retail</span></span> <span class="chip"><b>selección</b><span style="background:#8957e5">mean_return</span></span></div>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🧭 Posición</td>
+<td>Ruta <strong>11 de 31</strong> del recorrido · categoría central</td>
+</tr>
+<tr>
+<td>🎚️ Nivel</td>
+<td>avanzado</td>
+</tr>
+<tr>
+<td>⏱️ Dedicación estimada</td>
+<td>8 horas</td>
+</tr>
+<tr>
+<td>🧩 Tarea</td>
+<td><code>reinforcement_learning</code></td>
+</tr>
+<tr>
+<td>🏗️ Arquitectura</td>
+<td><code>dqn_inventory</code></td>
+</tr>
+<tr>
+<td>🗄️ Dataset</td>
+<td><a href="https://archive.ics.uci.edu/dataset/352/online+retail"><code>online_retail</code></a> — UCI</td>
+</tr>
+<tr>
+<td>⚖️ Licencia del dataset</td>
+<td>CC BY 4.0</td>
+</tr>
+<tr>
+<td>🎯 Métrica de selección</td>
+<td><code>mean_return</code> sobre <code>validation</code></td>
+</tr>
+<tr>
+<td>📏 Línea base a superar</td>
+<td>Política de reposición periódica basada en demanda media histórica</td>
+</tr>
+<tr>
+<td>🔒 Política de <code>test</code></td>
+<td>se abre una sola vez, tras escribir <code>experiment.lock.json</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="que-vas-a-poder-hacer-al-terminar">🎯 Qué vas a poder hacer al terminar</h3>
+<ul>
+<li>Aprender una política de reposición usando una secuencia de demanda observada en transacciones reales.</li>
+<li>Preparar y auditar el dataset real online_retail sin fuga de datos.</li>
+<li>Entrenar y evaluar valor de acciones con demanda histórica.</li>
+<li>Comparar contra la línea base: Política de reposición periódica basada en demanda media histórica.</li>
+<li>Interpretar intervalos de confianza, errores y limitaciones.</li>
+</ul>
+<h3 id="prerrequisitos">🧩 Prerrequisitos</h3>
+<ul>
+<li>PyTorch intermedio</li>
+<li>optimización</li>
+<li>lectura de artículos técnicos</li>
+</ul>
+<blockquote>
+<p>Si alguno te falta, retrocede antes de continuar. Viniendo de <a href="../../labs/09_gnn_graphs/index.html">🕸️ GNN sobre red de citas</a>.</p>
+</blockquote>
+<h3 id="baseline-frente-a-improved">⚙️ <code>baseline</code> frente a <code>improved</code></h3>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th><a href="configs/baseline.yaml"><code>baseline.yaml</code></a></th>
+<th><a href="configs/improved.yaml"><code>improved.yaml</code></a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Épocas</td>
+<td><code>20</code></td>
+<td><code>50</code></td>
+</tr>
+<tr>
+<td>Tasa de aprendizaje</td>
+<td><code>0.001</code></td>
+<td><code>0.0005</code></td>
+</tr>
+<tr>
+<td>Paciencia (early stopping)</td>
+<td><code>5</code></td>
+<td><code>8</code></td>
+</tr>
+<tr>
+<td>Precisión mixta (AMP)</td>
+<td>no</td>
+<td>sí</td>
+</tr>
+<tr>
+<td>Procesos de carga</td>
+<td><code>0</code></td>
+<td><code>2</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con <code>validation</code>, nunca con <code>test</code>.</p>
+</blockquote>
+<h3 id="entregables-y-criterios-de-aceptacion">📦 Entregables y criterios de aceptación</h3>
+<p><strong>Entregables</strong></p>
+<ul>
+<li>notebook ejecutado</li>
+<li>reporte experimental</li>
+<li>model card</li>
+<li>comparación con línea base</li>
+<li>respuesta a preguntas críticas</li>
+</ul>
+<p><strong>Criterios de éxito</strong></p>
+<ul>
+<li>cero solapamiento entre train, validation y test</li>
+<li>selección basada únicamente en validation</li>
+<li>métricas finales acompañadas por incertidumbre</li>
+<li>conclusiones que distinguen evidencia de suposición</li>
+</ul>
+<h3 id="recursos-del-laboratorio">🗂️ Recursos del laboratorio</h3>
+<table>
+<thead>
+<tr>
+<th>Recurso</th>
+<th>Archivo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🧠 Teoría y referencias</td>
+<td><a href="#theory"><code>theory.md</code></a></td>
+</tr>
+<tr>
+<td>🔬 Plan de experimentos</td>
+<td><a href="#experiments"><code>experiments.md</code></a></td>
+</tr>
+<tr>
+<td>📝 Evaluación y rúbrica</td>
+<td><a href="#assessment"><code>assessment.md</code></a></td>
+</tr>
+<tr>
+<td>📓 Notebook de recorrido</td>
+<td><a href="notebook.ipynb"><code>notebook.ipynb</code></a></td>
+</tr>
+<tr>
+<td>✏️ Notebook de estudiante</td>
+<td><a href="notebook_student.ipynb"><code>notebook_student.ipynb</code></a></td>
+</tr>
+<tr>
+<td>✅ Notebook de solución</td>
+<td><a href="notebook_solution.ipynb"><code>notebook_solution.ipynb</code></a></td>
+</tr>
+<tr>
+<td>🖥️ Script de terminal</td>
+<td><a href="train.py"><code>train.py</code></a></td>
+</tr>
+<tr>
+<td>🎛️ Configuración base</td>
+<td><a href="configs/baseline.yaml"><code>configs/baseline.yaml</code></a></td>
+</tr>
+<tr>
+<td>🎚️ Configuración ampliada</td>
+<td><a href="configs/improved.yaml"><code>configs/improved.yaml</code></a></td>
+</tr>
+<tr>
+<td>🗄️ Ficha del dataset</td>
+<td><a href="data/dataset.yaml"><code>data/dataset.yaml</code></a></td>
+</tr>
+<tr>
+<td>🧾 Metadatos de la lección</td>
+<td><a href="lesson.yaml"><code>lesson.yaml</code></a></td>
+</tr>
+</tbody>
+</table>
+<!-- /ficha -->
+
+<h2 id="objetivo">Objetivo</h2>
+<p>Aprender una política de reposición usando una secuencia de demanda observada en transacciones reales.</p>
+<h2 id="dataset-real">Dataset real</h2>
+<ul>
+<li><strong>Dataset:</strong> <code>online_retail</code></li>
+<li><strong>Fuente:</strong> UCI</li>
+<li><strong>Referencia:</strong> https://archive.ics.uci.edu/dataset/352/online+retail</li>
+<li><strong>Licencia:</strong> CC BY 4.0</li>
+</ul>
+<p>La dinámica de inventario es un entorno educativo, pero la demanda diaria se construye exclusivamente desde transacciones reales de Online Retail.</p>
+<h2 id="diseno">Diseño</h2>
+<p>La serie diaria se divide cronológicamente. La política aprende con <code>train</code>, se selecciona con <code>validation</code> y se evalúa una sola vez sobre <code>test</code>. El estado contiene inventario, demanda reciente y posición temporal; las acciones son cantidades discretas de reposición.</p>
+<h2 id="linea-base">Línea base</h2>
+<p>Política de reposición periódica basada en demanda media histórica.</p>
+<h2 id="ejecucion">Ejecución</h2>
+<pre><code class="language-bash">python labs/10_dqn_reinforcement/train.py --quick
+python labs/10_dqn_reinforcement/train.py --config improved
+</code></pre>
+<h2 id="metricas">Métricas</h2>
+<p><code>mean_return</code>, <code>stockout_rate</code>, <code>holding_cost</code> y <code>service_level</code>.</p>
+<h2 id="limites">Límites</h2>
+<p>El historial de demanda es real. Los costos y reglas de inventario son parámetros educativos y deben sustituirse por costos de negocio antes de cualquier uso operacional.</p>
+<h2 id="material-formativo-v3">Material formativo v3</h2>
+<ul>
+<li><a href="#theory"><code>theory.md</code></a>: fundamento, protocolo y riesgos de interpretación.</li>
+<li><a href="#experiments"><code>experiments.md</code></a>: hipótesis, variables controladas y tabla multi-semilla.</li>
+<li><a href="#assessment"><code>assessment.md</code></a>: preguntas y rúbrica de evaluación.</li>
+<li><a href="lesson.yaml"><code>lesson.yaml</code></a>: resultados de aprendizaje, prerrequisitos y entregables.</li>
+</ul>
+<h2 id="comandos-profesionales">Comandos profesionales</h2>
+<pre><code class="language-bash">neural-labs quality --lab 10_dqn_reinforcement --quick
+neural-labs benchmark --lab 10_dqn_reinforcement --quick --split-seed 42 --training-seeds 41 42 43
+neural-labs leaderboard
+</code></pre>
+<h2 id="sellado-del-experimento">Sellado del experimento</h2>
+<p>La partición se controla con <code>split_seed</code>; la inicialización y el entrenamiento con <code>training_seed</code>. El conjunto <code>test</code> se abre solamente después de seleccionar el checkpoint mediante validación y escribir <code>experiment.lock.json</code>.</p><h2 class="doc-sep" id="theory">🧠 Teoría</h2><h1 id="teoria-dqn-para-inventario-con-demanda-real">Teoría — DQN para inventario con demanda real</h1>
+<h2 id="proposito">Propósito</h2>
+<p>Aprender una política de reposición usando una secuencia de demanda observada en transacciones reales.</p>
+<h2 id="idea-central">Idea central</h2>
+<p>Este laboratorio estudia <strong>valor de acciones con demanda histórica</strong> usando <code>online_retail</code>, un dataset público real procedente de UCI.</p>
+<p>El problema se plantea como <strong>aprendizaje por refuerzo</strong>: un agente observa el estado del inventario, elige cuánto reponer, y recibe una recompensa que penaliza tanto quedarse sin stock (ventas perdidas) como mantener inventario en exceso (coste de almacenamiento). No hay etiquetas de "acción correcta"; el agente debe descubrir una <strong>política</strong> —una regla que mapea estados a acciones— probando y observando consecuencias a lo largo del tiempo. La dificultad propia del refuerzo es que las decisiones tienen efectos diferidos: reponer poco hoy puede ahorrar coste ahora pero causar un quiebre de stock costoso mañana. El agente debe optimizar la recompensa <em>acumulada</em>, no la inmediata.</p>
+<p>La pieza clave es aprender el <strong>valor</strong> de cada acción en cada estado: cuánta recompensa futura total cabe esperar si tomo esta acción y luego actúo bien. Con esa función de valor Q(s, a), la política óptima es trivial: en cada estado elegir la acción de mayor Q. <strong>DQN</strong> (Deep Q-Network) aproxima Q con una red neuronal, lo que permite manejar estados continuos (inventario, demanda reciente, posición temporal) sin tabular todos los casos. Lo distintivo de este laboratorio es que la demanda de cada paso no la genera un simulador arbitrario: proviene del <strong>historial real</strong> de transacciones de Online Retail, de modo que la política se enfrenta a la variabilidad genuina de la demanda.</p>
+<h2 id="fundamento-matematico">Fundamento matemático</h2>
+<p>El valor Q óptimo satisface la <strong>ecuación de Bellman de optimalidad</strong>, que expresa el valor de un par (s, a) como la recompensa inmediata más el mejor valor posible del estado siguiente, descontado:</p>
+<pre><code>Q*(s, a) = 𝔼[ r + γ · max_{a′} Q*(s′, a′) | s, a ]
+</code></pre>
+<p>Aquí r es la recompensa recibida al ejecutar a en s, s′ es el estado siguiente, y γ ∈ [0, 1) es el <strong>factor de descuento</strong>, que fija cuánto pesan las recompensas futuras frente a las inmediatas (γ cercano a 1 → agente previsor). DQN entrena una red Q(s, a; θ) para satisfacer esta ecuación minimizando el <strong>error de diferencia temporal (TD)</strong> contra un objetivo (target):</p>
+<pre><code>y = r + γ · max_{a′} Q_target(s′, a′; θ⁻)        ℒ(θ) = 𝔼_{(s,a,r,s′)∼𝒟}[ ( y − Q(s, a; θ) )² ]
+</code></pre>
+<p>Dos ingredientes hacen esto estable. Primero, la <strong>repetición de experiencias</strong> (replay buffer 𝒟): las transiciones (s, a, r, s′) se guardan y se muestrean en minibatches aleatorios, rompiendo la correlación temporal entre muestras consecutivas. Segundo, la <strong>red objetivo</strong> con parámetros θ⁻: una copia rezagada de θ que se actualiza cada cierto tiempo; usarla para calcular y evita que el objetivo persiga a la propia red en cada paso, lo que provocaría oscilaciones. La demanda de cada paso proviene del historial real, no de un generador. Conectando con los cuatro elementos: la <strong>representación de entrada</strong> es el vector de estado s (inventario, demanda reciente, tiempo); la <strong>función del modelo</strong> es la red Q que produce un valor por cada acción discreta de reposición; la <strong>función de pérdida</strong> es el error TD cuadrático de arriba; y la <strong>regla de actualización</strong> es descenso de gradiente, θ ← θ − η ∇_θ ℒ. El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.</p>
+<p>Este laboratorio incorpora dos mejoras estándar sobre el DQN original. <strong>Double DQN</strong> corrige la sobreestimación del valor: el operador max en el target tiende a elegir acciones cuyo Q está inflado por ruido, así que se <strong>desacopla</strong> la selección de la evaluación —la red en línea elige la acción y la red objetivo la valora: y = r + γ · Q_target(s′, argmax_{a′} Q(s′, a′; θ); θ⁻). <strong>Dueling DQN</strong> reorganiza la arquitectura separando el valor del estado V(s) de la <strong>ventaja</strong> A(s, a) de cada acción, y las recombina como Q(s, a) = V(s) + ( A(s, a) − (1/|𝒜|) Σ_{a′} A(s, a′) ). La resta de la ventaja media es un truco de identificabilidad que estabiliza el aprendizaje; la intuición es que en muchos estados el valor depende poco de la acción concreta, y estimar V(s) por separado hace el aprendizaje más eficiente.</p>
+<p>Por último, el agente equilibra <strong>exploración y explotación</strong> típicamente con una política ε-greedy: con probabilidad ε toma una acción aleatoria (explora) y con probabilidad 1−ε toma argmax_a Q(s, a) (explota), reduciendo ε a lo largo del entrenamiento. Sin exploración suficiente, el agente podría fijar prematuramente una política de reposición subóptima.</p>
+<h2 id="protocolo-cientifico">Protocolo científico</h2>
+<ul>
+<li>Ajustar transformaciones, vocabulario, normalización y selección de variables solo con <code>train</code>.</li>
+<li>Usar <code>validation</code> para arquitectura, hiperparámetros, checkpoint y umbrales.</li>
+<li>Evaluar <code>test</code> una vez, después de congelar las decisiones.</li>
+<li>Comparar contra <strong>Política de reposición periódica basada en demanda media histórica</strong>.</li>
+<li>Reportar variación entre semillas e intervalos de confianza; una métrica puntual no expresa toda la incertidumbre.</li>
+</ul>
+<h2 id="riesgos-de-interpretacion">Riesgos de interpretación</h2>
+<p>La dinámica de inventario es un entorno educativo, pero la demanda diaria se construye exclusivamente desde transacciones reales de Online Retail.</p>
+<p>El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.</p>
+<h2 id="pregunta-critica">Pregunta crítica</h2>
+<blockquote>
+<p>¿La política es robusta a cambios en costo y demanda?</p>
+<p>Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.</p>
+</blockquote>
+<h2 id="referencias">🔗 Referencias</h2>
+<ul>
+<li>Sutton &amp; Barto — <em>Reinforcement Learning: An Introduction</em> (2.ª ed., MIT Press) — texto canónico: procesos de decisión de Markov, ecuación de Bellman, Q-learning y equilibrio exploración–explotación.</li>
+<li>Mnih et al. (2015), <em>Human-level control through deep reinforcement learning (DQN)</em>, Nature — DQN con replay buffer y red objetivo, base del laboratorio.</li>
+<li>van Hasselt, Guez &amp; Silver (2016), <em>Deep Reinforcement Learning with Double Q-learning</em>, AAAI — corrección de la sobreestimación desacoplando selección y evaluación.</li>
+<li>Wang et al. (2016), <em>Dueling Network Architectures for Deep Reinforcement Learning</em>, ICML — separación de valor de estado y ventaja de acción.</li>
+<li>Fuente del dataset: https://archive.ics.uci.edu/dataset/352/online+retail</li>
+<li>Consulte <code>docs/experiment-protocol.md</code>, <code>docs/reproducibility.md</code> y <code>docs/ethics-and-licenses.md</code>.</li>
+</ul><h2 class="doc-sep" id="experiments">🔬 Experimentos</h2><h1 id="plan-de-experimentos-dqn-para-inventario-con-demanda-real">Plan de experimentos — DQN para inventario con demanda real</h1>
+<h2 id="hipotesis-principal">Hipótesis principal</h2>
+<p>Aprender una política de reposición usando una secuencia de demanda observada en transacciones reales. La hipótesis debe aceptarse o rechazarse comparando el modelo con <strong>Política de reposición periódica basada en demanda media histórica</strong> y no solo observando que la pérdida disminuye.</p>
+<h2 id="experimento-minimo">Experimento mínimo</h2>
+<ol>
+<li>Ejecutar <code>baseline.yaml</code> con tres semillas.</li>
+<li>Ejecutar <code>improved.yaml</code> con las mismas semillas.</li>
+<li>Mantener fija la partición de datos dentro de cada semilla.</li>
+<li>Elegir la variante con <code>validation</code>.</li>
+<li>Comparar la variante elegida contra la línea base en <code>test</code>.</li>
+<li>Revisar intervalos de confianza, errores y costo computacional.</li>
+</ol>
+<h2 id="experimento-especifico">Experimento específico</h2>
+<p>Comparar retorno contra políticas heurísticas.</p>
+<h2 id="variables-controladas">Variables controladas</h2>
+<ul>
+<li>Dataset y política de partición.</li>
+<li>Semillas declaradas.</li>
+<li>Presupuesto de épocas y criterio de parada.</li>
+<li>Métrica de selección: <code>mean_return</code> o la especificada en la configuración.</li>
+<li>Hardware y versiones registradas en <code>environment.json</code>.</li>
+</ul>
+<h2 id="tabla-que-debe-completarse">Tabla que debe completarse</h2>
+<table>
+<thead>
+<tr>
+<th>Variante</th>
+<th style="text-align: right;">Semilla</th>
+<th style="text-align: right;">Métrica validation</th>
+<th style="text-align: right;">Métrica test</th>
+<th style="text-align: right;">Tiempo</th>
+<th style="text-align: right;">Parámetros</th>
+<th>Observación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>baseline</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>baseline</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>baseline</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>improved</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>improved</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>improved</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="criterio-de-conclusion">Criterio de conclusión</h2>
+<p>La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.</p><h2 class="doc-sep" id="assessment">📝 Evaluación</h2><h1 id="evaluacion-dqn-para-inventario-con-demanda-real">Evaluación — DQN para inventario con demanda real</h1>
+<h2 id="evidencias-obligatorias">Evidencias obligatorias</h2>
+<ul>
+<li>Dataset preparado y auditoría sin solapamientos.</li>
+<li>Notebook ejecutado sin celdas omitidas.</li>
+<li>Línea base y modelo neuronal comparados.</li>
+<li>Resultados de al menos tres semillas o justificación del costo.</li>
+<li>Análisis de errores y limitaciones.</li>
+<li>Model card actualizada.</li>
+</ul>
+<h2 id="preguntas">Preguntas</h2>
+<ol>
+<li>Explique con sus palabras: y=r+γ max_a Q_target(s′,a); la demanda de cada paso proviene del historial real, no de un generador.</li>
+<li>¿Qué información del dataset solo puede utilizarse durante entrenamiento?</li>
+<li>¿Por qué la línea base <strong>Política de reposición periódica basada en demanda media histórica</strong> es una comparación razonable?</li>
+<li>¿La política es robusta a cambios en costo y demanda?</li>
+<li>¿Qué cambiaría antes de usar este modelo fuera del laboratorio?</li>
+</ol>
+<h2 id="rubrica">Rúbrica</h2>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Insuficiente</th>
+<th>Adecuado</th>
+<th>Excelente</th>
+<th style="text-align: right;">Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Integridad de datos</td>
+<td>mezcla particiones</td>
+<td>separación correcta</td>
+<td>auditoría, hashes y justificación</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>Implementación</td>
+<td>no ejecuta</td>
+<td>entrena y evalúa</td>
+<td>código claro, reusable y probado</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>Diseño experimental</td>
+<td>resultado aislado</td>
+<td>comparación controlada</td>
+<td>multi-semilla e incertidumbre</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>Análisis</td>
+<td>repite métricas</td>
+<td>interpreta errores</td>
+<td>identifica sesgos, límites y costo</td>
+<td style="text-align: right;">25%</td>
+</tr>
+<tr>
+<td>Comunicación</td>
+<td>incompleta</td>
+<td>reporte entendible</td>
+<td>model card y conclusiones verificables</td>
+<td style="text-align: right;">15%</td>
+</tr>
+</tbody>
+</table>
+<p>La aprobación exige al menos 70% y cero errores críticos de fuga de datos.</p>
+    </article>
+    <nav class="pager"><a class="pg pg-prev" href="../../labs/09_gnn_graphs/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🕸️ GNN sobre red de citas</span></a><a class="pg pg-next" href="../../labs/11_transfer_learning/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">♻️ Transfer learning con mascotas</span></a></nav>
+  </main>
+  <footer class="foot">
+    <p><a href="../../index.html">🏠 Índice del recorrido</a> · <a href="https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/10_dqn_reinforcement/index.html">🌐 Sitio de estudio</a> · <a href="https://github.com/vladimiracunadev-create/neural-network-training-labs/tree/main/labs/10_dqn_reinforcement">📂 Código en GitHub</a> · <a href="https://github.com/vladimiracunadev-create/neural-network-training-labs/blob/main/labs/10_dqn_reinforcement/README.md">📄 Markdown</a></p>
+    <p>Página autocontenida: se genera desde <code>labs/10_dqn_reinforcement</code> con <code>scripts/generate_lab_html.py</code>.</p>
+  </footer>
+</body>
+</html>

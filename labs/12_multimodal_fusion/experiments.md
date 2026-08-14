@@ -1,5 +1,11 @@
 # Plan de experimentos — Fusión de sensores
 
+<!-- nav-top -->
+> 🧭 **Ruta 13 / 31** · [⬅️ ♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [🎛️ Búsqueda de hiperparámetros ➡️](../../labs/13_hyperparameter_search/experiments.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Fusionar acelerómetro y giroscopio de smartphones para reconocer actividades. La hipótesis debe aceptarse o rechazarse comparando el modelo con **Acelerómetro solo, giroscopio solo y regresión logística** y no solo observando que la pérdida disminuye.
@@ -39,3 +45,15 @@ Ablacionar acelerómetro y giroscopio.
 ## Criterio de conclusión
 
 La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/12_multimodal_fusion/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

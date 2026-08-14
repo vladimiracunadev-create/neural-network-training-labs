@@ -1,5 +1,11 @@
 # Plan de experimentos — Destilación de conocimiento
 
+<!-- nav-top -->
+> 🧭 **Ruta 15 / 31** · [⬅️ 🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [🌐 Aprendizaje federado por participante ➡️](../../labs/15_federated_learning/experiments.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Transferir conocimiento de una CNN profesora a una estudiante compacta. La hipótesis debe aceptarse o rechazarse comparando el modelo con **Estudiante entrenado solo con etiquetas** y no solo observando que la pérdida disminuye.
@@ -39,3 +45,15 @@ Comparar calidad, tamaño y latencia.
 ## Criterio de conclusión
 
 La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/14_knowledge_distillation/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

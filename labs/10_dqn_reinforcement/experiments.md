@@ -1,5 +1,11 @@
 # Plan de experimentos — DQN para inventario con demanda real
 
+<!-- nav-top -->
+> 🧭 **Ruta 11 / 31** · [⬅️ 🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [♻️ Transfer learning con mascotas ➡️](../../labs/11_transfer_learning/experiments.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Aprender una política de reposición usando una secuencia de demanda observada en transacciones reales. La hipótesis debe aceptarse o rechazarse comparando el modelo con **Política de reposición periódica basada en demanda media histórica** y no solo observando que la pérdida disminuye.
@@ -39,3 +45,15 @@ Comparar retorno contra políticas heurísticas.
 ## Criterio de conclusión
 
 La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/10_dqn_reinforcement/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

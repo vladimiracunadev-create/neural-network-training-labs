@@ -54,8 +54,9 @@ La teoría de cada laboratorio se ancla en la literatura de referencia del tema 
 ```text
 scripts/
 ├── validate_repository.py           # valida estructura, catálogo y contratos de notebooks
+├── build_lab_docs.py                # ficha + navegación en los 4 documentos de cada laboratorio (idempotente)
+├── generate_lab_html.py             # página HTML autocontenida por laboratorio + índice offline
 ├── generate_site.py                 # genera el sitio de estudio (GitHub Pages) con navegación
-├── add_lab_nav.py                   # inserta la navegación anterior/siguiente en cada README (idempotente)
 ├── generate_specialized_notebooks.py
 ├── prepare_datasets.py · audit_splits.py · check_dataset_sources.py
 ├── run_lab.py · smoke_test.py · clean_runs.py
@@ -63,7 +64,7 @@ scripts/
 └── validate_nbgrader.py
 ```
 
-`generate_site.py` y `add_lab_nav.py` son la fuente única del recorrido de estudio: si cambian los títulos o el orden de los laboratorios, se vuelven a ejecutar y tanto el Markdown del repositorio como el sitio quedan sincronizados. Consulta [Sitio de estudio y navegación](study-site.md).
+`build_lab_docs.py`, `generate_lab_html.py` y `generate_site.py` mantienen el recorrido de estudio en sus tres superficies —Markdown, HTML versionado y sitio de Pages— a partir de una única fuente: el Markdown de los laboratorios. Si cambian los títulos o el orden, se ejecutan en ese orden y todo queda sincronizado; los dos primeros aceptan `--check` y la CI los usa para impedir que las superficies se desincronicen. Consulta [Sitio de estudio y navegación](study-site.md).
 
 ## Flujos de integración continua
 

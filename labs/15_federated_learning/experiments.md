@@ -1,5 +1,11 @@
 # Plan de experimentos — Aprendizaje federado por participante
 
+<!-- nav-top -->
+> 🧭 **Ruta 16 / 31** · [⬅️ ⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [∂ Backpropagation manual ➡️](../../labs/16_backpropagation_manual/experiments.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Aplicar FedAvg usando participantes reales como clientes naturales. La hipótesis debe aceptarse o rechazarse comparando el modelo con **Entrenamiento centralizado** y no solo observando que la pérdida disminuye.
@@ -39,3 +45,15 @@ Medir rendimiento global y por participante.
 ## Criterio de conclusión
 
 La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/15_federated_learning/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

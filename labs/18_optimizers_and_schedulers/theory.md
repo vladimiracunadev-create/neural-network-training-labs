@@ -1,5 +1,11 @@
 # Teoría — Optimizadores y schedulers
 
+<!-- nav-top -->
+> 🧭 **Ruta 19 / 31** · [⬅️ 📐 Activaciones y funciones de pérdida](../../labs/17_activations_and_losses/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🛡️ Regularización ➡️](../../labs/19_regularization_dropout_batchnorm/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Comparar SGD, Momentum, Adam y reducción de tasa de aprendizaje.
@@ -53,3 +59,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Loshchilov y Hutter (2019), *Decoupled Weight Decay Regularization (AdamW)*, ICLR — desacoplamiento del weight decay respecto de la actualización adaptativa.
 - Fuente del dataset: https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [📐 Activaciones y funciones de pérdida](../../labs/17_activations_and_losses/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🛡️ Regularización](../../labs/19_regularization_dropout_batchnorm/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/18_optimizers_and_schedulers/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

@@ -4,36 +4,51 @@ El repositorio publica, además de esta documentación técnica, un **sitio de e
 
 - 🌐 <https://vladimiracunadev-create.github.io/neural-network-training-labs/>
 
-## Qué ofrece
+## El orden es el número
 
-- Una **portada** con las 31 rutas agrupadas (25 centrales + 6 especializaciones avanzadas).
-- Una **página por laboratorio** que renderiza su `README.md`, `theory.md`, `experiments.md` y `assessment.md` en un solo documento.
-- Un **paginador anterior / siguiente** que crea un recorrido lineal de la neurona en NumPy (`00`) a SimCLR (`30`), incluyendo la transición entre `labs/` y `advanced_labs/`.
-- Tema claro y oscuro automático.
+Se estudia de la ruta **00** a la **30**, sin saltos. Ese orden es el mismo en las tres superficies (Markdown, sitio y HTML local) y es el que siguen todos los enlaces *anterior / siguiente*. Los bloques temáticos del `README.md` principal (00–02, 03–07, 08–12, 13–15, 16–20, 21–24, 25–30) son tramos **contiguos** de esa secuencia, nunca un orden alternativo.
 
-## Doble navegación: repositorio y sitio
+## Tres superficies, una fuente
 
-El flujo anterior/siguiente existe en dos lugares que se mantienen sincronizados:
+| Superficie | Qué se ve | Quién la genera | ¿Se versiona? |
+|---|---|---|---|
+| **GitHub** (Markdown) | Ficha del laboratorio, navegación superior con posición `Ruta N / 31`, barra de los cuatro documentos y bloque «Navegación del recorrido» al final de cada documento | `scripts/build_lab_docs.py` | Sí |
+| **HTML local** (`<lab>/index.html`) | La clase completa como página autocontenida, con paginador, anclas por documento y enlaces relativos a cuadernos y configuraciones | `scripts/generate_lab_html.py` | Sí |
+| **Sitio de estudio** (GitHub Pages) | Portada con las 31 rutas y una página por laboratorio con el paginador del sitio | `scripts/generate_site.py` | No (`site/` está en `.gitignore`) |
 
-| Dónde | Qué se ve | Quién lo genera |
-|---|---|---|
-| **GitHub** (Markdown del laboratorio) | Una línea de navegación bajo el título y un bloque «Navegación del curso» al final de cada `README.md` | `scripts/add_lab_nav.py` |
-| **Sitio de estudio** (GitHub Pages) | El paginador propio del sitio | `scripts/generate_site.py` |
+Las tres se construyen desde el mismo Markdown de `labs/` y `advanced_labs/`: esa es la única fuente de verdad.
 
-Para evitar duplicación, `generate_site.py` elimina los bloques de navegación del Markdown al renderizar: en el sitio la navegación la aporta su propio paginador.
+## Qué enlaza con qué
+
+Cada laboratorio publica cuatro documentos —`README.md`, `theory.md`, `experiments.md` y `assessment.md`— y todos comparten la misma capa navegable:
+
+- **Arriba:** posición en el recorrido (`Ruta 4 / 31`), salto al laboratorio anterior y al siguiente *conservando el documento actual* (de `theory.md` se pasa a `theory.md`), enlace al índice y barra con los cuatro documentos, marcando el actual.
+- **Abajo:** tabla anterior / índice / siguiente, enlaces a los otros documentos y a los tres cuadernos, y salidas hacia la portada del repositorio, el sitio de estudio y la página HTML local.
+
+En la página `index.html` los enlaces se reescriben para funcionar sin conexión: los documentos del laboratorio pasan a ser anclas de la misma página, los saltos entre laboratorios apuntan al `index.html` vecino, y los cuadernos, configuraciones y fichas de dataset quedan como rutas relativas.
 
 ## Cómo se genera
 
 ```bash
-# 1) Insertar/actualizar la navegación anterior/siguiente en cada README (idempotente)
-python scripts/add_lab_nav.py
+# 1) Ficha y navegación en los 124 documentos Markdown (idempotente)
+python scripts/build_lab_docs.py
 
-# 2) Generar el sitio estático en site/
+# 2) Página HTML autocontenida por laboratorio + índice offline en la raíz
 python -m pip install "markdown>=3.6"
+python scripts/generate_lab_html.py
+
+# 3) Sitio estático de GitHub Pages en site/
 python scripts/generate_site.py
 ```
 
-El sitio se construye a partir del Markdown del repositorio: es su única fuente de verdad. El directorio `site/` no se versiona (está en `.gitignore`); lo regenera el flujo de integración continua.
+El orden importa: el HTML se construye a partir del Markdown ya actualizado.
+
+Ambos generadores aceptan `--check`, que no escribe nada y falla si algo quedó desfasado. Es lo que ejecuta la integración continua:
+
+```bash
+python scripts/build_lab_docs.py --check
+python scripts/generate_lab_html.py --check
+```
 
 ## Publicación automática
 
@@ -43,8 +58,9 @@ El workflow [`deploy-pages.yml`](https://github.com/vladimiracunadev-create/neur
 
 Si cambian los títulos, se añade un laboratorio o se reordena el recorrido:
 
-1. Ejecuta `python scripts/add_lab_nav.py` para actualizar la navegación en los `README.md`.
-2. Ejecuta `python scripts/generate_site.py` para regenerar el sitio localmente y revisarlo.
-3. Al hacer `push` a `main`, el sitio se publica solo.
+1. Ejecuta `python scripts/build_lab_docs.py` para actualizar ficha y navegación en el Markdown.
+2. Ejecuta `python scripts/generate_lab_html.py` para regenerar las páginas HTML versionadas.
+3. Ejecuta `python scripts/generate_site.py` para revisar el sitio localmente.
+4. Al hacer `push` a `main`, el sitio se publica solo.
 
-El mapa de emojis por laboratorio se define, de forma idéntica, en ambos scripts; si añades un laboratorio, agrégalo a los dos.
+El mapa de emojis por laboratorio se define de forma idéntica en `build_lab_docs.py` y `generate_site.py`; si añades un laboratorio, agrégalo a los dos.

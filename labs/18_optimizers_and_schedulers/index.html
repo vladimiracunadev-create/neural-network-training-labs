@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Optimizadores y schedulers · Neural Network Training Labs</title>
+<meta name="description" content="Laboratorio 18 — Optimizadores y schedulers">
+<meta name="theme-color" content="#7c5cff">
+<style>
+/* Neural Network Training Labs — sitio de estudio */
+:root {
+  --bg: #0d1117; --bg-soft: #131a24; --card: #161f2e; --line: #263041;
+  --ink: #e6edf3; --ink-soft: #9fb0c3; --muted: #6b7d92;
+  --accent: #7c5cff; --accent-soft: #9d86ff; --green: #2e8b57; --gold: #f0b429;
+  --radius: 14px; --radius-sm: 9px;
+  --shadow: 0 2px 10px rgba(0,0,0,0.35); --shadow-h: 0 8px 26px rgba(124,92,255,0.28);
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f7f8fb; --bg-soft: #eef1f7; --card: #ffffff; --line: #e2e6ee;
+    --ink: #1a2233; --ink-soft: #48566b; --muted: #7a889c;
+    --shadow: 0 2px 10px rgba(20,30,50,0.08); --shadow-h: 0 10px 28px rgba(124,92,255,0.20);
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif; line-height: 1.65; }
+
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 26px; background: color-mix(in srgb, var(--bg-soft) 88%, transparent);
+  border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); }
+.brand { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.02rem;
+  color: var(--ink); text-decoration: none; }
+.crumbs { font-size: 0.9rem; color: var(--ink-soft); }
+.crumbs a { color: var(--accent-soft); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; }
+.crumbs .sep { margin: 0 8px; opacity: 0.4; }
+
+.prose { max-width: 900px; margin: 0 auto; padding: 34px 26px 72px; }
+
+/* Portada */
+.home-hero { text-align: center; padding: 30px 0 14px; }
+.home-kicker { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+  color: var(--accent-soft); background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  padding: 5px 14px; border-radius: 999px; letter-spacing: 0.02em; }
+.home-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.9rem, 4.6vw, 2.9rem);
+  line-height: 1.14; margin: 18px 0 10px; letter-spacing: -0.02em;
+  background: linear-gradient(120deg, var(--ink), var(--accent-soft));
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lede { max-width: 680px; margin: 0 auto; color: var(--ink-soft); font-size: 1.08rem; }
+.home-actions, .lab-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 24px 0 8px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 999px;
+  background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; font-size: 0.95rem;
+  box-shadow: var(--shadow); transition: transform 0.15s, box-shadow 0.15s; }
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-h); }
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); box-shadow: none; }
+.btn-ghost:hover { border-color: var(--accent); }
+
+.home-sec { font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; margin: 44px 0 18px;
+  display: flex; align-items: center; gap: 12px; }
+.home-sec .count { font-size: 0.8rem; font-weight: 600; color: var(--accent-soft);
+  background: color-mix(in srgb, var(--accent) 15%, transparent); padding: 2px 11px; border-radius: 999px; }
+.lab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.lab-card { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; background: var(--card);
+  border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; color: var(--ink);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); }
+.lab-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: var(--shadow-h); }
+.lab-num { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent-soft); font-weight: 600; }
+.lab-name { font-weight: 600; font-size: 1.0rem; line-height: 1.3; }
+
+/* Página de laboratorio */
+.lab-hero { padding: 8px 0 6px; }
+.lab-kicker { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent-soft);
+  text-transform: uppercase; letter-spacing: 0.05em; }
+.lab-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.7rem, 3.8vw, 2.4rem);
+  line-height: 1.16; margin: 8px 0 16px; letter-spacing: -0.01em; }
+.lab-actions { justify-content: flex-start; margin: 0 0 6px; }
+
+/* Paginador anterior / siguiente */
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0; }
+.pg { display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; border-radius: var(--radius);
+  background: var(--card); border: 1px solid var(--line); text-decoration: none; color: var(--ink);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); }
+.pg-next { text-align: right; }
+.pg:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-h); }
+.pg-empty { background: transparent; border: none; box-shadow: none; }
+.pg-dir { font-size: 0.8rem; color: var(--accent-soft); font-weight: 600; }
+.pg-title { font-weight: 600; font-size: 0.98rem; }
+
+/* Contenido renderizado */
+.content { margin-top: 8px; }
+.content h1 { display: none; } /* el título ya está en el hero */
+.doc-sep { font-family: 'Space Grotesk', sans-serif; margin: 2.4em 0 0.6em; padding-top: 1.2em;
+  border-top: 2px solid var(--line); font-size: 1.5rem; color: var(--accent-soft); }
+.content h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 1.8em 0 0.5em;
+  padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.content h3 { font-size: 1.14rem; margin: 1.5em 0 0.4em; }
+.content p, .content li { color: var(--ink-soft); }
+.content a { color: var(--accent-soft); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); text-underline-offset: 3px; }
+.content a:hover { text-decoration-color: var(--accent); }
+.content code { font-family: 'JetBrains Mono', monospace; font-size: 0.88em;
+  background: var(--bg-soft); border: 1px solid var(--line); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
+.content pre { background: #0b1220; color: #d7e0ee; padding: 16px 18px; border-radius: var(--radius-sm);
+  overflow-x: auto; border: 1px solid var(--line); box-shadow: var(--shadow); }
+.content pre code { background: transparent; border: none; padding: 0; color: inherit; }
+.content blockquote { border-left: 4px solid var(--accent); background: var(--bg-soft);
+  padding: 12px 18px; margin: 1.4em 0; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; color: var(--ink); }
+.content table { border-collapse: collapse; width: 100%; margin: 1.4em 0; background: var(--card);
+  border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow); display: block; overflow-x: auto; }
+.content th, .content td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+.content th { background: color-mix(in srgb, var(--accent) 20%, var(--card)); color: var(--ink); font-weight: 600; }
+.content tr:last-child td { border-bottom: none; }
+.content img { max-width: 100%; height: auto; border-radius: var(--radius-sm); }
+.content hr { border: none; border-top: 1px solid var(--line); margin: 2.2em 0; }
+
+.foot { max-width: 900px; margin: 0 auto; padding: 26px; border-top: 1px solid var(--line);
+  color: var(--muted); font-size: 0.88rem; text-align: center; }
+.foot a { color: var(--accent-soft); text-decoration: none; }
+.foot code { font-family: 'JetBrains Mono', monospace; }
+
+@media (max-width: 620px) {
+  .pager { grid-template-columns: 1fr; }
+  .pg-next { text-align: left; }
+}
+
+
+/* Distintivos: chips locales que reemplazan las imágenes de shields.io */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 18px; }
+.chip { display: inline-flex; align-items: stretch; border-radius: 999px; overflow: hidden;
+  font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.78rem; font-weight: 600;
+  border: 1px solid var(--line); box-shadow: var(--shadow); }
+.chip b { background: var(--bg-soft); color: var(--ink-soft); padding: 4px 10px; font-weight: 600; }
+.chip span { padding: 4px 11px; color: #fff; }
+
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span aria-hidden="true">🧠</span> Neural Network Training Labs</a>
+    <nav class="crumbs"><a href="../../index.html">🏠 Índice</a><span class="sep">›</span>⚙️ Optimizadores y schedulers</nav>
+  </header>
+  <main class="prose">
+    <div class="lab-hero">
+      <div class="lab-kicker">Laboratorio 18 · Central · Ruta 19 / 31</div>
+      <h1>⚙️ Optimizadores y schedulers</h1>
+      <div class="lab-actions"><a class="btn btn-ghost" href="#README">📄 Guía</a><a class="btn btn-ghost" href="#theory">🧠 Teoría</a><a class="btn btn-ghost" href="#experiments">🔬 Experimentos</a><a class="btn btn-ghost" href="#assessment">📝 Evaluación</a><a class="btn btn-ghost" href="notebook.ipynb">📓 Recorrido</a><a class="btn btn-ghost" href="notebook_student.ipynb">✏️ Estudiante</a><a class="btn btn-ghost" href="notebook_solution.ipynb">✅ Solución</a></div>
+    </div>
+    <nav class="pager"><a class="pg pg-prev" href="../../labs/17_activations_and_losses/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">📐 Activaciones y funciones de pérdida</span></a><a class="pg pg-next" href="../../labs/19_regularization_dropout_batchnorm/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🛡️ Regularización</span></a></nav>
+    <article class="content">
+      <span id="README"></span><h1 id="optimizadores-y-schedulers">Optimizadores y schedulers</h1>
+<!-- ficha -->
+<h2 id="ficha-del-laboratorio">📋 Ficha del laboratorio</h2>
+<div class="chips"><span class="chip"><b>ruta</b><span style="background:#7c5cff">19 de 31</span></span> <span class="chip"><b>nivel</b><span style="background:#3fb950">fundamentos</span></span> <span class="chip"><b>categoría</b><span style="background:#2e8b57">Central</span></span> <span class="chip"><b>horas</b><span style="background:#f0b429">~4 h</span></span> <span class="chip"><b>dataset</b><span style="background:#1f6feb">california_housing</span></span> <span class="chip"><b>selección</b><span style="background:#8957e5">rmse</span></span></div>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🧭 Posición</td>
+<td>Ruta <strong>19 de 31</strong> del recorrido · categoría central</td>
+</tr>
+<tr>
+<td>🎚️ Nivel</td>
+<td>fundamentos</td>
+</tr>
+<tr>
+<td>⏱️ Dedicación estimada</td>
+<td>4 horas</td>
+</tr>
+<tr>
+<td>🧩 Tarea</td>
+<td><code>regression</code></td>
+</tr>
+<tr>
+<td>🏗️ Arquitectura</td>
+<td><code>optimizer_comparison</code></td>
+</tr>
+<tr>
+<td>🗄️ Dataset</td>
+<td><a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html"><code>california_housing</code></a> — scikit-learn / StatLib</td>
+</tr>
+<tr>
+<td>⚖️ Licencia del dataset</td>
+<td>Consultar fuente StatLib</td>
+</tr>
+<tr>
+<td>🎯 Métrica de selección</td>
+<td><code>rmse</code> sobre <code>validation</code></td>
+</tr>
+<tr>
+<td>📏 Línea base a superar</td>
+<td>Media y Ridge</td>
+</tr>
+<tr>
+<td>🔒 Política de <code>test</code></td>
+<td>se abre una sola vez, tras escribir <code>experiment.lock.json</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="que-vas-a-poder-hacer-al-terminar">🎯 Qué vas a poder hacer al terminar</h3>
+<ul>
+<li>Comparar SGD, Momentum, Adam y reducción de tasa de aprendizaje.</li>
+<li>Preparar y auditar el dataset real california_housing sin fuga de datos.</li>
+<li>Entrenar y evaluar comparación controlada de optimizadores y schedulers.</li>
+<li>Comparar contra la línea base: Media y Ridge.</li>
+<li>Interpretar intervalos de confianza, errores y limitaciones.</li>
+</ul>
+<h3 id="prerrequisitos">🧩 Prerrequisitos</h3>
+<ul>
+<li>Python básico</li>
+<li>NumPy</li>
+<li>álgebra lineal elemental</li>
+</ul>
+<blockquote>
+<p>Si alguno te falta, retrocede antes de continuar. Viniendo de <a href="../../labs/17_activations_and_losses/index.html">📐 Activaciones y funciones de pérdida</a>.</p>
+</blockquote>
+<h3 id="baseline-frente-a-improved">⚙️ <code>baseline</code> frente a <code>improved</code></h3>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th><a href="configs/baseline.yaml"><code>baseline.yaml</code></a></th>
+<th><a href="configs/improved.yaml"><code>improved.yaml</code></a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Épocas</td>
+<td><code>20</code></td>
+<td><code>50</code></td>
+</tr>
+<tr>
+<td>Tasa de aprendizaje</td>
+<td><code>0.001</code></td>
+<td><code>0.0005</code></td>
+</tr>
+<tr>
+<td>Paciencia (early stopping)</td>
+<td><code>5</code></td>
+<td><code>8</code></td>
+</tr>
+<tr>
+<td>Precisión mixta (AMP)</td>
+<td>no</td>
+<td>sí</td>
+</tr>
+<tr>
+<td>Procesos de carga</td>
+<td><code>0</code></td>
+<td><code>2</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con <code>validation</code>, nunca con <code>test</code>.</p>
+</blockquote>
+<h3 id="entregables-y-criterios-de-aceptacion">📦 Entregables y criterios de aceptación</h3>
+<p><strong>Entregables</strong></p>
+<ul>
+<li>notebook ejecutado</li>
+<li>reporte experimental</li>
+<li>model card</li>
+<li>comparación con línea base</li>
+<li>respuesta a preguntas críticas</li>
+</ul>
+<p><strong>Criterios de éxito</strong></p>
+<ul>
+<li>cero solapamiento entre train, validation y test</li>
+<li>selección basada únicamente en validation</li>
+<li>métricas finales acompañadas por incertidumbre</li>
+<li>conclusiones que distinguen evidencia de suposición</li>
+</ul>
+<h3 id="recursos-del-laboratorio">🗂️ Recursos del laboratorio</h3>
+<table>
+<thead>
+<tr>
+<th>Recurso</th>
+<th>Archivo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🧠 Teoría y referencias</td>
+<td><a href="#theory"><code>theory.md</code></a></td>
+</tr>
+<tr>
+<td>🔬 Plan de experimentos</td>
+<td><a href="#experiments"><code>experiments.md</code></a></td>
+</tr>
+<tr>
+<td>📝 Evaluación y rúbrica</td>
+<td><a href="#assessment"><code>assessment.md</code></a></td>
+</tr>
+<tr>
+<td>📓 Notebook de recorrido</td>
+<td><a href="notebook.ipynb"><code>notebook.ipynb</code></a></td>
+</tr>
+<tr>
+<td>✏️ Notebook de estudiante</td>
+<td><a href="notebook_student.ipynb"><code>notebook_student.ipynb</code></a></td>
+</tr>
+<tr>
+<td>✅ Notebook de solución</td>
+<td><a href="notebook_solution.ipynb"><code>notebook_solution.ipynb</code></a></td>
+</tr>
+<tr>
+<td>🖥️ Script de terminal</td>
+<td><a href="train.py"><code>train.py</code></a></td>
+</tr>
+<tr>
+<td>🎛️ Configuración base</td>
+<td><a href="configs/baseline.yaml"><code>configs/baseline.yaml</code></a></td>
+</tr>
+<tr>
+<td>🎚️ Configuración ampliada</td>
+<td><a href="configs/improved.yaml"><code>configs/improved.yaml</code></a></td>
+</tr>
+<tr>
+<td>🗄️ Ficha del dataset</td>
+<td><a href="data/dataset.yaml"><code>data/dataset.yaml</code></a></td>
+</tr>
+<tr>
+<td>🧾 Metadatos de la lección</td>
+<td><a href="lesson.yaml"><code>lesson.yaml</code></a></td>
+</tr>
+</tbody>
+</table>
+<!-- /ficha -->
+
+<h2 id="objetivo">Objetivo</h2>
+<p>Comparar SGD, Momentum, Adam y reducción de tasa de aprendizaje.</p>
+<h2 id="dataset-real">Dataset real</h2>
+<ul>
+<li><strong>Dataset:</strong> <code>california_housing</code></li>
+<li><strong>Fuente:</strong> scikit-learn / StatLib</li>
+<li><strong>Referencia:</strong> https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html</li>
+<li><strong>Licencia/condiciones:</strong> Consultar fuente StatLib</li>
+<li><strong>Uso:</strong> los datos se descargan desde la fuente; no hay ejemplos sintéticos ni archivos inventados.</li>
+</ul>
+<p>Datos reales del censo de California de 1990.</p>
+<h2 id="fundamento-matematico">Fundamento matemático</h2>
+<p>Actualizaciones de parámetros y programación de learning rate.</p>
+<h2 id="protocolo-experimental">Protocolo experimental</h2>
+<ol>
+<li>Descargar y verificar la procedencia.</li>
+<li>Conservar o crear una partición reproducible.</li>
+<li>Ajustar transformaciones únicamente con <code>train</code>.</li>
+<li>Seleccionar modelo e hiperparámetros usando <code>validation</code>.</li>
+<li>Evaluar <code>test</code> una sola vez tras congelar la decisión.</li>
+<li>Comparar con la línea base: <strong>Media y Ridge</strong>.</li>
+<li>Guardar configuración, entorno, métricas, predicciones, gráficos y modelo.</li>
+</ol>
+<h2 id="ejecucion">Ejecución</h2>
+<pre><code class="language-bash">python labs/18_optimizers_and_schedulers/train.py --quick
+python labs/18_optimizers_and_schedulers/train.py --config improved
+</code></pre>
+<p>Preparar únicamente el dataset:</p>
+<pre><code class="language-bash">python -m neural_labs.cli dataset --lab 18_optimizers_and_schedulers
+</code></pre>
+<p>Inferencia y exportación:</p>
+<pre><code class="language-bash">neural-labs predict --lab 18_optimizers_and_schedulers --run latest --input sample.json
+neural-labs export --lab 18_optimizers_and_schedulers --run latest --format onnx --verify
+</code></pre>
+<h2 id="metricas">Métricas</h2>
+<p>mae, rmse, r2.</p>
+<h2 id="archivos">Archivos</h2>
+<ul>
+<li><code>notebook.ipynb</code>: recorrido completo y ejecutable.</li>
+<li><code>notebook_student.ipynb</code>: actividades evaluables sin soluciones.</li>
+<li><code>notebook_solution.ipynb</code>: resolución docente y pruebas de referencia.</li>
+<li><code>train.py</code>: interfaz de terminal que usa el mismo código del cuaderno.</li>
+<li><code>configs/baseline.yaml</code>: configuración base.</li>
+<li><code>configs/improved.yaml</code>: configuración ampliada.</li>
+<li><code>data/dataset.yaml</code>: procedencia, licencia y política de partición.</li>
+</ul>
+<h2 id="ejercicios">Ejercicios</h2>
+<ul>
+<li>Cambiar una decisión experimental y justificarla.</li>
+<li>Analizar errores por clase o segmento.</li>
+<li>Comparar costo, precisión y latencia.</li>
+<li>Documentar sesgos, limitaciones y usos no recomendados.</li>
+</ul>
+<h2 id="material-formativo-v3">Material formativo v3</h2>
+<ul>
+<li><a href="#theory"><code>theory.md</code></a>: fundamento, protocolo y riesgos de interpretación.</li>
+<li><a href="#experiments"><code>experiments.md</code></a>: hipótesis, variables controladas y tabla multi-semilla.</li>
+<li><a href="#assessment"><code>assessment.md</code></a>: preguntas y rúbrica de evaluación.</li>
+<li><a href="lesson.yaml"><code>lesson.yaml</code></a>: resultados de aprendizaje, prerrequisitos y entregables.</li>
+</ul>
+<h2 id="comandos-profesionales">Comandos profesionales</h2>
+<pre><code class="language-bash">neural-labs quality --lab 18_optimizers_and_schedulers --quick
+neural-labs benchmark --lab 18_optimizers_and_schedulers --quick --split-seed 42 --training-seeds 41 42 43
+neural-labs leaderboard
+</code></pre>
+<h2 id="sellado-del-experimento">Sellado del experimento</h2>
+<p>La partición se controla con <code>split_seed</code>; la inicialización y el entrenamiento con <code>training_seed</code>. El conjunto <code>test</code> se abre solamente después de seleccionar el checkpoint mediante validación y escribir <code>experiment.lock.json</code>.</p><h2 class="doc-sep" id="theory">🧠 Teoría</h2><h1 id="teoria-optimizadores-y-schedulers">Teoría — Optimizadores y schedulers</h1>
+<h2 id="proposito">Propósito</h2>
+<p>Comparar SGD, Momentum, Adam y reducción de tasa de aprendizaje.</p>
+<h2 id="idea-central">Idea central</h2>
+<p>Este laboratorio estudia <strong>comparación controlada de optimizadores y schedulers</strong> usando <code>california_housing</code>, un dataset público real procedente de scikit-learn / StatLib.</p>
+<p>Entrenar una red neuronal es resolver un problema de <strong>optimización</strong>: buscar los parámetros θ que minimizan una función de pérdida ℒ(θ) sobre datos reales. Como no podemos evaluar el gradiente exacto sobre todo el conjunto (sería costoso y redundante), estimamos ∇ℒ con <strong>mini-lotes</strong> aleatorios. El optimizador es la regla que traduce ese gradiente ruidoso en un paso de actualización, y el <em>scheduler</em> es la política que hace variar la tasa de aprendizaje η a lo largo del entrenamiento. Dos decisiones aparentemente técnicas —qué optimizador y qué programación de η— determinan si el modelo converge rápido, se estanca en una meseta o diverge.</p>
+<p>La comparación es "controlada" porque solo cambiamos el optimizador/scheduler mientras mantenemos fijos arquitectura, partición, semillas y presupuesto de cómputo. Así, cualquier diferencia observada en velocidad de convergencia o generalización se atribuye a la regla de actualización y no a factores de confusión. Sobre <code>california_housing</code> —una regresión del valor mediano de vivienda a partir de variables socioeconómicas— medimos cuán rápido baja la pérdida de entrenamiento y cuán bien se comporta el modelo en validación.</p>
+<h2 id="fundamento-matematico">Fundamento matemático</h2>
+<p>Actualizaciones de parámetros y programación de learning rate.</p>
+<p>El <strong>descenso de gradiente estocástico (SGD)</strong> actualiza cada parámetro moviéndose en dirección opuesta al gradiente del mini-lote: θ ← θ − η · ∇θ ℒ(θ). El signo negativo es la intuición central: −∇ℒ apunta hacia donde la pérdida decrece más rápido, y η controla la longitud del paso. Un η demasiado grande hace que el paso "sobrepase" el mínimo y oscile o diverja; uno demasiado pequeño convierte el entrenamiento en un avance lentísimo. Como el gradiente proviene de un mini-lote, es un estimador <em>ruidoso</em> del gradiente verdadero, y ese ruido es a la vez un obstáculo (trayectoria zigzagueante) y una ayuda (permite escapar de mínimos pobres).</p>
+<p>El <strong>momentum</strong> acumula una media exponencial de los gradientes recientes para suavizar la trayectoria: vₜ ← β·vₜ₋₁ + (1−β)·∇θ ℒ, luego θ ← θ − η·vₜ. La velocidad v actúa como inercia física: en direcciones donde el gradiente es consistente, los pasos se suman y el avance se acelera; en direcciones donde oscila, las contribuciones se cancelan y el zigzag se amortigua. El factor β ≈ 0.9 fija cuánta "memoria" se conserva.</p>
+<p><strong>Adam</strong> combina momentum con una normalización por la magnitud reciente de cada gradiente. Mantiene dos medias exponenciales, la del gradiente (primer momento mₜ) y la de su cuadrado (segundo momento vₜ), aplica una corrección de sesgo m̂ₜ, v̂ₜ (necesaria porque ambas medias arrancan en cero) y actualiza θ ← θ − η · m̂ₜ / (√v̂ₜ + ε). Dividir por √v̂ₜ da a cada parámetro una tasa de aprendizaje <em>efectiva</em> propia: los parámetros con gradientes grandes reciben pasos más cortos y los de gradientes pequeños pasos más largos, lo que hace a Adam robusto a la escala y suele acelerar las primeras épocas. <strong>AdamW</strong> corrige un detalle sutil: desacopla el <em>weight decay</em> (λ·θ) de la actualización adaptativa, aplicándolo directamente sobre θ en vez de mezclarlo con el gradiente, lo que restaura la interpretación de regularización L2 que Adam distorsiona.</p>
+<p>El <strong>scheduler</strong> hace evolucionar η con el tiempo. La motivación es que conviene un η grande al principio, para avanzar deprisa por regiones lejanas del mínimo, y un η pequeño al final, para asentarse con precisión sin oscilar. Programaciones típicas son el decaimiento por pasos (η se divide por un factor cada cierto número de épocas), el decaimiento coseno η(t) = η_min + ½(η_max − η_min)(1 + cos(π·t/T)), o la reducción en meseta cuando la métrica de validación deja de mejorar. La regla práctica: el optimizador decide <em>la dirección y forma</em> del paso; el scheduler decide <em>su tamaño a lo largo del tiempo</em>.</p>
+<h2 id="protocolo-cientifico">Protocolo científico</h2>
+<ul>
+<li>Ajustar transformaciones, vocabulario, normalización y selección de variables solo con <code>train</code>.</li>
+<li>Usar <code>validation</code> para arquitectura, hiperparámetros, checkpoint y umbrales.</li>
+<li>Evaluar <code>test</code> una vez, después de congelar las decisiones.</li>
+<li>Comparar contra <strong>Media y Ridge</strong>.</li>
+<li>Reportar variación entre semillas e intervalos de confianza; una métrica puntual no expresa toda la incertidumbre.</li>
+</ul>
+<h2 id="riesgos-de-interpretacion">Riesgos de interpretación</h2>
+<p>Datos reales del censo de California de 1990.</p>
+<p>El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.</p>
+<h2 id="pregunta-critica">Pregunta crítica</h2>
+<blockquote>
+<p>¿Cuál mejora más rápido y cuál generaliza mejor?</p>
+</blockquote>
+<h2 id="referencias">🔗 Referencias</h2>
+<blockquote>
+<p>Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.</p>
+</blockquote>
+<ul>
+<li>Goodfellow, Bengio y Courville — <em>Deep Learning</em> (MIT Press, 2016), cap. 8 — tratamiento formal de la optimización para entrenamiento de redes profundas: SGD, momentum y métodos adaptativos.</li>
+<li>Ruder (2016), <em>An overview of gradient descent optimization algorithms</em>, arXiv — panorámica comparada de SGD, momentum, Adagrad, RMSProp y Adam con intuición geométrica.</li>
+<li>Robbins y Monro (1951), <em>A Stochastic Approximation Method</em>, Annals of Mathematical Statistics — origen teórico del descenso estocástico y las condiciones de convergencia.</li>
+<li>Kingma y Ba (2015), <em>Adam: A Method for Stochastic Optimization</em>, ICLR — definición del optimizador Adam y su corrección de sesgo de momentos.</li>
+<li>Loshchilov y Hutter (2019), <em>Decoupled Weight Decay Regularization (AdamW)</em>, ICLR — desacoplamiento del weight decay respecto de la actualización adaptativa.</li>
+<li>Fuente del dataset: https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html</li>
+<li>Consulte <code>docs/experiment-protocol.md</code>, <code>docs/reproducibility.md</code> y <code>docs/ethics-and-licenses.md</code>.</li>
+</ul><h2 class="doc-sep" id="experiments">🔬 Experimentos</h2><h1 id="plan-de-experimentos-optimizadores-y-schedulers">Plan de experimentos — Optimizadores y schedulers</h1>
+<h2 id="hipotesis-principal">Hipótesis principal</h2>
+<p>Comparar SGD, Momentum, Adam y reducción de tasa de aprendizaje. La hipótesis debe aceptarse o rechazarse comparando el modelo con <strong>Media y Ridge</strong> y no solo observando que la pérdida disminuye.</p>
+<h2 id="experimento-minimo">Experimento mínimo</h2>
+<ol>
+<li>Ejecutar <code>baseline.yaml</code> con tres semillas.</li>
+<li>Ejecutar <code>improved.yaml</code> con las mismas semillas.</li>
+<li>Mantener fija la partición de datos dentro de cada semilla.</li>
+<li>Elegir la variante con <code>validation</code>.</li>
+<li>Comparar la variante elegida contra la línea base en <code>test</code>.</li>
+<li>Revisar intervalos de confianza, errores y costo computacional.</li>
+</ol>
+<h2 id="experimento-especifico">Experimento específico</h2>
+<p>Comparar convergencia y costo por época.</p>
+<h2 id="variables-controladas">Variables controladas</h2>
+<ul>
+<li>Dataset y política de partición.</li>
+<li>Semillas declaradas.</li>
+<li>Presupuesto de épocas y criterio de parada.</li>
+<li>Métrica de selección: <code>mae</code> o la especificada en la configuración.</li>
+<li>Hardware y versiones registradas en <code>environment.json</code>.</li>
+</ul>
+<h2 id="tabla-que-debe-completarse">Tabla que debe completarse</h2>
+<table>
+<thead>
+<tr>
+<th>Variante</th>
+<th style="text-align: right;">Semilla</th>
+<th style="text-align: right;">Métrica validation</th>
+<th style="text-align: right;">Métrica test</th>
+<th style="text-align: right;">Tiempo</th>
+<th style="text-align: right;">Parámetros</th>
+<th>Observación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>baseline</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>baseline</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>baseline</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>improved</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>improved</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>improved</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="criterio-de-conclusion">Criterio de conclusión</h2>
+<p>La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.</p><h2 class="doc-sep" id="assessment">📝 Evaluación</h2><h1 id="evaluacion-optimizadores-y-schedulers">Evaluación — Optimizadores y schedulers</h1>
+<h2 id="evidencias-obligatorias">Evidencias obligatorias</h2>
+<ul>
+<li>Dataset preparado y auditoría sin solapamientos.</li>
+<li>Notebook ejecutado sin celdas omitidas.</li>
+<li>Línea base y modelo neuronal comparados.</li>
+<li>Resultados de al menos tres semillas o justificación del costo.</li>
+<li>Análisis de errores y limitaciones.</li>
+<li>Model card actualizada.</li>
+</ul>
+<h2 id="preguntas">Preguntas</h2>
+<ol>
+<li>Explique con sus palabras: Actualizaciones de parámetros y programación de learning rate.</li>
+<li>¿Qué información del dataset solo puede utilizarse durante entrenamiento?</li>
+<li>¿Por qué la línea base <strong>Media y Ridge</strong> es una comparación razonable?</li>
+<li>¿Cuál mejora más rápido y cuál generaliza mejor?</li>
+<li>¿Qué cambiaría antes de usar este modelo fuera del laboratorio?</li>
+</ol>
+<h2 id="rubrica">Rúbrica</h2>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Insuficiente</th>
+<th>Adecuado</th>
+<th>Excelente</th>
+<th style="text-align: right;">Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Integridad de datos</td>
+<td>mezcla particiones</td>
+<td>separación correcta</td>
+<td>auditoría, hashes y justificación</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>Implementación</td>
+<td>no ejecuta</td>
+<td>entrena y evalúa</td>
+<td>código claro, reusable y probado</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>Diseño experimental</td>
+<td>resultado aislado</td>
+<td>comparación controlada</td>
+<td>multi-semilla e incertidumbre</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>Análisis</td>
+<td>repite métricas</td>
+<td>interpreta errores</td>
+<td>identifica sesgos, límites y costo</td>
+<td style="text-align: right;">25%</td>
+</tr>
+<tr>
+<td>Comunicación</td>
+<td>incompleta</td>
+<td>reporte entendible</td>
+<td>model card y conclusiones verificables</td>
+<td style="text-align: right;">15%</td>
+</tr>
+</tbody>
+</table>
+<p>La aprobación exige al menos 70% y cero errores críticos de fuga de datos.</p>
+    </article>
+    <nav class="pager"><a class="pg pg-prev" href="../../labs/17_activations_and_losses/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">📐 Activaciones y funciones de pérdida</span></a><a class="pg pg-next" href="../../labs/19_regularization_dropout_batchnorm/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🛡️ Regularización</span></a></nav>
+  </main>
+  <footer class="foot">
+    <p><a href="../../index.html">🏠 Índice del recorrido</a> · <a href="https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/18_optimizers_and_schedulers/index.html">🌐 Sitio de estudio</a> · <a href="https://github.com/vladimiracunadev-create/neural-network-training-labs/tree/main/labs/18_optimizers_and_schedulers">📂 Código en GitHub</a> · <a href="https://github.com/vladimiracunadev-create/neural-network-training-labs/blob/main/labs/18_optimizers_and_schedulers/README.md">📄 Markdown</a></p>
+    <p>Página autocontenida: se genera desde <code>labs/18_optimizers_and_schedulers</code> con <code>scripts/generate_lab_html.py</code>.</p>
+  </footer>
+</body>
+</html>

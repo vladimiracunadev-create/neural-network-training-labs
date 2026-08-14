@@ -1,5 +1,11 @@
 # Evaluación — Transfer learning con mascotas
 
+<!-- nav-top -->
+> 🧭 **Ruta 12 / 31** · [⬅️ 🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/assessment.md) · [🏠 Índice](../../README.md#laboratorios) · [🔀 Fusión de sensores ➡️](../../labs/12_multimodal_fusion/assessment.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación**
+<!-- /nav-top -->
+
 ## Evidencias obligatorias
 
 - Dataset preparado y auditoría sin solapamientos.
@@ -28,3 +34,15 @@
 | Comunicación | incompleta | reporte entendible | model card y conclusiones verificables | 15% |
 
 La aprobación exige al menos 70% y cero errores críticos de fuga de datos.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación** · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/11_transfer_learning/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

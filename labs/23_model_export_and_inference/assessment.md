@@ -1,5 +1,11 @@
 # Evaluación — Exportación e inferencia
 
+<!-- nav-top -->
+> 🧭 **Ruta 24 / 31** · [⬅️ 🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/assessment.md) · [🏠 Índice](../../README.md#laboratorios) · [🏁 Proyecto final: churn de telecomunicaciones ➡️](../../labs/24_capstone_real_project/assessment.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación**
+<!-- /nav-top -->
+
 ## Evidencias obligatorias
 
 - Dataset preparado y auditoría sin solapamientos.
@@ -28,3 +34,15 @@
 | Comunicación | incompleta | reporte entendible | model card y conclusiones verificables | 15% |
 
 La aprobación exige al menos 70% y cero errores críticos de fuga de datos.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🏁 Proyecto final: churn de telecomunicaciones](../../labs/24_capstone_real_project/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación** · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/23_model_export_and_inference/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

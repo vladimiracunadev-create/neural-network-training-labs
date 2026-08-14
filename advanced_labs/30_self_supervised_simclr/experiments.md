@@ -1,5 +1,11 @@
 # Experimentos — Aprendizaje autosupervisado SimCLR
 
+<!-- nav-top -->
+> 🧭 **Ruta 31 / 31** · [⬅️ 🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · *fin del recorrido* ➡️
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Comparar intensidad de aumento y tamaño de batch manteniendo fijo el split.
@@ -14,3 +20,15 @@ Comparar intensidad de aumento y tamaño de batch manteniendo fijo el split.
 ## Reporte mínimo
 
 Media, desviación estándar, costo de entrenamiento, latencia y análisis de errores.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/README.md) | [Las 31 rutas](../../README.md#laboratorios) | *— fin del recorrido* |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/30_self_supervised_simclr/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

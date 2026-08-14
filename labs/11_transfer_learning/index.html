@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transfer learning con mascotas · Neural Network Training Labs</title>
+<meta name="description" content="Laboratorio 11 — Transfer learning con mascotas">
+<meta name="theme-color" content="#7c5cff">
+<style>
+/* Neural Network Training Labs — sitio de estudio */
+:root {
+  --bg: #0d1117; --bg-soft: #131a24; --card: #161f2e; --line: #263041;
+  --ink: #e6edf3; --ink-soft: #9fb0c3; --muted: #6b7d92;
+  --accent: #7c5cff; --accent-soft: #9d86ff; --green: #2e8b57; --gold: #f0b429;
+  --radius: 14px; --radius-sm: 9px;
+  --shadow: 0 2px 10px rgba(0,0,0,0.35); --shadow-h: 0 8px 26px rgba(124,92,255,0.28);
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f7f8fb; --bg-soft: #eef1f7; --card: #ffffff; --line: #e2e6ee;
+    --ink: #1a2233; --ink-soft: #48566b; --muted: #7a889c;
+    --shadow: 0 2px 10px rgba(20,30,50,0.08); --shadow-h: 0 10px 28px rgba(124,92,255,0.20);
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif; line-height: 1.65; }
+
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 26px; background: color-mix(in srgb, var(--bg-soft) 88%, transparent);
+  border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); }
+.brand { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.02rem;
+  color: var(--ink); text-decoration: none; }
+.crumbs { font-size: 0.9rem; color: var(--ink-soft); }
+.crumbs a { color: var(--accent-soft); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; }
+.crumbs .sep { margin: 0 8px; opacity: 0.4; }
+
+.prose { max-width: 900px; margin: 0 auto; padding: 34px 26px 72px; }
+
+/* Portada */
+.home-hero { text-align: center; padding: 30px 0 14px; }
+.home-kicker { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+  color: var(--accent-soft); background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  padding: 5px 14px; border-radius: 999px; letter-spacing: 0.02em; }
+.home-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.9rem, 4.6vw, 2.9rem);
+  line-height: 1.14; margin: 18px 0 10px; letter-spacing: -0.02em;
+  background: linear-gradient(120deg, var(--ink), var(--accent-soft));
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lede { max-width: 680px; margin: 0 auto; color: var(--ink-soft); font-size: 1.08rem; }
+.home-actions, .lab-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 24px 0 8px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 999px;
+  background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; font-size: 0.95rem;
+  box-shadow: var(--shadow); transition: transform 0.15s, box-shadow 0.15s; }
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-h); }
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); box-shadow: none; }
+.btn-ghost:hover { border-color: var(--accent); }
+
+.home-sec { font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; margin: 44px 0 18px;
+  display: flex; align-items: center; gap: 12px; }
+.home-sec .count { font-size: 0.8rem; font-weight: 600; color: var(--accent-soft);
+  background: color-mix(in srgb, var(--accent) 15%, transparent); padding: 2px 11px; border-radius: 999px; }
+.lab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.lab-card { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; background: var(--card);
+  border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; color: var(--ink);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); }
+.lab-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: var(--shadow-h); }
+.lab-num { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent-soft); font-weight: 600; }
+.lab-name { font-weight: 600; font-size: 1.0rem; line-height: 1.3; }
+
+/* Página de laboratorio */
+.lab-hero { padding: 8px 0 6px; }
+.lab-kicker { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent-soft);
+  text-transform: uppercase; letter-spacing: 0.05em; }
+.lab-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.7rem, 3.8vw, 2.4rem);
+  line-height: 1.16; margin: 8px 0 16px; letter-spacing: -0.01em; }
+.lab-actions { justify-content: flex-start; margin: 0 0 6px; }
+
+/* Paginador anterior / siguiente */
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0; }
+.pg { display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; border-radius: var(--radius);
+  background: var(--card); border: 1px solid var(--line); text-decoration: none; color: var(--ink);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); }
+.pg-next { text-align: right; }
+.pg:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-h); }
+.pg-empty { background: transparent; border: none; box-shadow: none; }
+.pg-dir { font-size: 0.8rem; color: var(--accent-soft); font-weight: 600; }
+.pg-title { font-weight: 600; font-size: 0.98rem; }
+
+/* Contenido renderizado */
+.content { margin-top: 8px; }
+.content h1 { display: none; } /* el título ya está en el hero */
+.doc-sep { font-family: 'Space Grotesk', sans-serif; margin: 2.4em 0 0.6em; padding-top: 1.2em;
+  border-top: 2px solid var(--line); font-size: 1.5rem; color: var(--accent-soft); }
+.content h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 1.8em 0 0.5em;
+  padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.content h3 { font-size: 1.14rem; margin: 1.5em 0 0.4em; }
+.content p, .content li { color: var(--ink-soft); }
+.content a { color: var(--accent-soft); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); text-underline-offset: 3px; }
+.content a:hover { text-decoration-color: var(--accent); }
+.content code { font-family: 'JetBrains Mono', monospace; font-size: 0.88em;
+  background: var(--bg-soft); border: 1px solid var(--line); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
+.content pre { background: #0b1220; color: #d7e0ee; padding: 16px 18px; border-radius: var(--radius-sm);
+  overflow-x: auto; border: 1px solid var(--line); box-shadow: var(--shadow); }
+.content pre code { background: transparent; border: none; padding: 0; color: inherit; }
+.content blockquote { border-left: 4px solid var(--accent); background: var(--bg-soft);
+  padding: 12px 18px; margin: 1.4em 0; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; color: var(--ink); }
+.content table { border-collapse: collapse; width: 100%; margin: 1.4em 0; background: var(--card);
+  border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow); display: block; overflow-x: auto; }
+.content th, .content td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+.content th { background: color-mix(in srgb, var(--accent) 20%, var(--card)); color: var(--ink); font-weight: 600; }
+.content tr:last-child td { border-bottom: none; }
+.content img { max-width: 100%; height: auto; border-radius: var(--radius-sm); }
+.content hr { border: none; border-top: 1px solid var(--line); margin: 2.2em 0; }
+
+.foot { max-width: 900px; margin: 0 auto; padding: 26px; border-top: 1px solid var(--line);
+  color: var(--muted); font-size: 0.88rem; text-align: center; }
+.foot a { color: var(--accent-soft); text-decoration: none; }
+.foot code { font-family: 'JetBrains Mono', monospace; }
+
+@media (max-width: 620px) {
+  .pager { grid-template-columns: 1fr; }
+  .pg-next { text-align: left; }
+}
+
+
+/* Distintivos: chips locales que reemplazan las imágenes de shields.io */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 18px; }
+.chip { display: inline-flex; align-items: stretch; border-radius: 999px; overflow: hidden;
+  font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.78rem; font-weight: 600;
+  border: 1px solid var(--line); box-shadow: var(--shadow); }
+.chip b { background: var(--bg-soft); color: var(--ink-soft); padding: 4px 10px; font-weight: 600; }
+.chip span { padding: 4px 11px; color: #fff; }
+
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span aria-hidden="true">🧠</span> Neural Network Training Labs</a>
+    <nav class="crumbs"><a href="../../index.html">🏠 Índice</a><span class="sep">›</span>♻️ Transfer learning con mascotas</nav>
+  </header>
+  <main class="prose">
+    <div class="lab-hero">
+      <div class="lab-kicker">Laboratorio 11 · Central · Ruta 12 / 31</div>
+      <h1>♻️ Transfer learning con mascotas</h1>
+      <div class="lab-actions"><a class="btn btn-ghost" href="#README">📄 Guía</a><a class="btn btn-ghost" href="#theory">🧠 Teoría</a><a class="btn btn-ghost" href="#experiments">🔬 Experimentos</a><a class="btn btn-ghost" href="#assessment">📝 Evaluación</a><a class="btn btn-ghost" href="notebook.ipynb">📓 Recorrido</a><a class="btn btn-ghost" href="notebook_student.ipynb">✏️ Estudiante</a><a class="btn btn-ghost" href="notebook_solution.ipynb">✅ Solución</a></div>
+    </div>
+    <nav class="pager"><a class="pg pg-prev" href="../../labs/10_dqn_reinforcement/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🕹️ DQN para inventario con demanda real</span></a><a class="pg pg-next" href="../../labs/12_multimodal_fusion/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🔀 Fusión de sensores</span></a></nav>
+    <article class="content">
+      <span id="README"></span><h1 id="transfer-learning-con-mascotas">Transfer learning con mascotas</h1>
+<!-- ficha -->
+<h2 id="ficha-del-laboratorio">📋 Ficha del laboratorio</h2>
+<div class="chips"><span class="chip"><b>ruta</b><span style="background:#7c5cff">12 de 31</span></span> <span class="chip"><b>nivel</b><span style="background:#8957e5">avanzado</span></span> <span class="chip"><b>categoría</b><span style="background:#2e8b57">Central</span></span> <span class="chip"><b>horas</b><span style="background:#f0b429">~8 h</span></span> <span class="chip"><b>dataset</b><span style="background:#1f6feb">oxford_iiit_pet</span></span> <span class="chip"><b>selección</b><span style="background:#8957e5">macro_f1</span></span></div>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🧭 Posición</td>
+<td>Ruta <strong>12 de 31</strong> del recorrido · categoría central</td>
+</tr>
+<tr>
+<td>🎚️ Nivel</td>
+<td>avanzado</td>
+</tr>
+<tr>
+<td>⏱️ Dedicación estimada</td>
+<td>8 horas</td>
+</tr>
+<tr>
+<td>🧩 Tarea</td>
+<td><code>multiclass_classification</code></td>
+</tr>
+<tr>
+<td>🏗️ Arquitectura</td>
+<td><code>transfer_resnet18</code></td>
+</tr>
+<tr>
+<td>🗄️ Dataset</td>
+<td><a href="https://www.robots.ox.ac.uk/~vgg/data/pets/"><code>oxford_iiit_pet</code></a> — Torchvision / Oxford</td>
+</tr>
+<tr>
+<td>⚖️ Licencia del dataset</td>
+<td>Uso académico según fuente</td>
+</tr>
+<tr>
+<td>🎯 Métrica de selección</td>
+<td><code>macro_f1</code> sobre <code>validation</code></td>
+</tr>
+<tr>
+<td>📏 Línea base a superar</td>
+<td>CNN pequeña entrenada desde cero</td>
+</tr>
+<tr>
+<td>🔒 Política de <code>test</code></td>
+<td>se abre una sola vez, tras escribir <code>experiment.lock.json</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="que-vas-a-poder-hacer-al-terminar">🎯 Qué vas a poder hacer al terminar</h3>
+<ul>
+<li>Comparar extracción de características, fine-tuning y entrenamiento desde cero.</li>
+<li>Preparar y auditar el dataset real oxford_iiit_pet sin fuga de datos.</li>
+<li>Entrenar y evaluar reutilización de representaciones preentrenadas.</li>
+<li>Comparar contra la línea base: CNN pequeña entrenada desde cero.</li>
+<li>Interpretar intervalos de confianza, errores y limitaciones.</li>
+</ul>
+<h3 id="prerrequisitos">🧩 Prerrequisitos</h3>
+<ul>
+<li>PyTorch intermedio</li>
+<li>optimización</li>
+<li>lectura de artículos técnicos</li>
+</ul>
+<blockquote>
+<p>Si alguno te falta, retrocede antes de continuar. Viniendo de <a href="../../labs/10_dqn_reinforcement/index.html">🕹️ DQN para inventario con demanda real</a>.</p>
+</blockquote>
+<h3 id="baseline-frente-a-improved">⚙️ <code>baseline</code> frente a <code>improved</code></h3>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th><a href="configs/baseline.yaml"><code>baseline.yaml</code></a></th>
+<th><a href="configs/improved.yaml"><code>improved.yaml</code></a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Épocas</td>
+<td><code>20</code></td>
+<td><code>50</code></td>
+</tr>
+<tr>
+<td>Tasa de aprendizaje</td>
+<td><code>0.001</code></td>
+<td><code>0.0005</code></td>
+</tr>
+<tr>
+<td>Paciencia (early stopping)</td>
+<td><code>5</code></td>
+<td><code>8</code></td>
+</tr>
+<tr>
+<td>Precisión mixta (AMP)</td>
+<td>no</td>
+<td>sí</td>
+</tr>
+<tr>
+<td>Procesos de carga</td>
+<td><code>0</code></td>
+<td><code>2</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con <code>validation</code>, nunca con <code>test</code>.</p>
+</blockquote>
+<h3 id="entregables-y-criterios-de-aceptacion">📦 Entregables y criterios de aceptación</h3>
+<p><strong>Entregables</strong></p>
+<ul>
+<li>notebook ejecutado</li>
+<li>reporte experimental</li>
+<li>model card</li>
+<li>comparación con línea base</li>
+<li>respuesta a preguntas críticas</li>
+</ul>
+<p><strong>Criterios de éxito</strong></p>
+<ul>
+<li>cero solapamiento entre train, validation y test</li>
+<li>selección basada únicamente en validation</li>
+<li>métricas finales acompañadas por incertidumbre</li>
+<li>conclusiones que distinguen evidencia de suposición</li>
+</ul>
+<h3 id="recursos-del-laboratorio">🗂️ Recursos del laboratorio</h3>
+<table>
+<thead>
+<tr>
+<th>Recurso</th>
+<th>Archivo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🧠 Teoría y referencias</td>
+<td><a href="#theory"><code>theory.md</code></a></td>
+</tr>
+<tr>
+<td>🔬 Plan de experimentos</td>
+<td><a href="#experiments"><code>experiments.md</code></a></td>
+</tr>
+<tr>
+<td>📝 Evaluación y rúbrica</td>
+<td><a href="#assessment"><code>assessment.md</code></a></td>
+</tr>
+<tr>
+<td>📓 Notebook de recorrido</td>
+<td><a href="notebook.ipynb"><code>notebook.ipynb</code></a></td>
+</tr>
+<tr>
+<td>✏️ Notebook de estudiante</td>
+<td><a href="notebook_student.ipynb"><code>notebook_student.ipynb</code></a></td>
+</tr>
+<tr>
+<td>✅ Notebook de solución</td>
+<td><a href="notebook_solution.ipynb"><code>notebook_solution.ipynb</code></a></td>
+</tr>
+<tr>
+<td>🖥️ Script de terminal</td>
+<td><a href="train.py"><code>train.py</code></a></td>
+</tr>
+<tr>
+<td>🎛️ Configuración base</td>
+<td><a href="configs/baseline.yaml"><code>configs/baseline.yaml</code></a></td>
+</tr>
+<tr>
+<td>🎚️ Configuración ampliada</td>
+<td><a href="configs/improved.yaml"><code>configs/improved.yaml</code></a></td>
+</tr>
+<tr>
+<td>🗄️ Ficha del dataset</td>
+<td><a href="data/dataset.yaml"><code>data/dataset.yaml</code></a></td>
+</tr>
+<tr>
+<td>🧾 Metadatos de la lección</td>
+<td><a href="lesson.yaml"><code>lesson.yaml</code></a></td>
+</tr>
+</tbody>
+</table>
+<!-- /ficha -->
+
+<h2 id="objetivo">Objetivo</h2>
+<p>Comparar extracción de características, fine-tuning y entrenamiento desde cero.</p>
+<h2 id="dataset-real">Dataset real</h2>
+<ul>
+<li><strong>Dataset:</strong> <code>oxford_iiit_pet</code></li>
+<li><strong>Fuente:</strong> Torchvision / Oxford</li>
+<li><strong>Referencia:</strong> https://www.robots.ox.ac.uk/~vgg/data/pets/</li>
+<li><strong>Licencia/condiciones:</strong> Uso académico según fuente</li>
+<li><strong>Uso:</strong> los datos se descargan desde la fuente; no hay ejemplos sintéticos ni archivos inventados.</li>
+</ul>
+<p>7.349 imágenes reales de 37 razas de perros y gatos.</p>
+<h2 id="fundamento-matematico">Fundamento matemático</h2>
+<p>Inicializar con pesos ImageNet y ajustar capas seleccionadas.</p>
+<h2 id="protocolo-experimental">Protocolo experimental</h2>
+<ol>
+<li>Descargar y verificar la procedencia.</li>
+<li>Conservar o crear una partición reproducible.</li>
+<li>Ajustar transformaciones únicamente con <code>train</code>.</li>
+<li>Seleccionar modelo e hiperparámetros usando <code>validation</code>.</li>
+<li>Evaluar <code>test</code> una sola vez tras congelar la decisión.</li>
+<li>Comparar con la línea base: <strong>CNN pequeña entrenada desde cero</strong>.</li>
+<li>Guardar configuración, entorno, métricas, predicciones, gráficos y modelo.</li>
+</ol>
+<h2 id="ejecucion">Ejecución</h2>
+<pre><code class="language-bash">python labs/11_transfer_learning/train.py --quick
+python labs/11_transfer_learning/train.py --config improved
+</code></pre>
+<p>Preparar únicamente el dataset:</p>
+<pre><code class="language-bash">python -m neural_labs.cli dataset --lab 11_transfer_learning
+</code></pre>
+<p>Inferencia y exportación:</p>
+<pre><code class="language-bash">neural-labs predict --lab 11_transfer_learning --run latest --input sample.json
+neural-labs export --lab 11_transfer_learning --run latest --format onnx --verify
+</code></pre>
+<h2 id="metricas">Métricas</h2>
+<p>accuracy, balanced_accuracy, macro_f1.</p>
+<h2 id="archivos">Archivos</h2>
+<ul>
+<li><code>notebook.ipynb</code>: recorrido completo y ejecutable.</li>
+<li><code>notebook_student.ipynb</code>: actividades evaluables sin soluciones.</li>
+<li><code>notebook_solution.ipynb</code>: resolución docente y pruebas de referencia.</li>
+<li><code>train.py</code>: interfaz de terminal que usa el mismo código del cuaderno.</li>
+<li><code>configs/baseline.yaml</code>: configuración base.</li>
+<li><code>configs/improved.yaml</code>: configuración ampliada.</li>
+<li><code>data/dataset.yaml</code>: procedencia, licencia y política de partición.</li>
+</ul>
+<h2 id="ejercicios">Ejercicios</h2>
+<ul>
+<li>Cambiar una decisión experimental y justificarla.</li>
+<li>Analizar errores por clase o segmento.</li>
+<li>Comparar costo, precisión y latencia.</li>
+<li>Documentar sesgos, limitaciones y usos no recomendados.</li>
+</ul>
+<h2 id="material-formativo-v3">Material formativo v3</h2>
+<ul>
+<li><a href="#theory"><code>theory.md</code></a>: fundamento, protocolo y riesgos de interpretación.</li>
+<li><a href="#experiments"><code>experiments.md</code></a>: hipótesis, variables controladas y tabla multi-semilla.</li>
+<li><a href="#assessment"><code>assessment.md</code></a>: preguntas y rúbrica de evaluación.</li>
+<li><a href="lesson.yaml"><code>lesson.yaml</code></a>: resultados de aprendizaje, prerrequisitos y entregables.</li>
+</ul>
+<h2 id="comandos-profesionales">Comandos profesionales</h2>
+<pre><code class="language-bash">neural-labs quality --lab 11_transfer_learning --quick
+neural-labs benchmark --lab 11_transfer_learning --quick --split-seed 42 --training-seeds 41 42 43
+neural-labs leaderboard
+</code></pre>
+<h2 id="sellado-del-experimento">Sellado del experimento</h2>
+<p>La partición se controla con <code>split_seed</code>; la inicialización y el entrenamiento con <code>training_seed</code>. El conjunto <code>test</code> se abre solamente después de seleccionar el checkpoint mediante validación y escribir <code>experiment.lock.json</code>.</p><h2 class="doc-sep" id="theory">🧠 Teoría</h2><h1 id="teoria-transfer-learning-con-mascotas">Teoría — Transfer learning con mascotas</h1>
+<h2 id="proposito">Propósito</h2>
+<p>Comparar extracción de características, fine-tuning y entrenamiento desde cero.</p>
+<h2 id="idea-central">Idea central</h2>
+<p>Este laboratorio estudia <strong>reutilización de representaciones preentrenadas</strong> usando <code>oxford_iiit_pet</code>, un dataset público real procedente de Torchvision / Oxford.</p>
+<p>La idea del <strong>aprendizaje por transferencia</strong> es que una red entrenada sobre un problema grande (clasificar millones de imágenes de ImageNet en 1000 categorías) aprende representaciones visuales genéricas —bordes, texturas, formas, partes de objetos— que sirven para <em>otras</em> tareas de visión. En vez de partir de pesos aleatorios y aprender todo desde cero con nuestras 7.349 imágenes de 37 razas de perros y gatos (un dataset pequeño), reutilizamos esa red preentrenada como punto de partida. La intuición es que las primeras capas de una CNN capturan características de bajo nivel casi universales, y solo las últimas capas son específicas de la tarea original; por eso conviene conservar lo genérico y readaptar lo específico.</p>
+<p>El laboratorio contrasta tres estrategias sobre el mismo backbone. En la <strong>extracción de características</strong> se congela toda la red preentrenada y se entrena únicamente una nueva cabeza de clasificación: la red actúa como un extractor fijo de embeddings. En el <strong>fine-tuning</strong> se descongelan algunas (o todas) las capas y se las reajusta con una tasa de aprendizaje pequeña, adaptando las representaciones a las mascotas. Y el <strong>entrenamiento desde cero</strong> parte de pesos aleatorios como línea base. Comparar los tres responde una pregunta práctica central: ¿cuándo aporta el preentrenamiento y cuándo deja de compensar?</p>
+<h2 id="fundamento-matematico">Fundamento matemático</h2>
+<p>Sea un modelo dividido en un cuerpo de extracción de características f(·; θ_f) y una cabeza de clasificación h(·; θ_h), de modo que la predicción es ŷ = h(f(x; θ_f); θ_h). En un entrenamiento desde cero, θ_f y θ_h se inicializan al azar y se optimizan ambos minimizando la entropía cruzada ℒ = −Σ_c y_c log ŷ_c mediante θ ← θ − η ∇_θ ℒ. La transferencia cambia la <strong>inicialización</strong> y qué parámetros reciben gradiente: se parte de θ_f = θ_f^{ImageNet}, pesos ya optimizados sobre un problema masivo, en lugar de ruido aleatorio. Conectando con los cuatro elementos: la <strong>representación de entrada</strong> es la imagen normalizada con las mismas estadísticas de ImageNet; la <strong>función del modelo</strong> es h∘f con backbone preentrenado; la <strong>función de pérdida</strong> es la entropía cruzada sobre las 37 clases; y la <strong>regla de actualización</strong> es descenso de gradiente, aplicado a distintos subconjuntos de parámetros según la estrategia. El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.</p>
+<p>La diferencia operativa entre estrategias es qué gradientes se propagan. En <strong>extracción de características</strong> se fija ∇<em θ_f>{θ_f} ℒ = 0 (capas congeladas) y solo se actualiza θ_h; esto es rápido, usa poca memoria y resiste el sobreajuste cuando hay pocos datos, porque hay muchos menos parámetros que ajustar. En <strong>fine-tuning</strong> se permite ∇</em> ℒ ≠ 0 en las capas descongeladas, pero con una tasa η pequeña: la razón es que los pesos preentrenados ya están cerca de una buena solución, y un η grande los destruiría (fenómeno de <em>olvido catastrófico</em>) antes de que la cabeza —inicialmente aleatoria— produzca gradientes sensatos. Una práctica común es entrenar primero solo la cabeza y luego descongelar gradualmente el cuerpo con learning rate reducido.</p>
+<p>¿Por qué transfieren las características? Yosinski et al. mostraron empíricamente que la transferibilidad <strong>decae con la profundidad</strong>: las capas iniciales aprenden filtros genéricos (parecidos a detectores de bordes y color, casi idénticos entre tareas) mientras que las capas finales se especializan en las clases de la tarea original. Cuanto más se parezcan la tarea origen y la destino, más capas conviene reutilizar; cuanto más difieran, más capas hay que readaptar. Formalmente, esto encaja en el marco de Pan &amp; Yang: transferimos conocimiento de un dominio origen 𝒟_S (ImageNet) a un dominio destino 𝒟_T (mascotas) que comparten el espacio de características pero difieren en la distribución de entrada y en la tarea. El beneficio del preentrenamiento es mayor cuanto menor es el dataset destino y mayor la afinidad entre dominios; con suficientes datos destino, entrenar desde cero puede alcanzar —o superar— a la transferencia, y ahí es donde el preentrenamiento deja de aportar.</p>
+<h2 id="protocolo-cientifico">Protocolo científico</h2>
+<ul>
+<li>Ajustar transformaciones, vocabulario, normalización y selección de variables solo con <code>train</code>.</li>
+<li>Usar <code>validation</code> para arquitectura, hiperparámetros, checkpoint y umbrales.</li>
+<li>Evaluar <code>test</code> una vez, después de congelar las decisiones.</li>
+<li>Comparar contra <strong>CNN pequeña entrenada desde cero</strong>.</li>
+<li>Reportar variación entre semillas e intervalos de confianza; una métrica puntual no expresa toda la incertidumbre.</li>
+</ul>
+<h2 id="riesgos-de-interpretacion">Riesgos de interpretación</h2>
+<p>7.349 imágenes reales de 37 razas de perros y gatos.</p>
+<p>El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.</p>
+<h2 id="pregunta-critica">Pregunta crítica</h2>
+<blockquote>
+<p>¿Cuándo el preentrenamiento deja de aportar?</p>
+<p>Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.</p>
+</blockquote>
+<h2 id="referencias">🔗 Referencias</h2>
+<ul>
+<li>Géron — <em>Hands-On Machine Learning</em> (3.ª ed., O'Reilly), cap. 14 — CNN profundas y reutilización de modelos preentrenados para visión.</li>
+<li>Goodfellow, Bengio &amp; Courville — <em>Deep Learning</em> (MIT Press, 2016), cap. 15 — aprendizaje de representaciones y transferencia entre tareas.</li>
+<li>Yosinski et al. (2014), <em>How transferable are features in deep neural networks?</em>, NeurIPS — estudio empírico de cómo la transferibilidad decae con la profundidad de la capa.</li>
+<li>Pan &amp; Yang (2010), <em>A Survey on Transfer Learning</em>, IEEE Transactions on Knowledge and Data Engineering — marco conceptual de dominios y tareas origen/destino.</li>
+<li>Fuente del dataset: https://www.robots.ox.ac.uk/~vgg/data/pets/</li>
+<li>Consulte <code>docs/experiment-protocol.md</code>, <code>docs/reproducibility.md</code> y <code>docs/ethics-and-licenses.md</code>.</li>
+</ul><h2 class="doc-sep" id="experiments">🔬 Experimentos</h2><h1 id="plan-de-experimentos-transfer-learning-con-mascotas">Plan de experimentos — Transfer learning con mascotas</h1>
+<h2 id="hipotesis-principal">Hipótesis principal</h2>
+<p>Comparar extracción de características, fine-tuning y entrenamiento desde cero. La hipótesis debe aceptarse o rechazarse comparando el modelo con <strong>CNN pequeña entrenada desde cero</strong> y no solo observando que la pérdida disminuye.</p>
+<h2 id="experimento-minimo">Experimento mínimo</h2>
+<ol>
+<li>Ejecutar <code>baseline.yaml</code> con tres semillas.</li>
+<li>Ejecutar <code>improved.yaml</code> con las mismas semillas.</li>
+<li>Mantener fija la partición de datos dentro de cada semilla.</li>
+<li>Elegir la variante con <code>validation</code>.</li>
+<li>Comparar la variante elegida contra la línea base en <code>test</code>.</li>
+<li>Revisar intervalos de confianza, errores y costo computacional.</li>
+</ol>
+<h2 id="experimento-especifico">Experimento específico</h2>
+<p>Comparar congelamiento parcial y fine-tuning.</p>
+<h2 id="variables-controladas">Variables controladas</h2>
+<ul>
+<li>Dataset y política de partición.</li>
+<li>Semillas declaradas.</li>
+<li>Presupuesto de épocas y criterio de parada.</li>
+<li>Métrica de selección: <code>accuracy</code> o la especificada en la configuración.</li>
+<li>Hardware y versiones registradas en <code>environment.json</code>.</li>
+</ul>
+<h2 id="tabla-que-debe-completarse">Tabla que debe completarse</h2>
+<table>
+<thead>
+<tr>
+<th>Variante</th>
+<th style="text-align: right;">Semilla</th>
+<th style="text-align: right;">Métrica validation</th>
+<th style="text-align: right;">Métrica test</th>
+<th style="text-align: right;">Tiempo</th>
+<th style="text-align: right;">Parámetros</th>
+<th>Observación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>baseline</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>baseline</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>baseline</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>improved</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>improved</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>improved</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="criterio-de-conclusion">Criterio de conclusión</h2>
+<p>La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.</p><h2 class="doc-sep" id="assessment">📝 Evaluación</h2><h1 id="evaluacion-transfer-learning-con-mascotas">Evaluación — Transfer learning con mascotas</h1>
+<h2 id="evidencias-obligatorias">Evidencias obligatorias</h2>
+<ul>
+<li>Dataset preparado y auditoría sin solapamientos.</li>
+<li>Notebook ejecutado sin celdas omitidas.</li>
+<li>Línea base y modelo neuronal comparados.</li>
+<li>Resultados de al menos tres semillas o justificación del costo.</li>
+<li>Análisis de errores y limitaciones.</li>
+<li>Model card actualizada.</li>
+</ul>
+<h2 id="preguntas">Preguntas</h2>
+<ol>
+<li>Explique con sus palabras: Inicializar con pesos ImageNet y ajustar capas seleccionadas.</li>
+<li>¿Qué información del dataset solo puede utilizarse durante entrenamiento?</li>
+<li>¿Por qué la línea base <strong>CNN pequeña entrenada desde cero</strong> es una comparación razonable?</li>
+<li>¿Cuándo el preentrenamiento deja de aportar?</li>
+<li>¿Qué cambiaría antes de usar este modelo fuera del laboratorio?</li>
+</ol>
+<h2 id="rubrica">Rúbrica</h2>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Insuficiente</th>
+<th>Adecuado</th>
+<th>Excelente</th>
+<th style="text-align: right;">Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Integridad de datos</td>
+<td>mezcla particiones</td>
+<td>separación correcta</td>
+<td>auditoría, hashes y justificación</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>Implementación</td>
+<td>no ejecuta</td>
+<td>entrena y evalúa</td>
+<td>código claro, reusable y probado</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>Diseño experimental</td>
+<td>resultado aislado</td>
+<td>comparación controlada</td>
+<td>multi-semilla e incertidumbre</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>Análisis</td>
+<td>repite métricas</td>
+<td>interpreta errores</td>
+<td>identifica sesgos, límites y costo</td>
+<td style="text-align: right;">25%</td>
+</tr>
+<tr>
+<td>Comunicación</td>
+<td>incompleta</td>
+<td>reporte entendible</td>
+<td>model card y conclusiones verificables</td>
+<td style="text-align: right;">15%</td>
+</tr>
+</tbody>
+</table>
+<p>La aprobación exige al menos 70% y cero errores críticos de fuga de datos.</p>
+    </article>
+    <nav class="pager"><a class="pg pg-prev" href="../../labs/10_dqn_reinforcement/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🕹️ DQN para inventario con demanda real</span></a><a class="pg pg-next" href="../../labs/12_multimodal_fusion/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🔀 Fusión de sensores</span></a></nav>
+  </main>
+  <footer class="foot">
+    <p><a href="../../index.html">🏠 Índice del recorrido</a> · <a href="https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/11_transfer_learning/index.html">🌐 Sitio de estudio</a> · <a href="https://github.com/vladimiracunadev-create/neural-network-training-labs/tree/main/labs/11_transfer_learning">📂 Código en GitHub</a> · <a href="https://github.com/vladimiracunadev-create/neural-network-training-labs/blob/main/labs/11_transfer_learning/README.md">📄 Markdown</a></p>
+    <p>Página autocontenida: se genera desde <code>labs/11_transfer_learning</code> con <code>scripts/generate_lab_html.py</code>.</p>
+  </footer>
+</body>
+</html>

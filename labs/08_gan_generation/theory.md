@@ -1,5 +1,11 @@
 # Teoría — GAN generativa
 
+<!-- nav-top -->
+> 🧭 **Ruta 9 / 31** · [⬅️ 🔭 Transformer para noticias](../../labs/07_transformer_attention/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🕸️ GNN sobre red de citas ➡️](../../labs/09_gnn_graphs/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Generar prendas a partir de imágenes reales de Fashion-MNIST.
@@ -54,3 +60,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Radford, Metz & Chintala (2016), *Unsupervised Representation Learning with Deep Convolutional GANs (DCGAN)*, ICLR — arquitectura convolucional que estabilizó el entrenamiento de GANs sobre imágenes.
 - Fuente del dataset: https://github.com/zalandoresearch/fashion-mnist
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/08_gan_generation/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

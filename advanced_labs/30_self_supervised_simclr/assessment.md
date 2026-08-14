@@ -1,5 +1,11 @@
 # Evaluación
 
+<!-- nav-top -->
+> 🧭 **Ruta 31 / 31** · [⬅️ 🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/assessment.md) · [🏠 Índice](../../README.md#laboratorios) · *fin del recorrido* ➡️
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación**
+<!-- /nav-top -->
+
 | Criterio | Puntos |
 |---|---:|
 | Procedencia y auditoría del dataset | 15 |
@@ -10,3 +16,15 @@
 | Reproducibilidad y documentación | 10 |
 
 **Total: 100 puntos.**
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/README.md) | [Las 31 rutas](../../README.md#laboratorios) | *— fin del recorrido* |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación** · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/30_self_supervised_simclr/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

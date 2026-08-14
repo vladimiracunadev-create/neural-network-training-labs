@@ -1,5 +1,11 @@
 # Teoría — Exportación e inferencia
 
+<!-- nav-top -->
+> 🧭 **Ruta 24 / 31** · [⬅️ 🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🏁 Proyecto final: churn de telecomunicaciones ➡️](../../labs/24_capstone_real_project/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Exportar ONNX, validar paridad y medir latencia por lotes.
@@ -50,3 +56,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Documentación oficial de PyTorch (`torch.onnx` / `torch.export`) — exportación de modelos y validación de paridad: https://pytorch.org/docs/stable/onnx.html
 - Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🏁 Proyecto final: churn de telecomunicaciones](../../labs/24_capstone_real_project/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/23_model_export_and_inference/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

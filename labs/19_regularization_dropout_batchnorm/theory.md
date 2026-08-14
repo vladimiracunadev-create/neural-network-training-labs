@@ -1,5 +1,11 @@
 # Teoría — Regularización
 
+<!-- nav-top -->
+> 🧭 **Ruta 20 / 31** · [⬅️ ⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🔄 Aumento de datos ➡️](../../labs/20_data_augmentation/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Medir dropout, weight decay y batch normalization.
@@ -52,3 +58,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Ioffe y Szegedy (2015), *Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift*, ICML — definición de batch normalization y su efecto sobre la estabilidad del entrenamiento.
 - Fuente del dataset: https://github.com/zalandoresearch/fashion-mnist
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🔄 Aumento de datos](../../labs/20_data_augmentation/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/19_regularization_dropout_batchnorm/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

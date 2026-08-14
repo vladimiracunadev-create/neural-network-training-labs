@@ -1,5 +1,11 @@
 # Plan de experimentos — GAN generativa
 
+<!-- nav-top -->
+> 🧭 **Ruta 9 / 31** · [⬅️ 🔭 Transformer para noticias](../../labs/07_transformer_attention/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [🕸️ GNN sobre red de citas ➡️](../../labs/09_gnn_graphs/experiments.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Generar prendas a partir de imágenes reales de Fashion-MNIST. La hipótesis debe aceptarse o rechazarse comparando el modelo con **PCA generativa y distribución real de referencia** y no solo observando que la pérdida disminuye.
@@ -39,3 +45,15 @@ Vigilar colapso de modos y estabilidad.
 ## Criterio de conclusión
 
 La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/08_gan_generation/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

@@ -1,5 +1,11 @@
 # Plan de experimentos — GNN sobre red de citas
 
+<!-- nav-top -->
+> 🧭 **Ruta 10 / 31** · [⬅️ 🎨 GAN generativa](../../labs/08_gan_generation/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [🕹️ DQN para inventario con demanda real ➡️](../../labs/10_dqn_reinforcement/experiments.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Clasificar publicaciones científicas usando texto y enlaces de citas. La hipótesis debe aceptarse o rechazarse comparando el modelo con **MLP sin aristas** y no solo observando que la pérdida disminuye.
@@ -39,3 +45,15 @@ Comparar con un mlp que ignore aristas.
 ## Criterio de conclusión
 
 La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🎨 GAN generativa](../../labs/08_gan_generation/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/09_gnn_graphs/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

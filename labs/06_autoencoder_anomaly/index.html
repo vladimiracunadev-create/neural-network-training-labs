@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autoencoder para fraude · Neural Network Training Labs</title>
+<meta name="description" content="Laboratorio 06 — Autoencoder para fraude">
+<meta name="theme-color" content="#7c5cff">
+<style>
+/* Neural Network Training Labs — sitio de estudio */
+:root {
+  --bg: #0d1117; --bg-soft: #131a24; --card: #161f2e; --line: #263041;
+  --ink: #e6edf3; --ink-soft: #9fb0c3; --muted: #6b7d92;
+  --accent: #7c5cff; --accent-soft: #9d86ff; --green: #2e8b57; --gold: #f0b429;
+  --radius: 14px; --radius-sm: 9px;
+  --shadow: 0 2px 10px rgba(0,0,0,0.35); --shadow-h: 0 8px 26px rgba(124,92,255,0.28);
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f7f8fb; --bg-soft: #eef1f7; --card: #ffffff; --line: #e2e6ee;
+    --ink: #1a2233; --ink-soft: #48566b; --muted: #7a889c;
+    --shadow: 0 2px 10px rgba(20,30,50,0.08); --shadow-h: 0 10px 28px rgba(124,92,255,0.20);
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif; line-height: 1.65; }
+
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 26px; background: color-mix(in srgb, var(--bg-soft) 88%, transparent);
+  border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); }
+.brand { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.02rem;
+  color: var(--ink); text-decoration: none; }
+.crumbs { font-size: 0.9rem; color: var(--ink-soft); }
+.crumbs a { color: var(--accent-soft); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; }
+.crumbs .sep { margin: 0 8px; opacity: 0.4; }
+
+.prose { max-width: 900px; margin: 0 auto; padding: 34px 26px 72px; }
+
+/* Portada */
+.home-hero { text-align: center; padding: 30px 0 14px; }
+.home-kicker { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+  color: var(--accent-soft); background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  padding: 5px 14px; border-radius: 999px; letter-spacing: 0.02em; }
+.home-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.9rem, 4.6vw, 2.9rem);
+  line-height: 1.14; margin: 18px 0 10px; letter-spacing: -0.02em;
+  background: linear-gradient(120deg, var(--ink), var(--accent-soft));
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lede { max-width: 680px; margin: 0 auto; color: var(--ink-soft); font-size: 1.08rem; }
+.home-actions, .lab-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 24px 0 8px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 999px;
+  background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; font-size: 0.95rem;
+  box-shadow: var(--shadow); transition: transform 0.15s, box-shadow 0.15s; }
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-h); }
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); box-shadow: none; }
+.btn-ghost:hover { border-color: var(--accent); }
+
+.home-sec { font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; margin: 44px 0 18px;
+  display: flex; align-items: center; gap: 12px; }
+.home-sec .count { font-size: 0.8rem; font-weight: 600; color: var(--accent-soft);
+  background: color-mix(in srgb, var(--accent) 15%, transparent); padding: 2px 11px; border-radius: 999px; }
+.lab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.lab-card { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; background: var(--card);
+  border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; color: var(--ink);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); }
+.lab-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: var(--shadow-h); }
+.lab-num { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent-soft); font-weight: 600; }
+.lab-name { font-weight: 600; font-size: 1.0rem; line-height: 1.3; }
+
+/* Página de laboratorio */
+.lab-hero { padding: 8px 0 6px; }
+.lab-kicker { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent-soft);
+  text-transform: uppercase; letter-spacing: 0.05em; }
+.lab-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.7rem, 3.8vw, 2.4rem);
+  line-height: 1.16; margin: 8px 0 16px; letter-spacing: -0.01em; }
+.lab-actions { justify-content: flex-start; margin: 0 0 6px; }
+
+/* Paginador anterior / siguiente */
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0; }
+.pg { display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; border-radius: var(--radius);
+  background: var(--card); border: 1px solid var(--line); text-decoration: none; color: var(--ink);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); }
+.pg-next { text-align: right; }
+.pg:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-h); }
+.pg-empty { background: transparent; border: none; box-shadow: none; }
+.pg-dir { font-size: 0.8rem; color: var(--accent-soft); font-weight: 600; }
+.pg-title { font-weight: 600; font-size: 0.98rem; }
+
+/* Contenido renderizado */
+.content { margin-top: 8px; }
+.content h1 { display: none; } /* el título ya está en el hero */
+.doc-sep { font-family: 'Space Grotesk', sans-serif; margin: 2.4em 0 0.6em; padding-top: 1.2em;
+  border-top: 2px solid var(--line); font-size: 1.5rem; color: var(--accent-soft); }
+.content h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 1.8em 0 0.5em;
+  padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.content h3 { font-size: 1.14rem; margin: 1.5em 0 0.4em; }
+.content p, .content li { color: var(--ink-soft); }
+.content a { color: var(--accent-soft); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); text-underline-offset: 3px; }
+.content a:hover { text-decoration-color: var(--accent); }
+.content code { font-family: 'JetBrains Mono', monospace; font-size: 0.88em;
+  background: var(--bg-soft); border: 1px solid var(--line); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
+.content pre { background: #0b1220; color: #d7e0ee; padding: 16px 18px; border-radius: var(--radius-sm);
+  overflow-x: auto; border: 1px solid var(--line); box-shadow: var(--shadow); }
+.content pre code { background: transparent; border: none; padding: 0; color: inherit; }
+.content blockquote { border-left: 4px solid var(--accent); background: var(--bg-soft);
+  padding: 12px 18px; margin: 1.4em 0; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; color: var(--ink); }
+.content table { border-collapse: collapse; width: 100%; margin: 1.4em 0; background: var(--card);
+  border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow); display: block; overflow-x: auto; }
+.content th, .content td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+.content th { background: color-mix(in srgb, var(--accent) 20%, var(--card)); color: var(--ink); font-weight: 600; }
+.content tr:last-child td { border-bottom: none; }
+.content img { max-width: 100%; height: auto; border-radius: var(--radius-sm); }
+.content hr { border: none; border-top: 1px solid var(--line); margin: 2.2em 0; }
+
+.foot { max-width: 900px; margin: 0 auto; padding: 26px; border-top: 1px solid var(--line);
+  color: var(--muted); font-size: 0.88rem; text-align: center; }
+.foot a { color: var(--accent-soft); text-decoration: none; }
+.foot code { font-family: 'JetBrains Mono', monospace; }
+
+@media (max-width: 620px) {
+  .pager { grid-template-columns: 1fr; }
+  .pg-next { text-align: left; }
+}
+
+
+/* Distintivos: chips locales que reemplazan las imágenes de shields.io */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 18px; }
+.chip { display: inline-flex; align-items: stretch; border-radius: 999px; overflow: hidden;
+  font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.78rem; font-weight: 600;
+  border: 1px solid var(--line); box-shadow: var(--shadow); }
+.chip b { background: var(--bg-soft); color: var(--ink-soft); padding: 4px 10px; font-weight: 600; }
+.chip span { padding: 4px 11px; color: #fff; }
+
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span aria-hidden="true">🧠</span> Neural Network Training Labs</a>
+    <nav class="crumbs"><a href="../../index.html">🏠 Índice</a><span class="sep">›</span>🧬 Autoencoder para fraude</nav>
+  </header>
+  <main class="prose">
+    <div class="lab-hero">
+      <div class="lab-kicker">Laboratorio 06 · Central · Ruta 7 / 31</div>
+      <h1>🧬 Autoencoder para fraude</h1>
+      <div class="lab-actions"><a class="btn btn-ghost" href="#README">📄 Guía</a><a class="btn btn-ghost" href="#theory">🧠 Teoría</a><a class="btn btn-ghost" href="#experiments">🔬 Experimentos</a><a class="btn btn-ghost" href="#assessment">📝 Evaluación</a><a class="btn btn-ghost" href="notebook.ipynb">📓 Recorrido</a><a class="btn btn-ghost" href="notebook_student.ipynb">✏️ Estudiante</a><a class="btn btn-ghost" href="notebook_solution.ipynb">✅ Solución</a></div>
+    </div>
+    <nav class="pager"><a class="pg pg-prev" href="../../labs/05_lstm_time_series/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">📈 LSTM para series temporales</span></a><a class="pg pg-next" href="../../labs/07_transformer_attention/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🔭 Transformer para noticias</span></a></nav>
+    <article class="content">
+      <span id="README"></span><h1 id="autoencoder-para-fraude">Autoencoder para fraude</h1>
+<!-- ficha -->
+<h2 id="ficha-del-laboratorio">📋 Ficha del laboratorio</h2>
+<div class="chips"><span class="chip"><b>ruta</b><span style="background:#7c5cff">7 de 31</span></span> <span class="chip"><b>nivel</b><span style="background:#1f6feb">intermedio</span></span> <span class="chip"><b>categoría</b><span style="background:#2e8b57">Central</span></span> <span class="chip"><b>horas</b><span style="background:#f0b429">~6 h</span></span> <span class="chip"><b>dataset</b><span style="background:#1f6feb">credit_card_fraud</span></span> <span class="chip"><b>selección</b><span style="background:#8957e5">f1</span></span></div>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🧭 Posición</td>
+<td>Ruta <strong>7 de 31</strong> del recorrido · categoría central</td>
+</tr>
+<tr>
+<td>🎚️ Nivel</td>
+<td>intermedio</td>
+</tr>
+<tr>
+<td>⏱️ Dedicación estimada</td>
+<td>6 horas</td>
+</tr>
+<tr>
+<td>🧩 Tarea</td>
+<td><code>anomaly_detection</code></td>
+</tr>
+<tr>
+<td>🏗️ Arquitectura</td>
+<td><code>autoencoder</code></td>
+</tr>
+<tr>
+<td>🗄️ Dataset</td>
+<td><a href="https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud"><code>credit_card_fraud</code></a> — Kaggle / ULB</td>
+</tr>
+<tr>
+<td>⚖️ Licencia del dataset</td>
+<td>Uso sujeto a términos de Kaggle y autor</td>
+</tr>
+<tr>
+<td>🎯 Métrica de selección</td>
+<td><code>f1</code> sobre <code>validation</code></td>
+</tr>
+<tr>
+<td>📏 Línea base a superar</td>
+<td>Isolation Forest</td>
+</tr>
+<tr>
+<td>🔒 Política de <code>test</code></td>
+<td>se abre una sola vez, tras escribir <code>experiment.lock.json</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="que-vas-a-poder-hacer-al-terminar">🎯 Qué vas a poder hacer al terminar</h3>
+<ul>
+<li>Detectar transacciones fraudulentas mediante error de reconstrucción.</li>
+<li>Preparar y auditar el dataset real credit_card_fraud sin fuga de datos.</li>
+<li>Entrenar y evaluar reconstrucción para detección de anomalías.</li>
+<li>Comparar contra la línea base: Isolation Forest.</li>
+<li>Interpretar intervalos de confianza, errores y limitaciones.</li>
+</ul>
+<h3 id="prerrequisitos">🧩 Prerrequisitos</h3>
+<ul>
+<li>PyTorch básico</li>
+<li>particiones train/validation/test</li>
+<li>métricas de evaluación</li>
+</ul>
+<blockquote>
+<p>Si alguno te falta, retrocede antes de continuar. Viniendo de <a href="../../labs/05_lstm_time_series/index.html">📈 LSTM para series temporales</a>.</p>
+</blockquote>
+<h3 id="baseline-frente-a-improved">⚙️ <code>baseline</code> frente a <code>improved</code></h3>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th><a href="configs/baseline.yaml"><code>baseline.yaml</code></a></th>
+<th><a href="configs/improved.yaml"><code>improved.yaml</code></a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Épocas</td>
+<td><code>20</code></td>
+<td><code>50</code></td>
+</tr>
+<tr>
+<td>Tasa de aprendizaje</td>
+<td><code>0.001</code></td>
+<td><code>0.0005</code></td>
+</tr>
+<tr>
+<td>Paciencia (early stopping)</td>
+<td><code>5</code></td>
+<td><code>8</code></td>
+</tr>
+<tr>
+<td>Precisión mixta (AMP)</td>
+<td>no</td>
+<td>sí</td>
+</tr>
+<tr>
+<td>Procesos de carga</td>
+<td><code>0</code></td>
+<td><code>2</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con <code>validation</code>, nunca con <code>test</code>.</p>
+</blockquote>
+<h3 id="entregables-y-criterios-de-aceptacion">📦 Entregables y criterios de aceptación</h3>
+<p><strong>Entregables</strong></p>
+<ul>
+<li>notebook ejecutado</li>
+<li>reporte experimental</li>
+<li>model card</li>
+<li>comparación con línea base</li>
+<li>respuesta a preguntas críticas</li>
+</ul>
+<p><strong>Criterios de éxito</strong></p>
+<ul>
+<li>cero solapamiento entre train, validation y test</li>
+<li>selección basada únicamente en validation</li>
+<li>métricas finales acompañadas por incertidumbre</li>
+<li>conclusiones que distinguen evidencia de suposición</li>
+</ul>
+<h3 id="recursos-del-laboratorio">🗂️ Recursos del laboratorio</h3>
+<table>
+<thead>
+<tr>
+<th>Recurso</th>
+<th>Archivo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🧠 Teoría y referencias</td>
+<td><a href="#theory"><code>theory.md</code></a></td>
+</tr>
+<tr>
+<td>🔬 Plan de experimentos</td>
+<td><a href="#experiments"><code>experiments.md</code></a></td>
+</tr>
+<tr>
+<td>📝 Evaluación y rúbrica</td>
+<td><a href="#assessment"><code>assessment.md</code></a></td>
+</tr>
+<tr>
+<td>📓 Notebook de recorrido</td>
+<td><a href="notebook.ipynb"><code>notebook.ipynb</code></a></td>
+</tr>
+<tr>
+<td>✏️ Notebook de estudiante</td>
+<td><a href="notebook_student.ipynb"><code>notebook_student.ipynb</code></a></td>
+</tr>
+<tr>
+<td>✅ Notebook de solución</td>
+<td><a href="notebook_solution.ipynb"><code>notebook_solution.ipynb</code></a></td>
+</tr>
+<tr>
+<td>🖥️ Script de terminal</td>
+<td><a href="train.py"><code>train.py</code></a></td>
+</tr>
+<tr>
+<td>🎛️ Configuración base</td>
+<td><a href="configs/baseline.yaml"><code>configs/baseline.yaml</code></a></td>
+</tr>
+<tr>
+<td>🎚️ Configuración ampliada</td>
+<td><a href="configs/improved.yaml"><code>configs/improved.yaml</code></a></td>
+</tr>
+<tr>
+<td>🗄️ Ficha del dataset</td>
+<td><a href="data/dataset.yaml"><code>data/dataset.yaml</code></a></td>
+</tr>
+<tr>
+<td>🧾 Metadatos de la lección</td>
+<td><a href="lesson.yaml"><code>lesson.yaml</code></a></td>
+</tr>
+</tbody>
+</table>
+<!-- /ficha -->
+
+<h2 id="objetivo">Objetivo</h2>
+<p>Detectar transacciones fraudulentas mediante error de reconstrucción.</p>
+<h2 id="dataset-real">Dataset real</h2>
+<ul>
+<li><strong>Dataset:</strong> <code>credit_card_fraud</code></li>
+<li><strong>Fuente:</strong> Kaggle / ULB</li>
+<li><strong>Referencia:</strong> https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud</li>
+<li><strong>Licencia/condiciones:</strong> Uso sujeto a términos de Kaggle y autor</li>
+<li><strong>Uso:</strong> los datos se descargan desde la fuente; no hay ejemplos sintéticos ni archivos inventados.</li>
+</ul>
+<p>284.807 transacciones reales; el laboratorio evita reequilibrar el conjunto de test.</p>
+<h2 id="fundamento-matematico">Fundamento matemático</h2>
+<p>Minimizar ||x-decoder(encoder(x))||² sobre transacciones normales.</p>
+<h2 id="protocolo-experimental">Protocolo experimental</h2>
+<ol>
+<li>Descargar y verificar la procedencia.</li>
+<li>Conservar o crear una partición reproducible.</li>
+<li>Ajustar transformaciones únicamente con <code>train</code>.</li>
+<li>Seleccionar modelo e hiperparámetros usando <code>validation</code>.</li>
+<li>Evaluar <code>test</code> una sola vez tras congelar la decisión.</li>
+<li>Comparar con la línea base: <strong>Isolation Forest</strong>.</li>
+<li>Guardar configuración, entorno, métricas, predicciones, gráficos y modelo.</li>
+</ol>
+<h2 id="ejecucion">Ejecución</h2>
+<pre><code class="language-bash">python labs/06_autoencoder_anomaly/train.py --quick
+python labs/06_autoencoder_anomaly/train.py --config improved
+</code></pre>
+<p>Preparar únicamente el dataset:</p>
+<pre><code class="language-bash">python -m neural_labs.cli dataset --lab 06_autoencoder_anomaly
+</code></pre>
+<p>Inferencia y exportación:</p>
+<pre><code class="language-bash">neural-labs predict --lab 06_autoencoder_anomaly --run latest --input sample.json
+neural-labs export --lab 06_autoencoder_anomaly --run latest --format onnx --verify
+</code></pre>
+<h2 id="metricas">Métricas</h2>
+<p>precision, recall, f1, roc_auc, pr_auc.</p>
+<h2 id="archivos">Archivos</h2>
+<ul>
+<li><code>notebook.ipynb</code>: recorrido completo y ejecutable.</li>
+<li><code>notebook_student.ipynb</code>: actividades evaluables sin soluciones.</li>
+<li><code>notebook_solution.ipynb</code>: resolución docente y pruebas de referencia.</li>
+<li><code>train.py</code>: interfaz de terminal que usa el mismo código del cuaderno.</li>
+<li><code>configs/baseline.yaml</code>: configuración base.</li>
+<li><code>configs/improved.yaml</code>: configuración ampliada.</li>
+<li><code>data/dataset.yaml</code>: procedencia, licencia y política de partición.</li>
+</ul>
+<h2 id="ejercicios">Ejercicios</h2>
+<ul>
+<li>Cambiar una decisión experimental y justificarla.</li>
+<li>Analizar errores por clase o segmento.</li>
+<li>Comparar costo, precisión y latencia.</li>
+<li>Documentar sesgos, limitaciones y usos no recomendados.</li>
+</ul>
+<h2 id="material-formativo-v3">Material formativo v3</h2>
+<ul>
+<li><a href="#theory"><code>theory.md</code></a>: fundamento, protocolo y riesgos de interpretación.</li>
+<li><a href="#experiments"><code>experiments.md</code></a>: hipótesis, variables controladas y tabla multi-semilla.</li>
+<li><a href="#assessment"><code>assessment.md</code></a>: preguntas y rúbrica de evaluación.</li>
+<li><a href="lesson.yaml"><code>lesson.yaml</code></a>: resultados de aprendizaje, prerrequisitos y entregables.</li>
+</ul>
+<h2 id="comandos-profesionales">Comandos profesionales</h2>
+<pre><code class="language-bash">neural-labs quality --lab 06_autoencoder_anomaly --quick
+neural-labs benchmark --lab 06_autoencoder_anomaly --quick --split-seed 42 --training-seeds 41 42 43
+neural-labs leaderboard
+</code></pre>
+<h2 id="sellado-del-experimento">Sellado del experimento</h2>
+<p>La partición se controla con <code>split_seed</code>; la inicialización y el entrenamiento con <code>training_seed</code>. El conjunto <code>test</code> se abre solamente después de seleccionar el checkpoint mediante validación y escribir <code>experiment.lock.json</code>.</p><h2 class="doc-sep" id="theory">🧠 Teoría</h2><h1 id="teoria-autoencoder-para-fraude">Teoría — Autoencoder para fraude</h1>
+<h2 id="proposito">Propósito</h2>
+<p>Detectar transacciones fraudulentas mediante error de reconstrucción.</p>
+<h2 id="idea-central">Idea central</h2>
+<p>Este laboratorio estudia <strong>reconstrucción para detección de anomalías</strong> usando <code>credit_card_fraud</code>, un dataset público real procedente de Kaggle / ULB.</p>
+<p>La idea rectora es entrenar un modelo que solo aprenda a describir bien lo <em>normal</em>. Un <strong>autoencoder</strong> es una red con forma de reloj de arena: un codificador comprime la entrada x a una representación latente z de baja dimensión (el "cuello de botella"), y un decodificador intenta reconstruir x a partir de z. Si únicamente mostramos transacciones legítimas durante el entrenamiento, la red se especializa en la geometría de esa mayoría y aprende a copiar sus regularidades. Cuando más tarde le presentamos una transacción fraudulenta —que vive fuera de esa variedad aprendida— el decodificador falla y el <strong>error de reconstrucción</strong> se dispara. Ese error es, en la práctica, un detector de anomalías: no clasificamos "fraude vs. no fraude" directamente, sino que medimos cuánto se desvía cada caso del patrón normal.</p>
+<p>El cuello de botella es lo que hace que esto funcione: al forzar z a tener menos dimensiones que x, la red no puede memorizar la identidad y debe descubrir los factores latentes que explican las transacciones comunes. Esto es especialmente valioso en fraude, donde los positivos son rarísimos (≈0,17 % del total) y un clasificador supervisado clásico tiende a ignorarlos; el enfoque no supervisado por reconstrucción esquiva ese desbalance porque nunca necesita ejemplos de fraude para aprender.</p>
+<h2 id="fundamento-matematico">Fundamento matemático</h2>
+<p>Formalmente, el codificador es una función f con parámetros θ que produce el código z = f(x; θ) ∈ ℝᵏ, y el decodificador g con parámetros φ produce la reconstrucción x̂ = g(z; φ) = g(f(x; θ); φ). Con k ≪ d (dimensión de x), la composición está obligada a ser una <strong>proyección con pérdida</strong> sobre una variedad de baja dimensión. El objetivo de entrenamiento minimiza el error cuadrático medio de reconstrucción sobre las transacciones normales:</p>
+<pre><code>ℒ(θ, φ) = 𝔼ₓ ‖ x − g(f(x; θ); φ) ‖²  ≈  (1/N) Σᵢ ‖ xᵢ − x̂ᵢ ‖²
+</code></pre>
+<p>El gradiente ∇_{θ,φ} ℒ se propaga por retropropagación a través de decodificador y codificador, y los pesos se actualizan con descenso de gradiente estocástico o Adam: θ ← θ − η ∇_θ ℒ. La conexión con los cuatro elementos del laboratorio es: la <strong>representación de entrada</strong> es el vector x de características de la transacción (28 componentes PCA anonimizadas más <code>Time</code> y <code>Amount</code> normalizados); la <strong>función del modelo</strong> es la composición g∘f; la <strong>función de pérdida</strong> es el MSE de reconstrucción arriba; y la <strong>regla de actualización</strong> es el paso de gradiente. El notebook muestra las dimensiones de los tensores en cada capa y conserva la misma implementación que el script de terminal.</p>
+<p>¿Por qué el MSE minimizado sobre datos normales sirve como puntaje de anomalía? Si asumimos que la reconstrucción está sujeta a un ruido gaussiano isótropo, minimizar ‖x − x̂‖² equivale a maximizar la log-verosimilitud de x bajo el modelo. Tras entrenar, el error r(x) = ‖x − g(f(x))‖² es bajo para lo que la red sabe reconstruir (lo normal) y alto para lo que nunca vio (el fraude). La regla de decisión es un simple umbral: se marca anomalía cuando r(x) &gt; τ. El umbral τ <strong>no se elige a ojo</strong>: se calibra en <code>validation</code>, por ejemplo tomando un percentil alto (p. ej. el 99) de la distribución de errores sobre datos legítimos, o el punto que optimiza F1/coste esperado. Variar τ recorre la curva precision–recall completa, y por eso el laboratorio reporta ROC-AUC y PR-AUC en lugar de una sola métrica puntual.</p>
+<p>Una extensión conceptual importante es el <strong>autoencoder variacional (VAE)</strong>: en lugar de un código puntual z, el codificador produce una distribución q(z|x) = 𝒩(μ(x), σ²(x)) y se optimiza el ELBO, que suma el término de reconstrucción y una regularización KL, ℒ = 𝔼_q[‖x − x̂‖²] + β·D_KL(q(z|x) ‖ 𝒩(0, I)). El término KL empuja el espacio latente hacia una gaussiana estándar y da un puntaje de anomalía probabilístico más estable; entender el autoencoder determinista de este laboratorio es el paso previo natural hacia esa formulación.</p>
+<h2 id="protocolo-cientifico">Protocolo científico</h2>
+<ul>
+<li>Ajustar transformaciones, vocabulario, normalización y selección de variables solo con <code>train</code>.</li>
+<li>Usar <code>validation</code> para arquitectura, hiperparámetros, checkpoint y umbrales.</li>
+<li>Evaluar <code>test</code> una vez, después de congelar las decisiones.</li>
+<li>Comparar contra <strong>Isolation Forest</strong>.</li>
+<li>Reportar variación entre semillas e intervalos de confianza; una métrica puntual no expresa toda la incertidumbre.</li>
+</ul>
+<h2 id="riesgos-de-interpretacion">Riesgos de interpretación</h2>
+<p>284.807 transacciones reales; el laboratorio evita reequilibrar el conjunto de test.</p>
+<p>El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.</p>
+<h2 id="pregunta-critica">Pregunta crítica</h2>
+<blockquote>
+<p>¿Qué costo tiene priorizar recall frente a precision?</p>
+<p>Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.</p>
+</blockquote>
+<h2 id="referencias">🔗 Referencias</h2>
+<ul>
+<li>Goodfellow, Bengio &amp; Courville — <em>Deep Learning</em> (MIT Press, 2016), cap. 14 — teoría de autoencoders, cuello de botella y autoencoders regularizados/de reducción de dimensión.</li>
+<li>Géron — <em>Hands-On Machine Learning with Scikit-Learn, Keras &amp; TensorFlow</em> (3.ª ed., O'Reilly), cap. 17 — autoencoders y GANs en la práctica, detección de anomalías por reconstrucción.</li>
+<li>Hinton &amp; Salakhutdinov (2006), <em>Reducing the Dimensionality of Data with Neural Networks</em>, Science — mostró que un autoencoder profundo aprende códigos compactos mejores que PCA.</li>
+<li>Kingma &amp; Welling (2014), <em>Auto-Encoding Variational Bayes (VAE)</em>, ICLR — formulación variacional del autoencoder y base del puntaje de anomalía probabilístico.</li>
+<li>Fuente del dataset: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud</li>
+<li>Consulte <code>docs/experiment-protocol.md</code>, <code>docs/reproducibility.md</code> y <code>docs/ethics-and-licenses.md</code>.</li>
+</ul><h2 class="doc-sep" id="experiments">🔬 Experimentos</h2><h1 id="plan-de-experimentos-autoencoder-para-fraude">Plan de experimentos — Autoencoder para fraude</h1>
+<h2 id="hipotesis-principal">Hipótesis principal</h2>
+<p>Detectar transacciones fraudulentas mediante error de reconstrucción. La hipótesis debe aceptarse o rechazarse comparando el modelo con <strong>Isolation Forest</strong> y no solo observando que la pérdida disminuye.</p>
+<h2 id="experimento-minimo">Experimento mínimo</h2>
+<ol>
+<li>Ejecutar <code>baseline.yaml</code> con tres semillas.</li>
+<li>Ejecutar <code>improved.yaml</code> con las mismas semillas.</li>
+<li>Mantener fija la partición de datos dentro de cada semilla.</li>
+<li>Elegir la variante con <code>validation</code>.</li>
+<li>Comparar la variante elegida contra la línea base en <code>test</code>.</li>
+<li>Revisar intervalos de confianza, errores y costo computacional.</li>
+</ol>
+<h2 id="experimento-especifico">Experimento específico</h2>
+<p>Seleccionar el umbral usando validation y no test.</p>
+<h2 id="variables-controladas">Variables controladas</h2>
+<ul>
+<li>Dataset y política de partición.</li>
+<li>Semillas declaradas.</li>
+<li>Presupuesto de épocas y criterio de parada.</li>
+<li>Métrica de selección: <code>precision</code> o la especificada en la configuración.</li>
+<li>Hardware y versiones registradas en <code>environment.json</code>.</li>
+</ul>
+<h2 id="tabla-que-debe-completarse">Tabla que debe completarse</h2>
+<table>
+<thead>
+<tr>
+<th>Variante</th>
+<th style="text-align: right;">Semilla</th>
+<th style="text-align: right;">Métrica validation</th>
+<th style="text-align: right;">Métrica test</th>
+<th style="text-align: right;">Tiempo</th>
+<th style="text-align: right;">Parámetros</th>
+<th>Observación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>baseline</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>baseline</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>baseline</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>improved</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>improved</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>improved</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="criterio-de-conclusion">Criterio de conclusión</h2>
+<p>La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.</p><h2 class="doc-sep" id="assessment">📝 Evaluación</h2><h1 id="evaluacion-autoencoder-para-fraude">Evaluación — Autoencoder para fraude</h1>
+<h2 id="evidencias-obligatorias">Evidencias obligatorias</h2>
+<ul>
+<li>Dataset preparado y auditoría sin solapamientos.</li>
+<li>Notebook ejecutado sin celdas omitidas.</li>
+<li>Línea base y modelo neuronal comparados.</li>
+<li>Resultados de al menos tres semillas o justificación del costo.</li>
+<li>Análisis de errores y limitaciones.</li>
+<li>Model card actualizada.</li>
+</ul>
+<h2 id="preguntas">Preguntas</h2>
+<ol>
+<li>Explique con sus palabras: Minimizar ||x-decoder(encoder(x))||² sobre transacciones normales.</li>
+<li>¿Qué información del dataset solo puede utilizarse durante entrenamiento?</li>
+<li>¿Por qué la línea base <strong>Isolation Forest</strong> es una comparación razonable?</li>
+<li>¿Qué costo tiene priorizar recall frente a precision?</li>
+<li>¿Qué cambiaría antes de usar este modelo fuera del laboratorio?</li>
+</ol>
+<h2 id="rubrica">Rúbrica</h2>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Insuficiente</th>
+<th>Adecuado</th>
+<th>Excelente</th>
+<th style="text-align: right;">Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Integridad de datos</td>
+<td>mezcla particiones</td>
+<td>separación correcta</td>
+<td>auditoría, hashes y justificación</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>Implementación</td>
+<td>no ejecuta</td>
+<td>entrena y evalúa</td>
+<td>código claro, reusable y probado</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>Diseño experimental</td>
+<td>resultado aislado</td>
+<td>comparación controlada</td>
+<td>multi-semilla e incertidumbre</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>Análisis</td>
+<td>repite métricas</td>
+<td>interpreta errores</td>
+<td>identifica sesgos, límites y costo</td>
+<td style="text-align: right;">25%</td>
+</tr>
+<tr>
+<td>Comunicación</td>
+<td>incompleta</td>
+<td>reporte entendible</td>
+<td>model card y conclusiones verificables</td>
+<td style="text-align: right;">15%</td>
+</tr>
+</tbody>
+</table>
+<p>La aprobación exige al menos 70% y cero errores críticos de fuga de datos.</p>
+    </article>
+    <nav class="pager"><a class="pg pg-prev" href="../../labs/05_lstm_time_series/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">📈 LSTM para series temporales</span></a><a class="pg pg-next" href="../../labs/07_transformer_attention/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🔭 Transformer para noticias</span></a></nav>
+  </main>
+  <footer class="foot">
+    <p><a href="../../index.html">🏠 Índice del recorrido</a> · <a href="https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/06_autoencoder_anomaly/index.html">🌐 Sitio de estudio</a> · <a href="https://github.com/vladimiracunadev-create/neural-network-training-labs/tree/main/labs/06_autoencoder_anomaly">📂 Código en GitHub</a> · <a href="https://github.com/vladimiracunadev-create/neural-network-training-labs/blob/main/labs/06_autoencoder_anomaly/README.md">📄 Markdown</a></p>
+    <p>Página autocontenida: se genera desde <code>labs/06_autoencoder_anomaly</code> con <code>scripts/generate_lab_html.py</code>.</p>
+  </footer>
+</body>
+</html>

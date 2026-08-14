@@ -1,5 +1,11 @@
 # Teoría — Búsqueda de hiperparámetros
 
+<!-- nav-top -->
+> 🧭 **Ruta 14 / 31** · [⬅️ 🔀 Fusión de sensores](../../labs/12_multimodal_fusion/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [⚗️ Destilación de conocimiento ➡️](../../labs/14_knowledge_distillation/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Optimizar profundidad, ancho, dropout y learning rate sin tocar test.
@@ -56,3 +62,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Akiba et al. (2019), *Optuna: A Next-generation Hyperparameter Optimization Framework*, KDD — framework de búsqueda guiada con muestreo eficiente y poda temprana.
 - Fuente del dataset: https://archive.ics.uci.edu/dataset/2/adult
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/13_hyperparameter_search/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

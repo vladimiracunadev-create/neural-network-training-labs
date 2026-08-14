@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WGAN-GP sobre Fashion-MNIST · Neural Network Training Labs</title>
+<meta name="description" content="Laboratorio 28 — WGAN-GP sobre Fashion-MNIST">
+<meta name="theme-color" content="#7c5cff">
+<style>
+/* Neural Network Training Labs — sitio de estudio */
+:root {
+  --bg: #0d1117; --bg-soft: #131a24; --card: #161f2e; --line: #263041;
+  --ink: #e6edf3; --ink-soft: #9fb0c3; --muted: #6b7d92;
+  --accent: #7c5cff; --accent-soft: #9d86ff; --green: #2e8b57; --gold: #f0b429;
+  --radius: 14px; --radius-sm: 9px;
+  --shadow: 0 2px 10px rgba(0,0,0,0.35); --shadow-h: 0 8px 26px rgba(124,92,255,0.28);
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f7f8fb; --bg-soft: #eef1f7; --card: #ffffff; --line: #e2e6ee;
+    --ink: #1a2233; --ink-soft: #48566b; --muted: #7a889c;
+    --shadow: 0 2px 10px rgba(20,30,50,0.08); --shadow-h: 0 10px 28px rgba(124,92,255,0.20);
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif; line-height: 1.65; }
+
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 26px; background: color-mix(in srgb, var(--bg-soft) 88%, transparent);
+  border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); }
+.brand { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.02rem;
+  color: var(--ink); text-decoration: none; }
+.crumbs { font-size: 0.9rem; color: var(--ink-soft); }
+.crumbs a { color: var(--accent-soft); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; }
+.crumbs .sep { margin: 0 8px; opacity: 0.4; }
+
+.prose { max-width: 900px; margin: 0 auto; padding: 34px 26px 72px; }
+
+/* Portada */
+.home-hero { text-align: center; padding: 30px 0 14px; }
+.home-kicker { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+  color: var(--accent-soft); background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  padding: 5px 14px; border-radius: 999px; letter-spacing: 0.02em; }
+.home-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.9rem, 4.6vw, 2.9rem);
+  line-height: 1.14; margin: 18px 0 10px; letter-spacing: -0.02em;
+  background: linear-gradient(120deg, var(--ink), var(--accent-soft));
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lede { max-width: 680px; margin: 0 auto; color: var(--ink-soft); font-size: 1.08rem; }
+.home-actions, .lab-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 24px 0 8px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 999px;
+  background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; font-size: 0.95rem;
+  box-shadow: var(--shadow); transition: transform 0.15s, box-shadow 0.15s; }
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-h); }
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); box-shadow: none; }
+.btn-ghost:hover { border-color: var(--accent); }
+
+.home-sec { font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; margin: 44px 0 18px;
+  display: flex; align-items: center; gap: 12px; }
+.home-sec .count { font-size: 0.8rem; font-weight: 600; color: var(--accent-soft);
+  background: color-mix(in srgb, var(--accent) 15%, transparent); padding: 2px 11px; border-radius: 999px; }
+.lab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.lab-card { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; background: var(--card);
+  border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; color: var(--ink);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); }
+.lab-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: var(--shadow-h); }
+.lab-num { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent-soft); font-weight: 600; }
+.lab-name { font-weight: 600; font-size: 1.0rem; line-height: 1.3; }
+
+/* Página de laboratorio */
+.lab-hero { padding: 8px 0 6px; }
+.lab-kicker { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent-soft);
+  text-transform: uppercase; letter-spacing: 0.05em; }
+.lab-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.7rem, 3.8vw, 2.4rem);
+  line-height: 1.16; margin: 8px 0 16px; letter-spacing: -0.01em; }
+.lab-actions { justify-content: flex-start; margin: 0 0 6px; }
+
+/* Paginador anterior / siguiente */
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0; }
+.pg { display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; border-radius: var(--radius);
+  background: var(--card); border: 1px solid var(--line); text-decoration: none; color: var(--ink);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); }
+.pg-next { text-align: right; }
+.pg:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-h); }
+.pg-empty { background: transparent; border: none; box-shadow: none; }
+.pg-dir { font-size: 0.8rem; color: var(--accent-soft); font-weight: 600; }
+.pg-title { font-weight: 600; font-size: 0.98rem; }
+
+/* Contenido renderizado */
+.content { margin-top: 8px; }
+.content h1 { display: none; } /* el título ya está en el hero */
+.doc-sep { font-family: 'Space Grotesk', sans-serif; margin: 2.4em 0 0.6em; padding-top: 1.2em;
+  border-top: 2px solid var(--line); font-size: 1.5rem; color: var(--accent-soft); }
+.content h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 1.8em 0 0.5em;
+  padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.content h3 { font-size: 1.14rem; margin: 1.5em 0 0.4em; }
+.content p, .content li { color: var(--ink-soft); }
+.content a { color: var(--accent-soft); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); text-underline-offset: 3px; }
+.content a:hover { text-decoration-color: var(--accent); }
+.content code { font-family: 'JetBrains Mono', monospace; font-size: 0.88em;
+  background: var(--bg-soft); border: 1px solid var(--line); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
+.content pre { background: #0b1220; color: #d7e0ee; padding: 16px 18px; border-radius: var(--radius-sm);
+  overflow-x: auto; border: 1px solid var(--line); box-shadow: var(--shadow); }
+.content pre code { background: transparent; border: none; padding: 0; color: inherit; }
+.content blockquote { border-left: 4px solid var(--accent); background: var(--bg-soft);
+  padding: 12px 18px; margin: 1.4em 0; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; color: var(--ink); }
+.content table { border-collapse: collapse; width: 100%; margin: 1.4em 0; background: var(--card);
+  border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow); display: block; overflow-x: auto; }
+.content th, .content td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+.content th { background: color-mix(in srgb, var(--accent) 20%, var(--card)); color: var(--ink); font-weight: 600; }
+.content tr:last-child td { border-bottom: none; }
+.content img { max-width: 100%; height: auto; border-radius: var(--radius-sm); }
+.content hr { border: none; border-top: 1px solid var(--line); margin: 2.2em 0; }
+
+.foot { max-width: 900px; margin: 0 auto; padding: 26px; border-top: 1px solid var(--line);
+  color: var(--muted); font-size: 0.88rem; text-align: center; }
+.foot a { color: var(--accent-soft); text-decoration: none; }
+.foot code { font-family: 'JetBrains Mono', monospace; }
+
+@media (max-width: 620px) {
+  .pager { grid-template-columns: 1fr; }
+  .pg-next { text-align: left; }
+}
+
+
+/* Distintivos: chips locales que reemplazan las imágenes de shields.io */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 18px; }
+.chip { display: inline-flex; align-items: stretch; border-radius: 999px; overflow: hidden;
+  font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.78rem; font-weight: 600;
+  border: 1px solid var(--line); box-shadow: var(--shadow); }
+.chip b { background: var(--bg-soft); color: var(--ink-soft); padding: 4px 10px; font-weight: 600; }
+.chip span { padding: 4px 11px; color: #fff; }
+
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span aria-hidden="true">🧠</span> Neural Network Training Labs</a>
+    <nav class="crumbs"><a href="../../index.html">🏠 Índice</a><span class="sep">›</span>🖌️ WGAN-GP sobre Fashion-MNIST</nav>
+  </header>
+  <main class="prose">
+    <div class="lab-hero">
+      <div class="lab-kicker">Laboratorio 28 · Avanzada · Ruta 29 / 31</div>
+      <h1>🖌️ WGAN-GP sobre Fashion-MNIST</h1>
+      <div class="lab-actions"><a class="btn btn-ghost" href="#README">📄 Guía</a><a class="btn btn-ghost" href="#theory">🧠 Teoría</a><a class="btn btn-ghost" href="#experiments">🔬 Experimentos</a><a class="btn btn-ghost" href="#assessment">📝 Evaluación</a><a class="btn btn-ghost" href="notebook.ipynb">📓 Recorrido</a><a class="btn btn-ghost" href="notebook_student.ipynb">✏️ Estudiante</a><a class="btn btn-ghost" href="notebook_solution.ipynb">✅ Solución</a></div>
+    </div>
+    <nav class="pager"><a class="pg pg-prev" href="../../advanced_labs/27_audio_speechcommands/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🎙️ Clasificación de audio con SpeechCommands</span></a><a class="pg pg-next" href="../../advanced_labs/29_diffusion_ddpm/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🌫️ Difusión DDPM sobre Fashion-MNIST</span></a></nav>
+    <article class="content">
+      <span id="README"></span><h1 id="wgan-gp-sobre-fashion-mnist">WGAN-GP sobre Fashion-MNIST</h1>
+<!-- ficha -->
+<h2 id="ficha-del-laboratorio">📋 Ficha del laboratorio</h2>
+<div class="chips"><span class="chip"><b>ruta</b><span style="background:#7c5cff">29 de 31</span></span> <span class="chip"><b>nivel</b><span style="background:#8957e5">avanzado</span></span> <span class="chip"><b>categoría</b><span style="background:#2e8b57">Avanzada</span></span> <span class="chip"><b>dataset</b><span style="background:#1f6feb">fashion_mnist</span></span> <span class="chip"><b>selección</b><span style="background:#8957e5">wasserstein_estimate</span></span></div>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🧭 Posición</td>
+<td>Ruta <strong>29 de 31</strong> del recorrido · categoría avanzada</td>
+</tr>
+<tr>
+<td>🎚️ Nivel</td>
+<td>avanzado</td>
+</tr>
+<tr>
+<td>🗺️ Dominio</td>
+<td><code>generative</code></td>
+</tr>
+<tr>
+<td>🏗️ Arquitectura</td>
+<td><code>wgan-gp</code></td>
+</tr>
+<tr>
+<td>🗄️ Dataset</td>
+<td><code>fashion_mnist</code> — Torchvision / Zalando Research</td>
+</tr>
+<tr>
+<td>⚖️ Licencia del dataset</td>
+<td>MIT para código; consultar dataset</td>
+</tr>
+<tr>
+<td>🎯 Métrica de selección</td>
+<td><code>wasserstein_estimate</code> sobre <code>validation</code></td>
+</tr>
+<tr>
+<td>🔒 Política de <code>test</code></td>
+<td>se abre una sola vez, tras escribir <code>experiment.lock.json</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="que-vas-a-poder-hacer-al-terminar">🎯 Qué vas a poder hacer al terminar</h3>
+<ul>
+<li>Estudiar estabilidad generativa y gradient penalty con imágenes reales.</li>
+<li>Interpretar wasserstein_estimate, energy_distance_proxy</li>
+<li>Aplicar sellado de test y reproducibilidad</li>
+</ul>
+<h3 id="prerrequisitos">🧩 Prerrequisitos</h3>
+<ul>
+<li>GAN</li>
+<li>CNN</li>
+<li>optimización adversarial</li>
+</ul>
+<blockquote>
+<p>Si alguno te falta, retrocede antes de continuar. Viniendo de <a href="../../advanced_labs/27_audio_speechcommands/index.html">🎙️ Clasificación de audio con SpeechCommands</a>.</p>
+</blockquote>
+<h3 id="entregables-y-criterios-de-aceptacion">📦 Entregables y criterios de aceptación</h3>
+<p><strong>Entregables</strong></p>
+<ul>
+<li>notebook ejecutado</li>
+<li>reporte experimental</li>
+<li>model card</li>
+</ul>
+<h3 id="recursos-del-laboratorio">🗂️ Recursos del laboratorio</h3>
+<table>
+<thead>
+<tr>
+<th>Recurso</th>
+<th>Archivo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🧠 Teoría y referencias</td>
+<td><a href="#theory"><code>theory.md</code></a></td>
+</tr>
+<tr>
+<td>🔬 Plan de experimentos</td>
+<td><a href="#experiments"><code>experiments.md</code></a></td>
+</tr>
+<tr>
+<td>📝 Evaluación y rúbrica</td>
+<td><a href="#assessment"><code>assessment.md</code></a></td>
+</tr>
+<tr>
+<td>📓 Notebook de recorrido</td>
+<td><a href="notebook.ipynb"><code>notebook.ipynb</code></a></td>
+</tr>
+<tr>
+<td>✏️ Notebook de estudiante</td>
+<td><a href="notebook_student.ipynb"><code>notebook_student.ipynb</code></a></td>
+</tr>
+<tr>
+<td>✅ Notebook de solución</td>
+<td><a href="notebook_solution.ipynb"><code>notebook_solution.ipynb</code></a></td>
+</tr>
+<tr>
+<td>🖥️ Script de terminal</td>
+<td><a href="train.py"><code>train.py</code></a></td>
+</tr>
+<tr>
+<td>🎛️ Configuración base</td>
+<td><a href="configs/baseline.yaml"><code>configs/baseline.yaml</code></a></td>
+</tr>
+<tr>
+<td>🎚️ Configuración ampliada</td>
+<td><a href="configs/improved.yaml"><code>configs/improved.yaml</code></a></td>
+</tr>
+<tr>
+<td>🗄️ Ficha del dataset</td>
+<td><a href="data/dataset.yaml"><code>data/dataset.yaml</code></a></td>
+</tr>
+<tr>
+<td>🧾 Metadatos de la lección</td>
+<td><a href="lesson.yaml"><code>lesson.yaml</code></a></td>
+</tr>
+</tbody>
+</table>
+<!-- /ficha -->
+
+<h2 id="objetivo">Objetivo</h2>
+<p>Estudiar estabilidad generativa y gradient penalty con imágenes reales.</p>
+<h2 id="dataset-publico-real">Dataset público real</h2>
+<ul>
+<li><strong>Dataset:</strong> <code>fashion_mnist</code></li>
+<li><strong>Fuente:</strong> Torchvision / Zalando Research</li>
+<li><strong>Licencia/condiciones:</strong> MIT para código; consultar dataset</li>
+<li><strong>Entrada:</strong> imágenes Fashion-MNIST normalizadas</li>
+<li><strong>Datos sintéticos:</strong> no se usan.</li>
+</ul>
+<p>Los datos se descargan desde el proveedor oficial mediante los adaptadores del repositorio. Los archivos grandes no se incluyen en Git.</p>
+<h2 id="modelo-y-fundamento">Modelo y fundamento</h2>
+<ul>
+<li><strong>Modelo:</strong> <code>wgan-gp</code></li>
+<li><strong>Teoría:</strong> Distancia Wasserstein, crítico sin sigmoide y restricción Lipschitz mediante gradient penalty.</li>
+<li><strong>Línea base:</strong> DCGAN convolucional</li>
+</ul>
+<h2 id="protocolo">Protocolo</h2>
+<ol>
+<li>Crear particiones con <code>split_seed</code> o conservar los splits oficiales.</li>
+<li>Entrenar y seleccionar exclusivamente con <code>train</code> y <code>validation</code>.</li>
+<li>Guardar <code>best_model.pt</code> y escribir <code>experiment.lock.json</code>.</li>
+<li>Abrir <code>test</code> una sola vez después del congelamiento.</li>
+<li>Registrar métricas, configuración, procedencia y limitaciones.</li>
+</ol>
+<h2 id="ejecucion">Ejecución</h2>
+<pre><code class="language-bash">neural-labs train-advanced --track 28_wgan_gp --quick
+neural-labs train-advanced --track 28_wgan_gp --split-seed 42 --training-seed 43
+</code></pre>
+<h2 id="metricas">Métricas</h2>
+<p>wasserstein_estimate, energy_distance_proxy, diversity, training_stability.</p>
+<h2 id="cuadernos">Cuadernos</h2>
+<ul>
+<li><code>notebook.ipynb</code>: recorrido completo.</li>
+<li><code>notebook_student.ipynb</code>: actividades sin resolver.</li>
+<li><code>notebook_solution.ipynb</code>: referencia docente.</li>
+</ul>
+<h2 id="limitacion-principal">Limitación principal</h2>
+<p>Las métricas generativas aproximadas no sustituyen evaluación humana ni validación del uso previsto.</p><h2 class="doc-sep" id="theory">🧠 Teoría</h2><h1 id="teoria-wgan-gp-sobre-fashion-mnist">Teoría — WGAN-GP sobre Fashion-MNIST</h1>
+<p>Distancia Wasserstein, crítico sin sigmoide y restricción Lipschitz mediante gradient penalty.</p>
+<h2 id="fundamento-matematico">Fundamento matemático</h2>
+<p>Una GAN enfrenta dos redes: un <strong>generador</strong> G que transforma ruido z ∼ p_z (típicamente z ∼ 𝒩(0, I)) en muestras G(z), y un discriminador/crítico que juzga qué tan reales parecen. La GAN clásica minimiza una divergencia de Jensen-Shannon entre la distribución real p_r y la generada p_g. El problema es que cuando ambas distribuciones tienen soportes casi disjuntos —lo habitual al inicio— la JS es constante y su gradiente se anula, provocando <strong>entrenamiento inestable</strong> y colapso de modos. La <strong>WGAN</strong> cambia el objetivo por la <strong>distancia de Wasserstein-1</strong> (o "earth mover"):</p>
+<p>W(p_r, p_g) = inf_(γ ∈ Π(p_r, p_g)) 𝔼_((x,y)∼γ) ‖x − y‖,</p>
+<p>que mide el "coste mínimo de transporte" para convertir una distribución en la otra. A diferencia de la JS, W varía suavemente aunque los soportes no se solapen, dando un gradiente útil en todo momento.</p>
+<p>Calcular ese ínfimo es intratable, así que se usa la <strong>dualidad de Kantorovich-Rubinstein</strong>:</p>
+<p>W(p_r, p_g) = sup_(‖f‖<em>L ≤ 1) [ 𝔼</em>(x∼p_r) f(x) − 𝔼_(x̃∼p_g) f(x̃) ],</p>
+<p>donde el supremo se toma sobre todas las funciones <strong>1-Lipschitz</strong> f. Aquí f es el <strong>crítico</strong> (no un clasificador): a diferencia del discriminador clásico, no lleva sigmoide final ni produce una probabilidad, sino un valor escalar real. El generador se entrena para maximizar 𝔼 f(G(z)), es decir, para que sus muestras reciban puntuaciones altas del crítico. El nombre "crítico" en vez de "discriminador" subraya que estima una distancia, no clasifica real/falso.</p>
+<p>La condición 1-Lipschitz (‖∇f‖ ≤ 1 en todo punto) es la clave y también la dificultad. La WGAN original la imponía recortando los pesos (<em>weight clipping</em>), lo que degrada la capacidad de la red y provoca gradientes que explotan o desaparecen. La mejora <strong>WGAN-GP</strong> (Gulrajani et al.) la sustituye por una <strong>penalización de gradiente</strong>: como una función 1-Lipschitz diferenciable tiene norma de gradiente ≤ 1, se penaliza que se aleje de 1 en puntos interpolados x̂ = ε·x + (1−ε)·x̃, con ε ∼ U[0,1] entre una muestra real x y una generada x̃. La pérdida del crítico queda</p>
+<p>ℒ_crítico = 𝔼_(x̃∼p_g) f(x̃) − 𝔼_(x∼p_r) f(x) + λ · 𝔼_(x̂) [ (‖∇_x̂ f(x̂)‖₂ − 1)² ],</p>
+<p>donde λ (habitualmente 10) pesa el término de penalización. Este regularizador impone la restricción de forma suave y local, estabilizando el entrenamiento y permitiendo arquitecturas más profundas. En la práctica se actualiza el crítico varias veces por cada paso del generador, para que su estimación de W sea buena antes de mover G. La línea base DCGAN convolucional (GAN clásica con sigmoide y pérdida JS) sirve de contraste directo para apreciar la ganancia en estabilidad y cobertura de modos.</p>
+<h2 id="visualizacion-especifica">Visualización específica</h2>
+<p>Muestras por época, interpolación latente, pérdidas y cobertura de clases mediante clasificador externo. La curva de pérdida del crítico aproxima la distancia de Wasserstein y, a diferencia de la GAN clásica, correlaciona con la calidad visual; la interpolación en z revela si el espacio latente es suave; el clasificador externo estima si se cubren todas las clases o hay colapso de modos.</p>
+<h2 id="riesgo-de-interpretacion">Riesgo de interpretación</h2>
+<p>Las métricas generativas aproximadas no sustituyen evaluación humana ni validación del uso previsto. El estimador de Wasserstein y los proxies de diversidad son indicadores, no garantías de fidelidad; muestras nítidas pueden coexistir con clases faltantes, y clases cubiertas con artefactos sutiles.</p>
+<h2 id="referencias">🔗 Referencias</h2>
+<blockquote>
+<p>Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.</p>
+</blockquote>
+<ul>
+<li>Arjovsky, Chintala &amp; Bottou (2017), <em>Wasserstein GAN</em>, ICML — reemplaza la divergencia JS por la distancia de Wasserstein y define el crítico Lipschitz.</li>
+<li>Gulrajani et al. (2017), <em>Improved Training of Wasserstein GANs</em>, NeurIPS — introduce la penalización de gradiente (WGAN-GP) en lugar del recorte de pesos.</li>
+<li>Foster — <em>Generative Deep Learning</em> (2.ª ed., O'Reilly 2023) — exposición práctica de GANs, WGAN y estabilización del entrenamiento.</li>
+</ul><h2 class="doc-sep" id="experiments">🔬 Experimentos</h2><h1 id="experimentos-wgan-gp-sobre-fashion-mnist">Experimentos — WGAN-GP sobre Fashion-MNIST</h1>
+<h2 id="hipotesis-principal">Hipótesis principal</h2>
+<p>Comparar DCGAN y WGAN-GP con igual presupuesto de actualizaciones.</p>
+<h2 id="variables-controladas">Variables controladas</h2>
+<ul>
+<li>Dataset y partición.</li>
+<li>Presupuesto de épocas o actualizaciones.</li>
+<li>Semillas de entrenamiento.</li>
+<li>Política de acceso a test.</li>
+</ul>
+<h2 id="reporte-minimo">Reporte mínimo</h2>
+<p>Media, desviación estándar, costo de entrenamiento, latencia y análisis de errores.</p><h2 class="doc-sep" id="assessment">📝 Evaluación</h2><h1 id="evaluacion">Evaluación</h1>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th style="text-align: right;">Puntos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Procedencia y auditoría del dataset</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr>
+<td>Protocolo sin fuga de test</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr>
+<td>Implementación del modelo</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr>
+<td>Métricas y comparación con baseline</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr>
+<td>Análisis de errores y riesgos</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr>
+<td>Reproducibilidad y documentación</td>
+<td style="text-align: right;">10</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total: 100 puntos.</strong></p>
+    </article>
+    <nav class="pager"><a class="pg pg-prev" href="../../advanced_labs/27_audio_speechcommands/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🎙️ Clasificación de audio con SpeechCommands</span></a><a class="pg pg-next" href="../../advanced_labs/29_diffusion_ddpm/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🌫️ Difusión DDPM sobre Fashion-MNIST</span></a></nav>
+  </main>
+  <footer class="foot">
+    <p><a href="../../index.html">🏠 Índice del recorrido</a> · <a href="https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/28_wgan_gp/index.html">🌐 Sitio de estudio</a> · <a href="https://github.com/vladimiracunadev-create/neural-network-training-labs/tree/main/advanced_labs/28_wgan_gp">📂 Código en GitHub</a> · <a href="https://github.com/vladimiracunadev-create/neural-network-training-labs/blob/main/advanced_labs/28_wgan_gp/README.md">📄 Markdown</a></p>
+    <p>Página autocontenida: se genera desde <code>advanced_labs/28_wgan_gp</code> con <code>scripts/generate_lab_html.py</code>.</p>
+  </footer>
+</body>
+</html>

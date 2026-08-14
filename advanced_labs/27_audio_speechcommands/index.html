@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clasificación de audio con SpeechCommands · Neural Network Training Labs</title>
+<meta name="description" content="Laboratorio 27 — Clasificación de audio con SpeechCommands">
+<meta name="theme-color" content="#7c5cff">
+<style>
+/* Neural Network Training Labs — sitio de estudio */
+:root {
+  --bg: #0d1117; --bg-soft: #131a24; --card: #161f2e; --line: #263041;
+  --ink: #e6edf3; --ink-soft: #9fb0c3; --muted: #6b7d92;
+  --accent: #7c5cff; --accent-soft: #9d86ff; --green: #2e8b57; --gold: #f0b429;
+  --radius: 14px; --radius-sm: 9px;
+  --shadow: 0 2px 10px rgba(0,0,0,0.35); --shadow-h: 0 8px 26px rgba(124,92,255,0.28);
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f7f8fb; --bg-soft: #eef1f7; --card: #ffffff; --line: #e2e6ee;
+    --ink: #1a2233; --ink-soft: #48566b; --muted: #7a889c;
+    --shadow: 0 2px 10px rgba(20,30,50,0.08); --shadow-h: 0 10px 28px rgba(124,92,255,0.20);
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif; line-height: 1.65; }
+
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 26px; background: color-mix(in srgb, var(--bg-soft) 88%, transparent);
+  border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); }
+.brand { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.02rem;
+  color: var(--ink); text-decoration: none; }
+.crumbs { font-size: 0.9rem; color: var(--ink-soft); }
+.crumbs a { color: var(--accent-soft); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; }
+.crumbs .sep { margin: 0 8px; opacity: 0.4; }
+
+.prose { max-width: 900px; margin: 0 auto; padding: 34px 26px 72px; }
+
+/* Portada */
+.home-hero { text-align: center; padding: 30px 0 14px; }
+.home-kicker { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+  color: var(--accent-soft); background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  padding: 5px 14px; border-radius: 999px; letter-spacing: 0.02em; }
+.home-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.9rem, 4.6vw, 2.9rem);
+  line-height: 1.14; margin: 18px 0 10px; letter-spacing: -0.02em;
+  background: linear-gradient(120deg, var(--ink), var(--accent-soft));
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lede { max-width: 680px; margin: 0 auto; color: var(--ink-soft); font-size: 1.08rem; }
+.home-actions, .lab-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 24px 0 8px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 999px;
+  background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; font-size: 0.95rem;
+  box-shadow: var(--shadow); transition: transform 0.15s, box-shadow 0.15s; }
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-h); }
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); box-shadow: none; }
+.btn-ghost:hover { border-color: var(--accent); }
+
+.home-sec { font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; margin: 44px 0 18px;
+  display: flex; align-items: center; gap: 12px; }
+.home-sec .count { font-size: 0.8rem; font-weight: 600; color: var(--accent-soft);
+  background: color-mix(in srgb, var(--accent) 15%, transparent); padding: 2px 11px; border-radius: 999px; }
+.lab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.lab-card { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; background: var(--card);
+  border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; color: var(--ink);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); }
+.lab-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: var(--shadow-h); }
+.lab-num { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent-soft); font-weight: 600; }
+.lab-name { font-weight: 600; font-size: 1.0rem; line-height: 1.3; }
+
+/* Página de laboratorio */
+.lab-hero { padding: 8px 0 6px; }
+.lab-kicker { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent-soft);
+  text-transform: uppercase; letter-spacing: 0.05em; }
+.lab-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.7rem, 3.8vw, 2.4rem);
+  line-height: 1.16; margin: 8px 0 16px; letter-spacing: -0.01em; }
+.lab-actions { justify-content: flex-start; margin: 0 0 6px; }
+
+/* Paginador anterior / siguiente */
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0; }
+.pg { display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; border-radius: var(--radius);
+  background: var(--card); border: 1px solid var(--line); text-decoration: none; color: var(--ink);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); }
+.pg-next { text-align: right; }
+.pg:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-h); }
+.pg-empty { background: transparent; border: none; box-shadow: none; }
+.pg-dir { font-size: 0.8rem; color: var(--accent-soft); font-weight: 600; }
+.pg-title { font-weight: 600; font-size: 0.98rem; }
+
+/* Contenido renderizado */
+.content { margin-top: 8px; }
+.content h1 { display: none; } /* el título ya está en el hero */
+.doc-sep { font-family: 'Space Grotesk', sans-serif; margin: 2.4em 0 0.6em; padding-top: 1.2em;
+  border-top: 2px solid var(--line); font-size: 1.5rem; color: var(--accent-soft); }
+.content h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 1.8em 0 0.5em;
+  padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.content h3 { font-size: 1.14rem; margin: 1.5em 0 0.4em; }
+.content p, .content li { color: var(--ink-soft); }
+.content a { color: var(--accent-soft); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); text-underline-offset: 3px; }
+.content a:hover { text-decoration-color: var(--accent); }
+.content code { font-family: 'JetBrains Mono', monospace; font-size: 0.88em;
+  background: var(--bg-soft); border: 1px solid var(--line); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
+.content pre { background: #0b1220; color: #d7e0ee; padding: 16px 18px; border-radius: var(--radius-sm);
+  overflow-x: auto; border: 1px solid var(--line); box-shadow: var(--shadow); }
+.content pre code { background: transparent; border: none; padding: 0; color: inherit; }
+.content blockquote { border-left: 4px solid var(--accent); background: var(--bg-soft);
+  padding: 12px 18px; margin: 1.4em 0; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; color: var(--ink); }
+.content table { border-collapse: collapse; width: 100%; margin: 1.4em 0; background: var(--card);
+  border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow); display: block; overflow-x: auto; }
+.content th, .content td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+.content th { background: color-mix(in srgb, var(--accent) 20%, var(--card)); color: var(--ink); font-weight: 600; }
+.content tr:last-child td { border-bottom: none; }
+.content img { max-width: 100%; height: auto; border-radius: var(--radius-sm); }
+.content hr { border: none; border-top: 1px solid var(--line); margin: 2.2em 0; }
+
+.foot { max-width: 900px; margin: 0 auto; padding: 26px; border-top: 1px solid var(--line);
+  color: var(--muted); font-size: 0.88rem; text-align: center; }
+.foot a { color: var(--accent-soft); text-decoration: none; }
+.foot code { font-family: 'JetBrains Mono', monospace; }
+
+@media (max-width: 620px) {
+  .pager { grid-template-columns: 1fr; }
+  .pg-next { text-align: left; }
+}
+
+
+/* Distintivos: chips locales que reemplazan las imágenes de shields.io */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 18px; }
+.chip { display: inline-flex; align-items: stretch; border-radius: 999px; overflow: hidden;
+  font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.78rem; font-weight: 600;
+  border: 1px solid var(--line); box-shadow: var(--shadow); }
+.chip b { background: var(--bg-soft); color: var(--ink-soft); padding: 4px 10px; font-weight: 600; }
+.chip span { padding: 4px 11px; color: #fff; }
+
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span aria-hidden="true">🧠</span> Neural Network Training Labs</a>
+    <nav class="crumbs"><a href="../../index.html">🏠 Índice</a><span class="sep">›</span>🎙️ Clasificación de audio con SpeechCommands</nav>
+  </header>
+  <main class="prose">
+    <div class="lab-hero">
+      <div class="lab-kicker">Laboratorio 27 · Avanzada · Ruta 28 / 31</div>
+      <h1>🎙️ Clasificación de audio con SpeechCommands</h1>
+      <div class="lab-actions"><a class="btn btn-ghost" href="#README">📄 Guía</a><a class="btn btn-ghost" href="#theory">🧠 Teoría</a><a class="btn btn-ghost" href="#experiments">🔬 Experimentos</a><a class="btn btn-ghost" href="#assessment">📝 Evaluación</a><a class="btn btn-ghost" href="notebook.ipynb">📓 Recorrido</a><a class="btn btn-ghost" href="notebook_student.ipynb">✏️ Estudiante</a><a class="btn btn-ghost" href="notebook_solution.ipynb">✅ Solución</a></div>
+    </div>
+    <nav class="pager"><a class="pg pg-prev" href="../../advanced_labs/26_segmentation_unet/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🧷 Segmentación semántica con U-Net</span></a><a class="pg pg-next" href="../../advanced_labs/28_wgan_gp/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🖌️ WGAN-GP sobre Fashion-MNIST</span></a></nav>
+    <article class="content">
+      <span id="README"></span><h1 id="clasificacion-de-audio-con-speechcommands">Clasificación de audio con SpeechCommands</h1>
+<!-- ficha -->
+<h2 id="ficha-del-laboratorio">📋 Ficha del laboratorio</h2>
+<div class="chips"><span class="chip"><b>ruta</b><span style="background:#7c5cff">28 de 31</span></span> <span class="chip"><b>nivel</b><span style="background:#8957e5">avanzado</span></span> <span class="chip"><b>categoría</b><span style="background:#2e8b57">Avanzada</span></span> <span class="chip"><b>dataset</b><span style="background:#1f6feb">speechcommands_v0.02</span></span> <span class="chip"><b>selección</b><span style="background:#8957e5">accuracy</span></span></div>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🧭 Posición</td>
+<td>Ruta <strong>28 de 31</strong> del recorrido · categoría avanzada</td>
+</tr>
+<tr>
+<td>🎚️ Nivel</td>
+<td>avanzado</td>
+</tr>
+<tr>
+<td>🗺️ Dominio</td>
+<td><code>audio</code></td>
+</tr>
+<tr>
+<td>🏗️ Arquitectura</td>
+<td><code>audio-cnn</code></td>
+</tr>
+<tr>
+<td>🗄️ Dataset</td>
+<td><code>speechcommands_v0.02</code> — Torchaudio / Google Speech Commands</td>
+</tr>
+<tr>
+<td>⚖️ Licencia del dataset</td>
+<td>Creative Commons BY 4.0</td>
+</tr>
+<tr>
+<td>🎯 Métrica de selección</td>
+<td><code>accuracy</code> sobre <code>validation</code></td>
+</tr>
+<tr>
+<td>🔒 Política de <code>test</code></td>
+<td>se abre una sola vez, tras escribir <code>experiment.lock.json</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="que-vas-a-poder-hacer-al-terminar">🎯 Qué vas a poder hacer al terminar</h3>
+<ul>
+<li>Clasificar comandos hablados desde waveform y log-mel spectrograms.</li>
+<li>Interpretar accuracy, macro_f1</li>
+<li>Aplicar sellado de test y reproducibilidad</li>
+</ul>
+<h3 id="prerrequisitos">🧩 Prerrequisitos</h3>
+<ul>
+<li>CNN</li>
+<li>señales</li>
+<li>transformada tiempo-frecuencia</li>
+</ul>
+<blockquote>
+<p>Si alguno te falta, retrocede antes de continuar. Viniendo de <a href="../../advanced_labs/26_segmentation_unet/index.html">🧷 Segmentación semántica con U-Net</a>.</p>
+</blockquote>
+<h3 id="entregables-y-criterios-de-aceptacion">📦 Entregables y criterios de aceptación</h3>
+<p><strong>Entregables</strong></p>
+<ul>
+<li>notebook ejecutado</li>
+<li>reporte experimental</li>
+<li>model card</li>
+</ul>
+<h3 id="recursos-del-laboratorio">🗂️ Recursos del laboratorio</h3>
+<table>
+<thead>
+<tr>
+<th>Recurso</th>
+<th>Archivo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🧠 Teoría y referencias</td>
+<td><a href="#theory"><code>theory.md</code></a></td>
+</tr>
+<tr>
+<td>🔬 Plan de experimentos</td>
+<td><a href="#experiments"><code>experiments.md</code></a></td>
+</tr>
+<tr>
+<td>📝 Evaluación y rúbrica</td>
+<td><a href="#assessment"><code>assessment.md</code></a></td>
+</tr>
+<tr>
+<td>📓 Notebook de recorrido</td>
+<td><a href="notebook.ipynb"><code>notebook.ipynb</code></a></td>
+</tr>
+<tr>
+<td>✏️ Notebook de estudiante</td>
+<td><a href="notebook_student.ipynb"><code>notebook_student.ipynb</code></a></td>
+</tr>
+<tr>
+<td>✅ Notebook de solución</td>
+<td><a href="notebook_solution.ipynb"><code>notebook_solution.ipynb</code></a></td>
+</tr>
+<tr>
+<td>🖥️ Script de terminal</td>
+<td><a href="train.py"><code>train.py</code></a></td>
+</tr>
+<tr>
+<td>🎛️ Configuración base</td>
+<td><a href="configs/baseline.yaml"><code>configs/baseline.yaml</code></a></td>
+</tr>
+<tr>
+<td>🎚️ Configuración ampliada</td>
+<td><a href="configs/improved.yaml"><code>configs/improved.yaml</code></a></td>
+</tr>
+<tr>
+<td>🗄️ Ficha del dataset</td>
+<td><a href="data/dataset.yaml"><code>data/dataset.yaml</code></a></td>
+</tr>
+<tr>
+<td>🧾 Metadatos de la lección</td>
+<td><a href="lesson.yaml"><code>lesson.yaml</code></a></td>
+</tr>
+</tbody>
+</table>
+<!-- /ficha -->
+
+<h2 id="objetivo">Objetivo</h2>
+<p>Clasificar comandos hablados desde waveform y log-mel spectrograms.</p>
+<h2 id="dataset-publico-real">Dataset público real</h2>
+<ul>
+<li><strong>Dataset:</strong> <code>speechcommands_v0.02</code></li>
+<li><strong>Fuente:</strong> Torchaudio / Google Speech Commands</li>
+<li><strong>Licencia/condiciones:</strong> Creative Commons BY 4.0</li>
+<li><strong>Entrada:</strong> audio mono de un segundo a 16 kHz</li>
+<li><strong>Datos sintéticos:</strong> no se usan.</li>
+</ul>
+<p>Los datos se descargan desde el proveedor oficial mediante los adaptadores del repositorio. Los archivos grandes no se incluyen en Git.</p>
+<h2 id="modelo-y-fundamento">Modelo y fundamento</h2>
+<ul>
+<li><strong>Modelo:</strong> <code>audio-cnn</code></li>
+<li><strong>Teoría:</strong> Waveform, espectrograma log-mel, convolución 2D y robustez ante ruido.</li>
+<li><strong>Línea base:</strong> MFCC + regresión logística</li>
+</ul>
+<h2 id="protocolo">Protocolo</h2>
+<ol>
+<li>Crear particiones con <code>split_seed</code> o conservar los splits oficiales.</li>
+<li>Entrenar y seleccionar exclusivamente con <code>train</code> y <code>validation</code>.</li>
+<li>Guardar <code>best_model.pt</code> y escribir <code>experiment.lock.json</code>.</li>
+<li>Abrir <code>test</code> una sola vez después del congelamiento.</li>
+<li>Registrar métricas, configuración, procedencia y limitaciones.</li>
+</ol>
+<h2 id="ejecucion">Ejecución</h2>
+<pre><code class="language-bash">neural-labs train-advanced --track 27_audio_speechcommands --quick
+neural-labs train-advanced --track 27_audio_speechcommands --split-seed 42 --training-seed 43
+</code></pre>
+<h2 id="metricas">Métricas</h2>
+<p>accuracy, macro_f1, confusion_matrix, noise_robustness.</p>
+<h2 id="cuadernos">Cuadernos</h2>
+<ul>
+<li><code>notebook.ipynb</code>: recorrido completo.</li>
+<li><code>notebook_student.ipynb</code>: actividades sin resolver.</li>
+<li><code>notebook_solution.ipynb</code>: referencia docente.</li>
+</ul>
+<h2 id="limitacion-principal">Limitación principal</h2>
+<p>Acentos, micrófonos y ambientes no están representados uniformemente.</p><h2 class="doc-sep" id="theory">🧠 Teoría</h2><h1 id="teoria-clasificacion-de-audio-con-speechcommands">Teoría — Clasificación de audio con SpeechCommands</h1>
+<p>Waveform, espectrograma log-mel, convolución 2D y robustez ante ruido.</p>
+<h2 id="fundamento-matematico">Fundamento matemático</h2>
+<p>El audio crudo es una <strong>forma de onda</strong> (waveform): una señal x[t] de amplitud muestreada en el tiempo, aquí a 16 kHz durante un segundo (≈16 000 muestras por clip). Clasificar directamente sobre esa secuencia larga y unidimensional es difícil, porque la información fonética relevante vive en el <em>contenido frecuencial</em> que varía a lo largo del tiempo. Por eso se transforma la señal a una representación tiempo-frecuencia mediante la <strong>transformada de Fourier de corto tiempo</strong> (STFT): se divide la onda en ventanas solapadas y se calcula el espectro de cada una,</p>
+<p>X(m, k) = Σ_(n) x[n] · w[n − m] · e^(−j·2π·k·n / N),</p>
+<p>donde w es una ventana (p. ej. Hann), m indexa el tiempo y k la frecuencia. El <strong>espectrograma</strong> es la magnitud al cuadrado |X(m, k)|²: una "imagen" 2D donde un eje es tiempo y el otro frecuencia, y la intensidad es la energía.</p>
+<p>Sobre ese espectrograma se aplican dos transformaciones inspiradas en la percepción auditiva humana. Primero, la <strong>escala mel</strong> comprime el eje de frecuencia con un banco de filtros triangulares espaciados según mel(f) = 2595 · log₁₀(1 + f/700), que da más resolución a las frecuencias bajas —donde el oído distingue mejor— y agrupa las altas. Segundo, se toma el <strong>logaritmo</strong> de la energía, log(mel-energía + ε), imitando que percibimos la intensidad de forma aproximadamente logarítmica y comprimiendo el enorme rango dinámico; ε &gt; 0 evita log(0). El resultado es el <strong>espectrograma log-mel</strong>, la entrada del modelo. Los <strong>MFCC</strong> (coeficientes cepstrales en frecuencias mel) van un paso más allá aplicando una transformada coseno discreta que decorrelaciona los canales mel; se usan en la línea base MFCC + regresión logística.</p>
+<p>Como el log-mel es una imagen 2D, el modelo natural es una <strong>CNN 2D</strong>. Cada capa convolucional desliza filtros aprendidos K sobre la entrada, (X * K)(i, j) = Σ_(a,b) X(i+a, j+b) · K(a, b), detectando patrones locales tiempo-frecuencia (formantes, transiciones, ráfagas de energía) con pesos compartidos; el apilamiento con submuestreo construye representaciones cada vez más abstractas hasta una capa densa con softmax que produce p(clase | audio). El entrenamiento minimiza la entropía cruzada ℒ = −Σ_c y_c · log ŷ_c, y esta idea de tratar el audio como imagen espectral es la que Hershey et al. escalaron a clasificación de audio a gran escala.</p>
+<p>La <strong>robustez ante ruido</strong> es central: en uso real el micrófono capta fondo, reverberación y solapamientos. Se evalúa perturbando la entrada, por ejemplo x̃ = x + n con ruido n de una relación señal-ruido dada (SNR = 10·log₁₀(P_señal / P_ruido) dB), y midiendo cuánto cae la accuracy. Un modelo que aprende rasgos fonéticos estables degrada poco; uno que memoriza artefactos del set limpio colapsa. Esto también motiva aumentaciones (desplazamiento temporal, ruido, enmascarado de bandas) durante el entrenamiento.</p>
+<h2 id="visualizacion-especifica">Visualización específica</h2>
+<p>Waveform, espectrograma, errores por palabra y ruido. Contrastar la onda cruda con su espectrograma log-mel muestra por qué la representación 2D facilita la clasificación; el desglose de errores por palabra revela confusiones entre comandos fonéticamente parecidos, y las pruebas con ruido cuantifican la robustez.</p>
+<h2 id="riesgo-de-interpretacion">Riesgo de interpretación</h2>
+<p>Acentos, micrófonos y ambientes no están representados uniformemente. Una accuracy alta en el set limpio no garantiza desempeño con hablantes, dispositivos o entornos distintos a los del corpus, y la robustez debe verificarse explícitamente con ruido antes de confiar en el modelo.</p>
+<h2 id="referencias">🔗 Referencias</h2>
+<blockquote>
+<p>Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.</p>
+</blockquote>
+<ul>
+<li>Warden (2018), <em>Speech Commands: A Dataset for Limited-Vocabulary Speech Recognition</em>, arXiv — describe el corpus y el protocolo de evaluación de comandos hablados.</li>
+<li>Hershey et al. (2017), <em>CNN Architectures for Large-Scale Audio Classification</em>, ICASSP — muestra que arquitecturas convolucionales sobre espectrogramas escalan a la clasificación de audio.</li>
+</ul><h2 class="doc-sep" id="experiments">🔬 Experimentos</h2><h1 id="experimentos-clasificacion-de-audio-con-speechcommands">Experimentos — Clasificación de audio con SpeechCommands</h1>
+<h2 id="hipotesis-principal">Hipótesis principal</h2>
+<p>Comparar señal limpia, ruido añadido y SpecAugment usando los splits oficiales.</p>
+<h2 id="variables-controladas">Variables controladas</h2>
+<ul>
+<li>Dataset y partición.</li>
+<li>Presupuesto de épocas o actualizaciones.</li>
+<li>Semillas de entrenamiento.</li>
+<li>Política de acceso a test.</li>
+</ul>
+<h2 id="reporte-minimo">Reporte mínimo</h2>
+<p>Media, desviación estándar, costo de entrenamiento, latencia y análisis de errores.</p><h2 class="doc-sep" id="assessment">📝 Evaluación</h2><h1 id="evaluacion">Evaluación</h1>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th style="text-align: right;">Puntos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Procedencia y auditoría del dataset</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr>
+<td>Protocolo sin fuga de test</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr>
+<td>Implementación del modelo</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr>
+<td>Métricas y comparación con baseline</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr>
+<td>Análisis de errores y riesgos</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr>
+<td>Reproducibilidad y documentación</td>
+<td style="text-align: right;">10</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total: 100 puntos.</strong></p>
+    </article>
+    <nav class="pager"><a class="pg pg-prev" href="../../advanced_labs/26_segmentation_unet/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🧷 Segmentación semántica con U-Net</span></a><a class="pg pg-next" href="../../advanced_labs/28_wgan_gp/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🖌️ WGAN-GP sobre Fashion-MNIST</span></a></nav>
+  </main>
+  <footer class="foot">
+    <p><a href="../../index.html">🏠 Índice del recorrido</a> · <a href="https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/27_audio_speechcommands/index.html">🌐 Sitio de estudio</a> · <a href="https://github.com/vladimiracunadev-create/neural-network-training-labs/tree/main/advanced_labs/27_audio_speechcommands">📂 Código en GitHub</a> · <a href="https://github.com/vladimiracunadev-create/neural-network-training-labs/blob/main/advanced_labs/27_audio_speechcommands/README.md">📄 Markdown</a></p>
+    <p>Página autocontenida: se genera desde <code>advanced_labs/27_audio_speechcommands</code> con <code>scripts/generate_lab_html.py</code>.</p>
+  </footer>
+</body>
+</html>

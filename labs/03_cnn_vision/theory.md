@@ -1,5 +1,11 @@
 # Teoría — CNN para visión
 
+<!-- nav-top -->
+> 🧭 **Ruta 4 / 31** · [⬅️ 🌀 MLP multiclase](../../labs/02_mlp_nonlinear/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🔁 RNN para texto ➡️](../../labs/04_rnn_sequences/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Entrenar una CNN y analizar errores sobre fotografías reales de diez clases.
@@ -62,3 +68,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - He et al. (2016), *Deep Residual Learning for Image Recognition (ResNet)*, CVPR — conexiones residuales para redes muy profundas.
 - Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🌀 MLP multiclase](../../labs/02_mlp_nonlinear/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/03_cnn_vision/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

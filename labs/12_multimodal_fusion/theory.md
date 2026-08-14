@@ -1,5 +1,11 @@
 # Teoría — Fusión de sensores
 
+<!-- nav-top -->
+> 🧭 **Ruta 13 / 31** · [⬅️ ♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🎛️ Búsqueda de hiperparámetros ➡️](../../labs/13_hyperparameter_search/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Fusionar acelerómetro y giroscopio de smartphones para reconocer actividades.
@@ -59,3 +65,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Radford et al. (2021), *Learning Transferable Visual Models from Natural Language Supervision (CLIP)*, ICML — ejemplo influyente de aprender un espacio compartido entre modalidades distintas.
 - Fuente del dataset: https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/12_multimodal_fusion/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

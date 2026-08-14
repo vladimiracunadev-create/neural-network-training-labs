@@ -1,5 +1,11 @@
 # Teoría — Transformer para noticias
 
+<!-- nav-top -->
+> 🧭 **Ruta 8 / 31** · [⬅️ 🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🎨 GAN generativa ➡️](../../labs/08_gan_generation/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Aplicar atención multi-cabeza a clasificación de noticias reales.
@@ -55,3 +61,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Vaswani et al. (2017), *Attention Is All You Need*, NeurIPS — la arquitectura transformer basada íntegramente en autoatención multi-cabeza.
 - Fuente del dataset: https://huggingface.co/datasets/fancyzhx/ag_news
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🎨 GAN generativa](../../labs/08_gan_generation/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/07_transformer_attention/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

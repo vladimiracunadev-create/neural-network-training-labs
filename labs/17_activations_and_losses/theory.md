@@ -1,5 +1,11 @@
 # Teoría — Activaciones y funciones de pérdida
 
+<!-- nav-top -->
+> 🧭 **Ruta 18 / 31** · [⬅️ ∂ Backpropagation manual](../../labs/16_backpropagation_manual/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [⚙️ Optimizadores y schedulers ➡️](../../labs/18_optimizers_and_schedulers/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Comparar ReLU, GELU, Tanh y pérdidas apropiadas en clases desbalanceadas.
@@ -63,3 +69,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Glorot, Bordes & Bengio (2011), *Deep Sparse Rectifier Neural Networks*, AISTATS — evidencia de que los rectificadores facilitan el entrenamiento de redes profundas.
 - Fuente del dataset: https://archive.ics.uci.edu/dataset/186/wine+quality
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/17_activations_and_losses/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

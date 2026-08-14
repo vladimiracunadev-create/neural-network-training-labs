@@ -1,5 +1,11 @@
 # Teoría — RNN para texto
 
+<!-- nav-top -->
+> 🧭 **Ruta 5 / 31** · [⬅️ 🖼️ CNN para visión](../../labs/03_cnn_vision/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [📈 LSTM para series temporales ➡️](../../labs/05_lstm_time_series/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Clasificar sentimiento en reseñas reales usando embeddings y recurrencia.
@@ -57,3 +63,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Mikolov et al. (2013), *Efficient Estimation of Word Representations in Vector Space (word2vec)* — embeddings distribuidos de palabras.
 - Fuente del dataset: https://huggingface.co/datasets/stanfordnlp/imdb
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🖼️ CNN para visión](../../labs/03_cnn_vision/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [📈 LSTM para series temporales](../../labs/05_lstm_time_series/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/04_rnn_sequences/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

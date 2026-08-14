@@ -1,5 +1,11 @@
 # Teoría — Explicabilidad
 
+<!-- nav-top -->
+> 🧭 **Ruta 22 / 31** · [⬅️ 🔄 Aumento de datos](../../labs/20_data_augmentation/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🎯 Incertidumbre y calibración ➡️](../../labs/22_uncertainty_calibration/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Explicar predicciones con Integrated Gradients y permutación.
@@ -54,3 +60,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Selvaraju et al. (2017), *Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization*, ICCV — mapas de atribución basados en gradientes para redes convolucionales.
 - Fuente del dataset: https://archive.ics.uci.edu/dataset/2/adult
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🔄 Aumento de datos](../../labs/20_data_augmentation/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/21_explainability/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

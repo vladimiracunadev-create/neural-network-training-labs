@@ -1,5 +1,11 @@
 # Plan de experimentos — Búsqueda de hiperparámetros
 
+<!-- nav-top -->
+> 🧭 **Ruta 14 / 31** · [⬅️ 🔀 Fusión de sensores](../../labs/12_multimodal_fusion/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [⚗️ Destilación de conocimiento ➡️](../../labs/14_knowledge_distillation/experiments.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Optimizar profundidad, ancho, dropout y learning rate sin tocar test. La hipótesis debe aceptarse o rechazarse comparando el modelo con **Regresión logística** y no solo observando que la pérdida disminuye.
@@ -39,3 +45,15 @@ Analizar presupuesto y estabilidad entre estudios.
 ## Criterio de conclusión
 
 La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/13_hyperparameter_search/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

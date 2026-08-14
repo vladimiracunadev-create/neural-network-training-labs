@@ -1,5 +1,11 @@
 # Plan de experimentos — CNN para visión
 
+<!-- nav-top -->
+> 🧭 **Ruta 4 / 31** · [⬅️ 🌀 MLP multiclase](../../labs/02_mlp_nonlinear/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [🔁 RNN para texto ➡️](../../labs/04_rnn_sequences/experiments.md)
+>
+> [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Hipótesis principal
 
 Entrenar una CNN y analizar errores sobre fotografías reales de diez clases. La hipótesis debe aceptarse o rechazarse comparando el modelo con **Clasificador lineal sobre píxeles** y no solo observando que la pérdida disminuye.
@@ -39,3 +45,15 @@ Comparar kernel, normalización y aumento.
 ## Criterio de conclusión
 
 La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🌀 MLP multiclase](../../labs/02_mlp_nonlinear/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/03_cnn_vision/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

@@ -1,8 +1,91 @@
 # Exportación e inferencia
 
 <!-- nav-top -->
-> 🧭 [⬅️ Anterior](../../labs/22_uncertainty_calibration/README.md) · [🏠 Índice](../../README.md#laboratorios) · [Siguiente ➡️](../../labs/24_capstone_real_project/README.md)
+> 🧭 **Ruta 24 / 31** · [⬅️ 🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md) · [🏠 Índice](../../README.md#laboratorios) · [🏁 Proyecto final: churn de telecomunicaciones ➡️](../../labs/24_capstone_real_project/README.md)
+>
+> **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
+
+<!-- ficha -->
+## 📋 Ficha del laboratorio
+
+![ruta](https://img.shields.io/badge/ruta-24%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-avanzado-8957e5?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Central-2e8b57?style=flat-square) ![horas](https://img.shields.io/badge/horas-~8%20h-f0b429?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-cifar10-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-macro__f1-8957e5?style=flat-square)
+
+| Campo | Valor |
+|---|---|
+| 🧭 Posición | Ruta **24 de 31** del recorrido · categoría central |
+| 🎚️ Nivel | avanzado |
+| ⏱️ Dedicación estimada | 8 horas |
+| 🧩 Tarea | `multiclass_classification` |
+| 🏗️ Arquitectura | `cnn_export` |
+| 🗄️ Dataset | [`cifar10`](https://www.cs.toronto.edu/~kriz/cifar.html) — Torchvision / University of Toronto |
+| ⚖️ Licencia del dataset | Consultar términos CIFAR-10 |
+| 🎯 Métrica de selección | `macro_f1` sobre `validation` |
+| 📏 Línea base a superar | PyTorch eager |
+| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+
+### 🎯 Qué vas a poder hacer al terminar
+
+- Exportar ONNX, validar paridad y medir latencia por lotes.
+- Preparar y auditar el dataset real cifar10 sin fuga de datos.
+- Entrenar y evaluar exportación y perfil de inferencia.
+- Comparar contra la línea base: PyTorch eager.
+- Interpretar intervalos de confianza, errores y limitaciones.
+
+### 🧩 Prerrequisitos
+
+- PyTorch intermedio
+- optimización
+- lectura de artículos técnicos
+
+> Si alguno te falta, retrocede antes de continuar. Viniendo de [🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md).
+
+### ⚙️ `baseline` frente a `improved`
+
+| Parámetro | [`baseline.yaml`](configs/baseline.yaml) | [`improved.yaml`](configs/improved.yaml) |
+|---|---|---|
+| Épocas | `20` | `50` |
+| Tasa de aprendizaje | `0.001` | `0.0005` |
+| Paciencia (early stopping) | `5` | `8` |
+| Precisión mixta (AMP) | no | sí |
+| Procesos de carga | `0` | `2` |
+
+> Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con `validation`, nunca con `test`.
+
+### 📦 Entregables y criterios de aceptación
+
+**Entregables**
+
+- notebook ejecutado
+- reporte experimental
+- model card
+- comparación con línea base
+- respuesta a preguntas críticas
+
+**Criterios de éxito**
+
+- cero solapamiento entre train, validation y test
+- selección basada únicamente en validation
+- métricas finales acompañadas por incertidumbre
+- conclusiones que distinguen evidencia de suposición
+
+### 🗂️ Recursos del laboratorio
+
+| Recurso | Archivo |
+|---|---|
+| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
+| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
+| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
+| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
+| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
+| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
+| 🖥️ Script de terminal | [`train.py`](train.py) |
+| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
+| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
+| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
+| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+
+<!-- /ficha -->
 
 ## Objetivo
 
@@ -73,7 +156,6 @@ accuracy, latency_ms, throughput, model_size_mb.
 - Comparar costo, precisión y latencia.
 - Documentar sesgos, limitaciones y usos no recomendados.
 
-
 ## Material formativo v3
 
 - [`theory.md`](theory.md): fundamento, protocolo y riesgos de interpretación.
@@ -94,11 +176,13 @@ neural-labs leaderboard
 La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
 
 <!-- nav-bottom -->
-## 🧭 Navegación del curso
+## 🧭 Navegación del recorrido
 
-| ⬅️ Anterior | Siguiente ➡️ |
-|---|---|
-| [🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md) | [🏁 Proyecto final: churn de telecomunicaciones](../../labs/24_capstone_real_project/README.md) |
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🏁 Proyecto final: churn de telecomunicaciones](../../labs/24_capstone_real_project/README.md) |
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Ver en el sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/23_model_export_and_inference/index.html)
+**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/23_model_export_and_inference/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

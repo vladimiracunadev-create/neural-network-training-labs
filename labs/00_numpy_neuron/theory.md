@@ -1,5 +1,11 @@
 # Teoría — Neurona con NumPy
 
+<!-- nav-top -->
+> 🧭 **Ruta 1 / 31** · ⬅️ *inicio del recorrido* · [🏠 Índice](../../README.md#laboratorios) · [🧩 Perceptrón con PyTorch ➡️](../../labs/01_pytorch_perceptron/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Implementar propagación, entropía cruzada y descenso de gradiente sin autograd.
@@ -67,3 +73,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Rosenblatt (1958), *The perceptron: a probabilistic model for information storage and organization in the brain*, Psychological Review — origen histórico de la neurona artificial entrenable.
 - Fuente del dataset: https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| *— inicio del recorrido* | [Las 31 rutas](../../README.md#laboratorios) | [🧩 Perceptrón con PyTorch](../../labs/01_pytorch_perceptron/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/00_numpy_neuron/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

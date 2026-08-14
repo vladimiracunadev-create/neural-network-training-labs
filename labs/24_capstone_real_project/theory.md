@@ -1,5 +1,11 @@
 # Teoría — Proyecto final: churn de telecomunicaciones
 
+<!-- nav-top -->
+> 🧭 **Ruta 25 / 31** · [⬅️ 📦 Exportación e inferencia](../../labs/23_model_export_and_inference/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🔧 Fine-tuning eficiente de transformer ➡️](../../advanced_labs/25_transformer_finetuning/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Resolver de extremo a extremo un problema real de abandono de clientes con documentación, evaluación y despliegue.
@@ -49,3 +55,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Kuhn y Johnson — *Applied Predictive Modeling* (Springer, 2013) — modelado predictivo aplicado: preprocesamiento, evaluación con clases desbalanceadas y selección de umbral.
 - Fuente del dataset: https://archive.ics.uci.edu/dataset/563/iranian+churn+dataset
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🔧 Fine-tuning eficiente de transformer](../../advanced_labs/25_transformer_finetuning/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/24_capstone_real_project/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->

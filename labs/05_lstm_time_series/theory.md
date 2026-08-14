@@ -1,5 +1,11 @@
 # Teoría — LSTM para series temporales
 
+<!-- nav-top -->
+> 🧭 **Ruta 6 / 31** · [⬅️ 🔁 RNN para texto](../../labs/04_rnn_sequences/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🧬 Autoencoder para fraude ➡️](../../labs/06_autoencoder_anomaly/theory.md)
+>
+> [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
+<!-- /nav-top -->
+
 ## Propósito
 
 Pronosticar demanda horaria respetando el orden temporal.
@@ -65,3 +71,15 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Cho et al. (2014), *Learning Phrase Representations using RNN Encoder-Decoder (GRU)*, EMNLP — unidad recurrente con puertas simplificada.
 - Fuente del dataset: https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+<!-- nav-bottom -->
+## 🧭 Navegación del recorrido
+
+| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+|---|:---:|---|
+| [🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) |
+
+**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+
+[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/05_lstm_time_series/index.html) · [🖥️ Página HTML local](index.html)
+<!-- /nav-bottom -->
