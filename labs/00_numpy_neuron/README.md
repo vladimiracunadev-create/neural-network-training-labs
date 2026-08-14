@@ -64,6 +64,56 @@ w ← w − η·∇_w L    ;    b ← b − η·∂L/∂b
 
 La formulación debe conectarse con cuatro elementos: representación de entrada, función del modelo, función de pérdida y regla de actualización. El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.
 
+### La derivación completa, sin saltarse pasos
+
+El resultado ∂L/∂wⱼ = (1/N)·Σᵢ (pᵢ − yᵢ)·xᵢⱼ es tan limpio que parece una coincidencia. No lo es, y verlo salir paso a paso es el objetivo de este laboratorio. Se aplica la regla de la cadena en tres tramos, ∂L/∂w = (∂L/∂p)·(∂p/∂z)·(∂z/∂w).
+
+Primero, la derivada de la pérdida respecto de la probabilidad predicha. Derivando L = −[y·ln p + (1 − y)·ln(1 − p)]:
+
+∂L/∂p = −y/p + (1 − y)/(1 − p) = (p − y) / (p·(1 − p)).
+
+Segundo, la derivada de la sigmoide, que tiene una forma notable: como σ(z) = 1/(1 + e^(−z)),
+
+σ′(z) = e^(−z) / (1 + e^(−z))² = σ(z)·(1 − σ(z)) = p·(1 − p).
+
+Tercero, la parte lineal: ∂z/∂wⱼ = xⱼ.
+
+Al multiplicar los tres, el factor p·(1 − p) del denominador de la primera derivada **se cancela exactamente** con el mismo factor que aporta σ′(z):
+
+∂L/∂wⱼ = [ (p − y) / (p·(1 − p)) ] · [ p·(1 − p) ] · xⱼ = (p − y)·xⱼ.
+
+Esa cancelación es la razón de fondo por la que la entropía cruzada es la pérdida correcta para la sigmoide, y no una preferencia estética. Si se usara error cuadrático, L = ½(p − y)², la derivada sería ∂L/∂z = (p − y)·σ′(z) = (p − y)·p·(1 − p), y el factor p·(1 − p) **sobreviviría**. Ese factor vale como máximo 0,25 en z = 0 y tiende a cero cuando el modelo está muy seguro: exactamente en los casos donde el modelo se equivoca con confianza —p ≈ 0 con y = 1— el gradiente se anularía y el aprendizaje se detendría justo donde más falta hace. Es el fenómeno de **saturación**, y la entropía cruzada lo evita por construcción.
+
+### Por qué aquí hay una única solución, y después no
+
+Esta pérdida tiene una propiedad que ningún laboratorio posterior volverá a tener: es **convexa** en los parámetros. Su matriz hessiana es
+
+H = (1/N)·Xᵀ·S·X,   con S = diag(pᵢ·(1 − pᵢ)),
+
+y como cada pᵢ·(1 − pᵢ) > 0, la matriz S es definida positiva y H resulta semidefinida positiva para cualquier X. Una función convexa no tiene mínimos locales distintos del global: cualquier punto donde el gradiente se anule es la solución óptima. Por eso aquí el descenso de gradiente converge al mismo sitio venga de donde venga la inicialización, y la única semilla que importa es la de la partición de datos.
+
+Conviene guardar esa observación, porque explica un contraste que se vuelve central a partir de la ruta 02: en cuanto se añade una capa oculta con no linealidad, la superficie de pérdida deja de ser convexa, aparecen múltiples mínimos y puntos de silla, y **la inicialización empieza a cambiar el resultado**. Ese es el momento exacto en que `training_seed` se convierte en una variable experimental que hay que controlar y reportar, y no en un detalle.
+
+Un caso límite conviene conocerlo: si las clases son **linealmente separables**, la verosimilitud no tiene máximo finito —los pesos crecen sin cota empujando las probabilidades hacia 0 y 1— y el entrenamiento diverge lentamente. La regularización L2 lo resuelve añadiendo (λ/2)·‖w‖², que vuelve la pérdida estrictamente convexa y garantiza un óptimo finito.
+
+### Estabilidad numérica y comprobación del gradiente
+
+Implementar estas fórmulas en punto flotante exige dos cuidados que el laboratorio hace visibles.
+
+El primero es que ln(0) es −∞. Con z ≈ −40, σ(z) se redondea a 0,0 en float64 y la pérdida se vuelve infinita o NaN. La solución robusta no es recortar p a [ε, 1−ε], que sesga el resultado, sino no calcular σ por separado: se usa la forma estable
+
+L = mean( max(z, 0) − z·y + ln(1 + e^(−|z|)) ),
+
+algebraicamente idéntica a la entropía cruzada pero cuyo exponente nunca es positivo, de modo que e^(−|z|) ∈ (0, 1] y no desborda. Es exactamente lo que hace `BCEWithLogitsLoss` en la ruta siguiente, y aquí se escribe a mano para saber qué hay dentro.
+
+El segundo es cómo saber que la derivada está bien programada. La comprobación estándar es contrastarla contra una **diferencia finita central**:
+
+∂L/∂θ ≈ ( L(θ + ε) − L(θ − ε) ) / (2ε),
+
+cuyo error es O(ε²) frente al O(ε) de la diferencia hacia adelante. Con ε ≈ 10⁻⁵ en float64, el error relativo entre el gradiente analítico y el numérico debería quedar por debajo de 10⁻⁷; por encima de 10⁻⁴ hay un fallo real en la derivación. Esta técnica es la que la ruta 16 aplica capa por capa a una red completa.
+
+Sobre la escala de las variables: como el gradiente es proporcional a xᵢⱼ, una característica medida en miles produce gradientes miles de veces mayores que una medida en unidades. Con una tasa de aprendizaje única, la dirección de descenso queda dominada por la variable de mayor escala y el resto avanza a paso de tortuga. En términos de la hessiana, la relación entre su mayor y su menor autovalor —el **número de condición**— se dispara, y la convergencia del descenso de gradiente se degrada en la misma proporción. Estandarizar las 30 características de este dataset no es cosmética: es lo que hace que el problema sea resoluble en un número razonable de épocas. Y se ajusta **solo con `train`**, porque usar la media y la desviación del conjunto completo filtraría información de `test` al preprocesamiento.
+
 > **La pregunta que deberías poder responder al terminar:** ¿Cómo cambia la convergencia al modificar la escala de las variables?
 
 ### Qué se mide y con qué se decide

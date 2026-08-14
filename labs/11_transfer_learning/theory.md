@@ -28,6 +28,32 @@ La diferencia operativa entre estrategias es qué gradientes se propagan. En **e
 
 ¿Por qué transfieren las características? Yosinski et al. mostraron empíricamente que la transferibilidad **decae con la profundidad**: las capas iniciales aprenden filtros genéricos (parecidos a detectores de bordes y color, casi idénticos entre tareas) mientras que las capas finales se especializan en las clases de la tarea original. Cuanto más se parezcan la tarea origen y la destino, más capas conviene reutilizar; cuanto más difieran, más capas hay que readaptar. Formalmente, esto encaja en el marco de Pan & Yang: transferimos conocimiento de un dominio origen 𝒟_S (ImageNet) a un dominio destino 𝒟_T (mascotas) que comparten el espacio de características pero difieren en la distribución de entrada y en la tarea. El beneficio del preentrenamiento es mayor cuanto menor es el dataset destino y mayor la afinidad entre dominios; con suficientes datos destino, entrenar desde cero puede alcanzar —o superar— a la transferencia, y ahí es donde el preentrenamiento deja de aportar.
 
+### Los tres regímenes, en parámetros y en gradiente
+
+Las tres estrategias que compara el laboratorio se distinguen por qué subconjunto de θ recibe gradiente, y esa diferencia se puede contar.
+
+En **extracción de características** se congela el cuerpo entero: `requires_grad = False` para todos sus pesos, y solo se entrena la cabeza. Con una ResNet18 —unos 11,2 millones de parámetros en el cuerpo— y una cabeza lineal de 512 entradas a las clases del problema, los parámetros entrenables bajan a unos pocos miles. Como el cuerpo no cambia, sus salidas para cada imagen son **constantes durante todo el entrenamiento**, lo que permite un truco muy rentable: calcularlas una sola vez, guardarlas en caché, y entrenar la cabeza sobre esos vectores. El entrenamiento pasa a ser una regresión logística sobre 512 dimensiones y corre en segundos.
+
+En **fine-tuning completo** todo el cuerpo recibe gradiente. Cuesta memoria —hay que guardar activaciones y estados del optimizador de 11 millones de parámetros— y exige una tasa de aprendizaje pequeña, típicamente uno o dos órdenes de magnitud menor que la del entrenamiento desde cero. La razón es la misma que en la ruta 25: la cabeza está inicializada al azar y sus primeros gradientes son grandes; si se propagan con una tasa alta, destruyen las representaciones preentrenadas antes de que la cabeza haya aprendido nada útil. El remedio habitual es un **calentamiento**: entrenar unas épocas solo la cabeza y descongelar después, o usar tasas discriminativas —más pequeñas en las capas iniciales, más grandes en las finales—, que es la traducción directa de que las capas iniciales necesitan cambiar menos.
+
+En **entrenamiento desde cero** no hay transferencia: es la referencia que dice cuánto aportó realmente el preentrenamiento. Compararla con las otras dos con el mismo presupuesto de épocas es lo que convierte el laboratorio en un experimento y no en una demostración.
+
+### El detalle que arruina un fine-tuning sin dar error
+
+Hay un fallo específico de este régimen que no produce excepción, no aparece en las curvas de entrenamiento y degrada el resultado: las estadísticas de la **normalización por lotes**.
+
+Como se vio en la ruta 03, esas capas guardan una media y una varianza acumuladas que no se aprenden por gradiente, sino que se actualizan en cada paso hacia adelante mientras el modelo esté en modo entrenamiento. Congelar los pesos con `requires_grad = False` **no congela esas estadísticas**. El resultado es que, en un supuesto «cuerpo congelado», las capas de normalización siguen adaptándose a los nuevos datos y la representación se mueve, aunque ningún peso reciba gradiente. Si además el lote es pequeño, las estadísticas del nuevo dominio son ruidosas y la degradación puede ser notable. Congelar de verdad exige poner esas capas en modo evaluación explícitamente.
+
+Un segundo detalle de la misma familia: la normalización de entrada debe ser **la del preentrenamiento**. Un modelo entrenado con las medias y desviaciones de ImageNet espera recibir imágenes normalizadas con esos mismos valores; alimentarlo con otra normalización lo sitúa fuera de la distribución para la que se calibraron sus filtros, y el rendimiento cae sin que nada lo señale.
+
+### Cuándo la transferencia deja de ayudar
+
+La transferencia no es gratis ni siempre positiva, y conocer sus límites forma parte del laboratorio.
+
+El factor que más pesa es la **distancia entre dominios**. Las capas iniciales de una red entrenada con fotografías naturales detectan bordes y texturas, y eso es útil para casi cualquier imagen natural —de ahí que funcione tan bien con mascotas—. Cuando el dominio destino es muy distinto —imágenes médicas monocromas, radar, microscopía— la ventaja se reduce a las primeras capas y puede desaparecer; se habla de **transferencia negativa** cuando el modelo preentrenado rinde por debajo de uno entrenado desde cero, algo que ocurre si el preentrenamiento induce invariancias contraproducentes para la tarea nueva.
+
+El segundo factor es el **tamaño del conjunto destino**, y determina qué régimen conviene. Con pocos datos, el fine-tuning completo tiene demasiados grados de libertad y sobreajusta: la extracción de características suele ganar, precisamente porque su capacidad está limitada por construcción. A medida que crecen los datos la relación se invierte, y con un conjunto grande el entrenamiento desde cero puede alcanzar a ambos. Ese cruce de curvas es el resultado más interesante que este laboratorio puede producir, y por eso conviene reportar los tres regímenes juntos y no solo el ganador.
+
 ## Protocolo científico
 
 - Ajustar transformaciones, vocabulario, normalización y selección de variables solo con `train`.

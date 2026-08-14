@@ -52,6 +52,42 @@ La **importancia por permutación** es un método agnóstico al modelo y de alca
 
 Ambos enfoques tienen límites que el laboratorio hace explícitos. Las atribuciones dependen de decisiones —el baseline elegido en Integrated Gradients, la correlación entre variables en la permutación— y pueden ser **inestables**: pequeñas perturbaciones de la entrada, o variables muy correlacionadas entre sí, pueden repartir el crédito de formas distintas sin que la predicción cambie. Una explicación describe cómo *actúa* el modelo, no un mecanismo causal del mundo; confundir atribución con causalidad es el error de interpretación central que hay que evitar.
 
+### Los axiomas que hacen de Integrated Gradients algo más que un gradiente
+
+El gradiente por sí solo ya parece una explicación —dice cuánto cambia la salida si se mueve una entrada— y falla por dos motivos concretos. Primero, es **local**: describe la pendiente en un punto, no el efecto de haber llegado hasta ahí. Segundo, sufre **saturación**: si una característica ya llevó la predicción a un extremo, su gradiente ahí es casi cero, y una atribución que la declare irrelevante contradice el hecho de que fue determinante.
+
+Integrated Gradients corrige ambas cosas integrando el gradiente a lo largo del camino desde una **referencia** x′ hasta la entrada x:
+
+IG_i(x) = (x_i − x′_i) · ∫₀¹ ∂F( x′ + α·(x − x′) ) / ∂x_i · dα,
+
+que en la práctica se aproxima con una suma de Riemann de m pasos (m entre 50 y 300 suele bastar). Su valor es que satisface dos propiedades demostrables. La **completitud**: la suma de todas las atribuciones es exactamente F(x) − F(x′), de modo que el presupuesto explicativo cuadra y no queda efecto sin repartir —es la comprobación numérica que conviene hacer siempre, porque una suma que no cuadra delata que m es demasiado pequeño—. Y la **sensibilidad**: si dos entradas difieren en una sola característica y producen predicciones distintas, esa característica recibe atribución no nula, algo que el gradiente puro no garantiza.
+
+La elección de la **referencia** x′ no es un detalle técnico: define la pregunta que se está respondiendo. Las atribuciones explican la diferencia respecto de esa referencia, así que con x′ = 0 se responde «¿por qué esta predicción y no la de una entrada nula?», y con x′ = la media del conjunto de entrenamiento, «¿por qué esta y no la de un caso típico?». Son preguntas distintas y producen atribuciones distintas. Declarar cuál se usó es parte del reporte; omitirlo hace la explicación ininterpretable.
+
+### La importancia por permutación mide otra cosa
+
+Conviene no confundir las dos técnicas del laboratorio, porque responden preguntas diferentes y a menudo se citan como si fueran intercambiables.
+
+Integrated Gradients es **local**: explica una predicción concreta. La importancia por permutación es **global**: baraja los valores de una característica en todo el conjunto y mide cuánto se degrada la métrica,
+
+imp_j = métrica(D) − métrica(D con la columna j permutada),
+
+lo que responde «¿cuánto depende el modelo de esta variable en promedio?». Una variable puede ser globalmente poco importante y decisiva para un caso particular; ambas cosas son ciertas a la vez.
+
+La permutación tiene además un fallo conocido que hay que declarar: con variables **correlacionadas**, permutar una crea combinaciones imposibles —una edad de 20 años con 30 de experiencia laboral—, el modelo evalúa fuera de la distribución en la que fue entrenado y la degradación resultante mezcla dos efectos, la pérdida de información y la extrapolación. El resultado tiende a **repartir** la importancia entre variables correlacionadas, subestimando a cada una. Por eso conviene mirar antes la matriz de correlación y, si hay grupos, permutarlos en bloque.
+
+Y como se calcula sobre un conjunto y una métrica concretos, hay una regla que se incumple con frecuencia: la importancia debe calcularse sobre datos **no usados para entrenar**. Sobre `train` mide de qué se apoyó el modelo para memorizar, que no es lo mismo que de qué depende su capacidad de generalizar.
+
+### Qué no demuestra una explicación
+
+Es la parte más importante de esta ruta y la que suele omitirse.
+
+Una atribución alta significa que **el modelo** usó esa característica, no que la característica **cause** el fenómeno. Si el modelo aprendió a apoyarse en un proxy —un código postal que correlaciona con ingresos, una marca de agua que correlaciona con la clase— la explicación señalará fielmente ese proxy, y confundirlo con una causa lleva a decisiones erróneas sobre el mundo. La explicación audita el modelo; la causalidad requiere intervención, no observación.
+
+Además, las atribuciones son **inestables**: métodos distintos aplicados al mismo modelo y la misma entrada producen rankings distintos, y pequeñas perturbaciones de la entrada pueden alterarlos notablemente. De ahí dos exigencias prácticas: contrastar al menos dos métodos —que es la razón de que este laboratorio use dos— y desconfiar de cualquier conclusión que dependa de las diferencias finas del orden.
+
+Por último, una explicación **no valida** un modelo. Un modelo con métricas malas y explicaciones plausibles sigue siendo malo; uno con métricas buenas y explicaciones incómodas puede estar revelando un sesgo real de los datos, que es información valiosa y no un fallo del método. En un dominio como el de este dataset —predicción de ingresos a partir de datos censales— la explicación sirve sobre todo para detectar apoyos en variables sensibles o en sus proxies, y esa detección obliga a una decisión humana, no a un ajuste de hiperparámetros.
+
 > **La pregunta que deberías poder responder al terminar:** ¿La explicación es estable ante pequeñas perturbaciones?
 
 ### Qué se mide y con qué se decide

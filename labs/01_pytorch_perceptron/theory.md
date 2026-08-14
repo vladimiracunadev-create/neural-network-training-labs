@@ -38,6 +38,30 @@ La magia de `autograd` es que, definida L, no necesitamos escribir ∂L/∂W. El
 
 La formulación debe conectarse con cuatro elementos: representación de entrada, función del modelo, función de pérdida y regla de actualización. El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.
 
+### Qué es realmente `autograd`: diferenciación en modo inverso
+
+Decir que «el grafo calcula la derivada sola» esconde el mecanismo, y conviene abrirlo porque explica el costo de todo entrenamiento posterior.
+
+Al ejecutar el paso hacia adelante, PyTorch construye un **grafo acíclico dirigido** donde cada nodo es una operación y guarda lo necesario para derivarse. No es simbólico —no manipula fórmulas— ni numérico —no usa diferencias finitas—: es **diferenciación automática**, que aplica la regla de la cadena sobre operaciones elementales cuyas derivadas están programadas exactamente.
+
+La regla de la cadena se puede recorrer en dos sentidos, y la elección importa. Para una función f: ℝⁿ → ℝᵐ, el modo **directo** propaga derivadas desde las entradas y calcula una columna del jacobiano por pasada, así que cuesta n pasadas. El modo **inverso** propaga desde la salida y calcula una fila por pasada: cuesta m pasadas. En una red neuronal, n son los parámetros —millones— y m es 1, porque la pérdida es un escalar. De ahí que el modo inverso sea el correcto: **una sola** pasada hacia atrás produce el gradiente respecto de todos los parámetros a la vez.
+
+El resultado práctico es la regla de oro del costo: el paso hacia atrás cuesta aproximadamente **el doble** que el paso hacia adelante, sin importar cuántos parámetros haya. Lo que sí crece con la profundidad es la memoria, porque hay que conservar las activaciones intermedias hasta que el gradiente pase por ellas. Esa es la razón de que el consumo de memoria escale con el tamaño de lote y con el número de capas, y de que existan técnicas como el *gradient checkpointing*, que recalcula activaciones en vez de guardarlas.
+
+Cada nodo no almacena una matriz jacobiana, que sería inmanejable, sino la operación **producto vector-jacobiano**: dado el gradiente que llega desde arriba, v, devuelve vᵀ·J sin construir J. Para la capa lineal z = x·W + b eso se traduce en las tres expresiones que el laboratorio puede verificar a mano:
+
+∂L/∂W = xᵀ·(∂L/∂z),   ∂L/∂b = Σ_filas (∂L/∂z),   ∂L/∂x = (∂L/∂z)·Wᵀ.
+
+La tercera es la que permite encadenar capas: es el gradiente que esta capa entrega a la anterior.
+
+### Por qué hay que llamar a `zero_grad`, y qué dice el minilote
+
+El detalle que más errores causa tiene una explicación de diseño. PyTorch **acumula** gradientes en el atributo `.grad` en lugar de sobrescribirlos, es decir, `backward()` hace `p.grad += nuevo` y no `p.grad = nuevo`. Eso es deliberado: permite sumar gradientes de varios pasos hacia atrás antes de actualizar, que es exactamente lo que se necesita para simular un lote grande sin memoria para él (*gradient accumulation*), o para redes con varias salidas. El precio es que, en el bucle normal, olvidar `optimizer.zero_grad()` hace que la actualización de la iteración k use la suma de los gradientes de las iteraciones 1..k, un error que no lanza excepción y solo se manifiesta como un entrenamiento que no converge.
+
+El otro concepto que aparece aquí por primera vez es el **minilote**. El gradiente sobre un lote de tamaño B es un estimador **insesgado** del gradiente sobre todo el conjunto: si se muestrea uniformemente, 𝔼[∇L_B] = ∇L. Su varianza, en cambio, decrece como σ²/B, así que la desviación típica del estimador baja con **√B**. De ahí se sigue el compromiso que gobierna la elección del tamaño de lote: cuadruplicar B cuesta cuatro veces más cómputo por paso y solo reduce el ruido a la mitad. Lotes pequeños dan pasos ruidosos —y ese ruido, lejos de ser solo un defecto, ayuda a escapar de mínimos estrechos—; lotes grandes dan direcciones precisas pero aprovechan peor el cómputo y suelen necesitar una tasa de aprendizaje mayor para avanzar lo mismo.
+
+Ese es también el motivo por el que el orden en que se barajan los ejemplos forma parte de `training_seed` y no de `split_seed`: no cambia qué datos hay en cada partición, cambia la trayectoria del entrenamiento.
+
 ## Protocolo científico
 
 - Ajustar transformaciones, vocabulario, normalización y selección de variables solo con `train`.

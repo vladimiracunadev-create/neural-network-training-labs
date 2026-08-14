@@ -50,6 +50,42 @@ Leámoslo por partes. El discriminador D quiere **maximizar** V: para muestras r
 
 En la práctica, el término log(1 − D(G(z))) tiene gradiente casi nulo justo cuando G es malo (al inicio, D lo detecta con facilidad), así que se suele entrenar G maximizando 𝔼_z[ log D(G(z)) ] —el truco del "gradiente no saturante"— que apunta al mismo óptimo pero da señal fuerte desde el principio. Conectando con los cuatro elementos: la **representación de entrada** es el vector de ruido z para G y la imagen (28×28) para D; la **función del modelo** son las dos redes convolucionales G y D; la **función de pérdida** es la entropía cruzada binaria derivada de V (una para D, otra para G); y la **regla de actualización** son los dos pasos de gradiente alternados θ_D ← θ_D + η ∇_{θ_D} V y θ_G ← θ_G − η ∇_{θ_G} V. El notebook muestra las dimensiones de los tensores en cada capa y conserva la misma implementación que el script de terminal.
 
+### El discriminador óptimo y de dónde sale la divergencia
+
+Que el juego minimax equivalga a minimizar una divergencia de Jensen-Shannon no es una afirmación suelta: se deriva en dos pasos y merece verse, porque explica el fallo del método.
+
+Primero se fija G y se busca el D óptimo. El objetivo, escrito como integral sobre x, es ∫ [ p_r(x)·log D(x) + p_g(x)·log(1 − D(x)) ] dx. El integrando se maximiza punto a punto, y derivando respecto de D(x) e igualando a cero:
+
+D*(x) = p_r(x) / ( p_r(x) + p_g(x) ).
+
+Es un resultado con una lectura clara: el discriminador perfecto no memoriza ejemplos, estima la **razón de densidades** en cada punto. Donde solo hay datos reales vale 1; donde solo hay generados, 0; y donde ambas distribuciones coinciden, exactamente ½ —el punto de máxima confusión—.
+
+Segundo, sustituyendo D* en el objetivo y reordenando, aparece
+
+V(G, D*) = 2·JS(p_r ‖ p_g) − 2·log 2,
+
+de modo que minimizar en G equivale a minimizar la divergencia de Jensen-Shannon. El óptimo global se alcanza cuando p_g = p_r, y entonces D* ≡ ½ y el valor del juego es −2·log 2 ≈ −1,386.
+
+Aquí está el problema que la ruta 28 resolverá. La JS entre dos distribuciones con soportes **disjuntos** vale log 2 sea cual sea la distancia entre ellas: es constante, y su gradiente es cero. Y los soportes son disjuntos casi siempre al principio, porque las imágenes reales viven en una variedad de dimensión bajísima dentro del espacio de píxeles y las generadas, otra. La consecuencia es la paradoja característica de las GAN: **cuanto mejor es el discriminador, menos aprende el generador**, porque un D casi perfecto satura y deja de transmitir dirección. Toda la dificultad práctica de entrenar una GAN —equilibrar los dos jugadores, no dejar que ninguno gane— nace de ahí.
+
+### Colapso de modos, y por qué la pérdida no sirve para decidir
+
+El colapso de modos tiene una explicación exacta en el objetivo. El generador no está obligado a **cubrir** p_r; está obligado a producir muestras que D no distinga. Si encuentra una prenda concreta que engaña al discriminador, generarla siempre es una estrategia óptima desde su punto de vista: la pérdida no contiene ningún término que premie la diversidad. El resultado es un modelo que produce imágenes convincentes de dos o tres tipos de prenda y ninguna del resto, con un valor de pérdida perfectamente razonable.
+
+De ahí se sigue lo que más desconcierta al entrenar la primera GAN: **las curvas de pérdida no son criterio de selección**. En un entrenamiento supervisado, la pérdida de validación baja y elegir el mínimo es lo correcto. Aquí, ambos jugadores optimizan objetivos opuestos, así que las pérdidas oscilan alrededor de un equilibrio y su valor no indica calidad: pueden bajar mientras las muestras empeoran. Un discriminador que gana produce pérdida baja para él y muestras malas; un generador que gana puede estar colapsado. La única evaluación sensata es externa al juego —mirar las muestras, y medir cobertura de clases con un clasificador entrenado aparte—, y es exactamente lo que hace este laboratorio.
+
+Sobre la selección del checkpoint conviene ser explícito: como no hay una pérdida monótona que minimizar, el criterio debe fijarse **antes** de mirar los resultados y dejarse escrito en `experiment.lock.json`. Elegir a posteriori la época cuyas muestras se ven mejor es seleccionar sobre el conjunto de evaluación, y ese resultado no es reproducible.
+
+### Cómo se mide algo que no tiene etiqueta correcta
+
+Un clasificador se evalúa contra la verdad; un generador, no: no existe «la imagen correcta». Por eso las métricas generativas son todas indirectas, y conviene saber qué mide cada familia.
+
+La vía que usa este laboratorio es un **clasificador externo** entrenado sobre datos reales. Aplicado a las muestras generadas ofrece dos señales distintas: si sus predicciones son **confiadas** —distribución p(y|x) concentrada— las imágenes son reconocibles; y si el promedio de esas predicciones sobre muchas muestras, p(y), está **repartido** entre las diez clases, hay diversidad. Ambas cosas a la vez son lo que se busca, y la segunda es la que detecta el colapso: un generador colapsado puede producir imágenes nítidas y perfectamente clasificables, pero su p(y) marginal se concentra en una o dos clases.
+
+Comparar directamente las distribuciones de rasgos —los vectores intermedios del clasificador para muestras reales frente a generadas— es la idea que subyace a métricas como la distancia de Fréchet, y tiene la ventaja de penalizar tanto la baja fidelidad como la baja cobertura. Todas ellas, sin excepción, son **aproximaciones**: dependen del clasificador elegido, no capturan errores semánticos sutiles y no sustituyen la inspección humana. Reportarlas como si fueran una medida objetiva de calidad es el error de interpretación más común en la literatura generativa.
+
+La línea base **PCA generativa** es especialmente instructiva aquí: muestrear en el subespacio de las componentes principales y reconstruir produce prendas borrosas pero **diversas**, justo el defecto contrario al del colapso. Contrastar ambos fallos —nitidez sin cobertura frente a cobertura sin nitidez— es lo que enseña que en generación no hay una única métrica que ordene los modelos.
+
 El riesgo técnico característico es el **colapso de modos** (mode collapse): G descubre unas pocas imágenes que engañan a D y las produce siempre, perdiendo diversidad aunque la pérdida parezca buena. Por eso este laboratorio no se conforma con las curvas de pérdida y mide diversidad, distancia al vecino real más cercano y discrepancia de momentos: distinguir *diversidad real* de *ruido visual* o de un puñado de prototipos repetidos es exactamente el reto de evaluar una GAN.
 
 > **La pregunta que deberías poder responder al terminar:** ¿Cómo se distingue diversidad real de ruido visual?

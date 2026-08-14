@@ -64,6 +64,38 @@ Finalmente, todos los parámetros se actualizan con descenso de gradiente: W ←
 
 Aquí se ven los **gradientes que se desvanecen o explotan**. El término δ₁ contiene el producto W₂ᵀ δ₂ ⊙ σ′(z₁): si σ es una sigmoide o tanh saturada, σ′(z₁) ≈ 0 y el gradiente se apaga (vanishing); si los pesos son grandes, los factores se acumulan y el gradiente crece sin control (exploding). En una red de L capas, este patrón se repite L veces, así que el gradiente en las capas iniciales es un producto de L factores y su magnitud depende críticamente de que esos factores ronden 1. Comprobar los gradientes analíticos contra una estimación numérica (∂ℒ/∂θ ≈ [ℒ(θ+ε) − ℒ(θ−ε)] / 2ε) es la prueba de que la derivación es correcta. La formulación conecta cuatro elementos: representación de entrada x, función del modelo (MLP), función de pérdida (entropía cruzada) y regla de actualización (SGD con ∇). El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.
 
+### La comprobación numérica, que es el objetivo real del laboratorio
+
+Programar una derivada a mano sin verificarla es programar un error silencioso: un gradiente equivocado no lanza excepción, simplemente entrena peor, y ese síntoma se confunde con «hace falta ajustar la tasa de aprendizaje». Por eso la parte central de esta ruta no es derivar, sino **comprobar**.
+
+El método es contrastar cada derivada analítica contra una **diferencia finita central**:
+
+∂L/∂θᵢ ≈ ( L(θ + ε·eᵢ) − L(θ − ε·eᵢ) ) / (2ε),
+
+donde eᵢ es el vector unitario de la coordenada i. Se usa la versión central y no la de un lado porque su error de truncamiento es O(ε²) en vez de O(ε): con el mismo ε se obtienen varios dígitos más de precisión, a costa de una evaluación adicional de la pérdida.
+
+Elegir ε es un compromiso entre dos errores opuestos. Si es grande, domina el **error de truncamiento** de la aproximación de Taylor; si es minúsculo, la resta L(θ+ε) − L(θ−ε) opera sobre números casi iguales y domina la **cancelación catastrófica** del punto flotante. El óptimo está alrededor de la raíz cúbica del épsilon de máquina, lo que en float64 sitúa el valor práctico en torno a 10⁻⁵ a 10⁻⁶. En float32 la comprobación directamente no es fiable: hay que hacerla en doble precisión.
+
+El criterio de aceptación no se mide con una resta sino con el **error relativo**, para que la escala del gradiente no distorsione el juicio:
+
+error = ‖g_analítico − g_numérico‖ / max( ‖g_analítico‖ + ‖g_numérico‖, δ ).
+
+En doble precisión, por debajo de 10⁻⁷ la implementación es correcta; entre 10⁻⁷ y 10⁻⁴ conviene sospechar; por encima de 10⁻⁴ hay un error real que hay que localizar. El δ del denominador evita dividir por cero cuando ambos gradientes son nulos.
+
+Dos precauciones hacen que la comprobación sirva. La primera: **desactivar toda fuente de aleatoriedad** —dropout, aumentaciones, barajado— porque L debe ser una función determinista de θ; si cada evaluación usa una máscara distinta, la diferencia finita mide ruido. La segunda: no comprobar en puntos donde la función **no es diferenciable**. La ReLU tiene un codo en 0, y si una preactivación cae exactamente ahí, la diferencia finita salta entre dos pendientes distintas y produce un fallo espurio; conviene comprobar con pesos aleatorios en una región donde ninguna preactivación esté cerca de cero.
+
+Como comprobar todas las coordenadas cuesta dos evaluaciones cada una, en redes grandes se verifica un **subconjunto aleatorio** de parámetros por capa. Y la comprobación se hace capa por capa: si el gradiente de la última capa es correcto y el de la anterior no, el error está localizado en el paso intermedio, que es exactamente la información que se necesita para depurar.
+
+### Lo que esta ruta deja preparado
+
+Escribir la retropropagación a mano deja tres ideas que las rutas siguientes dan por sabidas.
+
+La primera es que el paso hacia atrás **reutiliza** cantidades del paso hacia adelante —las activaciones, las máscaras de la ReLU— y por eso hay que conservarlas. Esa es la razón concreta de que el consumo de memoria de un entrenamiento crezca con la profundidad y con el tamaño de lote, y de que existan técnicas que recalculan activaciones para ahorrarla.
+
+La segunda es que la retropropagación **no es más que la regla de la cadena organizada** para no repetir cálculos: se calcula δ una vez por capa y se reutiliza para los pesos y para propagar hacia atrás. Sin esa organización, derivar cada parámetro por separado costaría un número de operaciones proporcional al número de parámetros; con ella, el costo total es del orden del doble del paso hacia adelante, independientemente de cuántos parámetros haya. Es exactamente lo que `autograd` automatiza en la ruta 01.
+
+La tercera es que el producto de jacobianos que aparece al encadenar capas es el origen del desvanecimiento y la explosión del gradiente. Aquí se ve en una red pequeña y sin consecuencias graves; en la ruta 04 es lo que impide aprender dependencias largas, y en la 05 lo que las puertas de la LSTM vienen a resolver.
+
 > **La pregunta que deberías poder responder al terminar:** ¿Dónde aparecen gradientes que explotan o desaparecen?
 
 ### Qué se mide y con qué se decide

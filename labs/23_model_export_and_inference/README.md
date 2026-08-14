@@ -48,6 +48,50 @@ El **costo de inferencia** se descompone en tres magnitudes que suelen estar en 
 
 La **cuantización** es la palanca principal para reducir ambos, tamaño y latencia. Consiste en representar pesos y activaciones con enteros de baja precisión (típicamente INT8) en lugar de float32, mediante una función afín de escala s y punto cero z: r ≈ s·(q − z), donde r es el valor real y q su representación entera. Al usar 8 bits en vez de 32, la memoria se reduce hasta ≈4× y las operaciones enteras son más rápidas y eficientes energéticamente en el hardware adecuado. El precio es una pérdida de precisión numérica que puede degradar la exactitud; por eso s y z se calibran cuidadosamente y la cuantización se trata como otro compromiso a *medir*, no a asumir. La lectura global: exportación e inferencia optimizada solo son válidas si la paridad se verifica primero y el impacto en exactitud, latencia y tamaño se cuantifica de forma reproducible.
 
+### Qué es un grafo exportado y por qué puede diferir
+
+Exportar no es guardar los pesos: es capturar **la función** que el modelo calcula, en un formato que otro motor pueda ejecutar sin Python. El exportador recorre el modelo con una entrada de ejemplo, registra las operaciones que se ejecutan y las escribe como un grafo de operadores estandarizados junto con sus pesos.
+
+De ahí se sigue la limitación fundamental del método: se captura **el camino que esa entrada recorrió**. Si el modelo tiene control de flujo dependiente de los datos —un `if` sobre un valor del tensor, un bucle cuya longitud depende de la entrada—, la rama no recorrida no queda en el grafo, y el modelo exportado calculará algo distinto para entradas que la habrían tomado. El exportador basado en `torch.export` detecta buena parte de estos casos, pero la regla práctica sigue vigente: un modelo pensado para exportarse se escribe sin lógica dependiente de los valores.
+
+Hay dos diferencias más que explican por qué la paridad numérica nunca es exacta. La primera es que el motor de destino **fusiona operaciones** —convolución + normalización + ReLU en un solo núcleo— y reordena cálculos para ir más rápido; como la suma en punto flotante no es asociativa, (a + b) + c y a + (b + c) difieren en los últimos bits. La segunda es que las **dimensiones dinámicas** deben declararse al exportar: si no se marca el eje del lote como dinámico, el grafo queda fijado al tamaño de la entrada de ejemplo y fallará con cualquier otro.
+
+Por eso la verificación no se hace con igualdad exacta sino con tolerancias, comparando la salida del modelo original y la del exportado sobre un conjunto de entradas:
+
+máx |y_torch − y_onnx| ≤ atol + rtol · |y_torch|,
+
+con valores típicos atol = 10⁻⁵ y rtol = 10⁻³ en float32. Y la comprobación debe hacerse sobre **varias** entradas, incluidos casos extremos y distintos tamaños de lote: verificar con una sola entrada no dice nada sobre las ramas que esa entrada no recorrió.
+
+### Qué hace la cuantización y qué cuesta
+
+La cuantización representa pesos y activaciones con enteros de 8 bits en lugar de flotantes de 32. El mapeo es afín y se define con dos números por tensor:
+
+r ≈ S · (q − Z),   con   S = (r_max − r_min) / (q_max − q_min),
+
+donde r es el valor real, q el entero, S la **escala** y Z el **punto cero**. El beneficio inmediato es un factor 4 de reducción de tamaño; el beneficio mayor, que la aritmética entera es más rápida y consume mucha menos energía en el hardware que la soporta —y que el movimiento de datos, que suele dominar la latencia, se reduce en la misma proporción—.
+
+Las dos variantes se distinguen por cuándo se calculan esas constantes. En la **cuantización dinámica** —la que usa este laboratorio— los pesos se cuantizan una vez al exportar y las activaciones se cuantizan al vuelo en cada inferencia, midiendo su rango en el momento. No requiere datos ni reentrenamiento, y por eso es la opción por defecto. En la **cuantización estática** el rango de las activaciones se estima previamente pasando un conjunto de calibración representativo, lo que elimina el costo de medir en tiempo de ejecución y suele dar más velocidad, a cambio de necesitar datos.
+
+La granularidad importa: una escala por tensor es simple pero pierde precisión si los canales tienen rangos muy distintos; una escala **por canal** en las capas convolucionales conserva bastante más exactitud por un costo mínimo. Y cuando la degradación es inaceptable, queda el **entrenamiento consciente de cuantización**, que simula el redondeo durante el entrenamiento para que la red aprenda a tolerarlo.
+
+La pérdida de exactitud debe medirse, no suponerse, y en el mismo conjunto de evaluación que el modelo original. Reportar «se redujo el tamaño 4×» sin la métrica al lado es reportar la mitad del resultado.
+
+### Cómo se mide la latencia sin engañarse
+
+La medición de tiempos es donde se cometen los errores más fáciles de detectar y más frecuentes.
+
+**Calentamiento.** Las primeras inferencias incluyen la inicialización de núcleos, la reserva de memoria y, en GPU, la compilación de kernels: pueden ser un orden de magnitud más lentas. Se descartan las primeras repeticiones antes de medir.
+
+**Repetición y estadística.** Una sola medición captura ruido del sistema operativo. Se repite decenas de veces y se reporta la **mediana** y un percentil alto —p95 o p99— además de la media, porque en un servicio real lo que determina la experiencia es la cola de la distribución, no el promedio.
+
+**Sincronización.** En GPU las operaciones son asíncronas: medir el tiempo sin sincronizar mide el encolado, no la ejecución, y produce cifras absurdamente buenas.
+
+**Latencia y throughput no son lo mismo.** La latencia es el tiempo de una petición; el throughput, las peticiones por segundo. Aumentar el tamaño de lote mejora el segundo y **empeora** el primero, porque hay que esperar a llenar el lote. Cuál optimizar depende del caso de uso —interactivo o por lotes— y la respuesta no es la misma.
+
+**Condiciones declaradas.** Hardware, número de hilos, versión del motor y tamaño de lote forman parte del resultado: una latencia sin esos datos no es comparable con ninguna otra.
+
+Por último, el **contrato de inferencia** que el laboratorio genera es lo que hace utilizable el artefacto. Un modelo exportado sin su preprocesamiento es una función a la que nadie sabe qué darle: las mismas medias y desviaciones de normalización, el mismo orden y nombre de las variables, el mismo tamaño de imagen, el mismo mapeo de índices a clases. La causa más común de que un modelo funcione en el cuaderno y falle en producción no es el modelo: es un preprocesamiento reimplementado de forma ligeramente distinta al otro lado.
+
 > **La pregunta que deberías poder responder al terminar:** ¿Qué compromisos existen entre tamaño, latencia y precisión?
 
 ### Qué se mide y con qué se decide

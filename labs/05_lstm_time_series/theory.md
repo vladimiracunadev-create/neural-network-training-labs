@@ -44,6 +44,40 @@ Una alternativa más ligera es la **GRU** (Cho et al. 2014), que fusiona las pue
 
 La formulación debe conectarse con cuatro elementos: representación de entrada, función del modelo, función de pérdida y regla de actualización. El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.
 
+### Por qué las puertas resuelven el desvanecimiento
+
+La ruta 04 dejó el diagnóstico: el gradiente de una RNN simple se multiplica por W_hᵀ·diag(σ′) en cada paso, y ese producto se apaga exponencialmente. La LSTM no lo mitiga, **cambia la operación**, y ahí está toda su ventaja.
+
+Derivando la actualización del estado de celda cₜ = fₜ ⊙ cₜ₋₁ + iₜ ⊙ c̃ₜ respecto del estado anterior:
+
+∂cₜ/∂cₜ₋₁ = fₜ    (elemento a elemento),
+
+de modo que el gradiente que atraviesa k pasos por la vía de la celda se multiplica por Π fₜ, un **producto de escalares entre 0 y 1**, y no por un producto de matrices con activaciones saturantes. La diferencia es cualitativa: cuando la puerta de olvido se mantiene cerca de 1 —el modelo ha decidido conservar esa memoria—, el factor es cerca de 1 y el gradiente **atraviesa cientos de pasos casi intacto**. Ese camino se conoce como *carrusel de error constante*, y es lo que permite aprender dependencias largas.
+
+Obsérvese la estructura: la actualización es **aditiva**, cₜ = (algo)·cₜ₋₁ + (algo), mientras que en la RNN simple era completamente multiplicativa, hₜ = tanh(W·hₜ₋₁ + …). Es la misma idea que reaparece en las conexiones residuales de la ruta 03 y en los atajos de la 07: dejar un camino donde la señal se suma en vez de transformarse es lo que mantiene vivo el gradiente. Y aún así la LSTM no es inmune —si las puertas de olvido se cierran, la memoria y su gradiente se pierden—: la diferencia es que ahora eso es una **decisión aprendida** y no una fatalidad de la arquitectura.
+
+De ahí una recomendación práctica bien establecida: inicializar el sesgo de la puerta de olvido en un valor positivo (típicamente 1). Con b_f = 1, la sigmoide arranca en σ(1) ≈ 0,73, así que la red empieza **conservando** memoria por defecto y aprende luego a olvidar. Con b_f = 0 arranca en 0,5 y el gradiente ya se reduce a la mitad por paso desde la primera época, justo cuando aún no ha aprendido nada que valga la pena conservar.
+
+El costo de las puertas es lineal en parámetros. Con entrada de dimensión d y estado oculto h, cada una de las cuatro transformaciones consume (d + h)·h pesos más h sesgos, de modo que
+
+|θ|_LSTM = 4 · ( (d + h)·h + h ),
+
+cuatro veces una RNN simple del mismo tamaño. La **GRU** fusiona la celda con el estado oculto y usa tres puertas en vez de cuatro, así que cuesta 3·((d + h)·h + h): en torno a un 25 % menos, con rendimiento comparable en muchas tareas. Comparar ambas con el mismo presupuesto de parámetros —y no con la misma h— es la forma honesta de decidir entre ellas.
+
+### Qué hace que una serie temporal no sea un dataset normal
+
+La particularidad de este laboratorio no está en la arquitectura sino en el protocolo, y es donde se cometen los errores más caros.
+
+El dato original es una única serie continua, no un conjunto de ejemplos independientes. Para entrenar se construyen ejemplos con una **ventana deslizante**: cada entrada es el tramo (x_(t−L+1), …, x_t) de longitud L y el objetivo es el valor en t + H, donde H es el **horizonte** de pronóstico. Elegir L y H no es cosmético: L acota cuánto pasado puede ver el modelo —si la serie tiene estacionalidad diaria de 24 horas, una ventana de 12 no puede capturarla— y H define un problema distinto, porque pronosticar la hora siguiente y pronosticar dentro de una semana no son la misma tarea ni admiten la misma comparación.
+
+La partición **no puede ser aleatoria**. Repartir ventanas al azar entre `train`, `validation` y `test` coloca en el entrenamiento momentos posteriores a los que hay que predecir en la evaluación: el modelo aprende del futuro. Es una fuga de datos que no produce ningún síntoma —de hecho produce métricas excelentes— y por eso es tan peligrosa. La partición correcta es **cronológica**: un corte temporal, todo lo anterior a entrenamiento y lo posterior a evaluación, respetando el orden.
+
+Hay un detalle más fino que se escapa incluso partiendo por fecha. Como las ventanas se solapan, una ventana de `train` que termine justo antes del corte puede tener su objetivo **después** del corte, dentro del periodo de validación. La solución estándar es dejar un hueco (*embargo*) de al menos H pasos entre particiones. Sin él, el solape filtra exactamente la información que se quería aislar.
+
+El escalado arrastra el mismo principio: la media y la desviación se calculan **solo con el tramo de entrenamiento**. Estandarizar con las estadísticas de la serie completa introduce en el preprocesamiento información sobre el nivel y la variabilidad del futuro, que es justo lo que el modelo debería tener que inferir.
+
+Y la línea base debe ser honesta. En series temporales, el modelo **ingenuo** —predecir que el valor siguiente será igual al último observado, ŷ_(t+H) = y_t— es sorprendentemente difícil de batir, y su versión estacional —ŷ_(t+H) = y_(t+H−s) con s el periodo— aún más. Una red que no supere claramente a ese piso no ha aprendido dinámica: ha aprendido a copiar. Por eso el error se reporta con métricas escaladas frente a esa referencia, del tipo MASE = MAE_modelo / MAE_ingenuo, cuyo valor 1 marca exactamente el punto en que el modelo deja de aportar.
+
 ## Protocolo científico
 
 - Ajustar transformaciones, vocabulario, normalización y selección de variables solo con `train`.

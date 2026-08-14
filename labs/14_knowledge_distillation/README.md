@@ -56,6 +56,42 @@ El factor T² tiene una justificación precisa. Los gradientes del término blan
 
 y se minimiza cuando q iguala a p. El estudiante actualiza sus parámetros por descenso de gradiente, θ^s ← θ^s − η · ∇_{θ^s} ℒ, mientras el profesor permanece congelado. La formulación conecta cuatro elementos: representación de entrada (la imagen), función del modelo (estudiante), función de pérdida (CE + KL con temperatura) y regla de actualización (SGD con ∇). El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.
 
+### Qué información contienen las etiquetas suaves
+
+La pregunta de fondo del método es por qué un estudiante aprende mejor imitando a un profesor que entrenando con las etiquetas verdaderas, si las etiquetas verdaderas son, por definición, correctas.
+
+La respuesta está en lo que cada señal transporta. Una etiqueta dura sobre CIFAR-10 es un vector one-hot: dice «esto es un gato» y nada más. La salida del profesor para esa misma imagen podría ser p = (gato 0,85 · perro 0,10 · caballo 0,03 · …): dice «esto es un gato, se parece bastante a un perro y algo a un caballo, y no tiene nada que ver con un camión». Esa estructura de similitudes entre clases —lo que Hinton llamó **conocimiento oscuro**— es información que la etiqueta dura no contiene y que el estudiante recibe gratis en cada ejemplo.
+
+Cuantifíquese: una etiqueta dura sobre C clases aporta como mucho log₂ C bits, aquí unos 3,3. Una distribución completa aporta C − 1 números reales, y sobre todo aporta **restricciones sobre la geometría** del espacio de salida. Por eso el estudiante converge con menos datos y menos épocas: cada ejemplo es más informativo.
+
+La temperatura es lo que hace visible esa información. Con T = 1, un profesor bien entrenado produce distribuciones muy picudas —0,999 en la clase correcta— y las probabilidades del resto son tan pequeñas que su contribución al gradiente es despreciable. Elevar T aplana:
+
+p_i^(T) = exp(z_i / T) / Σ_j exp(z_j / T),
+
+y en el límite T → ∞ la distribución tiende a la uniforme, mientras que con T → 0 tiende al one-hot y la destilación degenera en entrenamiento normal. El valor útil está en el medio, típicamente entre 2 y 5, y es un hiperparámetro que se ajusta en `validation`.
+
+El factor T² del término de destilación tiene una razón exacta. Al derivar el softmax con temperatura, el gradiente respecto de los logits escala como 1/T; como la pérdida combina dos términos y solo uno lleva temperatura, sin corrección el término destilado perdería peso relativo al subir T. Multiplicar por T² restablece la escala y permite variar T sin tener que reajustar λ ni la tasa de aprendizaje.
+
+### Qué se gana y qué se paga al comprimir
+
+La comparación que el laboratorio pide es tridimensional, y conviene tener claro qué mide cada eje.
+
+Los **parámetros** miden el tamaño en disco y en memoria. Los **FLOPs** miden el trabajo aritmético. Y la **latencia** mide el tiempo real, que no es proporcional a ninguno de los dos: una red con menos operaciones puede ser más lenta si sus accesos a memoria son irregulares o si sus capas son demasiado pequeñas para saturar el hardware paralelo. Reportar solo la reducción de parámetros y llamarla «aceleración» es un error frecuente; por eso este laboratorio mide la latencia directamente.
+
+Hay un supuesto sin el cual todo el método se cae, y merece enunciarse: la destilación presupone que **existe** una red pequeña capaz de resolver la tarea, y que el problema era encontrarla, no que faltara capacidad. Si la arquitectura del estudiante no tiene capacidad suficiente para representar la función, ninguna cantidad de destilación la creará; el profesor solo puede guiar la búsqueda hacia una buena solución dentro del espacio que el estudiante ya podía representar. De ahí que un estudiante demasiado pequeño no mejore con destilación, y que la elección de su arquitectura sea parte del experimento.
+
+Conviene además situar la destilación entre sus alternativas, porque resuelven el mismo problema por vías distintas y son combinables. La **poda** elimina pesos o canales de la red grande según su importancia; la **cuantización** —que se estudia en la ruta 23— reduce la precisión numérica de 32 a 8 bits, con un factor 4 de reducción casi garantizado y soporte de hardware. Frente a ambas, la destilación tiene una ventaja específica: permite cambiar la **arquitectura** por completo, no solo encoger la existente.
+
+### Cómo evaluar honestamente al estudiante
+
+Tres reglas que este laboratorio hace explícitas y que se incumplen con facilidad.
+
+La primera: la comparación correcta no es estudiante destilado frente a profesor, sino **estudiante destilado frente al mismo estudiante entrenado con etiquetas duras**. Esa es la única que aísla el aporte de la destilación; comparar contra el profesor solo mide cuánta calidad se perdió al comprimir, que es otra pregunta.
+
+La segunda: el profesor debe estar **congelado** durante la destilación y no puede haberse entrenado con ninguna información de `validation` ni de `test`. Un profesor que vio esos datos filtra su conocimiento al estudiante a través de las etiquetas suaves, y la fuga es indirecta pero real.
+
+La tercera: la latencia se mide en el **hardware objetivo**, con el modelo en modo evaluación, tras un calentamiento y promediando varias repeticiones. Una medición única incluye el costo de inicializar los núcleos de cómputo y puede sobreestimar el tiempo en un orden de magnitud.
+
 > **La pregunta que deberías poder responder al terminar:** ¿Qué temperatura equilibra mejor señales duras y blandas?
 
 ### Qué se mide y con qué se decide

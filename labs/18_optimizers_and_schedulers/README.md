@@ -50,6 +50,56 @@ El **momentum** acumula una media exponencial de los gradientes recientes para s
 
 El **scheduler** hace evolucionar η con el tiempo. La motivación es que conviene un η grande al principio, para avanzar deprisa por regiones lejanas del mínimo, y un η pequeño al final, para asentarse con precisión sin oscilar. Programaciones típicas son el decaimiento por pasos (η se divide por un factor cada cierto número de épocas), el decaimiento coseno η(t) = η_min + ½(η_max − η_min)(1 + cos(π·t/T)), o la reducción en meseta cuando la métrica de validación deja de mejorar. La regla práctica: el optimizador decide *la dirección y forma* del paso; el scheduler decide *su tamaño a lo largo del tiempo*.
 
+### El momentum, leído como una media móvil
+
+La actualización con momentum se escribe v ← β·v + ∇L, θ ← θ − η·v, y su efecto se entiende mejor desarrollando la recurrencia:
+
+v_t = Σ_(k=0..t) β^k · ∇L_(t−k),
+
+es decir, una **media móvil exponencial** de todos los gradientes pasados, con peso decreciente. La suma de los coeficientes tiende a 1/(1 − β), así que con β = 0,9 el paso efectivo es del orden de **diez veces** el de un gradiente aislado: por eso al activar momentum suele haber que reducir la tasa de aprendizaje.
+
+Su utilidad se ve en un valle alargado, que es la forma típica de una superficie de pérdida mal condicionada. En las direcciones donde el gradiente oscila de signo, los términos se cancelan al promediarse; en la dirección donde el gradiente es consistente, se acumulan. El resultado es que el momentum **amortigua el zigzag y acelera el avance por el fondo del valle**, que es exactamente lo que el descenso de gradiente simple hace mal.
+
+### Adam: por qué necesita corrección de sesgo
+
+Adam mantiene dos medias móviles, la del gradiente y la de su cuadrado:
+
+m_t = β₁·m_(t−1) + (1 − β₁)·g_t,   v_t = β₂·v_(t−1) + (1 − β₂)·g_t².
+
+Ambas se inicializan en cero, y ahí está el problema. En el primer paso, m₁ = (1 − β₁)·g₁ = 0,1·g₁ con β₁ = 0,9: la estimación vale **una décima** del valor real. Con β₂ = 0,999 la distorsión de v es aún peor, un factor 0,001. Tomando esperanza se comprueba que 𝔼[m_t] = (1 − β₁ᵗ)·𝔼[g], de donde sale la corrección exacta:
+
+m̂_t = m_t / (1 − β₁ᵗ),   v̂_t = v_t / (1 − β₂ᵗ),   θ ← θ − η · m̂_t / (√v̂_t + ε).
+
+El divisor tiende a 1 conforme t crece, así que la corrección solo actúa en las primeras iteraciones —justo donde el sesgo es grande—. Sin ella, los primeros pasos serían minúsculos y el entrenamiento arrancaría con retraso.
+
+La división por √v̂ es lo que hace de Adam un método **adaptativo por parámetro**: cada peso recibe un paso inversamente proporcional a la magnitud típica de su gradiente. Los parámetros con gradientes grandes avanzan poco a poco; los de gradientes pequeños —capas iniciales, características raras— avanzan más. Esa normalización es lo que le da robustez frente a la elección de η y lo que explica su popularidad. El precio es que la varianza de los primeros pasos, cuando v̂ se ha estimado con pocas muestras, puede ser alta: es la motivación del **calentamiento** que se describe abajo.
+
+### AdamW: el weight decay que Adam rompía
+
+Regularizar con L2 y aplicar weight decay son la misma cosa en SGD, y no lo son en Adam. Merece verse porque el error estuvo presente en implementaciones muy usadas durante años.
+
+En SGD, añadir (λ/2)·‖θ‖² a la pérdida aporta un término λ·θ al gradiente, y la actualización queda θ ← θ − η·(g + λ·θ) = (1 − η·λ)·θ − η·g: un encogimiento proporcional al propio peso. En Adam, ese mismo término λ·θ entra en g **antes** de dividirse por √v̂, así que el encogimiento efectivo de cada parámetro acaba siendo λ·θ/√v̂: los pesos con gradientes históricamente grandes se regularizan **menos** que los de gradientes pequeños. La regularización deja de ser uniforme y pasa a depender de la historia del gradiente, que no es lo que nadie quería.
+
+**AdamW** lo corrige desacoplando: aplica el decaimiento fuera del mecanismo adaptativo,
+
+θ ← θ − η · m̂/(√v̂ + ε) − η·λ·θ,
+
+restituyendo un encogimiento uniforme. La diferencia se nota sobre todo en generalización, y es la razón de que AdamW sea hoy el estándar en visión y en transformers.
+
+### Schedulers: bajar la tasa y por qué calentar
+
+Una tasa fija es un compromiso permanente: alta para avanzar rápido al principio, baja para afinar al final, y no puede ser ambas. De ahí los **schedulers**.
+
+El **recocido coseno** es el más usado y su forma es explícita:
+
+η_t = η_min + ½·(η_max − η_min)·(1 + cos(π·t/T)),
+
+que baja suavemente de η_max a η_min a lo largo de T pasos. Frente a la reducción escalonada, evita los saltos bruscos que desestabilizan el entrenamiento justo después de cada bajada. El **`ReduceLROnPlateau`** sigue otra lógica: en vez de un calendario fijo, reduce la tasa cuando la métrica de validación deja de mejorar, adaptándose al problema a costa de introducir una dependencia de la señal de validación en el propio entrenamiento.
+
+El **calentamiento** hace lo contrario al principio: sube la tasa linealmente desde casi cero durante las primeras iteraciones. Su justificación es la de arriba —con pocos pasos acumulados, las estimaciones de m̂ y v̂ son ruidosas y un paso grande basado en ellas puede desplazar los pesos a una región mala— y se vuelve casi obligatorio con lotes grandes y en transformers.
+
+Una precisión sobre el laboratorio: como aquí la tarea es de **regresión** y se decide con `rmse`, conviene recordar qué implica esa elección. El RMSE, al elevar al cuadrado, penaliza desproporcionadamente los errores grandes y es sensible a valores atípicos; el MAE los trata linealmente. Optimizar error cuadrático y reportar RMSE es coherente, pero significa que el modelo dedicará capacidad a no equivocarse mucho en pocos casos extremos antes que a acertar un poco mejor en la mayoría. Si eso no es lo que el problema pide, la pérdida —y no solo el optimizador— es lo que hay que cambiar.
+
 > **La pregunta que deberías poder responder al terminar:** ¿Cuál mejora más rápido y cuál generaliza mejor?
 
 ### Qué se mide y con qué se decide

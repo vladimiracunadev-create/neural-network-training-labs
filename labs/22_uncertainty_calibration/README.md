@@ -50,6 +50,52 @@ El **Expected Calibration Error (ECE)** cuantifica directamente el desajuste ent
 
 El **temperature scaling** es la corrección más simple y efectiva: divide todos los logits por un único escalar T > 0 antes del softmax, p̂ₖ = e^{zₖ/T} / Σⱼ e^{zⱼ/T}. Con T > 1 las probabilidades se suavizan (baja la confianza), con T < 1 se agudizan; T = 1 no cambia nada. Como el mismo T multiplica todos los logits, el orden relativo se conserva y por tanto **la exactitud y el ranking (AUC) no cambian**: solo se recalibra la confianza. El valor óptimo T\* se ajusta minimizando la entropía cruzada (o el NLL) sobre el conjunto de **validación**, nunca sobre test —ajustar sobre test contaminaría la evaluación—. Luego se evalúan Brier y ECE una sola vez en test con ese T\* congelado. Es importante entender que temperature scaling captura la incertidumbre *aleatórica* (ruido inherente); no distingue lo que el modelo *no sabe* (incertidumbre epistémica), para lo cual se recurre a MC Dropout o ensambles.
 
+### Qué significa exactamente «estar calibrado»
+
+La definición es precisa y conviene tenerla escrita, porque de ella salen todas las métricas del laboratorio. Un modelo está **perfectamente calibrado** si
+
+P( y = 1 | p̂ = q ) = q   para todo q ∈ [0, 1],
+
+es decir: entre todos los casos a los que asigna probabilidad 0,7, exactamente el 70 % resulta positivo. Es una propiedad de la **frecuencia a largo plazo**, no de los casos individuales, y por eso solo se puede evaluar por grupos.
+
+De ahí sale el **ECE**: como no hay dos predicciones con exactamente el mismo valor, se agrupan en M intervalos y se compara, dentro de cada uno, la confianza media con la exactitud observada:
+
+ECE = Σ_(m=1..M) (|B_m| / N) · | exactitud(B_m) − confianza(B_m) |.
+
+Su punto débil está en la palabra «intervalos»: el resultado depende de M y del criterio de agrupación —anchura fija o igual número de muestras—, así que **un ECE solo es comparable con otro calculado igual**. Reportar el valor sin decir cuántos intervalos se usaron lo hace incomparable, y por eso el laboratorio lo declara junto a la cifra.
+
+El **Brier score** mide otra cosa y por eso se reporta junto al ECE: es el error cuadrático medio sobre probabilidades, Σ(p̂ᵢ − yᵢ)²/N, y admite la descomposición de Murphy en tres términos —fiabilidad, resolución e incertidumbre— donde la fiabilidad es justamente la calibración y la resolución es la capacidad de separar clases. Su consecuencia práctica es la que importa: **un modelo puede mejorar su calibración y empeorar su Brier**, si al aplanar sus probabilidades pierde poder de discriminación. Mirar las dos cifras a la vez es lo que evita esa trampa.
+
+Conviene además distinguir dos cosas que se confunden. La **discriminación** —ordenar bien los casos, que es lo que miden ROC-AUC o F1— y la **calibración** —que los números signifiquen lo que dicen— son independientes: un modelo puede ordenar perfectamente y estar mal calibrado, y viceversa. Por eso este laboratorio decide con `f1` y reporta la calibración aparte: son dos preguntas distintas sobre el mismo modelo.
+
+### Por qué temperature scaling funciona sin estropear nada
+
+La corrección es de un solo parámetro: se divide el logit por T > 0 antes del softmax o la sigmoide,
+
+p̂ = σ(z / T),
+
+y se ajusta T minimizando la log-verosimilitud negativa **sobre `validation`**, con los pesos del modelo congelados.
+
+Su propiedad clave es que **no altera el orden** de las predicciones. Como z/T es una transformación monótona creciente de z para todo T > 0, si un caso tenía mayor puntuación que otro la sigue teniendo. Por tanto ROC-AUC, ranking y —fijando el umbral en la escala correspondiente— la matriz de confusión no cambian: la exactitud y el F1 se conservan, y solo se mueven las probabilidades. Ese es el motivo de que sea la técnica por defecto: mejora la calibración sin poner en riesgo el desempeño ya medido.
+
+La dirección del ajuste también informa. Un T > 1 aplana las probabilidades hacia ½, corrigiendo **sobreconfianza**, que es el defecto habitual de las redes neuronales modernas —entrenadas hasta pérdida muy baja, aprenden a asignar probabilidades extremas—. Un T < 1 las agudiza, corrigiendo subconfianza, más raro. Reportar el valor de T ajustado es reportar cuán descalibrado estaba el modelo original.
+
+Hay dos exigencias sin las cuales el método deja de ser válido. La primera: T se ajusta con un conjunto **que el modelo no usó para entrenar**; ajustarlo con `train` no corrige nada, porque ahí el modelo ya está sobreajustado y sus probabilidades no reflejan el error real. La segunda: la evaluación de la calibración se hace sobre `test`, después del sellado, igual que cualquier otra métrica. Ajustar T mirando `test` produciría una calibración excelente y falsa.
+
+Frente a alternativas, temperature scaling es el caso más simple del **escalado de Platt** —que ajusta a·z + b, dos parámetros— y frente a la **regresión isotónica**, que ajusta una función monótona por tramos y es mucho más flexible, tiene la ventaja de no sobreajustar con conjuntos de validación pequeños: un solo parámetro es difícil de sobreajustar, una función por tramos no.
+
+### Para qué sirve realmente una probabilidad calibrada
+
+La calibración importa cuando la probabilidad **entra en una decisión**, y ahí su valor es concreto.
+
+El caso claro es el umbral óptimo bajo costos asimétricos. Si un falso negativo cuesta c_FN y un falso positivo c_FP, la decisión que minimiza el costo esperado es actuar cuando
+
+p̂ > c_FP / (c_FP + c_FN),
+
+una fórmula que **solo tiene sentido si p̂ es una probabilidad real**. Con un modelo descalibrado, ese umbral se aplica sobre una puntuación que no significa lo que dice, y el costo resultante no es el mínimo. Lo mismo ocurre al combinar el modelo con otras fuentes de información, al derivar casos dudosos a revisión humana por debajo de cierta confianza, o al agregar predicciones de varios modelos: todas esas operaciones suponen que los números son probabilidades.
+
+Y conviene cerrar con lo que la calibración **no** da. Corrige el nivel de confianza sobre la distribución en que se ajustó, no fuera de ella: ante un cambio de distribución, un modelo bien calibrado vuelve a descalibrarse, y por eso la calibración se revisa periódicamente junto con la deriva. Tampoco distingue entre incertidumbre **aleatoria** —ruido irreducible del problema, dos casos idénticos con etiquetas distintas— e incertidumbre **epistémica** —ignorancia del modelo por falta de datos en esa región—. La primera no se puede reducir con más datos; la segunda sí, y separarlas requiere métodos bayesianos o de conjunto que quedan fuera de esta ruta.
+
 > **La pregunta que deberías poder responder al terminar:** ¿Una mayor accuracy implica probabilidades confiables?
 
 ### Qué se mide y con qué se decide

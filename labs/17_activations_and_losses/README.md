@@ -60,6 +60,40 @@ La **Focal Loss** añade un factor modulador (1 − p_t)^γ, donde p_t es la pro
 
 Cuando el modelo ya acierta con confianza, p_t → 1, el factor (1 − p_t)^γ → 0 y ese ejemplo casi no contribuye al gradiente; los ejemplos difíciles (p_t bajo) conservan casi toda su pérdida. Con γ = 0 la Focal Loss se reduce a la entropía cruzada ponderada. Por eso ayuda en clases desbalanceadas: reorienta la señal de aprendizaje ∇ hacia las clases minoritarias mal clasificadas en vez de reforzar la mayoría ya resuelta. Todo se optimiza con descenso de gradiente, θ ← θ − η · ∇_θ ℒ. La formulación conecta cuatro elementos: representación de entrada, función del modelo (con su activación), función de pérdida (CE o Focal) y regla de actualización (SGD con ∇). El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.
 
+### Las activaciones, comparadas por lo que le hacen al gradiente
+
+Una activación se elige por cómo se comporta su **derivada**, no por la forma de su curva. Puestas una al lado de otra, las diferencias son concretas.
+
+La **sigmoide** tiene derivada σ′(z) = σ(z)·(1 − σ(z)), cuyo máximo es 0,25 en z = 0. Encadenar L capas multiplica L de esos factores, así que el gradiente se atenúa como máximo por 0,25^L: con diez capas, un factor 10⁻⁶ en el mejor de los casos. Además su salida no está centrada en cero —siempre positiva—, lo que hace que todos los gradientes de una misma neurona compartan signo y la optimización avance en zigzag. La **tanh** corrige lo segundo: está centrada en cero y su derivada llega a 1 en el origen, por lo que atenúa menos, pero sigue saturando en ambos extremos.
+
+La **ReLU** cambia el juego porque su derivada es exactamente 1 en toda la región positiva: no atenúa. A cambio es exactamente 0 en la negativa, y de ahí el fallo de la neurona muerta —si la preactivación queda negativa para todos los ejemplos, no vuelve a recibir gradiente nunca—. La **Leaky ReLU** deja pasar una pendiente pequeña α ≈ 0,01 en la zona negativa precisamente para que ese gradiente nunca sea nulo.
+
+La **GELU** sustituye el corte duro por una compuerta suave: GELU(z) = z·Φ(z), donde Φ es la función de distribución acumulada de la normal estándar. En vez de decidir con un umbral, pondera la entrada por la probabilidad de que sea mayor que una variable normal. Su derivada es continua en todo punto —a diferencia de la ReLU, discontinua en 0— y no se anula en la zona negativa cercana al origen, lo que le da gradiente donde la ReLU ya no lo tiene. Es la activación por defecto en los transformers, y en este laboratorio se compara con las anteriores manteniendo todo lo demás fijo.
+
+Una observación que ordena la comparación: lo que se está eligiendo no es «la mejor función», sino **el perfil de gradiente** que la red recibirá en cada capa. Por eso el efecto de la activación depende de la profundidad, y una comparación hecha con una sola capa oculta puede no extrapolarse a una red profunda.
+
+### Qué pérdida usar cuando las clases están desbalanceadas
+
+La segunda mitad del laboratorio trata la otra elección, y aquí el problema es que la entropía cruzada **trata todos los ejemplos por igual** en una situación en que no lo son.
+
+Con una clase mayoritaria que domina el conjunto, la mayor parte del gradiente proviene de ejemplos fáciles y ya bien clasificados de esa clase. El modelo aprende rápido a predecir la mayoría y se estanca en la minoría, no por falta de capacidad sino porque la señal de la minoría queda ahogada. Hay tres respuestas, y conviene entender qué modifica cada una.
+
+Los **pesos por clase** multiplican la contribución de cada ejemplo por un factor w_c inverso a la frecuencia:
+
+ℒ = −(1/N) · Σᵢ w_(yᵢ) · log p_(i,yᵢ).
+
+Es simple y directo, pero trata por igual a todos los ejemplos de la clase minoritaria, incluidos los que ya se clasifican perfectamente.
+
+La **Focal Loss** cambia el eje: en vez de ponderar por clase, pondera por **dificultad**.
+
+ℒ_focal = −(1 − p_t)^γ · log p_t,
+
+donde p_t es la probabilidad asignada a la clase verdadera. El factor (1 − p_t)^γ vale casi 0 cuando el ejemplo ya está bien clasificado —p_t ≈ 1— y casi 1 cuando está mal. Con γ = 2, un ejemplo con p_t = 0,9 ve su pérdida reducida cien veces, mientras que uno con p_t = 0,1 apenas se toca. El efecto es que el gradiente se concentra en lo que el modelo aún no domina, sin necesidad de conocer las frecuencias de clase.
+
+El **remuestreo** actúa antes de la pérdida, replicando ejemplos de la minoría o descartando de la mayoría. Cambia la distribución que ve el modelo, lo que tiene una consecuencia que se olvida a menudo: las probabilidades que produzca quedarán **descalibradas** respecto de la distribución real, y habrá que corregirlas si se van a interpretar como probabilidades. Es justo el problema que aborda la ruta 22.
+
+Y la elección de la pérdida arrastra la elección de la métrica. Optimizar con pesos de clase y reportar exactitud es incoherente: se está pidiendo al modelo que priorice la minoría y midiéndolo con una cifra que premia la mayoría. Por eso este laboratorio decide con `macro_f1`, que promedia por clase y da a la minoritaria el mismo peso que a la mayoritaria.
+
 > **La pregunta que deberías poder responder al terminar:** ¿La conclusión se mantiene en varias semillas?
 
 ### Qué se mide y con qué se decide

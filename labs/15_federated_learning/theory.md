@@ -38,6 +38,36 @@ La ponderación n_k/n hace que un cliente con más datos influya proporcionalmen
 
 Por eso la línea base natural es el entrenamiento centralizado, y una métrica clave es la *dispersión* de la exactitud entre clientes (client_accuracy_std): no basta con una buena media global si algunos participantes quedan sistemáticamente mal servidos. La formulación conecta cuatro elementos: representación de entrada, función del modelo, función de pérdida local F_k y regla de actualización (SGD local + agregación con Σ). El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.
 
+### Por qué los datos no-IID rompen el promedio
+
+FedAvg parece inofensivo: cada cliente entrena localmente y el servidor promedia los pesos. Funciona bien cuando los clientes tienen datos parecidos, y se degrada exactamente en la medida en que no lo son. Conviene ver por qué.
+
+Si todos los clientes tuvieran datos extraídos de la misma distribución (caso **IID**), el gradiente local sería un estimador insesgado del gradiente global y promediar actualizaciones sería casi equivalente a entrenar de forma centralizada. Pero en este dataset cada cliente es una **persona**, y las personas no son intercambiables: una realiza sobre todo actividades sedentarias, otra camina mucho, y sus etiquetas están desbalanceadas de formas distintas. Cada cliente optimiza entonces un objetivo local F_k(θ) cuyo mínimo está en un lugar distinto del mínimo global F(θ) = Σ_k (n_k/n)·F_k(θ).
+
+La consecuencia se llama **desvío del cliente**: con E épocas locales, cada modelo se aleja hacia *su* óptimo antes de que el servidor promedie. Cuanto mayor es E, más lejos llegan y más se contradicen las direcciones al juntarlas; el modelo promediado puede quedar peor que cualquiera de los locales, y en el caso extremo el entrenamiento oscila sin converger. Ahí está el compromiso central de FedAvg, y es contraintuitivo: **más cómputo local no es mejor**. Aumentar E ahorra rondas de comunicación —que es el recurso caro— pero incrementa el desvío. El número de épocas locales es, por tanto, un hiperparámetro experimental, no un detalle de implementación.
+
+El promedio, además, es **ponderado por el tamaño del cliente**:
+
+θ_(t+1) = Σ_k (n_k / n) · θ_k^(t),
+
+lo que reproduce el objetivo global correcto pero da voz proporcional al número de ejemplos. Un participante con muchos datos domina el modelo resultante, y uno con pocos apenas influye: es una decisión de diseño con consecuencias de equidad, no solo de optimización.
+
+### Qué hay que medir además del promedio
+
+La métrica global de un modelo federado esconde justo lo que el enfoque debería vigilar. Un modelo puede alcanzar un buen promedio y funcionar muy mal para un subconjunto de participantes —típicamente aquellos cuya distribución se aleja más de la mayoritaria—, y ese fallo es invisible en la cifra agregada.
+
+Por eso este laboratorio reporta el desempeño **por participante** y no solo el global. Las cifras que conviene mirar son la dispersión entre clientes, el peor cliente y la brecha entre el mejor y el peor: son la traducción operativa de «¿a quién le funciona esto?». Una mejora del promedio conseguida a costa de empeorar al peor cliente rara vez es aceptable en un despliegue real.
+
+La comparación honesta necesita además dos referencias. Arriba, el **modelo centralizado** entrenado con todos los datos juntos: marca el techo, y la diferencia con él es el precio de no centralizar. Abajo, los **modelos puramente locales**, uno por cliente entrenado solo con sus datos: si el federado no los supera, el participante no gana nada colaborando, y la propuesta se cae. Entre esos dos límites es donde el resultado significa algo.
+
+### Lo que la federación protege y lo que no
+
+Es importante ser preciso en esto, porque es la motivación del enfoque y también su malentendido más común. Que los datos crudos no salgan del dispositivo **no equivale a privacidad**. Lo que se transmite —actualizaciones de pesos o gradientes— es una función de los datos y filtra información sobre ellos: se han demostrado ataques de inferencia de pertenencia, que determinan si un ejemplo concreto estuvo en el entrenamiento, y ataques de reconstrucción que recuperan aproximaciones de las entradas a partir de los gradientes.
+
+Las defensas existen y tienen un costo explícito. La **privacidad diferencial** añade ruido calibrado a las actualizaciones y ofrece una garantía formal con un presupuesto ε, a cambio de exactitud. La **agregación segura** impide que el servidor vea las actualizaciones individuales y solo le permite obtener la suma, a cambio de protocolo criptográfico y coordinación. Ninguna es gratis, y este laboratorio no las implementa: se limita a mostrar el mecanismo de FedAvg, y por eso su alcance debe declararse tal cual —una demostración del algoritmo, no un sistema con garantías de privacidad—.
+
+El otro costo que conviene contabilizar es la **comunicación**. Cada ronda transmite el modelo completo en ambos sentidos, así que el tráfico total es del orden de 2 · |θ| · K · R bytes para K clientes y R rondas. Con modelos grandes es el cuello de botella dominante, muy por encima del cómputo, y es lo que motiva las técnicas de compresión y cuantización de actualizaciones. Reportar el número de rondas hasta alcanzar cierta exactitud es, en federado, tan relevante como reportar la exactitud misma.
+
 ## Protocolo científico
 
 - Ajustar transformaciones, vocabulario, normalización y selección de variables solo con `train`.

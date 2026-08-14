@@ -50,6 +50,46 @@ Regularización explícita e implícita; brecha train-validation.
 
 La lectura conjunta: weight decay actúa sobre la *magnitud* de los pesos, dropout sobre la *estructura* de las representaciones y batch norm sobre la *escala de las activaciones*. Ninguno elimina el sobreajuste por decreto; cada uno desplaza el equilibrio sesgo–varianza, y el laboratorio mide empíricamente cuál reduce la brecha train–validation sin caer en el subajuste.
 
+### Weight decay: qué supuesto está imponiendo
+
+Añadir (λ/2)·‖θ‖² a la pérdida no es un truco: es exactamente lo que sale de hacer inferencia bayesiana con una **distribución previa gaussiana** sobre los pesos. Maximizando la probabilidad posterior,
+
+log p(θ | D) = log p(D | θ) + log p(θ) + const,
+
+y con p(θ) = 𝒩(0, σ²I), el segundo término es −‖θ‖²/(2σ²), es decir, el término L2 con λ = 1/σ². La lectura es que regularizar equivale a declarar una creencia previa: **los pesos pequeños son más probables que los grandes**, y λ mide cuánta evidencia hace falta para abandonar esa creencia.
+
+Su efecto sobre el gradiente es un encogimiento multiplicativo, θ ← (1 − η·λ)·θ − η·g, que empuja continuamente hacia cero y solo se contrarresta donde los datos lo exigen. Dos consecuencias prácticas: los **sesgos no se regularizan** —desplazan la función, no controlan su complejidad, y encogerlos solo introduce error—, y en Adam hay que usar la forma desacoplada de AdamW por la razón que explica la ruta 18.
+
+### Dropout: por qué se escala y qué apaga exactamente
+
+Durante el entrenamiento, el dropout multiplica cada activación por una máscara de Bernoulli que la anula con probabilidad p. Eso cambia la magnitud esperada de la salida: si h tenía esperanza 𝔼[h], tras el apagado pasa a (1 − p)·𝔼[h]. Si en inferencia —donde no se apaga nada— no se corrigiera, la red recibiría activaciones sistemáticamente mayores que las vistas durante el entrenamiento.
+
+La implementación estándar es el **dropout invertido**: se divide por (1 − p) ya en el entrenamiento,
+
+h̃ = (h ⊙ m) / (1 − p),   con m ~ Bernoulli(1 − p),
+
+de modo que 𝔼[h̃] = 𝔼[h] y la inferencia no necesita corrección alguna: basta con desactivar la capa. Es la razón, otra vez, de que el modo evaluación sea obligatorio al medir.
+
+Conceptualmente, entrenar con dropout equivale a entrenar un **conjunto exponencial** de subredes que comparten pesos —2^n máscaras posibles para n unidades—, y evaluar sin dropout aproxima el promedio de todas ellas. De ahí que sea un método de conjunto barato. Su efecto concreto es impedir la **coadaptación**: como ninguna unidad puede contar con que otra esté presente, cada una debe aportar señal útil por sí sola, y la representación resultante es redundante y más robusta.
+
+Dónde ponerlo importa. En capas densas, con p entre 0,2 y 0,5, funciona bien. En capas convolucionales el dropout puntual es poco efectivo, porque los píxeles vecinos de un mapa de activación están muy correlacionados y apagar uno no elimina la información —la aporta su vecino—: la variante útil es el dropout **por canal**, que apaga mapas de características completos.
+
+### La interacción entre dropout y normalización por lotes
+
+Combinar ambas cosas es tan habitual como problemático, y conviene saber por qué.
+
+El dropout modifica la **varianza** de las activaciones, y la modifica de forma distinta en entrenamiento y en inferencia. La normalización por lotes, por su parte, acumula estadísticas durante el entrenamiento —cuando el dropout está activo— para usarlas en inferencia, cuando ya no lo está. Las estadísticas acumuladas no corresponden entonces a la distribución que la capa ve al evaluar, y esa discrepancia de varianza degrada el resultado. Es la razón de que muchas arquitecturas modernas prescindan del dropout en los bloques convolucionales normalizados y lo reserven para la cabeza densa, o de que se coloque siempre **después** de la normalización y no antes.
+
+Conviene además recordar que la normalización por lotes ya regulariza por sí sola, porque el ruido de las estadísticas del minilote actúa como perturbación estocástica. Ese efecto **se debilita con lotes grandes**, así que la cantidad de regularización efectiva de un modelo depende del tamaño de lote: cambiarlo altera el equilibrio y puede exigir reajustar λ y p. Es una interacción que el diseño experimental debe controlar.
+
+### Cómo se mide si la regularización funcionó
+
+La cifra que hay que mirar no es la métrica de validación sino la **brecha** entre entrenamiento y validación. Un modelo que acierta el 99 % en entrenamiento y el 78 % en validación está memorizando; uno que acierta 84 % y 82 % ha generalizado, aunque su cifra de entrenamiento sea peor. Regularizar consiste precisamente en aceptar peor ajuste a cambio de menor brecha, y ese intercambio debe verse en los números.
+
+De ahí que el experimento correcto no sea «activar dropout y comprobar que mejora», sino barrer p y λ observando **las dos curvas a la vez**. Hay tres desenlaces posibles y todos informan: si la brecha es grande, falta regularización; si ambas curvas son bajas y cercanas, sobra —el modelo está subajustado y la regularización le impide aprender—; y si la brecha ya era pequeña de entrada, el modelo no tenía capacidad excedente y la regularización solo puede empeorarlo.
+
+La **parada temprana** merece contarse como parte del mismo conjunto de herramientas, porque es regularización implícita: detener el entrenamiento cuando la validación deja de mejorar limita cuánto pueden crecer los pesos y, en modelos lineales, se puede demostrar equivalente a una penalización L2 con λ dependiente del número de pasos. Es también la más barata, y por eso el repositorio la aplica por defecto mediante `patience`.
+
 > **La pregunta que deberías poder responder al terminar:** ¿Qué técnica reduce sobreajuste sin subajustar?
 
 ### Qué se mide y con qué se decide

@@ -30,6 +30,44 @@ Como el umbral depende de la probabilidad, esa probabilidad debe ser **confiable
 
 La cadena de razonamiento del capstone es, entonces: entrenar un clasificador → recalibrar sus probabilidades → medir su capacidad de ordenamiento con AUC/PR-AUC de forma independiente del umbral → traducir esa capacidad en una política de decisión eligiendo τ según los costos del negocio en validación → y solo entonces reportar el desempeño una única vez en test. La contribución matemática no está en un algoritmo nuevo, sino en *encadenar correctamente* clasificación, calibración, coste y umbral para que el número final sea una decisión responsable y no una métrica aislada.
 
+### El problema de negocio no es el problema de aprendizaje
+
+El paso que este proyecto final exige y que ningún laboratorio anterior pedía es la **traducción**: convertir «reducir el abandono de clientes» en una tarea que un modelo pueda optimizar. Esa traducción implica decisiones que no son técnicas y que determinan el resultado más que la arquitectura.
+
+Hay que fijar tres cosas antes de tocar los datos. **Qué se predice**: definir abandono exige un criterio —¿cuántos días sin actividad?, ¿la baja formal?— y criterios distintos producen conjuntos de etiquetas distintos. **Cuándo se predice**: la ventana de observación y el horizonte, es decir, con qué información se cuenta en el momento de decidir y con cuánta antelación hay que avisar. Y **para qué**: si la salida alimenta una campaña de retención con presupuesto para N clientes, el modelo no necesita clasificar bien a todos, necesita **ordenar bien los N primeros**, que es un objetivo distinto.
+
+De ahí sale la métrica correcta, y no al revés. Con un presupuesto de retención fijo, lo que importa es la **precisión en los k primeros** y la ganancia acumulada de los primeros deciles, no la exactitud global. Elegir la métrica después de ver los resultados es la forma más común de autoengaño en un proyecto aplicado; declararla antes, junto con el umbral y su justificación económica, es lo que el sellado del experimento hace explícito.
+
+### La fuga temporal en datos de clientes
+
+En un dataset tabular de clientes, la fuga no viene de mezclar particiones sino del **contenido de las variables**, y es mucho más difícil de detectar.
+
+Una variable produce fuga cuando su valor se conoce **después** o **a causa** del hecho que se quiere predecir. En abandono, los ejemplos clásicos son campos de baja, motivos de cancelación, o el consumo del último mes cuando ese mes ya es posterior al momento de decisión. También cuentan las variables agregadas calculadas sobre todo el histórico —un promedio que incluye el periodo objetivo—, y los identificadores que correlacionan con la etiqueta por el orden en que se cargaron los datos.
+
+El síntoma es siempre el mismo y hay que aprender a desconfiar de él: una métrica **sospechosamente alta**. Un modelo de abandono con AUC de 0,99 casi nunca es un gran modelo; casi siempre es una fuga. El diagnóstico consiste en mirar la importancia de las variables, encontrar la que domina, y preguntarse si estaría disponible en el momento real de la predicción. Es la razón de que este proyecto exija la ruta 21 como herramienta de auditoría y no solo como capítulo de interpretabilidad.
+
+La regla operativa que resume todo: para cada variable, responder **en qué instante se conoce su valor**. Si la respuesta es «después del corte de decisión», la variable no puede usarse, por informativa que sea.
+
+### De la probabilidad a la decisión
+
+El modelo entrega una probabilidad; el negocio necesita una acción. El puente es el umbral, y fijarlo es la decisión con más impacto económico de todo el proyecto.
+
+Si retener a un cliente cuesta c_int y perderlo cuesta c_perd, y la intervención tiene una eficacia e —la fracción de clientes en riesgo que efectivamente se retienen—, el valor esperado de intervenir sobre un cliente con probabilidad p̂ es e·p̂·c_perd − c_int, de modo que conviene actuar cuando
+
+p̂ > c_int / (e · c_perd).
+
+La fórmula tiene tres consecuencias que conviene declarar. Primero, **el umbral no es 0,5** salvo por coincidencia. Segundo, exige que p̂ sea una probabilidad de verdad, lo que enlaza directamente con la calibración de la ruta 22. Y tercero, cuando el presupuesto es limitado, la restricción no es un umbral sino una capacidad: se interviene sobre los k clientes de mayor p̂, y lo que hay que medir es cuántos de ellos habrían abandonado realmente.
+
+Al reportar el impacto conviene separar dos cifras que suelen mezclarse. El desempeño del **modelo** —discriminación, calibración, estabilidad entre semillas— se mide con datos históricos. El impacto de la **intervención** —cuántas bajas se evitaron— no se puede estimar con datos observacionales, porque requiere saber qué habría pasado sin actuar: eso exige un experimento con grupo de control. Presentar el segundo como si se dedujera del primero es un error que este proyecto pide evitar explícitamente en su reporte.
+
+### Lo que hay que dejar escrito para que el trabajo sirva
+
+Un proyecto de extremo a extremo termina cuando otra persona puede tomarlo, entenderlo y decidir sobre él. Eso exige, además de las métricas, cinco cosas que la model card debe contener.
+
+**Uso previsto y usos desaconsejados**, en una frase cada uno. **Población de entrenamiento**: de dónde salen los datos, de qué periodo, y en qué se diferencia de la población donde se aplicará. **Desempeño por subgrupo**, no solo agregado: un modelo que funciona bien en promedio y mal en un segmento concreto es un problema operativo y, según el dominio, también legal. **Condiciones de revisión**: cada cuánto se vigila la deriva, qué degradación dispara un reentrenamiento, quién decide. Y **límites conocidos**: qué no se validó, qué supuestos podrían romperse.
+
+Esa última parte es la que distingue un trabajo terminado de uno abandonado. Un modelo de abandono entrenado con un histórico concreto asume que el comportamiento de los clientes, la competencia y la oferta comercial siguen siendo los de entonces. Cuando cambian —y cambian— el modelo se degrada sin avisar. Declararlo por escrito, con el mecanismo de vigilancia al lado, es lo que convierte un experimento en algo desplegable con responsabilidad.
+
 ## Protocolo científico
 
 - Ajustar transformaciones, vocabulario, normalización y selección de variables solo con `train`.
