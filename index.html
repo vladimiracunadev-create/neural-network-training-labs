@@ -143,44 +143,66 @@ body { margin: 0; background: var(--bg); color: var(--ink);
   </header>
   <main class="prose">
     <section class="home-hero">
-      <div class="home-kicker">v1.0.0 · 31 rutas · 93 notebooks · offline</div>
+      <div class="home-kicker">v1.0.0 · 31 rutas · 7 partes · offline</div>
       <h1>Índice del recorrido<br>de la neurona en NumPy al modelo desplegado</h1>
-      <p class="lede">Portada local de las <strong>31 rutas</strong>. Cada una abre su página autocontenida, con teoría, plan de experimentos, evaluación y saltos <strong>anterior / siguiente</strong>. Funciona sin conexión: es la misma fuente que publica el sitio de estudio.</p>
+      <p class="lede">Se estudia en orden, de la <strong>00</strong> a la <strong>30</strong>. Las 7 partes son tramos <strong>contiguos</strong> de esa secuencia. Cada clase abre su página autocontenida, con teoría, experimentos, evaluación y saltos <strong>anterior / siguiente</strong>. Funciona sin conexión.</p>
       <div class="home-actions">
         <a class="btn" href="labs/00_numpy_neuron/index.html">▶ Empezar por la ruta 1</a>
-        <a class="btn btn-ghost" href="README.md">📄 Portada en Markdown</a>
+        <a class="btn btn-ghost" href="parts/01-fundamentos.html">🗺️ Ver la parte 1</a>
       </div>
     </section>
     <section>
-      <h2 class="home-sec">🧪 Laboratorios centrales <span class="count">25</span></h2>
+      <h2 class="home-sec"><a href="parts/01-fundamentos.html">🟢 Parte 1 — Fundamentos: de la derivada a la primera red</a> <span class="count">rutas 00–02</span></h2>
+      <p class="lede" style="margin:0 0 14px">Se construye una red desde cero antes de usar cualquier abstracción: primero la neurona a mano en NumPy, después el mismo cálculo delegado en autograd, y por último varias capas resolviendo un problema que una recta no separa.</p>
       <div class="lab-grid"><a class="lab-card" href="labs/00_numpy_neuron/index.html"><span class="lab-num">🔢 00 · ruta 1</span><span class="lab-name">Neurona con NumPy</span></a>
 <a class="lab-card" href="labs/01_pytorch_perceptron/index.html"><span class="lab-num">🧩 01 · ruta 2</span><span class="lab-name">Perceptrón con PyTorch</span></a>
-<a class="lab-card" href="labs/02_mlp_nonlinear/index.html"><span class="lab-num">🌀 02 · ruta 3</span><span class="lab-name">MLP multiclase</span></a>
-<a class="lab-card" href="labs/03_cnn_vision/index.html"><span class="lab-num">🖼️ 03 · ruta 4</span><span class="lab-name">CNN para visión</span></a>
+<a class="lab-card" href="labs/02_mlp_nonlinear/index.html"><span class="lab-num">🌀 02 · ruta 3</span><span class="lab-name">MLP multiclase</span></a></div>
+    </section>
+    <section>
+      <h2 class="home-sec"><a href="parts/02-arquitecturas.html">🔵 Parte 2 — Arquitecturas según la forma del dato</a> <span class="count">rutas 03–07</span></h2>
+      <p class="lede" style="margin:0 0 14px">Cada estructura —imagen, secuencia, serie temporal, señal sin etiqueta, texto— pide su propio sesgo inductivo. Aquí se recorren las cinco familias que cubren la mayoría de los problemas reales, y se comparan contra una línea base honesta.</p>
+      <div class="lab-grid"><a class="lab-card" href="labs/03_cnn_vision/index.html"><span class="lab-num">🖼️ 03 · ruta 4</span><span class="lab-name">CNN para visión</span></a>
 <a class="lab-card" href="labs/04_rnn_sequences/index.html"><span class="lab-num">🔁 04 · ruta 5</span><span class="lab-name">RNN para texto</span></a>
 <a class="lab-card" href="labs/05_lstm_time_series/index.html"><span class="lab-num">📈 05 · ruta 6</span><span class="lab-name">LSTM para series temporales</span></a>
 <a class="lab-card" href="labs/06_autoencoder_anomaly/index.html"><span class="lab-num">🧬 06 · ruta 7</span><span class="lab-name">Autoencoder para fraude</span></a>
-<a class="lab-card" href="labs/07_transformer_attention/index.html"><span class="lab-num">🔭 07 · ruta 8</span><span class="lab-name">Transformer para noticias</span></a>
-<a class="lab-card" href="labs/08_gan_generation/index.html"><span class="lab-num">🎨 08 · ruta 9</span><span class="lab-name">GAN generativa</span></a>
+<a class="lab-card" href="labs/07_transformer_attention/index.html"><span class="lab-num">🔭 07 · ruta 8</span><span class="lab-name">Transformer para noticias</span></a></div>
+    </section>
+    <section>
+      <h2 class="home-sec"><a href="parts/03-familias-especializadas.html">🟣 Parte 3 — Familias especializadas: generar, decidir, relacionar</a> <span class="count">rutas 08–12</span></h2>
+      <p class="lede" style="margin:0 0 14px">Tres regímenes donde una métrica de acierto ya no cuenta toda la historia —generación, decisión secuencial y datos relacionales— más las dos formas de reutilizar y combinar información que ya existe.</p>
+      <div class="lab-grid"><a class="lab-card" href="labs/08_gan_generation/index.html"><span class="lab-num">🎨 08 · ruta 9</span><span class="lab-name">GAN generativa</span></a>
 <a class="lab-card" href="labs/09_gnn_graphs/index.html"><span class="lab-num">🕸️ 09 · ruta 10</span><span class="lab-name">GNN sobre red de citas</span></a>
 <a class="lab-card" href="labs/10_dqn_reinforcement/index.html"><span class="lab-num">🕹️ 10 · ruta 11</span><span class="lab-name">DQN para inventario con demanda real</span></a>
 <a class="lab-card" href="labs/11_transfer_learning/index.html"><span class="lab-num">♻️ 11 · ruta 12</span><span class="lab-name">Transfer learning con mascotas</span></a>
-<a class="lab-card" href="labs/12_multimodal_fusion/index.html"><span class="lab-num">🔀 12 · ruta 13</span><span class="lab-name">Fusión de sensores</span></a>
-<a class="lab-card" href="labs/13_hyperparameter_search/index.html"><span class="lab-num">🎛️ 13 · ruta 14</span><span class="lab-name">Búsqueda de hiperparámetros</span></a>
+<a class="lab-card" href="labs/12_multimodal_fusion/index.html"><span class="lab-num">🔀 12 · ruta 13</span><span class="lab-name">Fusión de sensores</span></a></div>
+    </section>
+    <section>
+      <h2 class="home-sec"><a href="parts/04-entrenamiento-eficiente.html">🟠 Parte 4 — Entrenar mejor, más barato y sin centralizar datos</a> <span class="count">rutas 13–15</span></h2>
+      <p class="lede" style="margin:0 0 14px">El modelo ya funciona: ahora hay que mejorarlo sin hacer trampas, encogerlo para que quepa donde debe correr, y entrenarlo cuando los datos no pueden salir de donde están.</p>
+      <div class="lab-grid"><a class="lab-card" href="labs/13_hyperparameter_search/index.html"><span class="lab-num">🎛️ 13 · ruta 14</span><span class="lab-name">Búsqueda de hiperparámetros</span></a>
 <a class="lab-card" href="labs/14_knowledge_distillation/index.html"><span class="lab-num">⚗️ 14 · ruta 15</span><span class="lab-name">Destilación de conocimiento</span></a>
-<a class="lab-card" href="labs/15_federated_learning/index.html"><span class="lab-num">🌐 15 · ruta 16</span><span class="lab-name">Aprendizaje federado por participante</span></a>
-<a class="lab-card" href="labs/16_backpropagation_manual/index.html"><span class="lab-num">∂ 16 · ruta 17</span><span class="lab-name">Backpropagation manual</span></a>
+<a class="lab-card" href="labs/15_federated_learning/index.html"><span class="lab-num">🌐 15 · ruta 16</span><span class="lab-name">Aprendizaje federado por participante</span></a></div>
+    </section>
+    <section>
+      <h2 class="home-sec"><a href="parts/05-mecanica-fina.html">🔴 Parte 5 — La mecánica fina, ahora en profundidad</a> <span class="count">rutas 16–20</span></h2>
+      <p class="lede" style="margin:0 0 14px">Segunda pasada por el motor, ya con la experiencia de haber entrenado modelos reales: lo que en la ruta 00 era una fórmula, aquí es una decisión de diseño que se mide, se compara entre semillas y se justifica.</p>
+      <div class="lab-grid"><a class="lab-card" href="labs/16_backpropagation_manual/index.html"><span class="lab-num">∂ 16 · ruta 17</span><span class="lab-name">Backpropagation manual</span></a>
 <a class="lab-card" href="labs/17_activations_and_losses/index.html"><span class="lab-num">📐 17 · ruta 18</span><span class="lab-name">Activaciones y funciones de pérdida</span></a>
 <a class="lab-card" href="labs/18_optimizers_and_schedulers/index.html"><span class="lab-num">⚙️ 18 · ruta 19</span><span class="lab-name">Optimizadores y schedulers</span></a>
 <a class="lab-card" href="labs/19_regularization_dropout_batchnorm/index.html"><span class="lab-num">🛡️ 19 · ruta 20</span><span class="lab-name">Regularización</span></a>
-<a class="lab-card" href="labs/20_data_augmentation/index.html"><span class="lab-num">🔄 20 · ruta 21</span><span class="lab-name">Aumento de datos</span></a>
-<a class="lab-card" href="labs/21_explainability/index.html"><span class="lab-num">🔍 21 · ruta 22</span><span class="lab-name">Explicabilidad</span></a>
+<a class="lab-card" href="labs/20_data_augmentation/index.html"><span class="lab-num">🔄 20 · ruta 21</span><span class="lab-name">Aumento de datos</span></a></div>
+    </section>
+    <section>
+      <h2 class="home-sec"><a href="parts/06-confianza-y-despliegue.html">⚫ Parte 6 — Confiar en el modelo y sacarlo del cuaderno</a> <span class="count">rutas 21–24</span></h2>
+      <p class="lede" style="margin:0 0 14px">Un acierto sin explicación ni confianza calibrada no es evidencia, y un modelo que solo corre en un cuaderno no es un sistema. Esta parte cierra el ciclo hasta el artefacto desplegable y el proyecto integrador.</p>
+      <div class="lab-grid"><a class="lab-card" href="labs/21_explainability/index.html"><span class="lab-num">🔍 21 · ruta 22</span><span class="lab-name">Explicabilidad</span></a>
 <a class="lab-card" href="labs/22_uncertainty_calibration/index.html"><span class="lab-num">🎯 22 · ruta 23</span><span class="lab-name">Incertidumbre y calibración</span></a>
 <a class="lab-card" href="labs/23_model_export_and_inference/index.html"><span class="lab-num">📦 23 · ruta 24</span><span class="lab-name">Exportación e inferencia</span></a>
 <a class="lab-card" href="labs/24_capstone_real_project/index.html"><span class="lab-num">🏁 24 · ruta 25</span><span class="lab-name">Proyecto final: churn de telecomunicaciones</span></a></div>
     </section>
     <section>
-      <h2 class="home-sec">🚀 Especializaciones avanzadas <span class="count">6</span></h2>
+      <h2 class="home-sec"><a href="parts/07-especializaciones-avanzadas.html">🔬 Parte 7 — Especializaciones avanzadas</a> <span class="count">rutas 25–30</span></h2>
+      <p class="lede" style="margin:0 0 14px">Mismo contrato de semillas, selección por validación y sellado del test, con arquitecturas de frontera y pesos preentrenados descargados de su proveedor. Se pueden tomar en cualquier orden una vez completadas las rutas 00–24.</p>
       <div class="lab-grid"><a class="lab-card" href="advanced_labs/25_transformer_finetuning/index.html"><span class="lab-num">🔧 25 · ruta 26</span><span class="lab-name">Fine-tuning eficiente de transformer</span></a>
 <a class="lab-card" href="advanced_labs/26_segmentation_unet/index.html"><span class="lab-num">🧷 26 · ruta 27</span><span class="lab-name">Segmentación semántica con U-Net</span></a>
 <a class="lab-card" href="advanced_labs/27_audio_speechcommands/index.html"><span class="lab-num">🎙️ 27 · ruta 28</span><span class="lab-name">Clasificación de audio con SpeechCommands</span></a>

@@ -54,8 +54,8 @@ La teoría de cada laboratorio se ancla en la literatura de referencia del tema 
 ```text
 scripts/
 ├── validate_repository.py           # valida estructura, catálogo y contratos de notebooks
-├── build_lab_docs.py                # ficha + navegación en los 4 documentos de cada laboratorio (idempotente)
-├── generate_lab_html.py             # página HTML autocontenida por laboratorio + índice offline
+├── build_lab_docs.py                # ficha + navegación de cada laboratorio y las 7 partes (idempotente)
+├── generate_lab_html.py             # página HTML autocontenida por laboratorio y por parte + índice offline
 ├── generate_site.py                 # genera el sitio de estudio (GitHub Pages) con navegación
 ├── generate_specialized_notebooks.py
 ├── prepare_datasets.py · audit_splits.py · check_dataset_sources.py

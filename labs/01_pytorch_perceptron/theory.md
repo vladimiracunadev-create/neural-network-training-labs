@@ -1,7 +1,9 @@
 # Teoría — Perceptrón con PyTorch
 
 <!-- nav-top -->
-> 🧭 **Ruta 2 / 31** · [⬅️ 🔢 Neurona con NumPy](../../labs/00_numpy_neuron/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🌀 MLP multiclase ➡️](../../labs/02_mlp_nonlinear/theory.md)
+> 🧭 **Ruta 2 / 31** · 🟢 [Parte 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md)
+>
+> [⬅️ 🔢 Neurona con NumPy](../../labs/00_numpy_neuron/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🌀 MLP multiclase ➡️](../../labs/02_mlp_nonlinear/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -71,9 +73,9 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 | ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
 |---|:---:|---|
-| [🔢 Neurona con NumPy](../../labs/00_numpy_neuron/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🌀 MLP multiclase](../../labs/02_mlp_nonlinear/README.md) |
+| [🔢 Neurona con NumPy](../../labs/00_numpy_neuron/README.md) | [Las 31 rutas](../../parts/README.md) | [🌀 MLP multiclase](../../labs/02_mlp_nonlinear/README.md) |
 
 **En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/01_pytorch_perceptron/index.html) · [🖥️ Página HTML local](index.html)
+🟢 [Parte 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/01_pytorch_perceptron/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

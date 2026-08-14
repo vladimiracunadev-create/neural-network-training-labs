@@ -1,7 +1,9 @@
 # Plan de experimentos — DQN para inventario con demanda real
 
 <!-- nav-top -->
-> 🧭 **Ruta 11 / 31** · [⬅️ 🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [♻️ Transfer learning con mascotas ➡️](../../labs/11_transfer_learning/experiments.md)
+> 🧭 **Ruta 11 / 31** · 🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
+>
+> [⬅️ 🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/experiments.md) · [🏠 Índice de rutas](../../parts/README.md) · [♻️ Transfer learning con mascotas ➡️](../../labs/11_transfer_learning/experiments.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -51,9 +53,9 @@ La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicion
 
 | ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
 |---|:---:|---|
-| [🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/README.md) |
+| [🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/README.md) | [Las 31 rutas](../../parts/README.md) | [♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/README.md) |
 
 **En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/10_dqn_reinforcement/index.html) · [🖥️ Página HTML local](index.html)
+🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/10_dqn_reinforcement/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

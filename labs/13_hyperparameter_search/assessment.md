@@ -1,7 +1,9 @@
 # Evaluación — Búsqueda de hiperparámetros
 
 <!-- nav-top -->
-> 🧭 **Ruta 14 / 31** · [⬅️ 🔀 Fusión de sensores](../../labs/12_multimodal_fusion/assessment.md) · [🏠 Índice](../../README.md#laboratorios) · [⚗️ Destilación de conocimiento ➡️](../../labs/14_knowledge_distillation/assessment.md)
+> 🧭 **Ruta 14 / 31** · 🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md)
+>
+> [⬅️ 🔀 Fusión de sensores](../../labs/12_multimodal_fusion/assessment.md) · [🏠 Índice de rutas](../../parts/README.md) · [⚗️ Destilación de conocimiento ➡️](../../labs/14_knowledge_distillation/assessment.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación**
 <!-- /nav-top -->
@@ -40,9 +42,9 @@ La aprobación exige al menos 70% y cero errores críticos de fuga de datos.
 
 | ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
 |---|:---:|---|
-| [🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) |
+| [🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) | [Las 31 rutas](../../parts/README.md) | [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) |
 
 **En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación** · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/13_hyperparameter_search/index.html) · [🖥️ Página HTML local](index.html)
+🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/13_hyperparameter_search/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

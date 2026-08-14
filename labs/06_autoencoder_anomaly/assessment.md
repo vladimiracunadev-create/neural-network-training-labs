@@ -1,7 +1,9 @@
 # Evaluación — Autoencoder para fraude
 
 <!-- nav-top -->
-> 🧭 **Ruta 7 / 31** · [⬅️ 📈 LSTM para series temporales](../../labs/05_lstm_time_series/assessment.md) · [🏠 Índice](../../README.md#laboratorios) · [🔭 Transformer para noticias ➡️](../../labs/07_transformer_attention/assessment.md)
+> 🧭 **Ruta 7 / 31** · 🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
+>
+> [⬅️ 📈 LSTM para series temporales](../../labs/05_lstm_time_series/assessment.md) · [🏠 Índice de rutas](../../parts/README.md) · [🔭 Transformer para noticias ➡️](../../labs/07_transformer_attention/assessment.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación**
 <!-- /nav-top -->
@@ -40,9 +42,9 @@ La aprobación exige al menos 70% y cero errores críticos de fuga de datos.
 
 | ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
 |---|:---:|---|
-| [📈 LSTM para series temporales](../../labs/05_lstm_time_series/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) |
+| [📈 LSTM para series temporales](../../labs/05_lstm_time_series/README.md) | [Las 31 rutas](../../parts/README.md) | [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) |
 
 **En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación** · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/06_autoencoder_anomaly/index.html) · [🖥️ Página HTML local](index.html)
+🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/06_autoencoder_anomaly/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

@@ -1,7 +1,9 @@
 # Aprendizaje federado por participante
 
 <!-- nav-top -->
-> 🧭 **Ruta 16 / 31** · [⬅️ ⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) · [🏠 Índice](../../README.md#laboratorios) · [∂ Backpropagation manual ➡️](../../labs/16_backpropagation_manual/README.md)
+> 🧭 **Ruta 16 / 31** · 🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md)
+>
+> [⬅️ ⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) · [🏠 Índice de rutas](../../parts/README.md) · [∂ Backpropagation manual ➡️](../../labs/16_backpropagation_manual/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -180,9 +182,9 @@ La partición se controla con `split_seed`; la inicialización y el entrenamient
 
 | ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
 |---|:---:|---|
-| [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md) |
+| [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) | [Las 31 rutas](../../parts/README.md) | [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md) |
 
 **En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/15_federated_learning/index.html) · [🖥️ Página HTML local](index.html)
+🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/15_federated_learning/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

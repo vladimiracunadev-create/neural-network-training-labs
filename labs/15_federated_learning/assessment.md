@@ -1,7 +1,9 @@
 # Evaluación — Aprendizaje federado por participante
 
 <!-- nav-top -->
-> 🧭 **Ruta 16 / 31** · [⬅️ ⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/assessment.md) · [🏠 Índice](../../README.md#laboratorios) · [∂ Backpropagation manual ➡️](../../labs/16_backpropagation_manual/assessment.md)
+> 🧭 **Ruta 16 / 31** · 🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md)
+>
+> [⬅️ ⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/assessment.md) · [🏠 Índice de rutas](../../parts/README.md) · [∂ Backpropagation manual ➡️](../../labs/16_backpropagation_manual/assessment.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación**
 <!-- /nav-top -->
@@ -40,9 +42,9 @@ La aprobación exige al menos 70% y cero errores críticos de fuga de datos.
 
 | ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
 |---|:---:|---|
-| [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md) |
+| [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) | [Las 31 rutas](../../parts/README.md) | [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md) |
 
 **En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación** · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/15_federated_learning/index.html) · [🖥️ Página HTML local](index.html)
+🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/15_federated_learning/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

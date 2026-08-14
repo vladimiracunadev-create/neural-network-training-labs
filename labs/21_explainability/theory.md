@@ -1,7 +1,9 @@
 # Teoría — Explicabilidad
 
 <!-- nav-top -->
-> 🧭 **Ruta 22 / 31** · [⬅️ 🔄 Aumento de datos](../../labs/20_data_augmentation/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🎯 Incertidumbre y calibración ➡️](../../labs/22_uncertainty_calibration/theory.md)
+> 🧭 **Ruta 22 / 31** · ⚫ [Parte 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md)
+>
+> [⬅️ 🔄 Aumento de datos](../../labs/20_data_augmentation/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🎯 Incertidumbre y calibración ➡️](../../labs/22_uncertainty_calibration/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -66,9 +68,9 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 | ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
 |---|:---:|---|
-| [🔄 Aumento de datos](../../labs/20_data_augmentation/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md) |
+| [🔄 Aumento de datos](../../labs/20_data_augmentation/README.md) | [Las 31 rutas](../../parts/README.md) | [🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md) |
 
 **En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/21_explainability/index.html) · [🖥️ Página HTML local](index.html)
+⚫ [Parte 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/21_explainability/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

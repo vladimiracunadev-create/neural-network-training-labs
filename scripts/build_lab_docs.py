@@ -64,6 +64,88 @@ DOCS = [
     ("assessment.md", "📝", "Evaluación"),
 ]
 
+# Las siete partes del recorrido. Son tramos CONTIGUOS de la secuencia 00 → 30:
+# `first` y `last` son el prefijo numérico del primer y último laboratorio, de modo
+# que ninguna clase queda fuera y ninguna aparece en dos partes.
+PARTS = [
+    {
+        "num": 1, "slug": "01-fundamentos", "emoji": "🟢",
+        "title": "Fundamentos: de la derivada a la primera red",
+        "first": 0, "last": 2,
+        "summary": (
+            "Se construye una red desde cero antes de usar cualquier abstracción: primero la "
+            "neurona a mano en NumPy, después el mismo cálculo delegado en autograd, y por "
+            "último varias capas resolviendo un problema que una recta no separa."
+        ),
+        "outcome": "entiendes qué calcula, qué deriva y qué actualiza un entrenamiento.",
+    },
+    {
+        "num": 2, "slug": "02-arquitecturas", "emoji": "🔵",
+        "title": "Arquitecturas según la forma del dato",
+        "first": 3, "last": 7,
+        "summary": (
+            "Cada estructura —imagen, secuencia, serie temporal, señal sin etiqueta, texto— pide "
+            "su propio sesgo inductivo. Aquí se recorren las cinco familias que cubren la mayoría "
+            "de los problemas reales, y se comparan contra una línea base honesta."
+        ),
+        "outcome": "eliges arquitectura por la forma del problema, no por la moda.",
+    },
+    {
+        "num": 3, "slug": "03-familias-especializadas", "emoji": "🟣",
+        "title": "Familias especializadas: generar, decidir, relacionar",
+        "first": 8, "last": 12,
+        "summary": (
+            "Tres regímenes donde una métrica de acierto ya no cuenta toda la historia —generación, "
+            "decisión secuencial y datos relacionales— más las dos formas de reutilizar y combinar "
+            "información que ya existe."
+        ),
+        "outcome": "evalúas sistemas que no tienen una única etiqueta correcta.",
+    },
+    {
+        "num": 4, "slug": "04-entrenamiento-eficiente", "emoji": "🟠",
+        "title": "Entrenar mejor, más barato y sin centralizar datos",
+        "first": 13, "last": 15,
+        "summary": (
+            "El modelo ya funciona: ahora hay que mejorarlo sin hacer trampas, encogerlo para que "
+            "quepa donde debe correr, y entrenarlo cuando los datos no pueden salir de donde están."
+        ),
+        "outcome": "mejoras un modelo sin tocar `test` y sabes qué cuesta cada mejora.",
+    },
+    {
+        "num": 5, "slug": "05-mecanica-fina", "emoji": "🔴",
+        "title": "La mecánica fina, ahora en profundidad",
+        "first": 16, "last": 20,
+        "summary": (
+            "Segunda pasada por el motor, ya con la experiencia de haber entrenado modelos reales: "
+            "lo que en la ruta 00 era una fórmula, aquí es una decisión de diseño que se mide, se "
+            "compara entre semillas y se justifica."
+        ),
+        "outcome": "explicas por qué un entrenamiento converge, se estanca o sobreajusta.",
+    },
+    {
+        "num": 6, "slug": "06-confianza-y-despliegue", "emoji": "⚫",
+        "title": "Confiar en el modelo y sacarlo del cuaderno",
+        "first": 21, "last": 24,
+        "summary": (
+            "Un acierto sin explicación ni confianza calibrada no es evidencia, y un modelo que solo "
+            "corre en un cuaderno no es un sistema. Esta parte cierra el ciclo hasta el artefacto "
+            "desplegable y el proyecto integrador."
+        ),
+        "outcome": "respondes «¿por qué predijo esto?», «¿cuánto te fías?» y «¿cuánto tarda?».",
+    },
+    {
+        "num": 7, "slug": "07-especializaciones-avanzadas", "emoji": "🔬",
+        "title": "Especializaciones avanzadas",
+        "first": 25, "last": 30,
+        "summary": (
+            "Mismo contrato de semillas, selección por validación y sellado del test, con "
+            "arquitecturas de frontera y pesos preentrenados descargados de su proveedor. "
+            "Se pueden tomar en cualquier orden una vez completadas las rutas 00–24."
+        ),
+        "outcome": "trabajas con arquitecturas actuales sin renunciar al protocolo.",
+    },
+]
+
 TOP_RE = re.compile(r"\n?<!-- nav-top -->.*?<!-- /nav-top -->\n?", re.DOTALL)
 BOTTOM_RE = re.compile(r"\n?<!-- nav-bottom -->.*?<!-- /nav-bottom -->\n?", re.DOTALL)
 FICHA_RE = re.compile(r"\n?<!-- ficha -->.*?<!-- /ficha -->\n?", re.DOTALL)
@@ -113,6 +195,14 @@ def _catalog() -> dict[str, dict]:
     return entries
 
 
+def part_for(num: int) -> dict:
+    """Parte a la que pertenece un laboratorio, por su prefijo numérico."""
+    for part in PARTS:
+        if part["first"] <= num <= part["last"]:
+            return part
+    raise SystemExit(f"ERROR: la ruta {num:02d} no pertenece a ninguna parte; revisa PARTS.")
+
+
 def collect_labs() -> list[dict]:
     catalog = _catalog()
     labs: list[dict] = []
@@ -130,6 +220,7 @@ def collect_labs() -> list[dict]:
                 "slug": slug,
                 "base": base,
                 "num": slug.split("_", 1)[0],
+                "part": part_for(int(slug.split("_", 1)[0])),
                 "category": category,
                 "dir": lab_dir,
                 "emoji": LAB_EMOJI.get(slug, "🧠"),
@@ -163,7 +254,7 @@ def top_block(lab: dict, prev: dict | None, nxt: dict | None,
         jumps.append(f'[⬅️ {label(prev)}]({doc_link(prev, current_doc if (prev["dir"] / current_doc).exists() else "README.md")})')
     else:
         jumps.append("⬅️ *inicio del recorrido*")
-    jumps.append("[🏠 Índice](../../README.md#laboratorios)")
+    jumps.append("[🏠 Índice de rutas](../../parts/README.md)")
     if nxt:
         jumps.append(f'[{label(nxt)} ➡️]({doc_link(nxt, current_doc if (nxt["dir"] / current_doc).exists() else "README.md")})')
     else:
@@ -175,9 +266,14 @@ def top_block(lab: dict, prev: dict | None, nxt: dict | None,
             continue
         tabs.append(f"**{emoji} {name}**" if doc == current_doc else f"[{emoji} {name}]({doc})")
 
+    part = lab["part"]
+    part_link = f'[Parte {part["num"]} — {part["title"]}](../../parts/{part["slug"]}.md)'
+
     return (
         "<!-- nav-top -->\n"
-        f"> 🧭 **Ruta {index + 1} / {total}** · {' · '.join(jumps)}\n"
+        f"> 🧭 **Ruta {index + 1} / {total}** · {part['emoji']} {part_link}\n"
+        ">\n"
+        f"> {' · '.join(jumps)}\n"
         ">\n"
         f"> {' · '.join(tabs)}\n"
         "<!-- /nav-top -->"
@@ -201,9 +297,11 @@ def bottom_block(lab: dict, prev: dict | None, nxt: dict | None, current_doc: st
         if (lab["dir"] / notebook).exists():
             docs.append(f"[{emoji} {name}]({notebook})")
 
+    part = lab["part"]
     # `index.html` lo genera scripts/generate_lab_html.py a partir de este Markdown;
     # el enlace es incondicional para que el orden de generación sea determinista.
     salidas = [
+        f'{part["emoji"]} [Parte {part["num"]} — {part["title"]}](../../parts/{part["slug"]}.md)',
         "[🏠 Portada del repositorio](../../README.md)",
         f'[🌐 Sitio de estudio]({SITE}/labs/{lab["slug"]}/index.html)',
         "[🖥️ Página HTML local](index.html)",
@@ -214,7 +312,7 @@ def bottom_block(lab: dict, prev: dict | None, nxt: dict | None, current_doc: st
         "## 🧭 Navegación del recorrido\n\n"
         "| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |\n"
         "|---|:---:|---|\n"
-        f"| {prev_cell} | [Las 31 rutas](../../README.md#laboratorios) | {next_cell} |\n\n"
+        f"| {prev_cell} | [Las 31 rutas](../../parts/README.md) | {next_cell} |\n\n"
         f"**En este laboratorio:** {' · '.join(docs)}\n\n"
         f"{' · '.join(salidas)}\n"
         "<!-- /nav-bottom -->"
@@ -425,6 +523,155 @@ def render_doc(lab: dict, doc: str, index: int, total: int,
     return body
 
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Páginas de parte (parts/*.md)
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _lab_summary(lab: dict) -> str:
+    """Qué resuelve la clase, según el catálogo del repositorio."""
+    text = str(lab["catalog"].get("objective") or lab["lesson"].get("title") or lab["title"]).strip()
+    return text.rstrip(".")
+
+
+def _lab_hours(lab: dict) -> int | None:
+    hours = lab["lesson"].get("estimated_hours") or lab["catalog"].get("estimated_hours")
+    return int(hours) if hours else None
+
+
+def part_page(part: dict, labs: list[dict], prev: dict | None, nxt: dict | None) -> str:
+    members = [lab for lab in labs if lab["part"] is part]
+    positions = {lab["slug"]: index + 1 for index, lab in enumerate(labs)}
+    hours = [h for h in (_lab_hours(lab) for lab in members) if h]
+    # Se ordenan por dificultad creciente, no alfabéticamente.
+    order = ["fundamentos", "básico", "intermedio", "intermedio-avanzado", "avanzado", "experto"]
+    found = {LEVEL_ES.get(str(lab["lesson"].get("level") or lab["catalog"].get("level") or "").lower(),
+                          str(lab["lesson"].get("level") or lab["catalog"].get("level") or ""))
+             for lab in members} - {""}
+    levels = sorted(found, key=lambda level: (order.index(level) if level in order else len(order), level))
+
+    meta = [f"**Rutas:** {part['first']:02d}–{part['last']:02d}", f"**Clases:** {len(members)}"]
+    if levels:
+        meta.append(f"**Nivel:** {' · '.join(levels)}")
+    if hours:
+        total = sum(hours)
+        meta.append(f"**Dedicación estimada:** ~{total} h"
+                    + ("" if len(hours) == len(members) else " (las avanzadas no la declaran)"))
+
+    nodes = "\n".join(
+        f'    L{lab["num"]}["{lab["num"]}<br/>{lab["title"]}"]' for lab in members
+    )
+    edges = "\n".join(
+        f'    L{members[i]["num"]} --> L{members[i + 1]["num"]}' for i in range(len(members) - 1)
+    )
+
+    rows = []
+    for lab in members:
+        hours_cell = f'{_lab_hours(lab)}' if _lab_hours(lab) else "—"
+        rows.append(
+            f'| {lab["num"]} | {lab["emoji"]} [{lab["title"]}](../{lab["base"]}/{lab["slug"]}/README.md) '
+            f'| {_lab_summary(lab)} | `{lab["dataset"].get("name") or lab["catalog"].get("dataset") or "—"}` '
+            f'| {hours_cell} |'
+        )
+
+    first = members[0]
+    docs_row = " · ".join(
+        f'[{emoji} {name}](../{first["base"]}/{first["slug"]}/{doc})'
+        for doc, emoji, name in DOCS if (first["dir"] / doc).exists()
+    )
+
+    prev_cell = (f'[⬅️ Parte {prev["num"]} — {prev["title"]}]({prev["slug"]}.md)'
+                 if prev else "⬅️ *primera parte*")
+    next_cell = (f'[Parte {nxt["num"]} — {nxt["title"]} ➡️]({nxt["slug"]}.md)'
+                 if nxt else "*última parte* ➡️")
+
+    lines = [
+        f'# {part["emoji"]} Parte {part["num"]} — {part["title"]}',
+        "",
+        f"> 🧭 {prev_cell} · [🏠 Índice de partes](README.md) · [📘 Portada](../README.md) · {next_cell}",
+        "",
+        " · ".join(meta),
+        "",
+        part["summary"],
+        "",
+        "## 🧭 Secuencia de la parte",
+        "",
+        "```mermaid",
+        "flowchart LR",
+        nodes,
+        edges,
+        "```",
+        "",
+        "## 📚 Clases de esta parte",
+        "",
+        "| # | Clase | Qué resuelve | Dataset | Horas |",
+        "|---:|---|---|---|---:|",
+        "\n".join(rows),
+        "",
+        f'> Empieza por {first["emoji"]} **[{first["title"]}](../{first["base"]}/{first["slug"]}/README.md)** '
+        f'(ruta {positions[first["slug"]]} de {len(labs)}). Sus documentos: {docs_row}.',
+        "",
+        "## 🎯 Qué llevas al terminar",
+        "",
+        f'Al completar esta parte, {part["outcome"]}',
+        "",
+        "Todas las clases comparten el mismo contrato: los transformadores se ajustan solo con",
+        "`train`, `validation` decide el modelo y `test` se abre una única vez tras escribir",
+        "`experiment.lock.json`.",
+        "",
+        "---",
+        "",
+        f"{prev_cell} · [🏠 Índice de partes](README.md) · [📘 Portada del repositorio](../README.md) · {next_cell}",
+        "",
+    ]
+    return "\n".join(lines)
+
+
+def parts_index(labs: list[dict]) -> str:
+    rows = []
+    for index, part in enumerate(PARTS):
+        members = [lab for lab in labs if lab["part"] is part]
+        rows.append(
+            f'| {part["emoji"]} **{part["num"]}** | [{part["title"]}]({part["slug"]}.md) '
+            f'| {part["first"]:02d}–{part["last"]:02d} | {len(members)} | {part["outcome"]} |'
+        )
+
+    lines = [
+        "# 🗺️ Índice del recorrido",
+        "",
+        "> 🧭 [📘 Portada del repositorio](../README.md) · "
+        f'[🌐 Sitio de estudio]({SITE}/) · [🖥️ Índice HTML offline](../index.html)',
+        "",
+        f"Las **{len(labs)} rutas** se estudian en orden, de la **00** a la **{labs[-1]['num']}**.",
+        "Las siete partes de abajo son tramos **contiguos** de esa misma secuencia: cada una agrupa",
+        "las clases consecutivas que comparten propósito, y termina justo donde empieza la siguiente.",
+        "",
+        "| Parte | Título | Rutas | Clases | Qué llevas al terminar |",
+        "|:---:|---|:---:|:---:|---|",
+        "\n".join(rows),
+        "",
+        "## 📚 Todas las clases, en orden",
+        "",
+        "| # | Clase | Parte | Dataset |",
+        "|---:|---|---|---|",
+    ]
+    for lab in labs:
+        part = lab["part"]
+        lines.append(
+            f'| {lab["num"]} | {lab["emoji"]} [{lab["title"]}](../{lab["base"]}/{lab["slug"]}/README.md) '
+            f'| {part["emoji"]} [{part["num"]}]({part["slug"]}.md) '
+            f'| `{lab["dataset"].get("name") or lab["catalog"].get("dataset") or "—"}` |'
+        )
+    lines += [
+        "",
+        "---",
+        "",
+        f'[📘 Portada del repositorio](../README.md) · [▶️ Empezar por la ruta {labs[0]["num"]}]'
+        f'(../{labs[0]["base"]}/{labs[0]["slug"]}/README.md)',
+        "",
+    ]
+    return "\n".join(lines)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true",
@@ -436,21 +683,31 @@ def main() -> int:
     stale: list[str] = []
     changed = 0
 
+    pending: list[tuple[Path, str]] = []
     for index, lab in enumerate(labs):
         prev = labs[index - 1] if index > 0 else None
         nxt = labs[index + 1] if index < total - 1 else None
         for doc, _, _ in DOCS:
             path = lab["dir"] / doc
-            if not path.exists():
-                continue
-            new = render_doc(lab, doc, index, total, prev, nxt)
-            if new == path.read_text(encoding="utf-8"):
-                continue
-            if args.check:
-                stale.append(f"{lab['base']}/{lab['slug']}/{doc}")
-            else:
-                path.write_text(new, encoding="utf-8")
-                changed += 1
+            if path.exists():
+                pending.append((path, render_doc(lab, doc, index, total, prev, nxt)))
+
+    parts_dir = ROOT / "parts"
+    parts_dir.mkdir(exist_ok=True)
+    pending.append((parts_dir / "README.md", parts_index(labs)))
+    for index, part in enumerate(PARTS):
+        prev = PARTS[index - 1] if index > 0 else None
+        nxt = PARTS[index + 1] if index < len(PARTS) - 1 else None
+        pending.append((parts_dir / f"{part['slug']}.md", part_page(part, labs, prev, nxt)))
+
+    for path, content in pending:
+        if path.exists() and path.read_text(encoding="utf-8") == content:
+            continue
+        if args.check:
+            stale.append(str(path.relative_to(ROOT)).replace("\\", "/"))
+        else:
+            path.write_text(content, encoding="utf-8")
+            changed += 1
 
     if args.check:
         if stale:
@@ -458,10 +715,11 @@ def main() -> int:
             for item in stale:
                 print(f"  - {item}")
             return 1
-        print(f"Markdown al día en los {total} laboratorios.")
+        print(f"Markdown al día: {total} laboratorios y {len(PARTS)} partes.")
         return 0
 
-    print(f"Markdown actualizado: {changed} documentos en {total} laboratorios.")
+    print(f"Markdown actualizado: {changed} documentos "
+          f"({total} laboratorios, {len(PARTS)} partes y su índice).")
     return 0
 
 

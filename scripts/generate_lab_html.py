@@ -36,6 +36,7 @@ import markdown  # type: ignore
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from build_lab_docs import PARTS, part_for  # noqa: E402
 from generate_site import (  # noqa: E402
     BLOB,
     LAB_DOCS,
@@ -113,6 +114,7 @@ def collect_labs() -> list[dict]:
                 "slug": slug,
                 "base": base,
                 "num": slug.split("_", 1)[0],
+                "part": part_for(int(slug.split("_", 1)[0])),
                 "category": category,
                 "dir": lab_dir,
                 "emoji": LAB_EMOJI.get(slug, "🧠"),
@@ -153,6 +155,12 @@ def rewrite_links_local(body: str) -> str:
         if cross:  # otro laboratorio → su página HTML
             base, slug, _doc = cross.groups()
             return f'{attr}="../../{base}/{slug}/index.html"'
+
+        if target == "../../parts/README.md":  # índice de partes → portada offline
+            return f'{attr}="../../index.html"'
+
+        if target.startswith("../../parts/") and target.endswith(".md"):  # página de parte
+            return f'{attr}="{target[:-3]}.html"'
 
         if target in ("../../README.md", "../../README.md/"):  # portada → índice offline
             return f'{attr}="../../index.html"'
@@ -229,13 +237,15 @@ def lab_page(lab: dict, index: int, total: int, prev: dict | None, nxt: dict | N
                 if heading else f'<span id="{anchor_for(doc)}"></span>')
         sections.append(head + rendered)
 
+    part = lab["part"]
+    part_href = f'../../parts/{part["slug"]}.html'
     body = f"""  <header class="topbar">
     <a class="brand" href="../../index.html"><span aria-hidden="true">🧠</span> Neural Network Training Labs</a>
-    <nav class="crumbs"><a href="../../index.html">🏠 Índice</a><span class="sep">›</span>{lab["emoji"]} {html.escape(lab["title"])}</nav>
+    <nav class="crumbs"><a href="../../index.html">🏠 Índice</a><span class="sep">›</span><a href="{part_href}">{part["emoji"]} Parte {part["num"]}</a><span class="sep">›</span>{lab["emoji"]} {html.escape(lab["title"])}</nav>
   </header>
   <main class="prose">
     <div class="lab-hero">
-      <div class="lab-kicker">Laboratorio {lab["num"]} · {lab["category"]} · Ruta {index + 1} / {total}</div>
+      <div class="lab-kicker">Laboratorio {lab["num"]} · {lab["category"]} · Ruta {index + 1} / {total} · <a href="{part_href}">Parte {part["num"]} — {html.escape(part["title"])}</a></div>
       <h1>{lab["emoji"]} {html.escape(lab["title"])}</h1>
       {doc_tabs(lab)}
     </div>
@@ -246,51 +256,103 @@ def lab_page(lab: dict, index: int, total: int, prev: dict | None, nxt: dict | N
     {pager(prev, nxt)}
   </main>
   <footer class="foot">
-    <p><a href="../../index.html">🏠 Índice del recorrido</a> · <a href="{SITE}/labs/{lab['slug']}/index.html">🌐 Sitio de estudio</a> · <a href="{REPO}/tree/main/{lab['repo_path']}">📂 Código en GitHub</a> · <a href="{BLOB}/{lab['repo_path']}/README.md">📄 Markdown</a></p>
+    <p><a href="{part_href}">{part["emoji"]} Parte {part["num"]}</a> · <a href="../../index.html">🏠 Índice del recorrido</a> · <a href="{SITE}/labs/{lab['slug']}/index.html">🌐 Sitio de estudio</a> · <a href="{REPO}/tree/main/{lab['repo_path']}">📂 Código en GitHub</a> · <a href="{BLOB}/{lab['repo_path']}/README.md">📄 Markdown</a></p>
     <p>Página autocontenida: se genera desde <code>{lab['repo_path']}</code> con <code>scripts/generate_lab_html.py</code>.</p>
   </footer>"""
     return shell(lab["title"], f'Laboratorio {lab["num"]} — {lab["title"]}', body)
 
 
+def lab_card(lab: dict, position: int, prefix: str = "") -> str:
+    return (f'<a class="lab-card" href="{prefix}{lab["base"]}/{lab["slug"]}/index.html">'
+            f'<span class="lab-num">{lab["emoji"]} {lab["num"]} · ruta {position}</span>'
+            f'<span class="lab-name">{html.escape(lab["title"])}</span></a>')
+
+
+def part_pager(prev: dict | None, nxt: dict | None) -> str:
+    def cell(part: dict | None, direction: str, css: str) -> str:
+        if not part:
+            return '<span class="pg pg-empty"></span>'
+        return (f'<a class="pg {css}" href="{part["slug"]}.html"><span class="pg-dir">{direction}</span>'
+                f'<span class="pg-title">{part["emoji"]} Parte {part["num"]} — {html.escape(part["title"])}</span></a>')
+
+    return (f'<nav class="pager">{cell(prev, "← Parte anterior", "pg-prev")}'
+            f'{cell(nxt, "Parte siguiente →", "pg-next")}</nav>')
+
+
+def part_page(part: dict, labs: list[dict], prev: dict | None, nxt: dict | None) -> str:
+    positions = {lab["slug"]: index + 1 for index, lab in enumerate(labs)}
+    members = [lab for lab in labs if lab["part"] is part]
+    cards = "\n".join(lab_card(lab, positions[lab["slug"]], "../") for lab in members)
+    first = members[0]
+
+    body = f"""  <header class="topbar">
+    <a class="brand" href="../index.html"><span aria-hidden="true">🧠</span> Neural Network Training Labs</a>
+    <nav class="crumbs"><a href="../index.html">🏠 Índice</a><span class="sep">›</span>{part["emoji"]} Parte {part["num"]}</nav>
+  </header>
+  <main class="prose">
+    <section class="home-hero">
+      <div class="home-kicker">Parte {part["num"]} de {len(PARTS)} · rutas {part["first"]:02d}–{part["last"]:02d} · {len(members)} clases</div>
+      <h1>{part["emoji"]} {html.escape(part["title"])}</h1>
+      <p class="lede">{html.escape(part["summary"])}</p>
+      <div class="home-actions">
+        <a class="btn" href="../{first["base"]}/{first["slug"]}/index.html">▶ Empezar por la ruta {positions[first["slug"]]}</a>
+        <a class="btn btn-ghost" href="{part["slug"]}.md">📄 Esta parte en Markdown</a>
+      </div>
+    </section>
+    {part_pager(prev, nxt)}
+    <section>
+      <h2 class="home-sec">📚 Clases de esta parte <span class="count">{len(members)}</span></h2>
+      <div class="lab-grid">{cards}</div>
+    </section>
+    <section>
+      <h2 class="home-sec">🎯 Qué llevas al terminar</h2>
+      <p>Al completar esta parte, {html.escape(part["outcome"])}</p>
+      <p>Todas las clases comparten el mismo contrato: los transformadores se ajustan solo con <code>train</code>, <code>validation</code> decide el modelo y <code>test</code> se abre una única vez tras escribir <code>experiment.lock.json</code>.</p>
+    </section>
+    {part_pager(prev, nxt)}
+  </main>
+  <footer class="foot">
+    <p><a href="../index.html">🏠 Índice del recorrido</a> · <a href="{SITE}/">🌐 Sitio de estudio</a> · <a href="{REPO}">📂 Repositorio</a></p>
+  </footer>"""
+    return shell(f'Parte {part["num"]} — {part["title"]}',
+                 f'Parte {part["num"]} del recorrido: rutas {part["first"]:02d}–{part["last"]:02d}.', body)
+
+
 def index_page(labs: list[dict]) -> str:
-    def card(lab: dict, position: int) -> str:
-        return (f'<a class="lab-card" href="{lab["base"]}/{lab["slug"]}/index.html">'
-                f'<span class="lab-num">{lab["emoji"]} {lab["num"]} · ruta {position}</span>'
-                f'<span class="lab-name">{html.escape(lab["title"])}</span></a>')
+    positions = {lab["slug"]: index + 1 for index, lab in enumerate(labs)}
+    sections = []
+    for part in PARTS:
+        members = [lab for lab in labs if lab["part"] is part]
+        cards = "\n".join(lab_card(lab, positions[lab["slug"]]) for lab in members)
+        sections.append(f"""    <section>
+      <h2 class="home-sec"><a href="parts/{part["slug"]}.html">{part["emoji"]} Parte {part["num"]} — {html.escape(part["title"])}</a> <span class="count">rutas {part["first"]:02d}–{part["last"]:02d}</span></h2>
+      <p class="lede" style="margin:0 0 14px">{html.escape(part["summary"])}</p>
+      <div class="lab-grid">{cards}</div>
+    </section>""")
 
-    core = "\n".join(card(lab, i + 1) for i, lab in enumerate(labs) if lab["category"] == "Central")
-    adv = "\n".join(card(lab, i + 1) for i, lab in enumerate(labs) if lab["category"] == "Avanzada")
     first = labs[0]
-
     body = f"""  <header class="topbar">
     <a class="brand" href="index.html"><span aria-hidden="true">🧠</span> Neural Network Training Labs</a>
     <nav class="crumbs"><a href="{SITE}/">Sitio de estudio ↗</a><span class="sep">·</span><a href="{REPO}">Repositorio ↗</a></nav>
   </header>
   <main class="prose">
     <section class="home-hero">
-      <div class="home-kicker">v1.0.0 · 31 rutas · 93 notebooks · offline</div>
+      <div class="home-kicker">v1.0.0 · {len(labs)} rutas · {len(PARTS)} partes · offline</div>
       <h1>Índice del recorrido<br>de la neurona en NumPy al modelo desplegado</h1>
-      <p class="lede">Portada local de las <strong>31 rutas</strong>. Cada una abre su página autocontenida, con teoría, plan de experimentos, evaluación y saltos <strong>anterior / siguiente</strong>. Funciona sin conexión: es la misma fuente que publica el sitio de estudio.</p>
+      <p class="lede">Se estudia en orden, de la <strong>00</strong> a la <strong>30</strong>. Las {len(PARTS)} partes son tramos <strong>contiguos</strong> de esa secuencia. Cada clase abre su página autocontenida, con teoría, experimentos, evaluación y saltos <strong>anterior / siguiente</strong>. Funciona sin conexión.</p>
       <div class="home-actions">
         <a class="btn" href="{first['base']}/{first['slug']}/index.html">▶ Empezar por la ruta 1</a>
-        <a class="btn btn-ghost" href="README.md">📄 Portada en Markdown</a>
+        <a class="btn btn-ghost" href="parts/{PARTS[0]['slug']}.html">🗺️ Ver la parte 1</a>
       </div>
     </section>
-    <section>
-      <h2 class="home-sec">🧪 Laboratorios centrales <span class="count">25</span></h2>
-      <div class="lab-grid">{core}</div>
-    </section>
-    <section>
-      <h2 class="home-sec">🚀 Especializaciones avanzadas <span class="count">6</span></h2>
-      <div class="lab-grid">{adv}</div>
-    </section>
+{chr(10).join(sections)}
   </main>
   <footer class="foot">
     <p>Semillas separadas · Selección por <code>validation</code> · Sellado de <code>test</code> · Datasets públicos reales</p>
     <p><a href="{REPO}">github.com/vladimiracunadev-create/neural-network-training-labs</a></p>
   </footer>"""
     return shell("Índice del recorrido",
-                 "Índice offline de las 31 rutas de Neural Network Training Labs.", body)
+                 f"Índice offline de las {len(labs)} rutas de Neural Network Training Labs.", body)
 
 
 def main() -> int:
@@ -306,6 +368,14 @@ def main() -> int:
         prev = labs[index - 1] if index > 0 else None
         nxt = labs[index + 1] if index < total - 1 else None
         pages.append((lab["dir"] / "index.html", lab_page(lab, index, total, prev, nxt)))
+
+    parts_dir = ROOT / "parts"
+    parts_dir.mkdir(exist_ok=True)
+    for index, part in enumerate(PARTS):
+        prev_part = PARTS[index - 1] if index > 0 else None
+        next_part = PARTS[index + 1] if index < len(PARTS) - 1 else None
+        pages.append((parts_dir / f"{part['slug']}.html",
+                      part_page(part, labs, prev_part, next_part)))
 
     stale: list[str] = []
     written = 0
@@ -325,10 +395,11 @@ def main() -> int:
             for item in stale:
                 print(f"  - {item}")
             return 1
-        print(f"HTML al día: {total} laboratorios + índice.")
+        print(f"HTML al día: {total} laboratorios, {len(PARTS)} partes e índice.")
         return 0
 
-    print(f"HTML generado: {written} páginas actualizadas ({total} laboratorios + índice).")
+    print(f"HTML generado: {written} páginas actualizadas "
+          f"({total} laboratorios, {len(PARTS)} partes e índice).")
     return 0
 
 

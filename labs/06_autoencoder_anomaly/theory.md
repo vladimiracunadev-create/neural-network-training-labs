@@ -1,7 +1,9 @@
 # Teoría — Autoencoder para fraude
 
 <!-- nav-top -->
-> 🧭 **Ruta 7 / 31** · [⬅️ 📈 LSTM para series temporales](../../labs/05_lstm_time_series/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🔭 Transformer para noticias ➡️](../../labs/07_transformer_attention/theory.md)
+> 🧭 **Ruta 7 / 31** · 🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
+>
+> [⬅️ 📈 LSTM para series temporales](../../labs/05_lstm_time_series/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🔭 Transformer para noticias ➡️](../../labs/07_transformer_attention/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -64,9 +66,9 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 | ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
 |---|:---:|---|
-| [📈 LSTM para series temporales](../../labs/05_lstm_time_series/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) |
+| [📈 LSTM para series temporales](../../labs/05_lstm_time_series/README.md) | [Las 31 rutas](../../parts/README.md) | [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) |
 
 **En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/06_autoencoder_anomaly/index.html) · [🖥️ Página HTML local](index.html)
+🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/06_autoencoder_anomaly/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

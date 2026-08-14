@@ -11,7 +11,9 @@ on:
     paths:
       - "labs/**"
       - "advanced_labs/**"
+      - "parts/**"
       - "scripts/generate_site.py"
+      - "scripts/build_lab_docs.py"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
@@ -34,7 +36,9 @@ jobs:
         with:
           python-version: "3.12"
       - name: Dependencias
-        run: python -m pip install --quiet "markdown>=3.6"
+        # PyYAML lo necesita build_lab_docs, de donde generate_site toma la
+        # definición de las siete partes del recorrido.
+        run: python -m pip install --quiet "markdown>=3.6" "PyYAML>=6"
       - name: Generar HTML del sitio
         run: python scripts/generate_site.py
       - name: Comprobar que el sitio salió completo
@@ -46,7 +50,12 @@ jobs:
           [ -s site/styles.css ] || { echo "::error::falta site/styles.css"; exit 1; }
           paginas=$(find site -name '*.html' | wc -l)
           echo "Páginas HTML: $paginas"
-          [ "$paginas" -ge 32 ] || { echo "::error::solo $paginas páginas, esperaba 32 (31 labs + portada)"; exit 1; }
+          [ "$paginas" -ge 39 ] || { echo "::error::solo $paginas páginas, esperaba 39 (31 labs + 7 partes + portada)"; exit 1; }
+          for parte in 01-fundamentos 02-arquitecturas 03-familias-especializadas \
+                       04-entrenamiento-eficiente 05-mecanica-fina \
+                       06-confianza-y-despliegue 07-especializaciones-avanzadas; do
+            [ -s "site/parts/$parte.html" ] || { echo "::error::falta site/parts/$parte.html"; exit 1; }
+          done
           {
             echo "### 🌐 Sitio generado"
             echo ""

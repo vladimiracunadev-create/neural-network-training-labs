@@ -1,7 +1,9 @@
 # Plan de experimentos — GNN sobre red de citas
 
 <!-- nav-top -->
-> 🧭 **Ruta 10 / 31** · [⬅️ 🎨 GAN generativa](../../labs/08_gan_generation/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [🕹️ DQN para inventario con demanda real ➡️](../../labs/10_dqn_reinforcement/experiments.md)
+> 🧭 **Ruta 10 / 31** · 🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
+>
+> [⬅️ 🎨 GAN generativa](../../labs/08_gan_generation/experiments.md) · [🏠 Índice de rutas](../../parts/README.md) · [🕹️ DQN para inventario con demanda real ➡️](../../labs/10_dqn_reinforcement/experiments.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -51,9 +53,9 @@ La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicion
 
 | ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
 |---|:---:|---|
-| [🎨 GAN generativa](../../labs/08_gan_generation/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) |
+| [🎨 GAN generativa](../../labs/08_gan_generation/README.md) | [Las 31 rutas](../../parts/README.md) | [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) |
 
 **En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/09_gnn_graphs/index.html) · [🖥️ Página HTML local](index.html)
+🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/09_gnn_graphs/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

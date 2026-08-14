@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parte 5 — La mecánica fina, ahora en profundidad · Neural Network Training Labs</title>
+<meta name="description" content="Parte 5 del recorrido: rutas 16–20.">
+<meta name="theme-color" content="#7c5cff">
+<style>
+/* Neural Network Training Labs — sitio de estudio */
+:root {
+  --bg: #0d1117; --bg-soft: #131a24; --card: #161f2e; --line: #263041;
+  --ink: #e6edf3; --ink-soft: #9fb0c3; --muted: #6b7d92;
+  --accent: #7c5cff; --accent-soft: #9d86ff; --green: #2e8b57; --gold: #f0b429;
+  --radius: 14px; --radius-sm: 9px;
+  --shadow: 0 2px 10px rgba(0,0,0,0.35); --shadow-h: 0 8px 26px rgba(124,92,255,0.28);
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f7f8fb; --bg-soft: #eef1f7; --card: #ffffff; --line: #e2e6ee;
+    --ink: #1a2233; --ink-soft: #48566b; --muted: #7a889c;
+    --shadow: 0 2px 10px rgba(20,30,50,0.08); --shadow-h: 0 10px 28px rgba(124,92,255,0.20);
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif; line-height: 1.65; }
+
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 26px; background: color-mix(in srgb, var(--bg-soft) 88%, transparent);
+  border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); }
+.brand { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.02rem;
+  color: var(--ink); text-decoration: none; }
+.crumbs { font-size: 0.9rem; color: var(--ink-soft); }
+.crumbs a { color: var(--accent-soft); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; }
+.crumbs .sep { margin: 0 8px; opacity: 0.4; }
+
+.prose { max-width: 900px; margin: 0 auto; padding: 34px 26px 72px; }
+
+/* Portada */
+.home-hero { text-align: center; padding: 30px 0 14px; }
+.home-kicker { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+  color: var(--accent-soft); background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  padding: 5px 14px; border-radius: 999px; letter-spacing: 0.02em; }
+.home-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.9rem, 4.6vw, 2.9rem);
+  line-height: 1.14; margin: 18px 0 10px; letter-spacing: -0.02em;
+  background: linear-gradient(120deg, var(--ink), var(--accent-soft));
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lede { max-width: 680px; margin: 0 auto; color: var(--ink-soft); font-size: 1.08rem; }
+.home-actions, .lab-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 24px 0 8px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 999px;
+  background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; font-size: 0.95rem;
+  box-shadow: var(--shadow); transition: transform 0.15s, box-shadow 0.15s; }
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-h); }
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); box-shadow: none; }
+.btn-ghost:hover { border-color: var(--accent); }
+
+.home-sec { font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; margin: 44px 0 18px;
+  display: flex; align-items: center; gap: 12px; }
+.home-sec .count { font-size: 0.8rem; font-weight: 600; color: var(--accent-soft);
+  background: color-mix(in srgb, var(--accent) 15%, transparent); padding: 2px 11px; border-radius: 999px; }
+.lab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.lab-card { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; background: var(--card);
+  border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; color: var(--ink);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); }
+.lab-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: var(--shadow-h); }
+.lab-num { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent-soft); font-weight: 600; }
+.lab-name { font-weight: 600; font-size: 1.0rem; line-height: 1.3; }
+
+/* Página de laboratorio */
+.lab-hero { padding: 8px 0 6px; }
+.lab-kicker { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent-soft);
+  text-transform: uppercase; letter-spacing: 0.05em; }
+.lab-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.7rem, 3.8vw, 2.4rem);
+  line-height: 1.16; margin: 8px 0 16px; letter-spacing: -0.01em; }
+.lab-actions { justify-content: flex-start; margin: 0 0 6px; }
+
+/* Paginador anterior / siguiente */
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0; }
+.pg { display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; border-radius: var(--radius);
+  background: var(--card); border: 1px solid var(--line); text-decoration: none; color: var(--ink);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); }
+.pg-next { text-align: right; }
+.pg:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-h); }
+.pg-empty { background: transparent; border: none; box-shadow: none; }
+.pg-dir { font-size: 0.8rem; color: var(--accent-soft); font-weight: 600; }
+.pg-title { font-weight: 600; font-size: 0.98rem; }
+
+/* Contenido renderizado */
+.content { margin-top: 8px; }
+.content h1 { display: none; } /* el título ya está en el hero */
+.doc-sep { font-family: 'Space Grotesk', sans-serif; margin: 2.4em 0 0.6em; padding-top: 1.2em;
+  border-top: 2px solid var(--line); font-size: 1.5rem; color: var(--accent-soft); }
+.content h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 1.8em 0 0.5em;
+  padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.content h3 { font-size: 1.14rem; margin: 1.5em 0 0.4em; }
+.content p, .content li { color: var(--ink-soft); }
+.content a { color: var(--accent-soft); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); text-underline-offset: 3px; }
+.content a:hover { text-decoration-color: var(--accent); }
+.content code { font-family: 'JetBrains Mono', monospace; font-size: 0.88em;
+  background: var(--bg-soft); border: 1px solid var(--line); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
+.content pre { background: #0b1220; color: #d7e0ee; padding: 16px 18px; border-radius: var(--radius-sm);
+  overflow-x: auto; border: 1px solid var(--line); box-shadow: var(--shadow); }
+.content pre code { background: transparent; border: none; padding: 0; color: inherit; }
+.content blockquote { border-left: 4px solid var(--accent); background: var(--bg-soft);
+  padding: 12px 18px; margin: 1.4em 0; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; color: var(--ink); }
+.content table { border-collapse: collapse; width: 100%; margin: 1.4em 0; background: var(--card);
+  border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow); display: block; overflow-x: auto; }
+.content th, .content td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+.content th { background: color-mix(in srgb, var(--accent) 20%, var(--card)); color: var(--ink); font-weight: 600; }
+.content tr:last-child td { border-bottom: none; }
+.content img { max-width: 100%; height: auto; border-radius: var(--radius-sm); }
+.content hr { border: none; border-top: 1px solid var(--line); margin: 2.2em 0; }
+
+.foot { max-width: 900px; margin: 0 auto; padding: 26px; border-top: 1px solid var(--line);
+  color: var(--muted); font-size: 0.88rem; text-align: center; }
+.foot a { color: var(--accent-soft); text-decoration: none; }
+.foot code { font-family: 'JetBrains Mono', monospace; }
+
+@media (max-width: 620px) {
+  .pager { grid-template-columns: 1fr; }
+  .pg-next { text-align: left; }
+}
+
+
+/* Distintivos: chips locales que reemplazan las imágenes de shields.io */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 18px; }
+.chip { display: inline-flex; align-items: stretch; border-radius: 999px; overflow: hidden;
+  font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.78rem; font-weight: 600;
+  border: 1px solid var(--line); box-shadow: var(--shadow); }
+.chip b { background: var(--bg-soft); color: var(--ink-soft); padding: 4px 10px; font-weight: 600; }
+.chip span { padding: 4px 11px; color: #fff; }
+
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html"><span aria-hidden="true">🧠</span> Neural Network Training Labs</a>
+    <nav class="crumbs"><a href="../index.html">🏠 Índice</a><span class="sep">›</span>🔴 Parte 5</nav>
+  </header>
+  <main class="prose">
+    <section class="home-hero">
+      <div class="home-kicker">Parte 5 de 7 · rutas 16–20 · 5 clases</div>
+      <h1>🔴 La mecánica fina, ahora en profundidad</h1>
+      <p class="lede">Segunda pasada por el motor, ya con la experiencia de haber entrenado modelos reales: lo que en la ruta 00 era una fórmula, aquí es una decisión de diseño que se mide, se compara entre semillas y se justifica.</p>
+      <div class="home-actions">
+        <a class="btn" href="../labs/16_backpropagation_manual/index.html">▶ Empezar por la ruta 17</a>
+        <a class="btn btn-ghost" href="05-mecanica-fina.md">📄 Esta parte en Markdown</a>
+      </div>
+    </section>
+    <nav class="pager"><a class="pg pg-prev" href="04-entrenamiento-eficiente.html"><span class="pg-dir">← Parte anterior</span><span class="pg-title">🟠 Parte 4 — Entrenar mejor, más barato y sin centralizar datos</span></a><a class="pg pg-next" href="06-confianza-y-despliegue.html"><span class="pg-dir">Parte siguiente →</span><span class="pg-title">⚫ Parte 6 — Confiar en el modelo y sacarlo del cuaderno</span></a></nav>
+    <section>
+      <h2 class="home-sec">📚 Clases de esta parte <span class="count">5</span></h2>
+      <div class="lab-grid"><a class="lab-card" href="../labs/16_backpropagation_manual/index.html"><span class="lab-num">∂ 16 · ruta 17</span><span class="lab-name">Backpropagation manual</span></a>
+<a class="lab-card" href="../labs/17_activations_and_losses/index.html"><span class="lab-num">📐 17 · ruta 18</span><span class="lab-name">Activaciones y funciones de pérdida</span></a>
+<a class="lab-card" href="../labs/18_optimizers_and_schedulers/index.html"><span class="lab-num">⚙️ 18 · ruta 19</span><span class="lab-name">Optimizadores y schedulers</span></a>
+<a class="lab-card" href="../labs/19_regularization_dropout_batchnorm/index.html"><span class="lab-num">🛡️ 19 · ruta 20</span><span class="lab-name">Regularización</span></a>
+<a class="lab-card" href="../labs/20_data_augmentation/index.html"><span class="lab-num">🔄 20 · ruta 21</span><span class="lab-name">Aumento de datos</span></a></div>
+    </section>
+    <section>
+      <h2 class="home-sec">🎯 Qué llevas al terminar</h2>
+      <p>Al completar esta parte, explicas por qué un entrenamiento converge, se estanca o sobreajusta.</p>
+      <p>Todas las clases comparten el mismo contrato: los transformadores se ajustan solo con <code>train</code>, <code>validation</code> decide el modelo y <code>test</code> se abre una única vez tras escribir <code>experiment.lock.json</code>.</p>
+    </section>
+    <nav class="pager"><a class="pg pg-prev" href="04-entrenamiento-eficiente.html"><span class="pg-dir">← Parte anterior</span><span class="pg-title">🟠 Parte 4 — Entrenar mejor, más barato y sin centralizar datos</span></a><a class="pg pg-next" href="06-confianza-y-despliegue.html"><span class="pg-dir">Parte siguiente →</span><span class="pg-title">⚫ Parte 6 — Confiar en el modelo y sacarlo del cuaderno</span></a></nav>
+  </main>
+  <footer class="foot">
+    <p><a href="../index.html">🏠 Índice del recorrido</a> · <a href="https://vladimiracunadev-create.github.io/neural-network-training-labs/">🌐 Sitio de estudio</a> · <a href="https://github.com/vladimiracunadev-create/neural-network-training-labs">📂 Repositorio</a></p>
+  </footer>
+</body>
+</html>

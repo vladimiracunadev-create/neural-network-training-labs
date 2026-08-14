@@ -1,7 +1,9 @@
 # Evaluación — Activaciones y funciones de pérdida
 
 <!-- nav-top -->
-> 🧭 **Ruta 18 / 31** · [⬅️ ∂ Backpropagation manual](../../labs/16_backpropagation_manual/assessment.md) · [🏠 Índice](../../README.md#laboratorios) · [⚙️ Optimizadores y schedulers ➡️](../../labs/18_optimizers_and_schedulers/assessment.md)
+> 🧭 **Ruta 18 / 31** · 🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md)
+>
+> [⬅️ ∂ Backpropagation manual](../../labs/16_backpropagation_manual/assessment.md) · [🏠 Índice de rutas](../../parts/README.md) · [⚙️ Optimizadores y schedulers ➡️](../../labs/18_optimizers_and_schedulers/assessment.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación**
 <!-- /nav-top -->
@@ -40,9 +42,9 @@ La aprobación exige al menos 70% y cero errores críticos de fuga de datos.
 
 | ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
 |---|:---:|---|
-| [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md) |
+| [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md) | [Las 31 rutas](../../parts/README.md) | [⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md) |
 
 **En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación** · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/17_activations_and_losses/index.html) · [🖥️ Página HTML local](index.html)
+🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/17_activations_and_losses/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

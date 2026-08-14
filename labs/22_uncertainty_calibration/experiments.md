@@ -1,7 +1,9 @@
 # Plan de experimentos — Incertidumbre y calibración
 
 <!-- nav-top -->
-> 🧭 **Ruta 23 / 31** · [⬅️ 🔍 Explicabilidad](../../labs/21_explainability/experiments.md) · [🏠 Índice](../../README.md#laboratorios) · [📦 Exportación e inferencia ➡️](../../labs/23_model_export_and_inference/experiments.md)
+> 🧭 **Ruta 23 / 31** · ⚫ [Parte 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md)
+>
+> [⬅️ 🔍 Explicabilidad](../../labs/21_explainability/experiments.md) · [🏠 Índice de rutas](../../parts/README.md) · [📦 Exportación e inferencia ➡️](../../labs/23_model_export_and_inference/experiments.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -51,9 +53,9 @@ La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicion
 
 | ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
 |---|:---:|---|
-| [🔍 Explicabilidad](../../labs/21_explainability/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) |
+| [🔍 Explicabilidad](../../labs/21_explainability/README.md) | [Las 31 rutas](../../parts/README.md) | [📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) |
 
 **En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/22_uncertainty_calibration/index.html) · [🖥️ Página HTML local](index.html)
+⚫ [Parte 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/22_uncertainty_calibration/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

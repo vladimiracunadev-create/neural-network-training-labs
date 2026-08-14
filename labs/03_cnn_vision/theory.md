@@ -1,7 +1,9 @@
 # Teoría — CNN para visión
 
 <!-- nav-top -->
-> 🧭 **Ruta 4 / 31** · [⬅️ 🌀 MLP multiclase](../../labs/02_mlp_nonlinear/theory.md) · [🏠 Índice](../../README.md#laboratorios) · [🔁 RNN para texto ➡️](../../labs/04_rnn_sequences/theory.md)
+> 🧭 **Ruta 4 / 31** · 🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
+>
+> [⬅️ 🌀 MLP multiclase](../../labs/02_mlp_nonlinear/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🔁 RNN para texto ➡️](../../labs/04_rnn_sequences/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -74,9 +76,9 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 | ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
 |---|:---:|---|
-| [🌀 MLP multiclase](../../labs/02_mlp_nonlinear/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) |
+| [🌀 MLP multiclase](../../labs/02_mlp_nonlinear/README.md) | [Las 31 rutas](../../parts/README.md) | [🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) |
 
 **En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/03_cnn_vision/index.html) · [🖥️ Página HTML local](index.html)
+🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/03_cnn_vision/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

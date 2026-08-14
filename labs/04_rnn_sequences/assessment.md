@@ -1,7 +1,9 @@
 # Evaluación — RNN para texto
 
 <!-- nav-top -->
-> 🧭 **Ruta 5 / 31** · [⬅️ 🖼️ CNN para visión](../../labs/03_cnn_vision/assessment.md) · [🏠 Índice](../../README.md#laboratorios) · [📈 LSTM para series temporales ➡️](../../labs/05_lstm_time_series/assessment.md)
+> 🧭 **Ruta 5 / 31** · 🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
+>
+> [⬅️ 🖼️ CNN para visión](../../labs/03_cnn_vision/assessment.md) · [🏠 Índice de rutas](../../parts/README.md) · [📈 LSTM para series temporales ➡️](../../labs/05_lstm_time_series/assessment.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación**
 <!-- /nav-top -->
@@ -40,9 +42,9 @@ La aprobación exige al menos 70% y cero errores críticos de fuga de datos.
 
 | ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
 |---|:---:|---|
-| [🖼️ CNN para visión](../../labs/03_cnn_vision/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [📈 LSTM para series temporales](../../labs/05_lstm_time_series/README.md) |
+| [🖼️ CNN para visión](../../labs/03_cnn_vision/README.md) | [Las 31 rutas](../../parts/README.md) | [📈 LSTM para series temporales](../../labs/05_lstm_time_series/README.md) |
 
 **En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación** · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/04_rnn_sequences/index.html) · [🖥️ Página HTML local](index.html)
+🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/04_rnn_sequences/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

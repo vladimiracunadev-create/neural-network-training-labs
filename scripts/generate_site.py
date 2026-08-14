@@ -19,9 +19,14 @@ from __future__ import annotations
 import html
 import re
 import shutil
+import sys
 from pathlib import Path
 
 import markdown  # type: ignore
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from build_lab_docs import PARTS, part_for  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "site"
@@ -88,6 +93,7 @@ def collect_labs() -> list[dict]:
             labs.append({
                 "slug": slug,
                 "num": num,
+                "part": part_for(int(num)),
                 "title": title,
                 "category": category,
                 "emoji": LAB_EMOJI.get(slug, "🧠"),
@@ -200,10 +206,16 @@ def lab_page(lab: dict, idx: int, total: int, prev: dict | None, nxt: dict | Non
         head = f'<h2 class="doc-sep" id="{anchor}">{heading}</h2>' if heading else f'<span id="{anchor}"></span>'
         sections.append(head + rendered)
 
-    crumb = breadcrumbs(root, f'{lab["emoji"]} {html.escape(lab["title"])}')
+    part = lab["part"]
+    part_href = f'{root}parts/{part["slug"]}.html'
+    crumb = breadcrumbs(
+        root,
+        f'<a href="{part_href}">{part["emoji"]} Parte {part["num"]}</a>'
+        f'<span class="sep">›</span>{lab["emoji"]} {html.escape(lab["title"])}',
+    )
     hero = f"""
   <div class="lab-hero">
-    <div class="lab-kicker">Laboratorio {lab["num"]} · {lab["category"]} · {idx + 1} / {total}</div>
+    <div class="lab-kicker">Laboratorio {lab["num"]} · {lab["category"]} · {idx + 1} / {total} · <a href="{part_href}">Parte {part["num"]} — {html.escape(part["title"])}</a></div>
     <h1>{lab["emoji"]} {html.escape(lab["title"])}</h1>
     <div class="lab-actions">
       <a class="btn" href="{BLOB}/{lab["repo_path"]}/notebook.ipynb">📓 Notebook</a>
@@ -224,24 +236,85 @@ def lab_page(lab: dict, idx: int, total: int, prev: dict | None, nxt: dict | Non
     {pager(root, prev, nxt)}
   </main>
   <footer class="foot">
-    <p>Fuente única: <a href="{REPO}/tree/main/{lab['repo_path']}"><code>{lab['repo_path']}</code></a> · <a href="{root}index.html">← Volver a la portada</a></p>
+    <p><a href="{part_href}">{part["emoji"]} Parte {part["num"]} — {html.escape(part["title"])}</a> · <a href="{root}index.html">🏠 Portada</a></p>
+    <p>Fuente única: <a href="{REPO}/tree/main/{lab['repo_path']}"><code>{lab['repo_path']}</code></a></p>
   </footer>"""
     return page_shell(lab["title"], f'Laboratorio {lab["num"]} — {lab["title"]}', root, body)
 
 
+def part_pager(prev: dict | None, nxt: dict | None) -> str:
+    def cell(part: dict | None, direction: str, css: str) -> str:
+        if not part:
+            return '<span class="pg pg-empty"></span>'
+        return (f'<a class="pg {css}" href="{part["slug"]}.html"><span class="pg-dir">{direction}</span>'
+                f'<span class="pg-title">{part["emoji"]} Parte {part["num"]} — {html.escape(part["title"])}</span></a>')
+
+    return (f'<nav class="pager">{cell(prev, "← Parte anterior", "pg-prev")}'
+            f'{cell(nxt, "Parte siguiente →", "pg-next")}</nav>')
+
+
+def part_page(part: dict, labs: list[dict], prev: dict | None, nxt: dict | None) -> str:
+    root = "../"
+    positions = {lab["slug"]: index + 1 for index, lab in enumerate(labs)}
+    members = [lab for lab in labs if lab["part"] is part]
+    cards = "\n".join(
+        f'<a class="lab-card" href="{root}labs/{lab["slug"]}/index.html">'
+        f'<span class="lab-num">{lab["emoji"]} {lab["num"]} · ruta {positions[lab["slug"]]}</span>'
+        f'<span class="lab-name">{html.escape(lab["title"])}</span></a>'
+        for lab in members
+    )
+    first = members[0]
+
+    body = f"""  <header class="topbar">
+    <a class="brand" href="{root}index.html"><span aria-hidden="true">🧠</span> Neural Network Training Labs</a>
+    {breadcrumbs(root, f'{part["emoji"]} Parte {part["num"]}')}
+  </header>
+  <main class="prose">
+    <section class="home-hero">
+      <div class="home-kicker">Parte {part["num"]} de {len(PARTS)} · rutas {part["first"]:02d}–{part["last"]:02d} · {len(members)} clases</div>
+      <h1>{part["emoji"]} {html.escape(part["title"])}</h1>
+      <p class="lede">{html.escape(part["summary"])}</p>
+      <div class="home-actions">
+        <a class="btn" href="{root}labs/{first["slug"]}/index.html">▶ Empezar por la ruta {positions[first["slug"]]}</a>
+        <a class="btn btn-ghost" href="{BLOB}/parts/{part["slug"]}.md">📄 Esta parte en Markdown</a>
+      </div>
+    </section>
+    {part_pager(prev, nxt)}
+    <section>
+      <h2 class="home-sec">📚 Clases de esta parte <span class="count">{len(members)}</span></h2>
+      <div class="lab-grid">{cards}</div>
+    </section>
+    <section>
+      <h2 class="home-sec">🎯 Qué llevas al terminar</h2>
+      <p>Al completar esta parte, {html.escape(part["outcome"])}</p>
+    </section>
+    {part_pager(prev, nxt)}
+  </main>
+  <footer class="foot">
+    <p><a href="{root}index.html">🏠 Portada</a> · <a href="{REPO}">📂 Repositorio</a></p>
+  </footer>"""
+    return page_shell(f'Parte {part["num"]} — {part["title"]}',
+                      f'Parte {part["num"]}: rutas {part["first"]:02d}–{part["last"]:02d}.', root, body)
+
+
 def index_page(labs: list[dict]) -> str:
-    core = [l for l in labs if l["category"] == "Central"]
-    adv = [l for l in labs if l["category"] == "Avanzada"]
+    positions = {lab["slug"]: index + 1 for index, lab in enumerate(labs)}
 
     def card(lab: dict) -> str:
         return (
             f'<a class="lab-card" href="labs/{lab["slug"]}/index.html">'
-            f'<span class="lab-num">{lab["emoji"]} {lab["num"]}</span>'
+            f'<span class="lab-num">{lab["emoji"]} {lab["num"]} · ruta {positions[lab["slug"]]}</span>'
             f'<span class="lab-name">{html.escape(lab["title"])}</span></a>'
         )
 
-    core_cards = "\n".join(card(l) for l in core)
-    adv_cards = "\n".join(card(l) for l in adv)
+    part_sections = "\n".join(
+        f"""    <section>
+      <h2 class="home-sec"><a href="parts/{part["slug"]}.html">{part["emoji"]} Parte {part["num"]} — {html.escape(part["title"])}</a> <span class="count">rutas {part["first"]:02d}–{part["last"]:02d}</span></h2>
+      <p class="lede" style="margin:0 0 14px">{html.escape(part["summary"])}</p>
+      <div class="lab-grid">{"".join(card(lab) for lab in labs if lab["part"] is part)}</div>
+    </section>"""
+        for part in PARTS
+    )
     first = labs[0]
 
     body = f"""  <header class="topbar">
@@ -252,22 +325,14 @@ def index_page(labs: list[dict]) -> str:
     <section class="home-hero">
       <div class="home-kicker">v1.0.0 · 31 rutas · 93 notebooks</div>
       <h1>Aprende, entrena y despliega redes neuronales<br>con datasets públicos reales</h1>
-      <p class="lede">Un recorrido lineal de la <strong>neurona en NumPy</strong> a <strong>difusión, transformers y aprendizaje autosupervisado</strong>. Cada laboratorio ancla su teoría en libros de referencia, separa las semillas de datos y entrenamiento, y sella el <code>test</code> antes de evaluar.</p>
+      <p class="lede">Un recorrido lineal de la <strong>neurona en NumPy</strong> a <strong>difusión, transformers y aprendizaje autosupervisado</strong>. Se estudia en orden, de la <strong>00</strong> a la <strong>30</strong>; las {len(PARTS)} partes son tramos <strong>contiguos</strong> de esa misma secuencia.</p>
       <div class="home-actions">
         <a class="btn" href="labs/{first['slug']}/index.html">▶ Empezar por el Laboratorio 00</a>
         <a class="btn btn-ghost" href="{REPO}">📂 Ver el repositorio</a>
       </div>
     </section>
 
-    <section>
-      <h2 class="home-sec">🧪 Laboratorios centrales <span class="count">25</span></h2>
-      <div class="lab-grid">{core_cards}</div>
-    </section>
-
-    <section>
-      <h2 class="home-sec">🚀 Especializaciones avanzadas <span class="count">6</span></h2>
-      <div class="lab-grid">{adv_cards}</div>
-    </section>
+{part_sections}
   </main>
   <footer class="foot">
     <p>Contenido anclado en libros de referencia · Semillas separadas · Sellado de <code>test</code> · Cadena de suministro verificable</p>
@@ -412,7 +477,15 @@ def main() -> None:
         lab["out_dir"].mkdir(parents=True, exist_ok=True)
         (lab["out_dir"] / "index.html").write_text(lab_page(lab, i, total, prev, nxt), encoding="utf-8")
 
-    print(f"Sitio generado: {total} laboratorios + portada en {OUT}")
+    parts_dir = OUT / "parts"
+    parts_dir.mkdir(parents=True, exist_ok=True)
+    for i, part in enumerate(PARTS):
+        prev_part = PARTS[i - 1] if i > 0 else None
+        next_part = PARTS[i + 1] if i < len(PARTS) - 1 else None
+        (parts_dir / f"{part['slug']}.html").write_text(
+            part_page(part, labs, prev_part, next_part), encoding="utf-8")
+
+    print(f"Sitio generado: {total} laboratorios + {len(PARTS)} partes + portada en {OUT}")
 
 
 if __name__ == "__main__":

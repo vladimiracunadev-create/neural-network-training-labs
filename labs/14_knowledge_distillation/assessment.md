@@ -1,7 +1,9 @@
 # Evaluación — Destilación de conocimiento
 
 <!-- nav-top -->
-> 🧭 **Ruta 15 / 31** · [⬅️ 🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/assessment.md) · [🏠 Índice](../../README.md#laboratorios) · [🌐 Aprendizaje federado por participante ➡️](../../labs/15_federated_learning/assessment.md)
+> 🧭 **Ruta 15 / 31** · 🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md)
+>
+> [⬅️ 🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/assessment.md) · [🏠 Índice de rutas](../../parts/README.md) · [🌐 Aprendizaje federado por participante ➡️](../../labs/15_federated_learning/assessment.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación**
 <!-- /nav-top -->
@@ -40,9 +42,9 @@ La aprobación exige al menos 70% y cero errores críticos de fuga de datos.
 
 | ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
 |---|:---:|---|
-| [🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/README.md) | [Las 31 rutas](../../README.md#laboratorios) | [🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md) |
+| [🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/README.md) | [Las 31 rutas](../../parts/README.md) | [🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md) |
 
 **En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación** · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-[🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/14_knowledge_distillation/index.html) · [🖥️ Página HTML local](index.html)
+🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/14_knowledge_distillation/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->
