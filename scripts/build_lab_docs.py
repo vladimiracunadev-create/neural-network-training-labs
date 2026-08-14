@@ -494,8 +494,27 @@ def ficha_block(lab: dict, index: int, total: int, prev: dict | None) -> str:
 def render_doc(lab: dict, doc: str, index: int, total: int,
                prev: dict | None, nxt: dict | None) -> str:
     path = lab["dir"] / doc
-    text = path.read_text(encoding="utf-8")
 
+    # La guía (`README.md`) se genera entera desde los datos del repositorio: su
+    # contenido anterior era una plantilla derivada del catálogo, y mantenerlo a
+    # mano solo abría la puerta a que dijera algo que el código ya no hace. Los
+    # demás documentos —teoría, experimentos y evaluación— llevan texto redactado
+    # y solo se les añade la navegación.
+    if doc == "README.md":
+        return "\n".join([
+            f'# {lab["title"]}',
+            "",
+            top_block(lab, prev, nxt, index, total, doc),
+            "",
+            ficha_block(lab, index, total, prev),
+            "",
+            guia_block(lab, index, total, prev, nxt),
+            "",
+            bottom_block(lab, prev, nxt, doc),
+            "",
+        ])
+
+    text = path.read_text(encoding="utf-8")
     # Se retiran los bloques generados para volver a insertarlos actualizados.
     text = TOP_RE.sub("\n", text)
     text = BOTTOM_RE.sub("\n", text)
@@ -503,13 +522,9 @@ def render_doc(lab: dict, doc: str, index: int, total: int,
     text = re.sub(r"\n{3,}", "\n\n", text).strip() + "\n"
 
     header = top_block(lab, prev, nxt, index, total, doc)
-    if doc == "README.md":
-        header += "\n\n" + ficha_block(lab, index, total, prev)
-
-    lines = text.splitlines()
     out: list[str] = []
     inserted = False
-    for line in lines:
+    for line in text.splitlines():
         out.append(line)
         if not inserted and re.match(r"^#\s+", line):
             out.append("")
@@ -521,6 +536,480 @@ def render_doc(lab: dict, doc: str, index: int, total: int,
     body = "\n".join(out).rstrip() + "\n\n"
     body += bottom_block(lab, prev, nxt, doc) + "\n"
     return body
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Guía paso a paso (bloque <!-- guia --> del README de cada laboratorio)
+#
+# Todo lo que se afirma aquí sale de un archivo del repositorio, nunca de una
+# suposición: el objetivo, la línea base y las métricas vienen del catálogo
+# (`configs/labs.yaml` o `configs/advanced_tracks.yaml`); la procedencia y la
+# licencia del dataset, de `data/dataset.yaml`; los hiperparámetros, de
+# `configs/*.yaml`; y el orden de los pasos y los archivos que produce cada
+# ejecución, del código que los escribe (`src/neural_labs/experiments.py` y
+# `src/neural_labs/advanced/training.py`). La última sección de la guía deja esa
+# correspondencia por escrito para que cualquiera pueda comprobarla.
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Archivos adicionales que escribe cada arquitectura, además de los comunes.
+# Verificado leyendo las funciones `_run_*` de src/neural_labs/experiments.py.
+EXTRA_ARTIFACTS = {
+    # `_run_numpy_logistic` guarda además el estado final; `_run_numpy_mlp` solo el mejor.
+    "numpy_logistic": [("last_model.npz", "El estado de la última época, para contrastarlo con el mejor.")],
+    "dcgan": [("generated_samples.png", "Rejilla de muestras generadas: la evidencia visual de si hay diversidad o colapso.")],
+    "gcn": [("graph_model_comparison.json", "Puntaje de GCN, GraphSAGE y GAT, y cuál se seleccionó.")],
+    "transfer_resnet18": [("transfer_comparison.json", "Extracción de características frente a fine-tuning frente a entrenar desde cero.")],
+    "mlp_optuna": [("hyperparameter_trials.json", "Cada combinación probada, su puntaje y la ganadora.")],
+    "augmentation_comparison": [("augmentation_comparison.json", "El mismo modelo con y sin aumento de datos.")],
+    "activation_comparison": [("variant_comparison.json", "Una fila por variante comparada, con su métrica de validación.")],
+    "optimizer_comparison": [("variant_comparison.json", "Una fila por variante comparada, con su métrica de validación.")],
+    "regularization_comparison": [("variant_comparison.json", "Una fila por variante comparada, con su métrica de validación.")],
+}
+
+# Pasos finales que el código aplica solo a estos laboratorios (dispatch explícito
+# por `lab_id` en run_lab).
+LAB_SPECIFIC_STEPS = {
+    "21_explainability": ("feature_attributions.csv",
+                          "Integrated Gradients e importancia por permutación, ordenadas por atribución media."),
+    "22_uncertainty_calibration": ("calibration.json",
+                                   "Temperatura ajustada y error de calibración esperado (ECE)."),
+    "23_model_export_and_inference": ("model.onnx",
+                                      "El modelo exportado; `metrics.json` añade latencia, throughput y tamaño."),
+}
+
+# Tareas para las que el código NO produce ciertos artefactos. Sirve para explicar
+# una ausencia en vez de dejar que parezca un error.
+NO_PREDICTIONS_TASKS = {"node_classification", "reinforcement_learning", "generation", "anomaly_detection"}
+
+
+def _theory_question(lab: dict) -> str | None:
+    """Pregunta crítica que ya vive en el `theory.md` del laboratorio."""
+    path = lab["dir"] / "theory.md"
+    if not path.exists():
+        return None
+    match = re.search(r"## Pregunta crítica\s*\n+>\s*(.+)", path.read_text(encoding="utf-8"))
+    return match.group(1).strip() if match else None
+
+
+def _quick_note(lab: dict) -> str | None:
+    """Qué recorta exactamente `--quick` en este laboratorio, según su configuración."""
+    quick = lab["baseline_cfg"].get("quick")
+    if not isinstance(quick, dict):
+        return None
+    pieces = []
+    if quick.get("max_train_samples"):
+        pieces.append(f"{quick['max_train_samples']} ejemplos de entrenamiento")
+    if quick.get("max_validation_samples"):
+        pieces.append(f"{quick['max_validation_samples']} de validación")
+    if quick.get("max_test_samples"):
+        pieces.append(f"{quick['max_test_samples']} de test")
+    if quick.get("epochs"):
+        pieces.append(f"{quick['epochs']} épocas")
+    return " · ".join(pieces) if pieces else None
+
+
+def _step(number: int, title: str, what: str, why: str,
+          command: str | None = None, check: str | None = None) -> list[str]:
+    block = [f"### Paso {number} — {title}", "", f"**Qué ocurre.** {what}", "", f"**Por qué.** {why}", ""]
+    if command:
+        block += ["```bash", command, "```", ""]
+    if check:
+        block += [f"**Cómo sabes que salió bien.** {check}", ""]
+    return block
+
+
+def _core_steps(lab: dict) -> list[str]:
+    slug, catalog = lab["slug"], lab["catalog"]
+    metric = lab["baseline_cfg"].get("selection_metric") or catalog.get("selection_metric") or "la métrica declarada"
+    reference = catalog.get("baseline") or "la línea base declarada en el catálogo"
+    dataset = lab["dataset"].get("name") or catalog.get("dataset") or "el dataset"
+    task = lab["dataset"].get("task") or catalog.get("task") or ""
+    architecture = str(lab["dataset"].get("architecture") or catalog.get("architecture") or "")
+    # Las dos rutas que se implementan en NumPy no guardan un checkpoint de PyTorch.
+    checkpoint = "best_model.npz" if architecture.startswith("numpy_") else "best_model.pt"
+    # El código solo escribe predicciones, intervalos y subgrupos cuando hay una
+    # predicción por ejemplo comparable contra su etiqueta.
+    has_predictions = task not in NO_PREDICTIONS_TASKS
+
+    lines: list[str] = []
+    lines += _step(
+        1, "Traer el dataset real y partirlo",
+        f"Descarga `{dataset}` desde su proveedor y construye las tres particiones "
+        f"—`train`, `validation` y `test`— con la semilla de partición que le pases.",
+        "La partición se fija **antes** de entrenar y su semilla (`--split-seed`) es independiente de la del "
+        "entrenamiento (`--training-seed`). Si ambas fueran la misma, no podrías distinguir si un cambio en el "
+        "resultado viene de haber repartido los datos de otro modo o de haber inicializado los pesos de otro modo.",
+        f"neural-labs dataset --lab {slug} --quick --split-seed 42",
+        "El comando termina sin error y deja el dataset en caché. Si no hay red, **falla**: no se rellena con "
+        "datos inventados (`data/dataset.yaml` declara `fallback_to_generated_data: false`).",
+    )
+    lines += _step(
+        2, "Comprobar que las particiones no se tocan",
+        "Recorre los identificadores de las tres particiones y verifica que ninguno aparece en dos de ellas.",
+        "Una sola fila compartida entre `train` y `test` basta para que la métrica final quede inflada. "
+        "Es el error más caro del oficio porque no produce ningún síntoma visible: el modelo simplemente "
+        "«parece» mejor de lo que es.",
+        f"neural-labs audit --lab {slug} --quick --split-seed 42",
+        "La auditoría reporta cero solapamientos. Si reporta alguno, no sigas: el resto del laboratorio no "
+        "significaría nada.",
+    )
+    lines += _step(
+        3, "Mirar los datos antes de modelarlos",
+        "Genera el informe de calidad (valores faltantes, balance de clases, rangos) y el de deriva entre "
+        "particiones.",
+        "Un desbalance fuerte o una diferencia de distribución entre `train` y `test` cambia qué métrica tiene "
+        "sentido leer. Descubrirlo después de entrenar obliga a repetirlo todo.",
+        f"neural-labs quality --lab {slug} --quick --split-seed 42",
+        "Obtienes `data_quality.json` y `drift_report.json`; ábrelos antes de decidir la configuración.",
+    )
+    lines += _step(
+        4, "Estudiar la teoría del laboratorio",
+        "Leer [`theory.md`](theory.md): la idea central, el desarrollo matemático, los riesgos de "
+        "interpretación y la bibliografía de la que sale todo eso.",
+        "Sin esto, el entrenamiento es una caja que devuelve números. La teoría es lo que te permite decidir "
+        "qué mirar y reconocer cuándo un resultado es sospechoso.",
+        None,
+        "Puedes responder, con tus palabras, qué calcula el modelo y por qué esa arquitectura encaja con "
+        f"{'esta tarea' if not task else f'la tarea `{task}`'}.",
+    )
+    lines += _step(
+        5, "Entrenar y seleccionar con `validation`",
+        "El entrenamiento recorre las épocas midiendo en `validation` después de cada una, y conserva el "
+        "checkpoint con el mejor valor de `" + str(metric) + "`.",
+        "El conjunto de validación existe para tomar decisiones —arquitectura, hiperparámetros, cuándo parar—. "
+        "Si esas decisiones se tomaran mirando `test`, `test` dejaría de ser una estimación de lo que pasará "
+        "con datos nuevos y pasaría a ser parte del entrenamiento.",
+        f"python labs/{slug}/train.py --quick\n# o, con control explícito de las dos semillas:\n"
+        f"neural-labs train --lab {slug} --config baseline --split-seed 42 --training-seed 43",
+        f"En `runs/{slug}/<ejecución>/` aparecen `history.csv` y `{checkpoint}`; la métrica de "
+        "validación mejora respecto de la primera época.",
+    )
+    lines += _step(
+        6, "Compararte con la línea base",
+        f"El repositorio entrena por su cuenta **{reference}** y guarda su resultado, primero sobre "
+        "`validation` y —solo al final— sobre `test`.",
+        "Una métrica sola no dice si el modelo aporta algo. Puede que un método mucho más simple llegue igual "
+        "de lejos, y entonces la complejidad añadida no está justificada. Esta comparación es la que convierte "
+        "un número en un argumento.",
+        None,
+        "Comparas `metrics.json` con `baseline_metrics.json`. Si tu modelo no supera la línea base, el "
+        "resultado del laboratorio es exactamente ese, y hay que reportarlo.",
+    )
+    lines += _step(
+        7, "El sellado: `experiment.lock.json`",
+        "Antes de tocar `test`, el código escribe un archivo que fija el laboratorio, las dos semillas, la "
+        "configuración, la métrica de selección, el checkpoint elegido y el hash del dataset.",
+        "Es la frontera del experimento. A partir de ahí, cualquier ajuste que hagas mirando `test` queda a la "
+        "vista: el sello dice qué habías decidido *antes* de ver el resultado final. Sin ese archivo, nadie "
+        "—incluido tú dentro de un mes— puede distinguir una predicción de una racionalización.",
+        None,
+        "El archivo existe y su contenido coincide con lo que creías haber ejecutado.",
+    )
+    lines += _step(
+        8, "Evaluar `test` una sola vez y medir la incertidumbre",
+        "Con el checkpoint congelado se evalúa `test`"
+        + (", se calculan intervalos de confianza por bootstrap y se desglosan las métricas por subgrupo."
+           if has_predictions else
+           f". En esta ruta la tarea es `{task}`, así que el resultado se resume en las métricas propias de "
+           "ese régimen y no en una predicción por ejemplo."),
+        "Un número puntual esconde cuánto podría moverse. "
+        + ("Los intervalos dicen si la diferencia con la línea base es real o cabe dentro del ruido; el "
+           "desglose por subgrupo revela si el promedio está tapando un grupo donde el modelo funciona mucho "
+           "peor." if has_predictions else
+           "Por eso el paso siguiente —repetir con varias semillas— no es opcional aquí: es la única forma "
+           "de saber cuánta de la diferencia observada es señal."),
+        None,
+        ("Tienes `metrics.json`, `confidence_intervals.json` y `subgroup_metrics.json`, y puedes decir la "
+         "magnitud de la mejora **y** su incertidumbre." if has_predictions else
+         "Tienes `metrics.json` con el resultado final, y sabes que la comparación honesta llega con las "
+         "repeticiones del paso siguiente."),
+    )
+    lines += _step(
+        9, "Repetir con varias semillas de entrenamiento",
+        "Se repite el entrenamiento manteniendo **fija** la partición y cambiando solo la semilla de "
+        "entrenamiento.",
+        "Dos ejecuciones idénticas salvo por la inicialización pueden diferir bastante. Si no mides esa "
+        "dispersión, corres el riesgo de celebrar una mejora que era una semilla afortunada.",
+        f"neural-labs benchmark --lab {slug} --quick --split-seed 42 --training-seeds 41 42 43",
+        "Obtienes media y dispersión entre semillas, no un único número.",
+    )
+    lines += _step(
+        10, "Documentar y cerrar",
+        "Cada ejecución deja `model_card.md` y `report.md`; el plan de experimentos vive en "
+        "[`experiments.md`](experiments.md) y la rúbrica en [`assessment.md`](assessment.md).",
+        "Un resultado sin su contexto —qué datos, qué decisiones, qué límites— no es reutilizable. La model "
+        "card es lo que permite que otra persona sepa cuándo *no* debería usar tu modelo.",
+        None,
+        "Completaste la tabla multi-semilla de `experiments.md` y respondiste las preguntas de "
+        "`assessment.md`.",
+    )
+    return lines
+
+
+def _advanced_steps(lab: dict) -> list[str]:
+    slug, catalog = lab["slug"], lab["catalog"]
+    metric = lab["baseline_cfg"].get("selection_metric") or "la métrica declarada"
+    lora = " --lora" if slug == "25_transformer_finetuning" else ""
+
+    lines: list[str] = []
+    lines += _step(
+        1, "Estudiar la teoría antes de ejecutar nada",
+        "Leer [`theory.md`](theory.md), que desarrolla " + str(catalog.get("math") or "el fundamento de la ruta")
+        + " y cita las obras y papers de los que procede.",
+        "Estas rutas usan arquitecturas donde un error de comprensión no se manifiesta como un fallo, sino "
+        "como un número plausible pero equivocado.",
+        None,
+        "Puedes explicar qué mide `" + str(metric) + "` y por qué es la métrica de selección aquí.",
+    )
+    lines += _step(
+        2, "Ejecutar la versión rápida",
+        "Descarga el dataset y los pesos preentrenados desde su proveedor, entrena una versión reducida y "
+        "escribe la ejecución en `runs-advanced/`.",
+        "Antes de gastar horas de cómputo conviene comprobar que la descarga, el entorno y la ruta completa "
+        "funcionan de extremo a extremo.",
+        f"neural-labs train-advanced --track {slug} --quick{lora}",
+        "Termina sin error y deja `metrics.json`, `history.json` y `best_model.pt` en el directorio de la "
+        "ejecución.",
+    )
+    lines += _step(
+        3, "Entrenar en serio y seleccionar con `validation`",
+        "Se entrena el modelo completo conservando el checkpoint con el mejor valor de `" + str(metric)
+        + "` en validación, y se sella el experimento antes de evaluar `test`.",
+        "Igual que en las rutas centrales: `validation` decide, `test` solo confirma, y el sello deja por "
+        "escrito qué se había decidido antes de mirar.",
+        f"neural-labs train-advanced --track {slug} --split-seed 42 --training-seed 43{lora}",
+        "Existe `experiment.lock.json` y `metrics.json` incluye tanto el valor de validación como el de test.",
+    )
+    lines += _step(
+        4, "Repetir con otra semilla de entrenamiento",
+        "Se repite el entrenamiento con la misma partición y distinta semilla de entrenamiento.",
+        "Estas arquitecturas —adversariales, contrastivas, de difusión— son especialmente sensibles a la "
+        "inicialización: una sola ejecución no permite distinguir una mejora de una casualidad.",
+        f"neural-labs train-advanced --track {slug} --split-seed 42 --training-seed 44{lora}",
+        "Puedes reportar el rango entre ejecuciones, no un único número.",
+    )
+    lines += _step(
+        5, "Documentar los límites",
+        "Registrar el resultado junto con la limitación declarada de la ruta y responder "
+        "[`assessment.md`](assessment.md).",
+        "En generación y aprendizaje autosupervisado las métricas son aproximaciones: sin declarar qué NO "
+        "demuestran, invitan a conclusiones que los números no sostienen.",
+        None,
+        "Tu reporte dice qué mejoró, cuánto costó y en qué condiciones no esperarías el mismo resultado.",
+    )
+    return lines
+
+
+def _artifact_table(lab: dict) -> list[str]:
+    architecture = str(lab["dataset"].get("architecture") or lab["catalog"].get("architecture") or "")
+    task = str(lab["dataset"].get("task") or "")
+    advanced = lab["category"] == "Avanzada"
+
+    if advanced:
+        rows = [
+            ("`config.json`", "Track, semillas, dispositivo y opciones con las que se lanzó."),
+            ("`dataset_manifest.json`", "Fuente, licencia y número de ejemplos por partición."),
+            ("`best_model.pt`", "El checkpoint seleccionado por validación."),
+            ("`experiment.lock.json`", "El sello: qué se decidió antes de abrir `test`."),
+            ("`history.json`", "La métrica de validación época a época."),
+            ("`metrics.json`", "Resultado de validación y de test, ya con el modelo congelado."),
+        ]
+    else:
+        rows = [
+            ("`config.yaml` · `environment.json`", "La configuración exacta y el entorno (versiones, dispositivo) de la ejecución."),
+            ("`dataset_manifest.json` · `dataset_card.md`", "Procedencia, licencia, hash y tamaño de cada partición."),
+            ("`data_quality.json` · `drift_report.json`", "Calidad de los datos y diferencias de distribución entre particiones."),
+            ("`baseline_validation_metrics.json`", "La línea base medida en `validation`, **antes** de entrenar."),
+            ("`history.csv` · `history.png`", "Pérdida y métricas época a época: aquí se ve si el entrenamiento converge o sobreajusta."),
+            ("`experiment.lock.json`", "El sello del experimento, escrito antes de tocar `test`."),
+            ("`metrics.json`", "El resultado final en `test`, más tiempo, dispositivo y número de parámetros."),
+            ("`baseline_metrics.json`", "La línea base en `test`, calculada después de tu evaluación final."),
+        ]
+        if architecture.startswith("numpy_"):
+            rows.append(("`best_model.npz`", "El checkpoint elegido por validación. Esta ruta se implementa "
+                                             "en NumPy, así que no hay un `.pt` de PyTorch."))
+        else:
+            rows.append(("`best_model.pt` · `last_model.pt`",
+                         "El checkpoint elegido por validación y el último, para poder compararlos."))
+        if task not in NO_PREDICTIONS_TASKS:
+            rows += [
+                ("`confidence_intervals.json`", "Intervalos por bootstrap: cuánto podría moverse cada métrica."),
+                ("`subgroup_metrics.json`", "El mismo resultado desglosado por subgrupo, para ver qué esconde el promedio."),
+                ("`predictions.csv`", "Predicción por ejemplo, para analizar los errores uno a uno."),
+            ]
+            if task and task != "regression":
+                rows.append(("`confusion_matrix.png`", "Qué clases se confunden entre sí."))
+        rows += [
+            ("`model_spec.json` · `inference_contract.json`", "Qué entrada espera el modelo y qué devuelve: lo que necesita quien lo despliegue."),
+            ("`model_card.md` · `report.md`", "La ficha del modelo y el informe legible de la ejecución."),
+        ]
+
+    for name, description in EXTRA_ARTIFACTS.get(architecture, []):
+        rows.append((f"`{name}`", f"**Propio de esta ruta.** {description}"))
+    if lab["slug"] in LAB_SPECIFIC_STEPS:
+        name, description = LAB_SPECIFIC_STEPS[lab["slug"]]
+        rows.append((f"`{name}`", f"**Propio de esta ruta.** {description}"))
+
+    return ["| Archivo | Qué contiene y qué mirar |", "|---|---|"] + [
+        f"| {name} | {description} |" for name, description in rows
+    ]
+
+
+def _pitfalls(lab: dict) -> list[str]:
+    task = str(lab["dataset"].get("task") or "")
+    items = []
+
+    quick = _quick_note(lab)
+    if quick:
+        items.append(
+            f"**`--quick` no es una versión pequeña del resultado, es una prueba de que todo corre.** "
+            f"En esta ruta recorta a {quick}. Sirve para comprobar la instalación y la descarga; "
+            f"cualquier conclusión sobre el modelo exige la ejecución completa."
+        )
+    items.append(
+        "**Cambiar algo después de ver `test` invalida la comparación.** Si al mirar el resultado final se te "
+        "ocurre una mejora, la ruta correcta es volver a `validation`, decidir allí, y sellar de nuevo."
+    )
+    items.append(
+        "**Las dos semillas no son intercambiables.** `--split-seed` cambia *qué datos* caen en cada partición; "
+        "`--training-seed` cambia *cómo se inicializa y baraja* el entrenamiento. Para comparar modelos se fija "
+        "la primera y se varía la segunda."
+    )
+    if task in NO_PREDICTIONS_TASKS:
+        items.append(
+            f"**Aquí no vas a ver `predictions.csv` ni `confusion_matrix.png`, y no es un error.** La tarea es "
+            f"`{task}`, y el código solo genera esos archivos cuando hay una predicción por ejemplo comparable "
+            "contra una etiqueta."
+        )
+    elif task == "regression":
+        items.append(
+            "**No hay `confusion_matrix.png`, y no es un error.** Es una tarea de regresión: no existen clases "
+            "que confundir."
+        )
+    if lab["dataset"].get("known_limitations") or lab["catalog"].get("notes"):
+        limitation = (lab["catalog"].get("notes")
+                      or (lab["dataset"].get("known_limitations") or [""])[0])
+        items.append(f"**Límite declarado de este dataset.** {limitation}")
+    return [f"- {item}" for item in items]
+
+
+def guia_block(lab: dict, index: int, total: int, prev: dict | None, nxt: dict | None) -> str:
+    catalog, lesson = lab["catalog"], lab["lesson"]
+    advanced = lab["category"] == "Avanzada"
+    objective = str(catalog.get("objective") or lesson.get("title") or lab["title"]).strip()
+    math = str(catalog.get("math") or "").strip()
+    metrics = catalog.get("metrics") or []
+    part = lab["part"]
+
+    parts: list[str] = ["<!-- guia -->", "## 🎯 Qué vas a hacer aquí", "", objective, ""]
+
+    context = [f'Es la **ruta {index + 1} de {total}** y pertenece a {part["emoji"]} '
+               f'[la parte {part["num"]}, {part["title"]}](../../parts/{part["slug"]}.md).']
+    if prev:
+        context.append(f'Llegas desde [{label(prev)}]({doc_link(prev, "README.md")})')
+        context[-1] += (f' y lo que aprendas aquí lo da por supuesto [{label(nxt)}]({doc_link(nxt, "README.md")}).'
+                        if nxt else ".")
+    elif nxt:
+        context.append(f'Es el punto de partida del recorrido; sigue [{label(nxt)}]({doc_link(nxt, "README.md")}).')
+    parts += [" ".join(context), ""]
+
+    if catalog.get("input"):
+        parts += [f'**Entrada del modelo:** {catalog["input"]}.', ""]
+
+    parts += ["## 🧠 La idea que se pone a prueba", ""]
+    if math:
+        parts += [f"Este laboratorio trabaja **{math.rstrip('.')}**.", ""]
+    parts += [
+        "El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene "
+        "interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). "
+        "Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* "
+        "funciona y cuándo deja de funcionar.",
+        "",
+    ]
+    question = _theory_question(lab)
+    if question:
+        parts += [f"> **La pregunta que deberías poder responder al final:** {question}", ""]
+    if metrics:
+        listed = ", ".join(f"`{metric}`" for metric in metrics)
+        selection = lab["baseline_cfg"].get("selection_metric") or catalog.get("selection_metric")
+        parts += [
+            f"**Métricas que se reportan:** {listed}."
+            + (f" La selección del modelo se decide con `{selection}` sobre `validation`." if selection else ""),
+            "",
+        ]
+
+    parts += ["## 🪜 Paso a paso", ""]
+    parts += [
+        "Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una "
+        "convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.",
+        "",
+    ]
+    parts += _advanced_steps(lab) if advanced else _core_steps(lab)
+
+    parts += ["## 🔍 Cómo leer lo que produce la ejecución", ""]
+    parts += [
+        "Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve "
+        "cada uno:",
+        "",
+    ]
+    parts += _artifact_table(lab)
+    parts += [""]
+
+    parts += ["## ⚠️ Dónde suele perderse la gente", ""]
+    parts += _pitfalls(lab)
+    parts += [""]
+
+    criteria = lesson.get("success_criteria") or []
+    deliverables = lesson.get("deliverables") or []
+    parts += ["## ✅ Antes de darlo por terminado", ""]
+    if criteria:
+        parts += ["El laboratorio está aprobado cuando se cumplen estos criterios:", ""]
+        parts += [f"- [ ] {item}" for item in criteria]
+        parts += [""]
+    if deliverables:
+        parts += ["Y cuando tienes estos entregables:", ""]
+        parts += [f"- [ ] {item}" for item in deliverables]
+        parts += [""]
+    parts += [
+        "Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); "
+        "el plan de experimentos y la tabla multi-semilla que hay que completar, en "
+        "[`experiments.md`](experiments.md).",
+        "",
+        "## 🧪 Para ir más lejos",
+        "",
+        "- Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.",
+        "- Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.",
+        "- Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.",
+        "- Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.",
+        "",
+    ]
+
+    catalog_file = "configs/advanced_tracks.yaml" if advanced else "configs/labs.yaml"
+    code_file = ("src/neural_labs/advanced/training.py" if advanced
+                 else "src/neural_labs/experiments.py")
+    parts += [
+        "## 📚 De dónde sale cada cosa de esta guía",
+        "",
+        "Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo "
+        "concreto del repositorio:",
+        "",
+        "| Lo que dice la guía | Dónde comprobarlo |",
+        "|---|---|",
+        f"| Objetivo, línea base, métricas y arquitectura | [`{catalog_file}`](../../{catalog_file}) |",
+        "| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |",
+        "| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | "
+        "[`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |",
+        "| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |",
+        f"| El orden de los pasos y los archivos que escribe cada ejecución | [`{code_file}`](../../{code_file}) |",
+        "| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |",
+        "| La regla general del protocolo | "
+        "[`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |",
+        "",
+        "Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio "
+        "no los redistribuye ni sustituye una descarga fallida por datos generados.",
+        "<!-- /guia -->",
+    ]
+    return "\n".join(parts)
 
 
 # ──────────────────────────────────────────────────────────────────────────────

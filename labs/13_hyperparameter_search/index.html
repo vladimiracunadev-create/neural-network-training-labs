@@ -333,73 +333,220 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 </table>
 <!-- /ficha -->
 
-<h2 id="objetivo">Objetivo</h2>
+<!-- guia -->
+<h2 id="que-vas-a-hacer-aqui">🎯 Qué vas a hacer aquí</h2>
 <p>Optimizar profundidad, ancho, dropout y learning rate sin tocar test.</p>
-<h2 id="dataset-real">Dataset real</h2>
-<ul>
-<li><strong>Dataset:</strong> <code>adult_census</code></li>
-<li><strong>Fuente:</strong> UCI</li>
-<li><strong>Referencia:</strong> https://archive.ics.uci.edu/dataset/2/adult</li>
-<li><strong>Licencia/condiciones:</strong> CC BY 4.0</li>
-<li><strong>Uso:</strong> los datos se descargan desde la fuente; no hay ejemplos sintéticos ni archivos inventados.</li>
-</ul>
-<p>48.842 registros reales del censo de 1994.</p>
-<h2 id="fundamento-matematico">Fundamento matemático</h2>
-<p>Selección por validación; test se usa solo tras elegir la mejor prueba.</p>
-<h2 id="protocolo-experimental">Protocolo experimental</h2>
-<ol>
-<li>Descargar y verificar la procedencia.</li>
-<li>Conservar o crear una partición reproducible.</li>
-<li>Ajustar transformaciones únicamente con <code>train</code>.</li>
-<li>Seleccionar modelo e hiperparámetros usando <code>validation</code>.</li>
-<li>Evaluar <code>test</code> una sola vez tras congelar la decisión.</li>
-<li>Comparar con la línea base: <strong>Regresión logística</strong>.</li>
-<li>Guardar configuración, entorno, métricas, predicciones, gráficos y modelo.</li>
-</ol>
-<h2 id="ejecucion">Ejecución</h2>
+<p>Es la <strong>ruta 14 de 31</strong> y pertenece a 🟠 <a href="../../parts/04-entrenamiento-eficiente.html">la parte 4, Entrenar mejor, más barato y sin centralizar datos</a>. Llegas desde <a href="../../labs/12_multimodal_fusion/index.html">🔀 Fusión de sensores</a> y lo que aprendas aquí lo da por supuesto <a href="../../labs/14_knowledge_distillation/index.html">⚗️ Destilación de conocimiento</a>.</p>
+<h2 id="la-idea-que-se-pone-a-prueba">🧠 La idea que se pone a prueba</h2>
+<p>Este laboratorio trabaja <strong>Selección por validación; test se usa solo tras elegir la mejor prueba</strong>.</p>
+<p>El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en <a href="#theory"><code>theory.md</code></a>. Léelo antes de entrenar: los pasos de abajo te dicen <em>qué</em> hacer, y la teoría, <em>por qué</em> funciona y cuándo deja de funcionar.</p>
+<blockquote>
+<p><strong>La pregunta que deberías poder responder al final:</strong> ¿El mejor trial generaliza a semillas nuevas?</p>
+</blockquote>
+<p><strong>Métricas que se reportan:</strong> <code>accuracy</code>, <code>balanced_accuracy</code>, <code>f1</code>, <code>roc_auc</code>, <code>pr_auc</code>. La selección del modelo se decide con <code>f1</code> sobre <code>validation</code>.</p>
+<h2 id="paso-a-paso">🪜 Paso a paso</h2>
+<p>Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.</p>
+<h3 id="paso-1-traer-el-dataset-real-y-partirlo">Paso 1 — Traer el dataset real y partirlo</h3>
+<p><strong>Qué ocurre.</strong> Descarga <code>adult_census</code> desde su proveedor y construye las tres particiones —<code>train</code>, <code>validation</code> y <code>test</code>— con la semilla de partición que le pases.</p>
+<p><strong>Por qué.</strong> La partición se fija <strong>antes</strong> de entrenar y su semilla (<code>--split-seed</code>) es independiente de la del entrenamiento (<code>--training-seed</code>). Si ambas fueran la misma, no podrías distinguir si un cambio en el resultado viene de haber repartido los datos de otro modo o de haber inicializado los pesos de otro modo.</p>
+<pre><code class="language-bash">neural-labs dataset --lab 13_hyperparameter_search --quick --split-seed 42
+</code></pre>
+<p><strong>Cómo sabes que salió bien.</strong> El comando termina sin error y deja el dataset en caché. Si no hay red, <strong>falla</strong>: no se rellena con datos inventados (<code>data/dataset.yaml</code> declara <code>fallback_to_generated_data: false</code>).</p>
+<h3 id="paso-2-comprobar-que-las-particiones-no-se-tocan">Paso 2 — Comprobar que las particiones no se tocan</h3>
+<p><strong>Qué ocurre.</strong> Recorre los identificadores de las tres particiones y verifica que ninguno aparece en dos de ellas.</p>
+<p><strong>Por qué.</strong> Una sola fila compartida entre <code>train</code> y <code>test</code> basta para que la métrica final quede inflada. Es el error más caro del oficio porque no produce ningún síntoma visible: el modelo simplemente «parece» mejor de lo que es.</p>
+<pre><code class="language-bash">neural-labs audit --lab 13_hyperparameter_search --quick --split-seed 42
+</code></pre>
+<p><strong>Cómo sabes que salió bien.</strong> La auditoría reporta cero solapamientos. Si reporta alguno, no sigas: el resto del laboratorio no significaría nada.</p>
+<h3 id="paso-3-mirar-los-datos-antes-de-modelarlos">Paso 3 — Mirar los datos antes de modelarlos</h3>
+<p><strong>Qué ocurre.</strong> Genera el informe de calidad (valores faltantes, balance de clases, rangos) y el de deriva entre particiones.</p>
+<p><strong>Por qué.</strong> Un desbalance fuerte o una diferencia de distribución entre <code>train</code> y <code>test</code> cambia qué métrica tiene sentido leer. Descubrirlo después de entrenar obliga a repetirlo todo.</p>
+<pre><code class="language-bash">neural-labs quality --lab 13_hyperparameter_search --quick --split-seed 42
+</code></pre>
+<p><strong>Cómo sabes que salió bien.</strong> Obtienes <code>data_quality.json</code> y <code>drift_report.json</code>; ábrelos antes de decidir la configuración.</p>
+<h3 id="paso-4-estudiar-la-teoria-del-laboratorio">Paso 4 — Estudiar la teoría del laboratorio</h3>
+<p><strong>Qué ocurre.</strong> Leer <a href="#theory"><code>theory.md</code></a>: la idea central, el desarrollo matemático, los riesgos de interpretación y la bibliografía de la que sale todo eso.</p>
+<p><strong>Por qué.</strong> Sin esto, el entrenamiento es una caja que devuelve números. La teoría es lo que te permite decidir qué mirar y reconocer cuándo un resultado es sospechoso.</p>
+<p><strong>Cómo sabes que salió bien.</strong> Puedes responder, con tus palabras, qué calcula el modelo y por qué esa arquitectura encaja con la tarea <code>binary_classification</code>.</p>
+<h3 id="paso-5-entrenar-y-seleccionar-con-validation">Paso 5 — Entrenar y seleccionar con <code>validation</code></h3>
+<p><strong>Qué ocurre.</strong> El entrenamiento recorre las épocas midiendo en <code>validation</code> después de cada una, y conserva el checkpoint con el mejor valor de <code>f1</code>.</p>
+<p><strong>Por qué.</strong> El conjunto de validación existe para tomar decisiones —arquitectura, hiperparámetros, cuándo parar—. Si esas decisiones se tomaran mirando <code>test</code>, <code>test</code> dejaría de ser una estimación de lo que pasará con datos nuevos y pasaría a ser parte del entrenamiento.</p>
 <pre><code class="language-bash">python labs/13_hyperparameter_search/train.py --quick
-python labs/13_hyperparameter_search/train.py --config improved
+# o, con control explícito de las dos semillas:
+neural-labs train --lab 13_hyperparameter_search --config baseline --split-seed 42 --training-seed 43
 </code></pre>
-<p>Preparar únicamente el dataset:</p>
-<pre><code class="language-bash">python -m neural_labs.cli dataset --lab 13_hyperparameter_search
+<p><strong>Cómo sabes que salió bien.</strong> En <code>runs/13_hyperparameter_search/&lt;ejecución&gt;/</code> aparecen <code>history.csv</code> y <code>best_model.pt</code>; la métrica de validación mejora respecto de la primera época.</p>
+<h3 id="paso-6-compararte-con-la-linea-base">Paso 6 — Compararte con la línea base</h3>
+<p><strong>Qué ocurre.</strong> El repositorio entrena por su cuenta <strong>Regresión logística</strong> y guarda su resultado, primero sobre <code>validation</code> y —solo al final— sobre <code>test</code>.</p>
+<p><strong>Por qué.</strong> Una métrica sola no dice si el modelo aporta algo. Puede que un método mucho más simple llegue igual de lejos, y entonces la complejidad añadida no está justificada. Esta comparación es la que convierte un número en un argumento.</p>
+<p><strong>Cómo sabes que salió bien.</strong> Comparas <code>metrics.json</code> con <code>baseline_metrics.json</code>. Si tu modelo no supera la línea base, el resultado del laboratorio es exactamente ese, y hay que reportarlo.</p>
+<h3 id="paso-7-el-sellado-experimentlockjson">Paso 7 — El sellado: <code>experiment.lock.json</code></h3>
+<p><strong>Qué ocurre.</strong> Antes de tocar <code>test</code>, el código escribe un archivo que fija el laboratorio, las dos semillas, la configuración, la métrica de selección, el checkpoint elegido y el hash del dataset.</p>
+<p><strong>Por qué.</strong> Es la frontera del experimento. A partir de ahí, cualquier ajuste que hagas mirando <code>test</code> queda a la vista: el sello dice qué habías decidido <em>antes</em> de ver el resultado final. Sin ese archivo, nadie —incluido tú dentro de un mes— puede distinguir una predicción de una racionalización.</p>
+<p><strong>Cómo sabes que salió bien.</strong> El archivo existe y su contenido coincide con lo que creías haber ejecutado.</p>
+<h3 id="paso-8-evaluar-test-una-sola-vez-y-medir-la-incertidumbre">Paso 8 — Evaluar <code>test</code> una sola vez y medir la incertidumbre</h3>
+<p><strong>Qué ocurre.</strong> Con el checkpoint congelado se evalúa <code>test</code>, se calculan intervalos de confianza por bootstrap y se desglosan las métricas por subgrupo.</p>
+<p><strong>Por qué.</strong> Un número puntual esconde cuánto podría moverse. Los intervalos dicen si la diferencia con la línea base es real o cabe dentro del ruido; el desglose por subgrupo revela si el promedio está tapando un grupo donde el modelo funciona mucho peor.</p>
+<p><strong>Cómo sabes que salió bien.</strong> Tienes <code>metrics.json</code>, <code>confidence_intervals.json</code> y <code>subgroup_metrics.json</code>, y puedes decir la magnitud de la mejora <strong>y</strong> su incertidumbre.</p>
+<h3 id="paso-9-repetir-con-varias-semillas-de-entrenamiento">Paso 9 — Repetir con varias semillas de entrenamiento</h3>
+<p><strong>Qué ocurre.</strong> Se repite el entrenamiento manteniendo <strong>fija</strong> la partición y cambiando solo la semilla de entrenamiento.</p>
+<p><strong>Por qué.</strong> Dos ejecuciones idénticas salvo por la inicialización pueden diferir bastante. Si no mides esa dispersión, corres el riesgo de celebrar una mejora que era una semilla afortunada.</p>
+<pre><code class="language-bash">neural-labs benchmark --lab 13_hyperparameter_search --quick --split-seed 42 --training-seeds 41 42 43
 </code></pre>
-<p>Inferencia y exportación:</p>
-<pre><code class="language-bash">neural-labs predict --lab 13_hyperparameter_search --run latest --input sample.json
-neural-labs export --lab 13_hyperparameter_search --run latest --format onnx --verify
-</code></pre>
-<h2 id="metricas">Métricas</h2>
-<p>accuracy, balanced_accuracy, f1, roc_auc, pr_auc.</p>
-<h2 id="archivos">Archivos</h2>
+<p><strong>Cómo sabes que salió bien.</strong> Obtienes media y dispersión entre semillas, no un único número.</p>
+<h3 id="paso-10-documentar-y-cerrar">Paso 10 — Documentar y cerrar</h3>
+<p><strong>Qué ocurre.</strong> Cada ejecución deja <code>model_card.md</code> y <code>report.md</code>; el plan de experimentos vive en <a href="#experiments"><code>experiments.md</code></a> y la rúbrica en <a href="#assessment"><code>assessment.md</code></a>.</p>
+<p><strong>Por qué.</strong> Un resultado sin su contexto —qué datos, qué decisiones, qué límites— no es reutilizable. La model card es lo que permite que otra persona sepa cuándo <em>no</em> debería usar tu modelo.</p>
+<p><strong>Cómo sabes que salió bien.</strong> Completaste la tabla multi-semilla de <code>experiments.md</code> y respondiste las preguntas de <code>assessment.md</code>.</p>
+<h2 id="como-leer-lo-que-produce-la-ejecucion">🔍 Cómo leer lo que produce la ejecución</h2>
+<p>Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:</p>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>Qué contiene y qué mirar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>config.yaml</code> · <code>environment.json</code></td>
+<td>La configuración exacta y el entorno (versiones, dispositivo) de la ejecución.</td>
+</tr>
+<tr>
+<td><code>dataset_manifest.json</code> · <code>dataset_card.md</code></td>
+<td>Procedencia, licencia, hash y tamaño de cada partición.</td>
+</tr>
+<tr>
+<td><code>data_quality.json</code> · <code>drift_report.json</code></td>
+<td>Calidad de los datos y diferencias de distribución entre particiones.</td>
+</tr>
+<tr>
+<td><code>baseline_validation_metrics.json</code></td>
+<td>La línea base medida en <code>validation</code>, <strong>antes</strong> de entrenar.</td>
+</tr>
+<tr>
+<td><code>history.csv</code> · <code>history.png</code></td>
+<td>Pérdida y métricas época a época: aquí se ve si el entrenamiento converge o sobreajusta.</td>
+</tr>
+<tr>
+<td><code>experiment.lock.json</code></td>
+<td>El sello del experimento, escrito antes de tocar <code>test</code>.</td>
+</tr>
+<tr>
+<td><code>metrics.json</code></td>
+<td>El resultado final en <code>test</code>, más tiempo, dispositivo y número de parámetros.</td>
+</tr>
+<tr>
+<td><code>baseline_metrics.json</code></td>
+<td>La línea base en <code>test</code>, calculada después de tu evaluación final.</td>
+</tr>
+<tr>
+<td><code>best_model.pt</code> · <code>last_model.pt</code></td>
+<td>El checkpoint elegido por validación y el último, para poder compararlos.</td>
+</tr>
+<tr>
+<td><code>confidence_intervals.json</code></td>
+<td>Intervalos por bootstrap: cuánto podría moverse cada métrica.</td>
+</tr>
+<tr>
+<td><code>subgroup_metrics.json</code></td>
+<td>El mismo resultado desglosado por subgrupo, para ver qué esconde el promedio.</td>
+</tr>
+<tr>
+<td><code>predictions.csv</code></td>
+<td>Predicción por ejemplo, para analizar los errores uno a uno.</td>
+</tr>
+<tr>
+<td><code>confusion_matrix.png</code></td>
+<td>Qué clases se confunden entre sí.</td>
+</tr>
+<tr>
+<td><code>model_spec.json</code> · <code>inference_contract.json</code></td>
+<td>Qué entrada espera el modelo y qué devuelve: lo que necesita quien lo despliegue.</td>
+</tr>
+<tr>
+<td><code>model_card.md</code> · <code>report.md</code></td>
+<td>La ficha del modelo y el informe legible de la ejecución.</td>
+</tr>
+<tr>
+<td><code>hyperparameter_trials.json</code></td>
+<td><strong>Propio de esta ruta.</strong> Cada combinación probada, su puntaje y la ganadora.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="donde-suele-perderse-la-gente">⚠️ Dónde suele perderse la gente</h2>
 <ul>
-<li><code>notebook.ipynb</code>: recorrido completo y ejecutable.</li>
-<li><code>notebook_student.ipynb</code>: actividades evaluables sin soluciones.</li>
-<li><code>notebook_solution.ipynb</code>: resolución docente y pruebas de referencia.</li>
-<li><code>train.py</code>: interfaz de terminal que usa el mismo código del cuaderno.</li>
-<li><code>configs/baseline.yaml</code>: configuración base.</li>
-<li><code>configs/improved.yaml</code>: configuración ampliada.</li>
-<li><code>data/dataset.yaml</code>: procedencia, licencia y política de partición.</li>
+<li><strong><code>--quick</code> no es una versión pequeña del resultado, es una prueba de que todo corre.</strong> En esta ruta recorta a 1024 ejemplos de entrenamiento · 256 de validación · 256 de test · 2 épocas. Sirve para comprobar la instalación y la descarga; cualquier conclusión sobre el modelo exige la ejecución completa.</li>
+<li><strong>Cambiar algo después de ver <code>test</code> invalida la comparación.</strong> Si al mirar el resultado final se te ocurre una mejora, la ruta correcta es volver a <code>validation</code>, decidir allí, y sellar de nuevo.</li>
+<li><strong>Las dos semillas no son intercambiables.</strong> <code>--split-seed</code> cambia <em>qué datos</em> caen en cada partición; <code>--training-seed</code> cambia <em>cómo se inicializa y baraja</em> el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.</li>
+<li><strong>Límite declarado de este dataset.</strong> 48.842 registros reales del censo de 1994.</li>
 </ul>
-<h2 id="ejercicios">Ejercicios</h2>
+<h2 id="antes-de-darlo-por-terminado">✅ Antes de darlo por terminado</h2>
+<p>El laboratorio está aprobado cuando se cumplen estos criterios:</p>
 <ul>
-<li>Cambiar una decisión experimental y justificarla.</li>
-<li>Analizar errores por clase o segmento.</li>
-<li>Comparar costo, precisión y latencia.</li>
-<li>Documentar sesgos, limitaciones y usos no recomendados.</li>
+<li>[ ] cero solapamiento entre train, validation y test</li>
+<li>[ ] selección basada únicamente en validation</li>
+<li>[ ] métricas finales acompañadas por incertidumbre</li>
+<li>[ ] conclusiones que distinguen evidencia de suposición</li>
 </ul>
-<h2 id="material-formativo-v3">Material formativo v3</h2>
+<p>Y cuando tienes estos entregables:</p>
 <ul>
-<li><a href="#theory"><code>theory.md</code></a>: fundamento, protocolo y riesgos de interpretación.</li>
-<li><a href="#experiments"><code>experiments.md</code></a>: hipótesis, variables controladas y tabla multi-semilla.</li>
-<li><a href="#assessment"><code>assessment.md</code></a>: preguntas y rúbrica de evaluación.</li>
-<li><a href="lesson.yaml"><code>lesson.yaml</code></a>: resultados de aprendizaje, prerrequisitos y entregables.</li>
+<li>[ ] notebook ejecutado</li>
+<li>[ ] reporte experimental</li>
+<li>[ ] model card</li>
+<li>[ ] comparación con línea base</li>
+<li>[ ] respuesta a preguntas críticas</li>
 </ul>
-<h2 id="comandos-profesionales">Comandos profesionales</h2>
-<pre><code class="language-bash">neural-labs quality --lab 13_hyperparameter_search --quick
-neural-labs benchmark --lab 13_hyperparameter_search --quick --split-seed 42 --training-seeds 41 42 43
-neural-labs leaderboard
-</code></pre>
-<h2 id="sellado-del-experimento">Sellado del experimento</h2>
-<p>La partición se controla con <code>split_seed</code>; la inicialización y el entrenamiento con <code>training_seed</code>. El conjunto <code>test</code> se abre solamente después de seleccionar el checkpoint mediante validación y escribir <code>experiment.lock.json</code>.</p><h2 class="doc-sep" id="theory">🧠 Teoría</h2><h1 id="teoria-busqueda-de-hiperparametros">Teoría — Búsqueda de hiperparámetros</h1>
+<p>Las preguntas y la rúbrica con la que se corrige están en <a href="#assessment"><code>assessment.md</code></a>; el plan de experimentos y la tabla multi-semilla que hay que completar, en <a href="#experiments"><code>experiments.md</code></a>.</p>
+<h2 id="para-ir-mas-lejos">🧪 Para ir más lejos</h2>
+<ul>
+<li>Cambia una decisión experimental y justifícala con el resultado en <code>validation</code>, no con la intuición.</li>
+<li>Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.</li>
+<li>Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.</li>
+<li>Documenta sesgos, limitaciones y usos para los que <strong>no</strong> recomendarías este modelo.</li>
+</ul>
+<h2 id="de-donde-sale-cada-cosa-de-esta-guia">📚 De dónde sale cada cosa de esta guía</h2>
+<p>Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:</p>
+<table>
+<thead>
+<tr>
+<th>Lo que dice la guía</th>
+<th>Dónde comprobarlo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Objetivo, línea base, métricas y arquitectura</td>
+<td><a href="../../configs/labs.yaml"><code>configs/labs.yaml</code></a></td>
+</tr>
+<tr>
+<td>Fuente, licencia, procedencia y límites del dataset</td>
+<td><a href="data/dataset.yaml"><code>data/dataset.yaml</code></a></td>
+</tr>
+<tr>
+<td>Épocas, tamaño de lote, tasa de aprendizaje y recorte de <code>--quick</code></td>
+<td><a href="configs/baseline.yaml"><code>configs/baseline.yaml</code></a> · <a href="configs/improved.yaml"><code>configs/improved.yaml</code></a></td>
+</tr>
+<tr>
+<td>Nivel, prerrequisitos, resultados de aprendizaje y criterios</td>
+<td><a href="lesson.yaml"><code>lesson.yaml</code></a></td>
+</tr>
+<tr>
+<td>El orden de los pasos y los archivos que escribe cada ejecución</td>
+<td><a href="../../src/neural_labs/experiments.py"><code>src/neural_labs/experiments.py</code></a></td>
+</tr>
+<tr>
+<td>La teoría, los papers y los libros de referencia</td>
+<td><a href="#theory"><code>theory.md</code></a>, sección 🔗 Referencias</td>
+</tr>
+<tr>
+<td>La regla general del protocolo</td>
+<td><a href="../../docs/experiment-protocol.md"><code>docs/experiment-protocol.md</code></a></td>
+</tr>
+</tbody>
+</table>
+<p>Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.</p>
+<!-- /guia --><h2 class="doc-sep" id="theory">🧠 Teoría</h2><h1 id="teoria-busqueda-de-hiperparametros">Teoría — Búsqueda de hiperparámetros</h1>
 <h2 id="proposito">Propósito</h2>
 <p>Optimizar profundidad, ancho, dropout y learning rate sin tocar test.</p>
 <h2 id="idea-central">Idea central</h2>

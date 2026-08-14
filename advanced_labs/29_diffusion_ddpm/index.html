@@ -190,6 +190,10 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 <td><code>noise_mse</code> sobre <code>validation</code></td>
 </tr>
 <tr>
+<td>📏 Línea base a superar</td>
+<td>Autoencoder generativo simple</td>
+</tr>
+<tr>
 <td>🔒 Política de <code>test</code></td>
 <td>se abre una sola vez, tras escribir <code>experiment.lock.json</code></td>
 </tr>
@@ -274,45 +278,142 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 </table>
 <!-- /ficha -->
 
-<h2 id="objetivo">Objetivo</h2>
+<!-- guia -->
+<h2 id="que-vas-a-hacer-aqui">🎯 Qué vas a hacer aquí</h2>
 <p>Aprender predicción de ruido y muestreo iterativo sobre imágenes reales.</p>
-<h2 id="dataset-publico-real">Dataset público real</h2>
-<ul>
-<li><strong>Dataset:</strong> <code>fashion_mnist</code></li>
-<li><strong>Fuente:</strong> Torchvision / Zalando Research</li>
-<li><strong>Licencia/condiciones:</strong> MIT para código; consultar dataset</li>
-<li><strong>Entrada:</strong> imágenes Fashion-MNIST normalizadas</li>
-<li><strong>Datos sintéticos:</strong> no se usan.</li>
-</ul>
-<p>Los datos se descargan desde el proveedor oficial mediante los adaptadores del repositorio. Los archivos grandes no se incluyen en Git.</p>
-<h2 id="modelo-y-fundamento">Modelo y fundamento</h2>
-<ul>
-<li><strong>Modelo:</strong> <code>tiny-ddpm</code></li>
-<li><strong>Teoría:</strong> Proceso directo de ruido, predicción de epsilon, cronograma beta y muestreo inverso.</li>
-<li><strong>Línea base:</strong> Autoencoder generativo simple</li>
-</ul>
-<h2 id="protocolo">Protocolo</h2>
-<ol>
-<li>Crear particiones con <code>split_seed</code> o conservar los splits oficiales.</li>
-<li>Entrenar y seleccionar exclusivamente con <code>train</code> y <code>validation</code>.</li>
-<li>Guardar <code>best_model.pt</code> y escribir <code>experiment.lock.json</code>.</li>
-<li>Abrir <code>test</code> una sola vez después del congelamiento.</li>
-<li>Registrar métricas, configuración, procedencia y limitaciones.</li>
-</ol>
-<h2 id="ejecucion">Ejecución</h2>
+<p>Es la <strong>ruta 30 de 31</strong> y pertenece a 🔬 <a href="../../parts/07-especializaciones-avanzadas.html">la parte 7, Especializaciones avanzadas</a>. Llegas desde <a href="../../advanced_labs/28_wgan_gp/index.html">🖌️ WGAN-GP sobre Fashion-MNIST</a> y lo que aprendas aquí lo da por supuesto <a href="../../advanced_labs/30_self_supervised_simclr/index.html">🪞 Aprendizaje autosupervisado SimCLR</a>.</p>
+<p><strong>Entrada del modelo:</strong> imágenes Fashion-MNIST normalizadas.</p>
+<h2 id="la-idea-que-se-pone-a-prueba">🧠 La idea que se pone a prueba</h2>
+<p>Este laboratorio trabaja <strong>Proceso directo de ruido, predicción de epsilon, cronograma beta y muestreo inverso</strong>.</p>
+<p>El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en <a href="#theory"><code>theory.md</code></a>. Léelo antes de entrenar: los pasos de abajo te dicen <em>qué</em> hacer, y la teoría, <em>por qué</em> funciona y cuándo deja de funcionar.</p>
+<p><strong>Métricas que se reportan:</strong> <code>noise_mse</code>, <code>sample_diversity</code>, <code>sampling_latency</code>, <code>reconstruction_proxy</code>. La selección del modelo se decide con <code>noise_mse</code> sobre <code>validation</code>.</p>
+<h2 id="paso-a-paso">🪜 Paso a paso</h2>
+<p>Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.</p>
+<h3 id="paso-1-estudiar-la-teoria-antes-de-ejecutar-nada">Paso 1 — Estudiar la teoría antes de ejecutar nada</h3>
+<p><strong>Qué ocurre.</strong> Leer <a href="#theory"><code>theory.md</code></a>, que desarrolla Proceso directo de ruido, predicción de epsilon, cronograma beta y muestreo inverso. y cita las obras y papers de los que procede.</p>
+<p><strong>Por qué.</strong> Estas rutas usan arquitecturas donde un error de comprensión no se manifiesta como un fallo, sino como un número plausible pero equivocado.</p>
+<p><strong>Cómo sabes que salió bien.</strong> Puedes explicar qué mide <code>noise_mse</code> y por qué es la métrica de selección aquí.</p>
+<h3 id="paso-2-ejecutar-la-version-rapida">Paso 2 — Ejecutar la versión rápida</h3>
+<p><strong>Qué ocurre.</strong> Descarga el dataset y los pesos preentrenados desde su proveedor, entrena una versión reducida y escribe la ejecución en <code>runs-advanced/</code>.</p>
+<p><strong>Por qué.</strong> Antes de gastar horas de cómputo conviene comprobar que la descarga, el entorno y la ruta completa funcionan de extremo a extremo.</p>
 <pre><code class="language-bash">neural-labs train-advanced --track 29_diffusion_ddpm --quick
-neural-labs train-advanced --track 29_diffusion_ddpm --split-seed 42 --training-seed 43
 </code></pre>
-<h2 id="metricas">Métricas</h2>
-<p>noise_mse, sample_diversity, sampling_latency, reconstruction_proxy.</p>
-<h2 id="cuadernos">Cuadernos</h2>
+<p><strong>Cómo sabes que salió bien.</strong> Termina sin error y deja <code>metrics.json</code>, <code>history.json</code> y <code>best_model.pt</code> en el directorio de la ejecución.</p>
+<h3 id="paso-3-entrenar-en-serio-y-seleccionar-con-validation">Paso 3 — Entrenar en serio y seleccionar con <code>validation</code></h3>
+<p><strong>Qué ocurre.</strong> Se entrena el modelo completo conservando el checkpoint con el mejor valor de <code>noise_mse</code> en validación, y se sella el experimento antes de evaluar <code>test</code>.</p>
+<p><strong>Por qué.</strong> Igual que en las rutas centrales: <code>validation</code> decide, <code>test</code> solo confirma, y el sello deja por escrito qué se había decidido antes de mirar.</p>
+<pre><code class="language-bash">neural-labs train-advanced --track 29_diffusion_ddpm --split-seed 42 --training-seed 43
+</code></pre>
+<p><strong>Cómo sabes que salió bien.</strong> Existe <code>experiment.lock.json</code> y <code>metrics.json</code> incluye tanto el valor de validación como el de test.</p>
+<h3 id="paso-4-repetir-con-otra-semilla-de-entrenamiento">Paso 4 — Repetir con otra semilla de entrenamiento</h3>
+<p><strong>Qué ocurre.</strong> Se repite el entrenamiento con la misma partición y distinta semilla de entrenamiento.</p>
+<p><strong>Por qué.</strong> Estas arquitecturas —adversariales, contrastivas, de difusión— son especialmente sensibles a la inicialización: una sola ejecución no permite distinguir una mejora de una casualidad.</p>
+<pre><code class="language-bash">neural-labs train-advanced --track 29_diffusion_ddpm --split-seed 42 --training-seed 44
+</code></pre>
+<p><strong>Cómo sabes que salió bien.</strong> Puedes reportar el rango entre ejecuciones, no un único número.</p>
+<h3 id="paso-5-documentar-los-limites">Paso 5 — Documentar los límites</h3>
+<p><strong>Qué ocurre.</strong> Registrar el resultado junto con la limitación declarada de la ruta y responder <a href="#assessment"><code>assessment.md</code></a>.</p>
+<p><strong>Por qué.</strong> En generación y aprendizaje autosupervisado las métricas son aproximaciones: sin declarar qué NO demuestran, invitan a conclusiones que los números no sostienen.</p>
+<p><strong>Cómo sabes que salió bien.</strong> Tu reporte dice qué mejoró, cuánto costó y en qué condiciones no esperarías el mismo resultado.</p>
+<h2 id="como-leer-lo-que-produce-la-ejecucion">🔍 Cómo leer lo que produce la ejecución</h2>
+<p>Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:</p>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>Qué contiene y qué mirar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>config.json</code></td>
+<td>Track, semillas, dispositivo y opciones con las que se lanzó.</td>
+</tr>
+<tr>
+<td><code>dataset_manifest.json</code></td>
+<td>Fuente, licencia y número de ejemplos por partición.</td>
+</tr>
+<tr>
+<td><code>best_model.pt</code></td>
+<td>El checkpoint seleccionado por validación.</td>
+</tr>
+<tr>
+<td><code>experiment.lock.json</code></td>
+<td>El sello: qué se decidió antes de abrir <code>test</code>.</td>
+</tr>
+<tr>
+<td><code>history.json</code></td>
+<td>La métrica de validación época a época.</td>
+</tr>
+<tr>
+<td><code>metrics.json</code></td>
+<td>Resultado de validación y de test, ya con el modelo congelado.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="donde-suele-perderse-la-gente">⚠️ Dónde suele perderse la gente</h2>
 <ul>
-<li><code>notebook.ipynb</code>: recorrido completo.</li>
-<li><code>notebook_student.ipynb</code>: actividades sin resolver.</li>
-<li><code>notebook_solution.ipynb</code>: referencia docente.</li>
+<li><strong>Cambiar algo después de ver <code>test</code> invalida la comparación.</strong> Si al mirar el resultado final se te ocurre una mejora, la ruta correcta es volver a <code>validation</code>, decidir allí, y sellar de nuevo.</li>
+<li><strong>Las dos semillas no son intercambiables.</strong> <code>--split-seed</code> cambia <em>qué datos</em> caen en cada partición; <code>--training-seed</code> cambia <em>cómo se inicializa y baraja</em> el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.</li>
+<li><strong>Límite declarado de este dataset.</strong> El modelo pequeño sirve para estudio; no debe extrapolarse a generación fotográfica de alta resolución.</li>
 </ul>
-<h2 id="limitacion-principal">Limitación principal</h2>
-<p>El modelo pequeño sirve para estudio; no debe extrapolarse a generación fotográfica de alta resolución.</p><h2 class="doc-sep" id="theory">🧠 Teoría</h2><h1 id="teoria-difusion-ddpm-sobre-fashion-mnist">Teoría — Difusión DDPM sobre Fashion-MNIST</h1>
+<h2 id="antes-de-darlo-por-terminado">✅ Antes de darlo por terminado</h2>
+<p>Y cuando tienes estos entregables:</p>
+<ul>
+<li>[ ] notebook ejecutado</li>
+<li>[ ] reporte experimental</li>
+<li>[ ] model card</li>
+</ul>
+<p>Las preguntas y la rúbrica con la que se corrige están en <a href="#assessment"><code>assessment.md</code></a>; el plan de experimentos y la tabla multi-semilla que hay que completar, en <a href="#experiments"><code>experiments.md</code></a>.</p>
+<h2 id="para-ir-mas-lejos">🧪 Para ir más lejos</h2>
+<ul>
+<li>Cambia una decisión experimental y justifícala con el resultado en <code>validation</code>, no con la intuición.</li>
+<li>Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.</li>
+<li>Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.</li>
+<li>Documenta sesgos, limitaciones y usos para los que <strong>no</strong> recomendarías este modelo.</li>
+</ul>
+<h2 id="de-donde-sale-cada-cosa-de-esta-guia">📚 De dónde sale cada cosa de esta guía</h2>
+<p>Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:</p>
+<table>
+<thead>
+<tr>
+<th>Lo que dice la guía</th>
+<th>Dónde comprobarlo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Objetivo, línea base, métricas y arquitectura</td>
+<td><a href="../../configs/advanced_tracks.yaml"><code>configs/advanced_tracks.yaml</code></a></td>
+</tr>
+<tr>
+<td>Fuente, licencia, procedencia y límites del dataset</td>
+<td><a href="data/dataset.yaml"><code>data/dataset.yaml</code></a></td>
+</tr>
+<tr>
+<td>Épocas, tamaño de lote, tasa de aprendizaje y recorte de <code>--quick</code></td>
+<td><a href="configs/baseline.yaml"><code>configs/baseline.yaml</code></a> · <a href="configs/improved.yaml"><code>configs/improved.yaml</code></a></td>
+</tr>
+<tr>
+<td>Nivel, prerrequisitos, resultados de aprendizaje y criterios</td>
+<td><a href="lesson.yaml"><code>lesson.yaml</code></a></td>
+</tr>
+<tr>
+<td>El orden de los pasos y los archivos que escribe cada ejecución</td>
+<td><a href="../../src/neural_labs/advanced/training.py"><code>src/neural_labs/advanced/training.py</code></a></td>
+</tr>
+<tr>
+<td>La teoría, los papers y los libros de referencia</td>
+<td><a href="#theory"><code>theory.md</code></a>, sección 🔗 Referencias</td>
+</tr>
+<tr>
+<td>La regla general del protocolo</td>
+<td><a href="../../docs/experiment-protocol.md"><code>docs/experiment-protocol.md</code></a></td>
+</tr>
+</tbody>
+</table>
+<p>Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.</p>
+<!-- /guia --><h2 class="doc-sep" id="theory">🧠 Teoría</h2><h1 id="teoria-difusion-ddpm-sobre-fashion-mnist">Teoría — Difusión DDPM sobre Fashion-MNIST</h1>
 <p>Proceso directo de ruido, predicción de epsilon, cronograma beta y muestreo inverso.</p>
 <h2 id="fundamento-matematico">Fundamento matemático</h2>
 <p>Un modelo de difusión aprende a generar imágenes <strong>invirtiendo</strong> un proceso que las destruye. El <strong>proceso directo</strong> (forward) parte de una imagen real x₀ y le añade ruido gaussiano en T pasos pequeños, según un <strong>cronograma</strong> de varianzas βₜ ∈ (0, 1) creciente:</p>

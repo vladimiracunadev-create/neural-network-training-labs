@@ -1,50 +1,114 @@
 version: 3.0.0
 tracks:
-  - id: 25_transformer_finetuning
-    title: Fine-tuning eficiente de transformer
-    domain: text
-    dataset: ag_news
-    source: Hugging Face Datasets
-    license: Consultar ficha AG News
-    model: distilbert-base-uncased
-    objective: Comparar fine-tuning completo y LoRA sin tocar test durante selección.
-  - id: 26_segmentation_unet
-    title: Segmentación semántica con U-Net
-    domain: vision
-    dataset: oxford_iiit_pet_segmentation
-    source: Torchvision / University of Oxford
-    license: Consultar términos Oxford-IIIT Pet
-    model: unet-small
-    objective: Segmentar mascota, fondo y contorno con IoU por clase.
-  - id: 27_audio_speechcommands
-    title: Clasificación de audio con SpeechCommands
-    domain: audio
-    dataset: speechcommands_v0.02
-    source: Torchaudio / Google Speech Commands
-    license: Creative Commons BY 4.0
-    model: audio-cnn
-    objective: Clasificar comandos hablados desde waveform y log-mel spectrograms.
-  - id: 28_wgan_gp
-    title: WGAN-GP sobre Fashion-MNIST
-    domain: generative
-    dataset: fashion_mnist
-    source: Torchvision / Zalando Research
-    license: MIT para código; consultar dataset
-    model: wgan-gp
-    objective: Estudiar estabilidad generativa y gradient penalty con imágenes reales.
-  - id: 29_diffusion_ddpm
-    title: Difusión DDPM sobre Fashion-MNIST
-    domain: generative
-    dataset: fashion_mnist
-    source: Torchvision / Zalando Research
-    license: MIT para código; consultar dataset
-    model: tiny-ddpm
-    objective: Aprender predicción de ruido y muestreo iterativo sobre imágenes reales.
-  - id: 30_self_supervised_simclr
-    title: Aprendizaje autosupervisado SimCLR
-    domain: vision
-    dataset: cifar10
-    source: Torchvision / University of Toronto
-    license: Consultar términos CIFAR-10
-    model: resnet18-simclr
-    objective: Preentrenar representaciones con dos vistas reales y evaluar mediante linear probe.
+- id: 25_transformer_finetuning
+  title: Fine-tuning eficiente de transformer
+  domain: text
+  dataset: ag_news
+  source: Hugging Face Datasets
+  license: Consultar ficha AG News
+  model: distilbert-base-uncased
+  objective: Comparar fine-tuning completo y LoRA sin tocar test durante selección.
+  input: texto en inglés
+  math: Tokenización subword, atención preentrenada, fine-tuning completo y adaptación
+    eficiente LoRA.
+  baseline: TF-IDF + regresión logística
+  metrics:
+  - accuracy
+  - macro_f1
+  - latency_ms
+  - trainable_parameters
+  notes: El corpus contiene titulares históricos y sesgos editoriales; no representa
+    todo el lenguaje contemporáneo.
+- id: 26_segmentation_unet
+  title: Segmentación semántica con U-Net
+  domain: vision
+  dataset: oxford_iiit_pet_segmentation
+  source: Torchvision / University of Oxford
+  license: Consultar términos Oxford-IIIT Pet
+  model: unet-small
+  objective: Segmentar mascota, fondo y contorno con IoU por clase.
+  input: imagen RGB y máscara trimap
+  math: Arquitectura encoder-decoder, conexiones skip, pérdida por píxel e intersección
+    sobre unión.
+  baseline: Máscara de clase mayoritaria
+  metrics:
+  - mean_iou
+  - iou_per_class
+  - pixel_accuracy
+  - dice
+  notes: Las imágenes se concentran en mascotas y fondos cotidianos; no generaliza
+    a segmentación médica o industrial.
+- id: 27_audio_speechcommands
+  title: Clasificación de audio con SpeechCommands
+  domain: audio
+  dataset: speechcommands_v0.02
+  source: Torchaudio / Google Speech Commands
+  license: Creative Commons BY 4.0
+  model: audio-cnn
+  objective: Clasificar comandos hablados desde waveform y log-mel spectrograms.
+  input: audio mono de un segundo a 16 kHz
+  math: Waveform, espectrograma log-mel, convolución 2D y robustez ante ruido.
+  baseline: MFCC + regresión logística
+  metrics:
+  - accuracy
+  - macro_f1
+  - confusion_matrix
+  - noise_robustness
+  notes: Acentos, micrófonos y ambientes no están representados uniformemente.
+- id: 28_wgan_gp
+  title: WGAN-GP sobre Fashion-MNIST
+  domain: generative
+  dataset: fashion_mnist
+  source: Torchvision / Zalando Research
+  license: MIT para código; consultar dataset
+  model: wgan-gp
+  objective: Estudiar estabilidad generativa y gradient penalty con imágenes reales.
+  input: imágenes Fashion-MNIST normalizadas
+  math: Distancia Wasserstein, crítico sin sigmoide y restricción Lipschitz mediante
+    gradient penalty.
+  baseline: DCGAN convolucional
+  metrics:
+  - wasserstein_estimate
+  - energy_distance_proxy
+  - diversity
+  - training_stability
+  notes: Las métricas generativas aproximadas no sustituyen evaluación humana ni validación
+    del uso previsto.
+- id: 29_diffusion_ddpm
+  title: Difusión DDPM sobre Fashion-MNIST
+  domain: generative
+  dataset: fashion_mnist
+  source: Torchvision / Zalando Research
+  license: MIT para código; consultar dataset
+  model: tiny-ddpm
+  objective: Aprender predicción de ruido y muestreo iterativo sobre imágenes reales.
+  input: imágenes Fashion-MNIST normalizadas
+  math: Proceso directo de ruido, predicción de epsilon, cronograma beta y muestreo
+    inverso.
+  baseline: Autoencoder generativo simple
+  metrics:
+  - noise_mse
+  - sample_diversity
+  - sampling_latency
+  - reconstruction_proxy
+  notes: El modelo pequeño sirve para estudio; no debe extrapolarse a generación fotográfica
+    de alta resolución.
+- id: 30_self_supervised_simclr
+  title: Aprendizaje autosupervisado SimCLR
+  domain: vision
+  dataset: cifar10
+  source: Torchvision / University of Toronto
+  license: Consultar términos CIFAR-10
+  model: resnet18-simclr
+  objective: Preentrenar representaciones con dos vistas reales y evaluar mediante
+    linear probe.
+  input: imágenes CIFAR-10
+  math: Dos vistas, similitud coseno, pérdida NT-Xent y evaluación linear probe.
+  baseline: ResNet18 aleatoria + linear probe
+  metrics:
+  - nt_xent
+  - linear_probe_accuracy
+  - knn_accuracy
+  - embedding_uniformity
+  notes: La elección de aumentos define invariancias y puede borrar información relevante
+    para tareas posteriores.

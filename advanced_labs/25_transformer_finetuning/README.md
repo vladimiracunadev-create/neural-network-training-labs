@@ -22,6 +22,7 @@
 | 🗄️ Dataset | `ag_news` — Hugging Face Datasets |
 | ⚖️ Licencia del dataset | Consultar ficha AG News |
 | 🎯 Métrica de selección | `accuracy` sobre `validation` |
+| 📏 Línea base a superar | TF-IDF + regresión logística |
 | 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
 
 ### 🎯 Qué vas a poder hacer al terminar
@@ -64,54 +65,131 @@
 
 <!-- /ficha -->
 
-## Objetivo
+<!-- guia -->
+## 🎯 Qué vas a hacer aquí
 
 Comparar fine-tuning completo y LoRA sin tocar test durante selección.
 
-## Dataset público real
+Es la **ruta 26 de 31** y pertenece a 🔬 [la parte 7, Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md). Llegas desde [🏁 Proyecto final: churn de telecomunicaciones](../../labs/24_capstone_real_project/README.md) y lo que aprendas aquí lo da por supuesto [🧷 Segmentación semántica con U-Net](../../advanced_labs/26_segmentation_unet/README.md).
 
-- **Dataset:** `ag_news`
-- **Fuente:** Hugging Face Datasets
-- **Licencia/condiciones:** Consultar ficha AG News
-- **Entrada:** texto en inglés
-- **Datos sintéticos:** no se usan.
+**Entrada del modelo:** texto en inglés.
 
-Los datos se descargan desde el proveedor oficial mediante los adaptadores del repositorio. Los archivos grandes no se incluyen en Git.
+## 🧠 La idea que se pone a prueba
 
-## Modelo y fundamento
+Este laboratorio trabaja **Tokenización subword, atención preentrenada, fine-tuning completo y adaptación eficiente LoRA**.
 
-- **Modelo:** `distilbert-base-uncased`
-- **Teoría:** Tokenización subword, atención preentrenada, fine-tuning completo y adaptación eficiente LoRA.
-- **Línea base:** TF-IDF + regresión logística
+El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
 
-## Protocolo
+**Métricas que se reportan:** `accuracy`, `macro_f1`, `latency_ms`, `trainable_parameters`. La selección del modelo se decide con `accuracy` sobre `validation`.
 
-1. Crear particiones con `split_seed` o conservar los splits oficiales.
-2. Entrenar y seleccionar exclusivamente con `train` y `validation`.
-3. Guardar `best_model.pt` y escribir `experiment.lock.json`.
-4. Abrir `test` una sola vez después del congelamiento.
-5. Registrar métricas, configuración, procedencia y limitaciones.
+## 🪜 Paso a paso
 
-## Ejecución
+Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+
+### Paso 1 — Estudiar la teoría antes de ejecutar nada
+
+**Qué ocurre.** Leer [`theory.md`](theory.md), que desarrolla Tokenización subword, atención preentrenada, fine-tuning completo y adaptación eficiente LoRA. y cita las obras y papers de los que procede.
+
+**Por qué.** Estas rutas usan arquitecturas donde un error de comprensión no se manifiesta como un fallo, sino como un número plausible pero equivocado.
+
+**Cómo sabes que salió bien.** Puedes explicar qué mide `accuracy` y por qué es la métrica de selección aquí.
+
+### Paso 2 — Ejecutar la versión rápida
+
+**Qué ocurre.** Descarga el dataset y los pesos preentrenados desde su proveedor, entrena una versión reducida y escribe la ejecución en `runs-advanced/`.
+
+**Por qué.** Antes de gastar horas de cómputo conviene comprobar que la descarga, el entorno y la ruta completa funcionan de extremo a extremo.
 
 ```bash
-neural-labs train-advanced --track 25_transformer_finetuning --quick
-neural-labs train-advanced --track 25_transformer_finetuning --split-seed 42 --training-seed 43
+neural-labs train-advanced --track 25_transformer_finetuning --quick --lora
 ```
 
-## Métricas
+**Cómo sabes que salió bien.** Termina sin error y deja `metrics.json`, `history.json` y `best_model.pt` en el directorio de la ejecución.
 
-accuracy, macro_f1, latency_ms, trainable_parameters.
+### Paso 3 — Entrenar en serio y seleccionar con `validation`
 
-## Cuadernos
+**Qué ocurre.** Se entrena el modelo completo conservando el checkpoint con el mejor valor de `accuracy` en validación, y se sella el experimento antes de evaluar `test`.
 
-- `notebook.ipynb`: recorrido completo.
-- `notebook_student.ipynb`: actividades sin resolver.
-- `notebook_solution.ipynb`: referencia docente.
+**Por qué.** Igual que en las rutas centrales: `validation` decide, `test` solo confirma, y el sello deja por escrito qué se había decidido antes de mirar.
 
-## Limitación principal
+```bash
+neural-labs train-advanced --track 25_transformer_finetuning --split-seed 42 --training-seed 43 --lora
+```
 
-El corpus contiene titulares históricos y sesgos editoriales; no representa todo el lenguaje contemporáneo.
+**Cómo sabes que salió bien.** Existe `experiment.lock.json` y `metrics.json` incluye tanto el valor de validación como el de test.
+
+### Paso 4 — Repetir con otra semilla de entrenamiento
+
+**Qué ocurre.** Se repite el entrenamiento con la misma partición y distinta semilla de entrenamiento.
+
+**Por qué.** Estas arquitecturas —adversariales, contrastivas, de difusión— son especialmente sensibles a la inicialización: una sola ejecución no permite distinguir una mejora de una casualidad.
+
+```bash
+neural-labs train-advanced --track 25_transformer_finetuning --split-seed 42 --training-seed 44 --lora
+```
+
+**Cómo sabes que salió bien.** Puedes reportar el rango entre ejecuciones, no un único número.
+
+### Paso 5 — Documentar los límites
+
+**Qué ocurre.** Registrar el resultado junto con la limitación declarada de la ruta y responder [`assessment.md`](assessment.md).
+
+**Por qué.** En generación y aprendizaje autosupervisado las métricas son aproximaciones: sin declarar qué NO demuestran, invitan a conclusiones que los números no sostienen.
+
+**Cómo sabes que salió bien.** Tu reporte dice qué mejoró, cuánto costó y en qué condiciones no esperarías el mismo resultado.
+
+## 🔍 Cómo leer lo que produce la ejecución
+
+Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+
+| Archivo | Qué contiene y qué mirar |
+|---|---|
+| `config.json` | Track, semillas, dispositivo y opciones con las que se lanzó. |
+| `dataset_manifest.json` | Fuente, licencia y número de ejemplos por partición. |
+| `best_model.pt` | El checkpoint seleccionado por validación. |
+| `experiment.lock.json` | El sello: qué se decidió antes de abrir `test`. |
+| `history.json` | La métrica de validación época a época. |
+| `metrics.json` | Resultado de validación y de test, ya con el modelo congelado. |
+
+## ⚠️ Dónde suele perderse la gente
+
+- **Cambiar algo después de ver `test` invalida la comparación.** Si al mirar el resultado final se te ocurre una mejora, la ruta correcta es volver a `validation`, decidir allí, y sellar de nuevo.
+- **Las dos semillas no son intercambiables.** `--split-seed` cambia *qué datos* caen en cada partición; `--training-seed` cambia *cómo se inicializa y baraja* el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.
+- **Límite declarado de este dataset.** El corpus contiene titulares históricos y sesgos editoriales; no representa todo el lenguaje contemporáneo.
+
+## ✅ Antes de darlo por terminado
+
+Y cuando tienes estos entregables:
+
+- [ ] notebook ejecutado
+- [ ] reporte experimental
+- [ ] model card
+
+Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+
+## 🧪 Para ir más lejos
+
+- Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
+- Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
+- Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
+- Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
+
+## 📚 De dónde sale cada cosa de esta guía
+
+Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+
+| Lo que dice la guía | Dónde comprobarlo |
+|---|---|
+| Objetivo, línea base, métricas y arquitectura | [`configs/advanced_tracks.yaml`](../../configs/advanced_tracks.yaml) |
+| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
+| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/advanced/training.py`](../../src/neural_labs/advanced/training.py) |
+| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
+| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+
+Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
+<!-- /guia -->
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

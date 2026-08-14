@@ -89,60 +89,197 @@
 
 <!-- /ficha -->
 
-## Objetivo
+<!-- guia -->
+## 🎯 Qué vas a hacer aquí
 
 Aprender una política de reposición usando una secuencia de demanda observada en transacciones reales.
 
-## Dataset real
+Es la **ruta 11 de 31** y pertenece a 🟣 [la parte 3, Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md). Llegas desde [🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/README.md) y lo que aprendas aquí lo da por supuesto [♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/README.md).
 
-- **Dataset:** `online_retail`
-- **Fuente:** UCI
-- **Referencia:** https://archive.ics.uci.edu/dataset/352/online+retail
-- **Licencia:** CC BY 4.0
+## 🧠 La idea que se pone a prueba
 
-La dinámica de inventario es un entorno educativo, pero la demanda diaria se construye exclusivamente desde transacciones reales de Online Retail.
+Este laboratorio trabaja **y=r+γ max_a Q_target(s′,a); la demanda de cada paso proviene del historial real, no de un generador**.
 
-## Diseño
+El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
 
-La serie diaria se divide cronológicamente. La política aprende con `train`, se selecciona con `validation` y se evalúa una sola vez sobre `test`. El estado contiene inventario, demanda reciente y posición temporal; las acciones son cantidades discretas de reposición.
+> **La pregunta que deberías poder responder al final:** ¿La política es robusta a cambios en costo y demanda?
 
-## Línea base
+**Métricas que se reportan:** `mean_return`, `stockout_rate`, `holding_cost`, `service_level`. La selección del modelo se decide con `mean_return` sobre `validation`.
 
-Política de reposición periódica basada en demanda media histórica.
+## 🪜 Paso a paso
 
-## Ejecución
+Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+
+### Paso 1 — Traer el dataset real y partirlo
+
+**Qué ocurre.** Descarga `online_retail` desde su proveedor y construye las tres particiones —`train`, `validation` y `test`— con la semilla de partición que le pases.
+
+**Por qué.** La partición se fija **antes** de entrenar y su semilla (`--split-seed`) es independiente de la del entrenamiento (`--training-seed`). Si ambas fueran la misma, no podrías distinguir si un cambio en el resultado viene de haber repartido los datos de otro modo o de haber inicializado los pesos de otro modo.
+
+```bash
+neural-labs dataset --lab 10_dqn_reinforcement --quick --split-seed 42
+```
+
+**Cómo sabes que salió bien.** El comando termina sin error y deja el dataset en caché. Si no hay red, **falla**: no se rellena con datos inventados (`data/dataset.yaml` declara `fallback_to_generated_data: false`).
+
+### Paso 2 — Comprobar que las particiones no se tocan
+
+**Qué ocurre.** Recorre los identificadores de las tres particiones y verifica que ninguno aparece en dos de ellas.
+
+**Por qué.** Una sola fila compartida entre `train` y `test` basta para que la métrica final quede inflada. Es el error más caro del oficio porque no produce ningún síntoma visible: el modelo simplemente «parece» mejor de lo que es.
+
+```bash
+neural-labs audit --lab 10_dqn_reinforcement --quick --split-seed 42
+```
+
+**Cómo sabes que salió bien.** La auditoría reporta cero solapamientos. Si reporta alguno, no sigas: el resto del laboratorio no significaría nada.
+
+### Paso 3 — Mirar los datos antes de modelarlos
+
+**Qué ocurre.** Genera el informe de calidad (valores faltantes, balance de clases, rangos) y el de deriva entre particiones.
+
+**Por qué.** Un desbalance fuerte o una diferencia de distribución entre `train` y `test` cambia qué métrica tiene sentido leer. Descubrirlo después de entrenar obliga a repetirlo todo.
+
+```bash
+neural-labs quality --lab 10_dqn_reinforcement --quick --split-seed 42
+```
+
+**Cómo sabes que salió bien.** Obtienes `data_quality.json` y `drift_report.json`; ábrelos antes de decidir la configuración.
+
+### Paso 4 — Estudiar la teoría del laboratorio
+
+**Qué ocurre.** Leer [`theory.md`](theory.md): la idea central, el desarrollo matemático, los riesgos de interpretación y la bibliografía de la que sale todo eso.
+
+**Por qué.** Sin esto, el entrenamiento es una caja que devuelve números. La teoría es lo que te permite decidir qué mirar y reconocer cuándo un resultado es sospechoso.
+
+**Cómo sabes que salió bien.** Puedes responder, con tus palabras, qué calcula el modelo y por qué esa arquitectura encaja con la tarea `reinforcement_learning`.
+
+### Paso 5 — Entrenar y seleccionar con `validation`
+
+**Qué ocurre.** El entrenamiento recorre las épocas midiendo en `validation` después de cada una, y conserva el checkpoint con el mejor valor de `mean_return`.
+
+**Por qué.** El conjunto de validación existe para tomar decisiones —arquitectura, hiperparámetros, cuándo parar—. Si esas decisiones se tomaran mirando `test`, `test` dejaría de ser una estimación de lo que pasará con datos nuevos y pasaría a ser parte del entrenamiento.
 
 ```bash
 python labs/10_dqn_reinforcement/train.py --quick
-python labs/10_dqn_reinforcement/train.py --config improved
+# o, con control explícito de las dos semillas:
+neural-labs train --lab 10_dqn_reinforcement --config baseline --split-seed 42 --training-seed 43
 ```
 
-## Métricas
+**Cómo sabes que salió bien.** En `runs/10_dqn_reinforcement/<ejecución>/` aparecen `history.csv` y `best_model.pt`; la métrica de validación mejora respecto de la primera época.
 
-`mean_return`, `stockout_rate`, `holding_cost` y `service_level`.
+### Paso 6 — Compararte con la línea base
 
-## Límites
+**Qué ocurre.** El repositorio entrena por su cuenta **Política de reposición periódica basada en demanda media histórica** y guarda su resultado, primero sobre `validation` y —solo al final— sobre `test`.
 
-El historial de demanda es real. Los costos y reglas de inventario son parámetros educativos y deben sustituirse por costos de negocio antes de cualquier uso operacional.
+**Por qué.** Una métrica sola no dice si el modelo aporta algo. Puede que un método mucho más simple llegue igual de lejos, y entonces la complejidad añadida no está justificada. Esta comparación es la que convierte un número en un argumento.
 
-## Material formativo v3
+**Cómo sabes que salió bien.** Comparas `metrics.json` con `baseline_metrics.json`. Si tu modelo no supera la línea base, el resultado del laboratorio es exactamente ese, y hay que reportarlo.
 
-- [`theory.md`](theory.md): fundamento, protocolo y riesgos de interpretación.
-- [`experiments.md`](experiments.md): hipótesis, variables controladas y tabla multi-semilla.
-- [`assessment.md`](assessment.md): preguntas y rúbrica de evaluación.
-- [`lesson.yaml`](lesson.yaml): resultados de aprendizaje, prerrequisitos y entregables.
+### Paso 7 — El sellado: `experiment.lock.json`
 
-## Comandos profesionales
+**Qué ocurre.** Antes de tocar `test`, el código escribe un archivo que fija el laboratorio, las dos semillas, la configuración, la métrica de selección, el checkpoint elegido y el hash del dataset.
+
+**Por qué.** Es la frontera del experimento. A partir de ahí, cualquier ajuste que hagas mirando `test` queda a la vista: el sello dice qué habías decidido *antes* de ver el resultado final. Sin ese archivo, nadie —incluido tú dentro de un mes— puede distinguir una predicción de una racionalización.
+
+**Cómo sabes que salió bien.** El archivo existe y su contenido coincide con lo que creías haber ejecutado.
+
+### Paso 8 — Evaluar `test` una sola vez y medir la incertidumbre
+
+**Qué ocurre.** Con el checkpoint congelado se evalúa `test`. En esta ruta la tarea es `reinforcement_learning`, así que el resultado se resume en las métricas propias de ese régimen y no en una predicción por ejemplo.
+
+**Por qué.** Un número puntual esconde cuánto podría moverse. Por eso el paso siguiente —repetir con varias semillas— no es opcional aquí: es la única forma de saber cuánta de la diferencia observada es señal.
+
+**Cómo sabes que salió bien.** Tienes `metrics.json` con el resultado final, y sabes que la comparación honesta llega con las repeticiones del paso siguiente.
+
+### Paso 9 — Repetir con varias semillas de entrenamiento
+
+**Qué ocurre.** Se repite el entrenamiento manteniendo **fija** la partición y cambiando solo la semilla de entrenamiento.
+
+**Por qué.** Dos ejecuciones idénticas salvo por la inicialización pueden diferir bastante. Si no mides esa dispersión, corres el riesgo de celebrar una mejora que era una semilla afortunada.
 
 ```bash
-neural-labs quality --lab 10_dqn_reinforcement --quick
 neural-labs benchmark --lab 10_dqn_reinforcement --quick --split-seed 42 --training-seeds 41 42 43
-neural-labs leaderboard
 ```
 
-## Sellado del experimento
+**Cómo sabes que salió bien.** Obtienes media y dispersión entre semillas, no un único número.
 
-La partición se controla con `split_seed`; la inicialización y el entrenamiento con `training_seed`. El conjunto `test` se abre solamente después de seleccionar el checkpoint mediante validación y escribir `experiment.lock.json`.
+### Paso 10 — Documentar y cerrar
+
+**Qué ocurre.** Cada ejecución deja `model_card.md` y `report.md`; el plan de experimentos vive en [`experiments.md`](experiments.md) y la rúbrica en [`assessment.md`](assessment.md).
+
+**Por qué.** Un resultado sin su contexto —qué datos, qué decisiones, qué límites— no es reutilizable. La model card es lo que permite que otra persona sepa cuándo *no* debería usar tu modelo.
+
+**Cómo sabes que salió bien.** Completaste la tabla multi-semilla de `experiments.md` y respondiste las preguntas de `assessment.md`.
+
+## 🔍 Cómo leer lo que produce la ejecución
+
+Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+
+| Archivo | Qué contiene y qué mirar |
+|---|---|
+| `config.yaml` · `environment.json` | La configuración exacta y el entorno (versiones, dispositivo) de la ejecución. |
+| `dataset_manifest.json` · `dataset_card.md` | Procedencia, licencia, hash y tamaño de cada partición. |
+| `data_quality.json` · `drift_report.json` | Calidad de los datos y diferencias de distribución entre particiones. |
+| `baseline_validation_metrics.json` | La línea base medida en `validation`, **antes** de entrenar. |
+| `history.csv` · `history.png` | Pérdida y métricas época a época: aquí se ve si el entrenamiento converge o sobreajusta. |
+| `experiment.lock.json` | El sello del experimento, escrito antes de tocar `test`. |
+| `metrics.json` | El resultado final en `test`, más tiempo, dispositivo y número de parámetros. |
+| `baseline_metrics.json` | La línea base en `test`, calculada después de tu evaluación final. |
+| `best_model.pt` · `last_model.pt` | El checkpoint elegido por validación y el último, para poder compararlos. |
+| `model_spec.json` · `inference_contract.json` | Qué entrada espera el modelo y qué devuelve: lo que necesita quien lo despliegue. |
+| `model_card.md` · `report.md` | La ficha del modelo y el informe legible de la ejecución. |
+
+## ⚠️ Dónde suele perderse la gente
+
+- **`--quick` no es una versión pequeña del resultado, es una prueba de que todo corre.** En esta ruta recorta a 1024 ejemplos de entrenamiento · 256 de validación · 256 de test · 2 épocas. Sirve para comprobar la instalación y la descarga; cualquier conclusión sobre el modelo exige la ejecución completa.
+- **Cambiar algo después de ver `test` invalida la comparación.** Si al mirar el resultado final se te ocurre una mejora, la ruta correcta es volver a `validation`, decidir allí, y sellar de nuevo.
+- **Las dos semillas no son intercambiables.** `--split-seed` cambia *qué datos* caen en cada partición; `--training-seed` cambia *cómo se inicializa y baraja* el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.
+- **Aquí no vas a ver `predictions.csv` ni `confusion_matrix.png`, y no es un error.** La tarea es `reinforcement_learning`, y el código solo genera esos archivos cuando hay una predicción por ejemplo comparable contra una etiqueta.
+- **Límite declarado de este dataset.** La dinámica de inventario es un entorno educativo, pero la demanda diaria se construye exclusivamente desde transacciones reales de Online Retail.
+
+## ✅ Antes de darlo por terminado
+
+El laboratorio está aprobado cuando se cumplen estos criterios:
+
+- [ ] cero solapamiento entre train, validation y test
+- [ ] selección basada únicamente en validation
+- [ ] métricas finales acompañadas por incertidumbre
+- [ ] conclusiones que distinguen evidencia de suposición
+
+Y cuando tienes estos entregables:
+
+- [ ] notebook ejecutado
+- [ ] reporte experimental
+- [ ] model card
+- [ ] comparación con línea base
+- [ ] respuesta a preguntas críticas
+
+Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+
+## 🧪 Para ir más lejos
+
+- Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
+- Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
+- Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
+- Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
+
+## 📚 De dónde sale cada cosa de esta guía
+
+Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+
+| Lo que dice la guía | Dónde comprobarlo |
+|---|---|
+| Objetivo, línea base, métricas y arquitectura | [`configs/labs.yaml`](../../configs/labs.yaml) |
+| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
+| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/experiments.py`](../../src/neural_labs/experiments.py) |
+| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
+| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+
+Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
+<!-- /guia -->
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
