@@ -24,7 +24,7 @@ Por eso **todos los enlaces apuntan a archivos, no a carpetas**: desde la portad
 
 | Superficie | Qué se ve | Quién la genera | ¿Se versiona? |
 |---|---|---|---|
-| **GitHub** (Markdown) | Ficha del laboratorio, navegación superior con posición `Ruta N / 31` y su parte, barra de los cuatro documentos y bloque «Navegación del recorrido» al final de cada documento | `scripts/build_lab_docs.py` | Sí |
+| **GitHub** (Markdown) | La clase completa —teoría incrustada, comandos explicados y paso a paso—, con la posición `Ruta N / 31`, su parte, la barra de documentos y el bloque «Navegación del recorrido» | `scripts/build_lab_docs.py` | Sí |
 | **HTML local** (`<lab>/index.html`) | La clase completa como página autocontenida, con paginador, anclas por documento y enlaces relativos a cuadernos y configuraciones | `scripts/generate_lab_html.py` | Sí |
 | **Sitio de estudio** (GitHub Pages) | Portada agrupada por partes, página por parte y página por laboratorio con el paginador del sitio | `scripts/generate_site.py` | No (`site/` está en `.gitignore`) |
 
@@ -32,7 +32,7 @@ Las tres se construyen desde el mismo Markdown de `labs/` y `advanced_labs/`, y 
 
 ## Qué enlaza con qué
 
-Cada laboratorio publica cuatro documentos —`README.md`, `theory.md`, `experiments.md` y `assessment.md`— y todos comparten la misma capa navegable:
+Cada laboratorio publica cuatro documentos —`README.md`, `theory.md`, `experiments.md` y `assessment.md`— y todos comparten la misma capa navegable. La guía incrusta la explicación de `theory.md`, de modo que la clase se lee de corrido sin saltar de archivo; `theory.md` sigue siendo la fuente que se edita y la que aporta la bibliografía:
 
 - **Arriba:** posición en el recorrido (`Ruta 4 / 31`) y parte a la que pertenece; salto al laboratorio anterior y al siguiente *conservando el documento actual* (de `theory.md` se pasa a `theory.md`); enlace al índice y barra con los cuatro documentos, marcando el actual.
 - **Abajo:** tabla anterior / índice / siguiente, enlaces a los otros documentos y a los tres cuadernos, y salidas hacia la parte, la portada del repositorio, el sitio de estudio y la página HTML local.
@@ -42,7 +42,7 @@ En la página `index.html` los enlaces se reescriben para funcionar sin conexió
 ## Cómo se genera
 
 ```bash
-# 1) Ficha y navegación en los 124 documentos, más las 7 partes y su índice
+# 1) Guía, experimentos, evaluación y navegación, más las 7 partes y su índice
 python scripts/build_lab_docs.py
 
 # 2) Página HTML por laboratorio y por parte + índice offline en la raíz
@@ -64,13 +64,13 @@ python scripts/generate_lab_html.py --check
 
 ## Publicación automática
 
-El workflow [`deploy-pages.yml`](https://github.com/vladimiracunadev-create/neural-network-training-labs/blob/main/.github/workflows/deploy-pages.yml) regenera y publica el sitio en cada `push` a `main` que toque `labs/`, `advanced_labs/` o el generador. Comprueba que el sitio salió completo (portada, hoja de estilos y 32 páginas) antes de subir el artefacto.
+El workflow [`deploy-pages.yml`](https://github.com/vladimiracunadev-create/neural-network-training-labs/blob/main/.github/workflows/deploy-pages.yml) regenera y publica el sitio en cada `push` a `main` que toque `labs/`, `advanced_labs/` o el generador. Comprueba que el sitio salió completo (portada, hoja de estilos, las siete páginas de parte y 39 páginas en total) antes de subir el artefacto.
 
 ## Mantenimiento
 
 Si cambian los títulos, se añade un laboratorio o se reordena el recorrido:
 
-1. Ejecuta `python scripts/build_lab_docs.py` para actualizar ficha, navegación y páginas de parte en el Markdown.
+1. Ejecuta `python scripts/build_lab_docs.py` para regenerar guías, planes de experimentos, evaluaciones, páginas de parte y navegación.
 2. Ejecuta `python scripts/generate_lab_html.py` para regenerar las páginas HTML versionadas.
 3. Ejecuta `python scripts/generate_site.py` para revisar el sitio localmente.
 4. Al hacer `push` a `main`, el sitio se publica solo.

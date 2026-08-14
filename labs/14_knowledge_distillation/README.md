@@ -8,25 +8,17 @@
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-<!-- ficha -->
-## 📋 Ficha del laboratorio
+## 🎯 Qué vas a hacer aquí
 
-![ruta](https://img.shields.io/badge/ruta-15%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-avanzado-8957e5?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Central-2e8b57?style=flat-square) ![horas](https://img.shields.io/badge/horas-~8%20h-f0b429?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-cifar10-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-macro__f1-8957e5?style=flat-square)
+Transferir conocimiento de una CNN profesora a una estudiante compacta.
 
-| Campo | Valor |
-|---|---|
-| 🧭 Posición | Ruta **15 de 31** del recorrido · categoría central |
-| 🎚️ Nivel | avanzado |
-| ⏱️ Dedicación estimada | 8 horas |
-| 🧩 Tarea | `multiclass_classification` |
-| 🏗️ Arquitectura | `distillation_cnn` |
-| 🗄️ Dataset | [`cifar10`](https://www.cs.toronto.edu/~kriz/cifar.html) — Torchvision / University of Toronto |
-| ⚖️ Licencia del dataset | Consultar términos CIFAR-10 |
-| 🎯 Métrica de selección | `macro_f1` sobre `validation` |
-| 📏 Línea base a superar | Estudiante entrenado solo con etiquetas |
-| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+Es la **ruta 15 de 31** del recorrido y pertenece a 🟠 la parte 4, *Entrenar mejor, más barato y sin centralizar datos*. Llegas desde **Búsqueda de hiperparámetros** y lo que hagas aquí lo da por supuesto **Aprendizaje federado por participante**.
 
-### 🎯 Qué vas a poder hacer al terminar
+Trabajarás con el dataset **`cifar10`** (Torchvision / University of Toronto, licencia: Consultar términos CIFAR-10), y tendrás que superar la línea base **Estudiante entrenado solo con etiquetas**, decidiendo con la métrica `macro_f1` medida sobre `validation`. Nivel avanzado, unas **8 horas** de dedicación.
+
+**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
+
+**Al terminar deberías ser capaz de:**
 
 - Transferir conocimiento de una CNN profesora a una estudiante compacta.
 - Preparar y auditar el dataset real cifar10 sin fuga de datos.
@@ -34,81 +26,103 @@
 - Comparar contra la línea base: Estudiante entrenado solo con etiquetas.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-### 🧩 Prerrequisitos
+## 🧠 La teoría de este laboratorio
 
-- PyTorch intermedio
-- optimización
-- lectura de artículos técnicos
+Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
-> Si alguno te falta, retrocede antes de continuar. Viniendo de [🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/README.md).
+### De qué trata
 
-### ⚙️ `baseline` frente a `improved`
+Este laboratorio estudia **transferencia de conocimiento profesor-estudiante** usando `cifar10`, un dataset público real procedente de Torchvision / University of Toronto. La observación de partida es que un modelo grande y preciso (el profesor) no solo predice la clase correcta: en su distribución de salida codifica *cómo de parecidas* considera a las clases entre sí. Por ejemplo, una imagen de gato puede recibir alta probabilidad en "gato", algo en "perro" y casi nada en "camión". Esas probabilidades relativas —las **etiquetas blandas** (soft labels)— son información rica que la etiqueta dura (solo "gato") descarta.
 
-| Parámetro | [`baseline.yaml`](configs/baseline.yaml) | [`improved.yaml`](configs/improved.yaml) |
-|---|---|---|
-| Épocas | `20` | `50` |
-| Tasa de aprendizaje | `0.001` | `0.0005` |
-| Paciencia (early stopping) | `5` | `8` |
-| Precisión mixta (AMP) | no | sí |
-| Procesos de carga | `0` | `2` |
+La destilación entrena a un modelo pequeño (el estudiante) para que imite esa distribución blanda del profesor, además de acertar la etiqueta verdadera. El estudiante recibe así una señal de aprendizaje mucho más informativa por ejemplo: en lugar de un único bit correcto/incorrecto, aprende la estructura de similitud que el profesor descubrió con más capacidad y más cómputo. El resultado es un modelo compacto que se acerca a la exactitud del grande con una fracción de los parámetros y la latencia, útil para desplegar en dispositivos con recursos limitados.
 
-> Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con `validation`, nunca con `test`.
+La **temperatura** T es la palanca central. Al dividir los logits por T antes del softmax se suavizan las probabilidades: con T alto, las diferencias entre clases se atenúan y emergen las señales pequeñas (esa pizca de "perro" en la imagen de gato) que de otro modo quedarían aplastadas cerca de cero. La pregunta crítica del laboratorio es qué temperatura equilibra mejor la señal dura (la etiqueta verdadera) con la señal blanda (el conocimiento del profesor).
 
-### 📦 Entregables y criterios de aceptación
+### La matemática, paso a paso
 
-**Entregables**
+Sean z^t los logits del profesor y z^s los del estudiante para las K clases. El softmax con temperatura T produce distribuciones suavizadas:
 
-- notebook ejecutado
-- reporte experimental
-- model card
-- comparación con línea base
-- respuesta a preguntas críticas
+  p_k(z; T) = e^{z_k / T} / Σⱼ e^{z_j / T}
 
-**Criterios de éxito**
+Con T = 1 se recupera el softmax normal; con T > 1 la distribución se aplana y revela las probabilidades pequeñas. La pérdida de destilación combina dos términos:
 
-- cero solapamiento entre train, validation y test
-- selección basada únicamente en validation
-- métricas finales acompañadas por incertidumbre
-- conclusiones que distinguen evidencia de suposición
+  ℒ = α · CE(y, softmax(z^s)) + (1 − α) · T² · KL( softmax(z^t / T) ‖ softmax(z^s / T) )
 
-### 🗂️ Recursos del laboratorio
+El primer término es la **entropía cruzada** contra la etiqueta dura y (aprender lo correcto). El segundo es la **divergencia de Kullback–Leibler** entre la distribución blanda del profesor y la del estudiante, ambas a temperatura T (imitar al profesor). El coeficiente α ∈ [0,1] pondera cuánto pesa cada objetivo.
 
-| Recurso | Archivo |
-|---|---|
-| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
-| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
-| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
-| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
-| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
-| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
-| 🖥️ Script de terminal | [`train.py`](train.py) |
-| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
-| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
-| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+El factor T² tiene una justificación precisa. Los gradientes del término blando respecto a z^s escalan aproximadamente como 1/T² (porque tanto el softmax suavizado como su derivada introducen un factor 1/T). Multiplicar por T² **reescala** esos gradientes para que su magnitud sea comparable a la del término duro, de modo que al variar T no haya que reajustar α ni el learning rate. La divergencia KL entre profesor p y estudiante q es:
 
-<!-- /ficha -->
+  KL(p ‖ q) = Σₖ p_k · log( p_k / q_k )
 
-<!-- guia -->
-## 🎯 Qué vas a hacer aquí
+y se minimiza cuando q iguala a p. El estudiante actualiza sus parámetros por descenso de gradiente, θ^s ← θ^s − η · ∇_{θ^s} ℒ, mientras el profesor permanece congelado. La formulación conecta cuatro elementos: representación de entrada (la imagen), función del modelo (estudiante), función de pérdida (CE + KL con temperatura) y regla de actualización (SGD con ∇). El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.
 
-Transferir conocimiento de una CNN profesora a una estudiante compacta.
+> **La pregunta que deberías poder responder al terminar:** ¿Qué temperatura equilibra mejor señales duras y blandas?
 
-Es la **ruta 15 de 31** y pertenece a 🟠 [la parte 4, Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md). Llegas desde [🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/README.md) y lo que aprendas aquí lo da por supuesto [🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md).
+### Qué se mide y con qué se decide
 
-## 🧠 La idea que se pone a prueba
+El laboratorio reporta `accuracy`, `macro_f1`, `parameters`, `latency_ms`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
-Este laboratorio trabaja **L=α CE(y,s)+(1-α)T² KL(softmax(t/T)||softmax(s/T))**.
+## 🖥️ Los comandos, explicados
 
-El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
+Todo el laboratorio se maneja con una sola herramienta de terminal, `neural-labs`, que se instala junto con el paquete (`pip install -e ".[dev,notebooks]"`). Cada subcomando hace **una** cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.
 
-> **La pregunta que deberías poder responder al final:** ¿Qué temperatura equilibra mejor señales duras y blandas?
+La forma general es siempre la misma:
 
-**Métricas que se reportan:** `accuracy`, `macro_f1`, `parameters`, `latency_ms`. La selección del modelo se decide con `macro_f1` sobre `validation`.
+```bash
+neural-labs <subcomando> --lab <identificador> [opciones]
+```
+
+| Opción | Valor por defecto | Valores | Qué hace y cuándo cambiarla |
+|---|---|---|---|
+| `--lab` | `14_knowledge_distillation` | obligatorio | Qué laboratorio se ejecuta. Solo acepta los identificadores del catálogo. |
+| `--quick` | desactivado | — | Usa una fracción real del dataset y pocas épocas. Sirve para comprobar la instalación, no para concluir nada sobre el modelo. |
+| `--split-seed N` | `42` | entero | Semilla que decide **qué ejemplo cae en qué partición**. Se mantiene fija al comparar modelos. |
+| `--training-seed N` | `42` | entero | Semilla de la inicialización de pesos y del barajado de lotes. Es la que se varía para medir cuánta diferencia es simple azar. |
+| `--config` | `baseline` | `baseline` · `improved` | Cuál de las dos configuraciones del laboratorio se usa. |
+| `--device` | `auto` | `auto` · `cpu` · `cuda` · `mps` | Dónde entrenar. `auto` elige GPU si está disponible y cae a CPU si no. |
+| `--training-seeds A B C` | `41 42 43` | enteros | Solo en `benchmark`: la lista de semillas de entrenamiento que se repiten. |
+| `--output-dir` | `runs` | ruta | Dónde se escribe el directorio de la ejecución. |
+
+### El script del laboratorio
+
+`labs/14_knowledge_distillation/train.py` no es un programa distinto: fija el `--lab` y delega en la misma herramienta, de modo que estas dos líneas hacen exactamente lo mismo.
+
+```bash
+python labs/14_knowledge_distillation/train.py --quick
+neural-labs train --lab 14_knowledge_distillation --quick
+```
+
+### Lo mismo desde Python
+
+Si prefieres trabajar en un cuaderno o llamar al laboratorio desde tu propio código, la misma ejecución se lanza así. La función devuelve un objeto con el directorio de la ejecución, las métricas y el historial ya cargados:
+
+```python
+from neural_labs.experiments import run_lab
+
+resultado = run_lab(
+    "14_knowledge_distillation",
+    quick=True,          # False para la ejecución completa
+    config_name="baseline",
+    split_seed=42,       # fija la partición
+    training_seed=43,    # varía la inicialización
+)
+
+print(resultado.run_dir)   # dónde quedaron los archivos
+print(resultado.metrics)   # el diccionario de métricas finales
+```
+
+Y para preparar el dataset sin entrenar —útil para inspeccionarlo antes—:
+
+```python
+from neural_labs.datasets import prepare_dataset
+
+datos = prepare_dataset("14_knowledge_distillation", quick=True, seed=42)
+print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
+```
 
 ## 🪜 Paso a paso
 
-Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
 ### Paso 1 — Traer el dataset real y partirlo
 
@@ -214,7 +228,7 @@ neural-labs benchmark --lab 14_knowledge_distillation --quick --split-seed 42 --
 
 ## 🔍 Cómo leer lo que produce la ejecución
 
-Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:
 
 | Archivo | Qué contiene y qué mirar |
 |---|---|
@@ -241,6 +255,12 @@ Cada ejecución escribe su propio directorio. Estos son los archivos que encontr
 - **Las dos semillas no son intercambiables.** `--split-seed` cambia *qué datos* caen en cada partición; `--training-seed` cambia *cómo se inicializa y baraja* el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.
 - **Límite declarado de este dataset.** Mismo test real para profesor, estudiante base y estudiante destilada.
 
+### Riesgos al interpretar los resultados
+
+Mismo test real para profesor, estudiante base y estudiante destilada.
+
+El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.
+
 ## ✅ Antes de darlo por terminado
 
 El laboratorio está aprobado cuando se cumplen estos criterios:
@@ -258,31 +278,44 @@ Y cuando tienes estos entregables:
 - [ ] comparación con línea base
 - [ ] respuesta a preguntas críticas
 
-Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+El plan experimental con la tabla que hay que completar está en `experiments.md`, y las preguntas con su rúbrica, en `assessment.md`. Ambos documentos se abren desde la barra de navegación de arriba.
 
-## 🧪 Para ir más lejos
+### Para ir más lejos
 
 - Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
 - Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
 - Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
 - Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
 
-## 📚 De dónde sale cada cosa de esta guía
+## 📚 Fuentes
 
-Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:
+
+> Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.
+
+- Goodfellow, Bengio & Courville — *Deep Learning* (MIT Press, 2016) — fundamentos de softmax, entropía cruzada y compresión de modelos.
+- Buciluă, Caruana & Niculescu-Mizil (2006), *Model Compression*, KDD — idea seminal de comprimir un conjunto grande en un modelo pequeño que imita sus salidas.
+- Hinton, Vinyals & Dean (2015), *Distilling the Knowledge in a Neural Network*, NeurIPS Deep Learning Workshop — formulación de la destilación con temperatura y etiquetas blandas usada en este laboratorio.
+- Sanh et al. (2019), *DistilBERT, a distilled version of BERT* — aplicación a gran escala que muestra estudiantes compactos cercanos al profesor.
+- Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html
+- Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+### Cómo comprobar lo que dice esta guía
+
+Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:
 
 | Lo que dice la guía | Dónde comprobarlo |
 |---|---|
-| Objetivo, línea base, métricas y arquitectura | [`configs/labs.yaml`](../../configs/labs.yaml) |
-| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
-| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
-| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/experiments.py`](../../src/neural_labs/experiments.py) |
-| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
-| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+| Objetivo, línea base, métricas y arquitectura | `configs/labs.yaml` |
+| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | `configs/baseline.yaml` y `configs/improved.yaml` |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |
+| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |
+| El orden de los pasos y los archivos que escribe cada ejecución | `src/neural_labs/experiments.py` |
+| La teoría y su bibliografía | `theory.md` |
+| La regla general del protocolo | `docs/experiment-protocol.md` |
 
-Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
-<!-- /guia -->
+Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

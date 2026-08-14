@@ -8,25 +8,17 @@
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-<!-- ficha -->
-## 📋 Ficha del laboratorio
+## 🎯 Qué vas a hacer aquí
 
-![ruta](https://img.shields.io/badge/ruta-22%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-avanzado-8957e5?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Central-2e8b57?style=flat-square) ![horas](https://img.shields.io/badge/horas-~8%20h-f0b429?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-adult__census-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-f1-8957e5?style=flat-square)
+Explicar predicciones con Integrated Gradients y permutación.
 
-| Campo | Valor |
-|---|---|
-| 🧭 Posición | Ruta **22 de 31** del recorrido · categoría central |
-| 🎚️ Nivel | avanzado |
-| ⏱️ Dedicación estimada | 8 horas |
-| 🧩 Tarea | `binary_classification` |
-| 🏗️ Arquitectura | `mlp_explainability` |
-| 🗄️ Dataset | [`adult_census`](https://archive.ics.uci.edu/dataset/2/adult) — UCI |
-| ⚖️ Licencia del dataset | CC BY 4.0 |
-| 🎯 Métrica de selección | `f1` sobre `validation` |
-| 📏 Línea base a superar | Regresión logística interpretable |
-| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+Es la **ruta 22 de 31** del recorrido y pertenece a ⚫ la parte 6, *Confiar en el modelo y sacarlo del cuaderno*. Llegas desde **Aumento de datos** y lo que hagas aquí lo da por supuesto **Incertidumbre y calibración**.
 
-### 🎯 Qué vas a poder hacer al terminar
+Trabajarás con el dataset **`adult_census`** (UCI, licencia: CC BY 4.0), y tendrás que superar la línea base **Regresión logística interpretable**, decidiendo con la métrica `f1` medida sobre `validation`. Nivel avanzado, unas **8 horas** de dedicación.
+
+**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
+
+**Al terminar deberías ser capaz de:**
 
 - Explicar predicciones con Integrated Gradients y permutación.
 - Preparar y auditar el dataset real adult_census sin fuga de datos.
@@ -34,81 +26,99 @@
 - Comparar contra la línea base: Regresión logística interpretable.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-### 🧩 Prerrequisitos
+## 🧠 La teoría de este laboratorio
 
-- PyTorch intermedio
-- optimización
-- lectura de artículos técnicos
+Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
-> Si alguno te falta, retrocede antes de continuar. Viniendo de [🔄 Aumento de datos](../../labs/20_data_augmentation/README.md).
+### De qué trata
 
-### ⚙️ `baseline` frente a `improved`
+Este laboratorio estudia **atribución de características** usando `adult_census`, un dataset público real procedente de UCI.
 
-| Parámetro | [`baseline.yaml`](configs/baseline.yaml) | [`improved.yaml`](configs/improved.yaml) |
-|---|---|---|
-| Épocas | `20` | `50` |
-| Tasa de aprendizaje | `0.001` | `0.0005` |
-| Paciencia (early stopping) | `5` | `8` |
-| Precisión mixta (AMP) | no | sí |
-| Procesos de carga | `0` | `2` |
+Un modelo puede acertar mucho y, aun así, ser una caja negra: predice si el ingreso anual supera cierto umbral, pero no dice *por qué*. La explicabilidad busca responder esa pregunta asignando a cada característica de entrada una **atribución**: cuánto empujó ese atributo la predicción hacia una clase u otra. En un dataset con variables demográficas y laborales como `adult_census`, esa atribución no es un lujo académico —es un requisito de auditoría, porque una explicación revela si el modelo se apoya en señales legítimas o en correlaciones espurias con atributos sensibles.
 
-> Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con `validation`, nunca con `test`.
+El laboratorio contrasta métodos locales y globales. **Integrated Gradients** explica una predicción concreta (por qué *este* individuo fue clasificado así) integrando el gradiente del modelo a lo largo de un camino desde una entrada de referencia. La **importancia por permutación** mide, en cambio, cuánto se degrada el rendimiento global cuando se destruye la información de una variable barajándola. Comparamos siempre contra una regresión logística interpretable, cuyo peso por variable ofrece un patrón de referencia de qué debería "importar".
 
-### 📦 Entregables y criterios de aceptación
+### La matemática, paso a paso
 
-**Entregables**
+Atribución por integración del gradiente entre baseline y entrada.
 
-- notebook ejecutado
-- reporte experimental
-- model card
-- comparación con línea base
-- respuesta a preguntas críticas
+**Integrated Gradients** parte de una idea de teoría de juegos y cálculo: para explicar la salida f(x) de un modelo, comparamos x con una entrada de referencia (*baseline*) x′ que representa "ausencia de información" (por ejemplo, el vector de medias o de ceros). La contribución de la característica i es la integral del gradiente parcial ∂f/∂xᵢ a lo largo del segmento recto que va de x′ a x:
 
-**Criterios de éxito**
+IGᵢ(x) = (xᵢ − x′ᵢ) · ∫₀¹ ∂f(x′ + α·(x − x′)) / ∂xᵢ · dα
 
-- cero solapamiento entre train, validation y test
-- selección basada únicamente en validation
-- métricas finales acompañadas por incertidumbre
-- conclusiones que distinguen evidencia de suposición
+Intuitivamente recorremos el camino de x′ hasta x en pasos infinitesimales, acumulamos cuánto responde la salida a la variable i en cada punto del trayecto, y lo multiplicamos por cuánto cambió esa variable, (xᵢ − x′ᵢ). Usar la integral del gradiente —y no el gradiente en un solo punto— evita el problema de la *saturación*: cuando f está en una zona plana, el gradiente local es casi cero aunque la variable sea decisiva, y la integral a lo largo del camino sí captura su efecto. En la práctica la integral se aproxima por una suma de Riemann con m pasos: IGᵢ ≈ (xᵢ − x′ᵢ)·(1/m)·Σₖ ∂f(x′ + (k/m)(x − x′))/∂xᵢ. El método cumple dos propiedades deseables: *sensibilidad* (una variable que cambia la predicción recibe atribución no nula) y *completitud* (la suma de las atribuciones iguala la diferencia f(x) − f(x′)).
 
-### 🗂️ Recursos del laboratorio
+La **importancia por permutación** es un método agnóstico al modelo y de alcance global. Se mide una métrica de referencia s (por ejemplo, exactitud o AUC) sobre datos de validación; luego, para la característica j, se baraja aleatoriamente su columna —rompiendo su relación con la etiqueta pero conservando su distribución marginal— y se vuelve a medir s_j^perm. La importancia es la caída media Iⱼ = s − 𝔼[s_j^perm], normalmente promediada sobre varias permutaciones para estimar su variabilidad. La lógica es contrafactual: si al destruir la información de j el rendimiento no cae, el modelo no la estaba usando; si se desploma, esa variable era load-bearing.
 
-| Recurso | Archivo |
-|---|---|
-| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
-| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
-| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
-| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
-| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
-| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
-| 🖥️ Script de terminal | [`train.py`](train.py) |
-| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
-| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
-| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+Ambos enfoques tienen límites que el laboratorio hace explícitos. Las atribuciones dependen de decisiones —el baseline elegido en Integrated Gradients, la correlación entre variables en la permutación— y pueden ser **inestables**: pequeñas perturbaciones de la entrada, o variables muy correlacionadas entre sí, pueden repartir el crédito de formas distintas sin que la predicción cambie. Una explicación describe cómo *actúa* el modelo, no un mecanismo causal del mundo; confundir atribución con causalidad es el error de interpretación central que hay que evitar.
 
-<!-- /ficha -->
+> **La pregunta que deberías poder responder al terminar:** ¿La explicación es estable ante pequeñas perturbaciones?
 
-<!-- guia -->
-## 🎯 Qué vas a hacer aquí
+### Qué se mide y con qué se decide
 
-Explicar predicciones con Integrated Gradients y permutación.
+El laboratorio reporta `accuracy`, `f1`, `roc_auc`, `pr_auc`. De todas ellas, la que **decide** qué modelo se conserva es `f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
-Es la **ruta 22 de 31** y pertenece a ⚫ [la parte 6, Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md). Llegas desde [🔄 Aumento de datos](../../labs/20_data_augmentation/README.md) y lo que aprendas aquí lo da por supuesto [🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md).
+## 🖥️ Los comandos, explicados
 
-## 🧠 La idea que se pone a prueba
+Todo el laboratorio se maneja con una sola herramienta de terminal, `neural-labs`, que se instala junto con el paquete (`pip install -e ".[dev,notebooks]"`). Cada subcomando hace **una** cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.
 
-Este laboratorio trabaja **Atribución por integración del gradiente entre baseline y entrada**.
+La forma general es siempre la misma:
 
-El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
+```bash
+neural-labs <subcomando> --lab <identificador> [opciones]
+```
 
-> **La pregunta que deberías poder responder al final:** ¿La explicación es estable ante pequeñas perturbaciones?
+| Opción | Valor por defecto | Valores | Qué hace y cuándo cambiarla |
+|---|---|---|---|
+| `--lab` | `21_explainability` | obligatorio | Qué laboratorio se ejecuta. Solo acepta los identificadores del catálogo. |
+| `--quick` | desactivado | — | Usa una fracción real del dataset y pocas épocas. Sirve para comprobar la instalación, no para concluir nada sobre el modelo. |
+| `--split-seed N` | `42` | entero | Semilla que decide **qué ejemplo cae en qué partición**. Se mantiene fija al comparar modelos. |
+| `--training-seed N` | `42` | entero | Semilla de la inicialización de pesos y del barajado de lotes. Es la que se varía para medir cuánta diferencia es simple azar. |
+| `--config` | `baseline` | `baseline` · `improved` | Cuál de las dos configuraciones del laboratorio se usa. |
+| `--device` | `auto` | `auto` · `cpu` · `cuda` · `mps` | Dónde entrenar. `auto` elige GPU si está disponible y cae a CPU si no. |
+| `--training-seeds A B C` | `41 42 43` | enteros | Solo en `benchmark`: la lista de semillas de entrenamiento que se repiten. |
+| `--output-dir` | `runs` | ruta | Dónde se escribe el directorio de la ejecución. |
 
-**Métricas que se reportan:** `accuracy`, `f1`, `roc_auc`, `pr_auc`. La selección del modelo se decide con `f1` sobre `validation`.
+### El script del laboratorio
+
+`labs/21_explainability/train.py` no es un programa distinto: fija el `--lab` y delega en la misma herramienta, de modo que estas dos líneas hacen exactamente lo mismo.
+
+```bash
+python labs/21_explainability/train.py --quick
+neural-labs train --lab 21_explainability --quick
+```
+
+### Lo mismo desde Python
+
+Si prefieres trabajar en un cuaderno o llamar al laboratorio desde tu propio código, la misma ejecución se lanza así. La función devuelve un objeto con el directorio de la ejecución, las métricas y el historial ya cargados:
+
+```python
+from neural_labs.experiments import run_lab
+
+resultado = run_lab(
+    "21_explainability",
+    quick=True,          # False para la ejecución completa
+    config_name="baseline",
+    split_seed=42,       # fija la partición
+    training_seed=43,    # varía la inicialización
+)
+
+print(resultado.run_dir)   # dónde quedaron los archivos
+print(resultado.metrics)   # el diccionario de métricas finales
+```
+
+Y para preparar el dataset sin entrenar —útil para inspeccionarlo antes—:
+
+```python
+from neural_labs.datasets import prepare_dataset
+
+datos = prepare_dataset("21_explainability", quick=True, seed=42)
+print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
+```
 
 ## 🪜 Paso a paso
 
-Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
 ### Paso 1 — Traer el dataset real y partirlo
 
@@ -214,7 +224,7 @@ neural-labs benchmark --lab 21_explainability --quick --split-seed 42 --training
 
 ## 🔍 Cómo leer lo que produce la ejecución
 
-Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:
 
 | Archivo | Qué contiene y qué mirar |
 |---|---|
@@ -242,6 +252,12 @@ Cada ejecución escribe su propio directorio. Estos son los archivos que encontr
 - **Las dos semillas no son intercambiables.** `--split-seed` cambia *qué datos* caen en cada partición; `--training-seed` cambia *cómo se inicializa y baraja* el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.
 - **Límite declarado de este dataset.** Incluye advertencias éticas sobre variables demográficas y sesgo.
 
+### Riesgos al interpretar los resultados
+
+Incluye advertencias éticas sobre variables demográficas y sesgo.
+
+El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.
+
 ## ✅ Antes de darlo por terminado
 
 El laboratorio está aprobado cuando se cumplen estos criterios:
@@ -259,31 +275,44 @@ Y cuando tienes estos entregables:
 - [ ] comparación con línea base
 - [ ] respuesta a preguntas críticas
 
-Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+El plan experimental con la tabla que hay que completar está en `experiments.md`, y las preguntas con su rúbrica, en `assessment.md`. Ambos documentos se abren desde la barra de navegación de arriba.
 
-## 🧪 Para ir más lejos
+### Para ir más lejos
 
 - Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
 - Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
 - Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
 - Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
 
-## 📚 De dónde sale cada cosa de esta guía
+## 📚 Fuentes
 
-Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:
+
+> Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.
+
+- Molnar — *Interpretable Machine Learning* (libro online, molnar.github.io/interpretable-ml-book) — referencia integral sobre métodos de interpretabilidad, incluidos importancia por permutación, LIME y SHAP.
+- Ribeiro, Singh y Guestrin (2016), *"Why Should I Trust You?": Explaining the Predictions of Any Classifier (LIME)*, KDD — explicaciones locales mediante modelos sustitutos interpretables.
+- Lundberg y Lee (2017), *A Unified Approach to Interpreting Model Predictions (SHAP)*, NeurIPS — marco unificado de atribución basado en valores de Shapley.
+- Selvaraju et al. (2017), *Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization*, ICCV — mapas de atribución basados en gradientes para redes convolucionales.
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/2/adult
+- Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+### Cómo comprobar lo que dice esta guía
+
+Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:
 
 | Lo que dice la guía | Dónde comprobarlo |
 |---|---|
-| Objetivo, línea base, métricas y arquitectura | [`configs/labs.yaml`](../../configs/labs.yaml) |
-| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
-| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
-| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/experiments.py`](../../src/neural_labs/experiments.py) |
-| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
-| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+| Objetivo, línea base, métricas y arquitectura | `configs/labs.yaml` |
+| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | `configs/baseline.yaml` y `configs/improved.yaml` |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |
+| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |
+| El orden de los pasos y los archivos que escribe cada ejecución | `src/neural_labs/experiments.py` |
+| La teoría y su bibliografía | `theory.md` |
+| La regla general del protocolo | `docs/experiment-protocol.md` |
 
-Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
-<!-- /guia -->
+Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

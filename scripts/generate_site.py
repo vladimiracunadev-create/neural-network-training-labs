@@ -59,6 +59,10 @@ LAB_EMOJI = {
     "29_diffusion_ddpm": "🌫️", "30_self_supervised_simclr": "🪞",
 }
 
+# `theory.md` es la fuente de la sección teórica que la guía ya incrusta, así que
+# no se vuelve a renderizar en la página del laboratorio.
+SKIP_IN_PAGE = {"theory.md"}
+
 MD = markdown.Markdown(
     extensions=["extra", "toc", "sane_lists", "tables", "fenced_code", "admonition"],
     output_format="html5",
@@ -199,7 +203,8 @@ def lab_page(lab: dict, idx: int, total: int, prev: dict | None, nxt: dict | Non
     sections: list[str] = []
     for doc, heading in LAB_DOCS:
         path = lab["src_dir"] / doc
-        if not path.exists():
+        # La guía ya incrusta la teoría; renderizarla otra vez la duplicaría.
+        if not path.exists() or doc in SKIP_IN_PAGE:
             continue
         anchor = doc.replace(".md", "").replace("_", "-")
         rendered = render_doc(path, lab["repo_path"])

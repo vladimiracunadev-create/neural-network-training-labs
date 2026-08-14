@@ -8,25 +8,17 @@
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-<!-- ficha -->
-## 📋 Ficha del laboratorio
+## 🎯 Qué vas a hacer aquí
 
-![ruta](https://img.shields.io/badge/ruta-17%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-fundamentos-3fb950?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Central-2e8b57?style=flat-square) ![horas](https://img.shields.io/badge/horas-~4%20h-f0b429?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-iris-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-macro__f1-8957e5?style=flat-square)
+Derivar y programar backpropagation en una MLP pequeña.
 
-| Campo | Valor |
-|---|---|
-| 🧭 Posición | Ruta **17 de 31** del recorrido · categoría central |
-| 🎚️ Nivel | fundamentos |
-| ⏱️ Dedicación estimada | 4 horas |
-| 🧩 Tarea | `multiclass_classification` |
-| 🏗️ Arquitectura | `numpy_mlp` |
-| 🗄️ Dataset | [`iris`](https://archive.ics.uci.edu/dataset/53/iris) — UCI |
-| ⚖️ Licencia del dataset | CC BY 4.0 |
-| 🎯 Métrica de selección | `macro_f1` sobre `validation` |
-| 📏 Línea base a superar | Regresión logística multinomial |
-| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+Es la **ruta 17 de 31** del recorrido y pertenece a 🔴 la parte 5, *La mecánica fina, ahora en profundidad*. Llegas desde **Aprendizaje federado por participante** y lo que hagas aquí lo da por supuesto **Activaciones y funciones de pérdida**.
 
-### 🎯 Qué vas a poder hacer al terminar
+Trabajarás con el dataset **`iris`** (UCI, licencia: CC BY 4.0), y tendrás que superar la línea base **Regresión logística multinomial**, decidiendo con la métrica `macro_f1` medida sobre `validation`. Nivel fundamentos, unas **4 horas** de dedicación.
+
+**Lo que conviene traer resuelto de las rutas anteriores:** Python básico, NumPy, álgebra lineal elemental.
+
+**Al terminar deberías ser capaz de:**
 
 - Derivar y programar backpropagation en una MLP pequeña.
 - Preparar y auditar el dataset real iris sin fuga de datos.
@@ -34,81 +26,111 @@
 - Comparar contra la línea base: Regresión logística multinomial.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-### 🧩 Prerrequisitos
+## 🧠 La teoría de este laboratorio
 
-- Python básico
-- NumPy
-- álgebra lineal elemental
+Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
-> Si alguno te falta, retrocede antes de continuar. Viniendo de [🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md).
+### De qué trata
 
-### ⚙️ `baseline` frente a `improved`
+Este laboratorio estudia **backpropagation manual** usando `iris`, un dataset público real procedente de UCI. El objetivo es abrir la caja negra: en lugar de llamar a `loss.backward()` y confiar en el autodiferenciador, se derivan a mano los gradientes de una perceptrón multicapa (MLP) de dos capas y se programan paso a paso. Entender este mecanismo es entender *cómo aprenden* de verdad las redes neuronales.
 
-| Parámetro | [`baseline.yaml`](configs/baseline.yaml) | [`improved.yaml`](configs/improved.yaml) |
-|---|---|---|
-| Épocas | `20` | `50` |
-| Tasa de aprendizaje | `0.001` | `0.0005` |
-| Paciencia (early stopping) | `5` | `8` |
-| Precisión mixta (AMP) | no | sí |
-| Procesos de carga | `0` | `2` |
+La retropropagación no es más que la **regla de la cadena** del cálculo aplicada con orden. Una red es una composición de funciones: entrada → capa 1 → activación → capa 2 → softmax → pérdida. Para saber cómo cambiar cada peso y reducir la pérdida, necesitamos la derivada de la pérdida respecto a ese peso. La regla de la cadena nos dice que esa derivada es un producto de derivadas locales encadenadas desde la salida hacia atrás. La idea brillante de backprop es reutilizar cálculos: se calcula una vez el "error" en cada capa y se propaga hacia la capa anterior, evitando recomputar el mismo camino muchas veces.
 
-> Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con `validation`, nunca con `test`.
+El flujo tiene dos fases. En el **paso hacia adelante** (forward) se calculan y se guardan las activaciones de cada capa. En el **paso hacia atrás** (backward) se parte del error en la salida y se lo empuja capa por capa hacia la entrada, acumulando en el camino los gradientes de pesos y sesgos. La pregunta crítica del laboratorio —dónde aparecen gradientes que explotan o desaparecen— se vuelve tangible al ver cómo cada capa multiplica el gradiente por factores que pueden encogerlo o amplificarlo.
 
-### 📦 Entregables y criterios de aceptación
+### La matemática, paso a paso
 
-**Entregables**
+Consideremos una MLP con una capa oculta. Con entrada x, la propagación hacia adelante es:
 
-- notebook ejecutado
-- reporte experimental
-- model card
-- comparación con línea base
-- respuesta a preguntas críticas
+  z₁ = W₁ x + b₁,  a₁ = σ(z₁),  z₂ = W₂ a₁ + b₂,  ŷ = softmax(z₂)
 
-**Criterios de éxito**
+y la pérdida de entropía cruzada para la etiqueta one-hot y es ℒ = −Σₖ yₖ · log ŷₖ.
 
-- cero solapamiento entre train, validation y test
-- selección basada únicamente en validation
-- métricas finales acompañadas por incertidumbre
-- conclusiones que distinguen evidencia de suposición
+La retropropagación calcula ∂ℒ/∂W₂, ∂ℒ/∂b₂, ∂ℒ/∂W₁ y ∂ℒ/∂b₁ aplicando la regla de la cadena desde la salida. Definimos el **error de la capa de salida**; con softmax + entropía cruzada este error se simplifica de forma notable:
 
-### 🗂️ Recursos del laboratorio
+  δ₂ = ∂ℒ/∂z₂ = ŷ − y
 
-| Recurso | Archivo |
-|---|---|
-| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
-| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
-| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
-| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
-| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
-| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
-| 🖥️ Script de terminal | [`train.py`](train.py) |
-| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
-| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
-| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+De ahí bajan directamente los gradientes de la segunda capa:
 
-<!-- /ficha -->
+  ∂ℒ/∂W₂ = δ₂ · a₁ᵀ,   ∂ℒ/∂b₂ = δ₂
 
-<!-- guia -->
-## 🎯 Qué vas a hacer aquí
+El error se propaga a la capa oculta multiplicando por la matriz de pesos transpuesta y por la derivada de la activación, usando el producto de Hadamard ⊙ (elemento a elemento):
 
-Derivar y programar backpropagation en una MLP pequeña.
+  δ₁ = (W₂ᵀ δ₂) ⊙ σ′(z₁)
 
-Es la **ruta 17 de 31** y pertenece a 🔴 [la parte 5, La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md). Llegas desde [🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md) y lo que aprendas aquí lo da por supuesto [📐 Activaciones y funciones de pérdida](../../labs/17_activations_and_losses/README.md).
+  ∂ℒ/∂W₁ = δ₁ · xᵀ,   ∂ℒ/∂b₁ = δ₁
 
-## 🧠 La idea que se pone a prueba
+Finalmente, todos los parámetros se actualizan con descenso de gradiente: W ← W − η · ∂ℒ/∂W y b ← b − η · ∂ℒ/∂b, con η la tasa de aprendizaje.
 
-Este laboratorio trabaja **Regla de la cadena para W2, b2, W1 y b1**.
+Aquí se ven los **gradientes que se desvanecen o explotan**. El término δ₁ contiene el producto W₂ᵀ δ₂ ⊙ σ′(z₁): si σ es una sigmoide o tanh saturada, σ′(z₁) ≈ 0 y el gradiente se apaga (vanishing); si los pesos son grandes, los factores se acumulan y el gradiente crece sin control (exploding). En una red de L capas, este patrón se repite L veces, así que el gradiente en las capas iniciales es un producto de L factores y su magnitud depende críticamente de que esos factores ronden 1. Comprobar los gradientes analíticos contra una estimación numérica (∂ℒ/∂θ ≈ [ℒ(θ+ε) − ℒ(θ−ε)] / 2ε) es la prueba de que la derivación es correcta. La formulación conecta cuatro elementos: representación de entrada x, función del modelo (MLP), función de pérdida (entropía cruzada) y regla de actualización (SGD con ∇). El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.
 
-El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
+> **La pregunta que deberías poder responder al terminar:** ¿Dónde aparecen gradientes que explotan o desaparecen?
 
-> **La pregunta que deberías poder responder al final:** ¿Dónde aparecen gradientes que explotan o desaparecen?
+### Qué se mide y con qué se decide
 
-**Métricas que se reportan:** `accuracy`, `macro_f1`. La selección del modelo se decide con `macro_f1` sobre `validation`.
+El laboratorio reporta `accuracy`, `macro_f1`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+
+## 🖥️ Los comandos, explicados
+
+Todo el laboratorio se maneja con una sola herramienta de terminal, `neural-labs`, que se instala junto con el paquete (`pip install -e ".[dev,notebooks]"`). Cada subcomando hace **una** cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.
+
+La forma general es siempre la misma:
+
+```bash
+neural-labs <subcomando> --lab <identificador> [opciones]
+```
+
+| Opción | Valor por defecto | Valores | Qué hace y cuándo cambiarla |
+|---|---|---|---|
+| `--lab` | `16_backpropagation_manual` | obligatorio | Qué laboratorio se ejecuta. Solo acepta los identificadores del catálogo. |
+| `--quick` | desactivado | — | Usa una fracción real del dataset y pocas épocas. Sirve para comprobar la instalación, no para concluir nada sobre el modelo. |
+| `--split-seed N` | `42` | entero | Semilla que decide **qué ejemplo cae en qué partición**. Se mantiene fija al comparar modelos. |
+| `--training-seed N` | `42` | entero | Semilla de la inicialización de pesos y del barajado de lotes. Es la que se varía para medir cuánta diferencia es simple azar. |
+| `--config` | `baseline` | `baseline` · `improved` | Cuál de las dos configuraciones del laboratorio se usa. |
+| `--device` | `auto` | `auto` · `cpu` · `cuda` · `mps` | Dónde entrenar. `auto` elige GPU si está disponible y cae a CPU si no. |
+| `--training-seeds A B C` | `41 42 43` | enteros | Solo en `benchmark`: la lista de semillas de entrenamiento que se repiten. |
+| `--output-dir` | `runs` | ruta | Dónde se escribe el directorio de la ejecución. |
+
+### El script del laboratorio
+
+`labs/16_backpropagation_manual/train.py` no es un programa distinto: fija el `--lab` y delega en la misma herramienta, de modo que estas dos líneas hacen exactamente lo mismo.
+
+```bash
+python labs/16_backpropagation_manual/train.py --quick
+neural-labs train --lab 16_backpropagation_manual --quick
+```
+
+### Lo mismo desde Python
+
+Si prefieres trabajar en un cuaderno o llamar al laboratorio desde tu propio código, la misma ejecución se lanza así. La función devuelve un objeto con el directorio de la ejecución, las métricas y el historial ya cargados:
+
+```python
+from neural_labs.experiments import run_lab
+
+resultado = run_lab(
+    "16_backpropagation_manual",
+    quick=True,          # False para la ejecución completa
+    config_name="baseline",
+    split_seed=42,       # fija la partición
+    training_seed=43,    # varía la inicialización
+)
+
+print(resultado.run_dir)   # dónde quedaron los archivos
+print(resultado.metrics)   # el diccionario de métricas finales
+```
+
+Y para preparar el dataset sin entrenar —útil para inspeccionarlo antes—:
+
+```python
+from neural_labs.datasets import prepare_dataset
+
+datos = prepare_dataset("16_backpropagation_manual", quick=True, seed=42)
+print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
+```
 
 ## 🪜 Paso a paso
 
-Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
 ### Paso 1 — Traer el dataset real y partirlo
 
@@ -214,7 +236,7 @@ neural-labs benchmark --lab 16_backpropagation_manual --quick --split-seed 42 --
 
 ## 🔍 Cómo leer lo que produce la ejecución
 
-Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:
 
 | Archivo | Qué contiene y qué mirar |
 |---|---|
@@ -241,6 +263,12 @@ Cada ejecución escribe su propio directorio. Estos son los archivos que encontr
 - **Las dos semillas no son intercambiables.** `--split-seed` cambia *qué datos* caen en cada partición; `--training-seed` cambia *cómo se inicializa y baraja* el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.
 - **Límite declarado de este dataset.** 150 mediciones botánicas reales de tres especies de Iris.
 
+### Riesgos al interpretar los resultados
+
+150 mediciones botánicas reales de tres especies de Iris.
+
+El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.
+
 ## ✅ Antes de darlo por terminado
 
 El laboratorio está aprobado cuando se cumplen estos criterios:
@@ -258,31 +286,45 @@ Y cuando tienes estos entregables:
 - [ ] comparación con línea base
 - [ ] respuesta a preguntas críticas
 
-Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+El plan experimental con la tabla que hay que completar está en `experiments.md`, y las preguntas con su rúbrica, en `assessment.md`. Ambos documentos se abren desde la barra de navegación de arriba.
 
-## 🧪 Para ir más lejos
+### Para ir más lejos
 
 - Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
 - Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
 - Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
 - Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
 
-## 📚 De dónde sale cada cosa de esta guía
+## 📚 Fuentes
 
-Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:
+
+> Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.
+
+- Goodfellow, Bengio & Courville — *Deep Learning* (MIT Press, 2016), cap. 6 — redes feedforward y el algoritmo de retropropagación como aplicación de la regla de la cadena.
+- Nielsen — *Neural Networks and Deep Learning* (online, 2015), cap. 2 — derivación paso a paso de backpropagation con las cuatro ecuaciones fundamentales.
+- Bishop — *Pattern Recognition and Machine Learning* (Springer, 2006), cap. 5 — redes neuronales, propagación de errores y verificación numérica de gradientes.
+- Rumelhart, Hinton & Williams (1986), *Learning representations by back-propagating errors*, Nature — artículo que popularizó la retropropagación para entrenar redes multicapa.
+- Baydin et al. (2018), *Automatic Differentiation in Machine Learning: a Survey*, JMLR — panorama de la diferenciación automática que generaliza el backprop manual de este laboratorio.
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/53/iris
+- Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+### Cómo comprobar lo que dice esta guía
+
+Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:
 
 | Lo que dice la guía | Dónde comprobarlo |
 |---|---|
-| Objetivo, línea base, métricas y arquitectura | [`configs/labs.yaml`](../../configs/labs.yaml) |
-| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
-| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
-| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/experiments.py`](../../src/neural_labs/experiments.py) |
-| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
-| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+| Objetivo, línea base, métricas y arquitectura | `configs/labs.yaml` |
+| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | `configs/baseline.yaml` y `configs/improved.yaml` |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |
+| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |
+| El orden de los pasos y los archivos que escribe cada ejecución | `src/neural_labs/experiments.py` |
+| La teoría y su bibliografía | `theory.md` |
+| La regla general del protocolo | `docs/experiment-protocol.md` |
 
-Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
-<!-- /guia -->
+Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

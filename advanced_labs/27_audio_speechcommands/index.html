@@ -145,150 +145,104 @@ body { margin: 0; background: var(--bg); color: var(--ink);
     <div class="lab-hero">
       <div class="lab-kicker">Laboratorio 27 · Avanzada · Ruta 28 / 31 · <a href="../../parts/07-especializaciones-avanzadas.html">Parte 7 — Especializaciones avanzadas</a></div>
       <h1>🎙️ Clasificación de audio con SpeechCommands</h1>
-      <div class="lab-actions"><a class="btn btn-ghost" href="#README">📄 Guía</a><a class="btn btn-ghost" href="#theory">🧠 Teoría</a><a class="btn btn-ghost" href="#experiments">🔬 Experimentos</a><a class="btn btn-ghost" href="#assessment">📝 Evaluación</a><a class="btn btn-ghost" href="notebook.ipynb">📓 Recorrido</a><a class="btn btn-ghost" href="notebook_student.ipynb">✏️ Estudiante</a><a class="btn btn-ghost" href="notebook_solution.ipynb">✅ Solución</a></div>
+      <div class="lab-actions"><a class="btn btn-ghost" href="#README">📄 Guía</a><a class="btn btn-ghost" href="#experiments">🔬 Experimentos</a><a class="btn btn-ghost" href="#assessment">📝 Evaluación</a><a class="btn btn-ghost" href="notebook.ipynb">📓 Recorrido</a><a class="btn btn-ghost" href="notebook_student.ipynb">✏️ Estudiante</a><a class="btn btn-ghost" href="notebook_solution.ipynb">✅ Solución</a></div>
     </div>
     <nav class="pager"><a class="pg pg-prev" href="../../advanced_labs/26_segmentation_unet/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🧷 Segmentación semántica con U-Net</span></a><a class="pg pg-next" href="../../advanced_labs/28_wgan_gp/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🖌️ WGAN-GP sobre Fashion-MNIST</span></a></nav>
     <article class="content">
       <span id="README"></span><h1 id="clasificacion-de-audio-con-speechcommands">Clasificación de audio con SpeechCommands</h1>
-<!-- ficha -->
-<h2 id="ficha-del-laboratorio">📋 Ficha del laboratorio</h2>
-<div class="chips"><span class="chip"><b>ruta</b><span style="background:#7c5cff">28 de 31</span></span> <span class="chip"><b>nivel</b><span style="background:#8957e5">avanzado</span></span> <span class="chip"><b>categoría</b><span style="background:#2e8b57">Avanzada</span></span> <span class="chip"><b>dataset</b><span style="background:#1f6feb">speechcommands_v0.02</span></span> <span class="chip"><b>selección</b><span style="background:#8957e5">accuracy</span></span></div>
-<table>
-<thead>
-<tr>
-<th>Campo</th>
-<th>Valor</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>🧭 Posición</td>
-<td>Ruta <strong>28 de 31</strong> del recorrido · categoría avanzada</td>
-</tr>
-<tr>
-<td>🎚️ Nivel</td>
-<td>avanzado</td>
-</tr>
-<tr>
-<td>🗺️ Dominio</td>
-<td><code>audio</code></td>
-</tr>
-<tr>
-<td>🏗️ Arquitectura</td>
-<td><code>audio-cnn</code></td>
-</tr>
-<tr>
-<td>🗄️ Dataset</td>
-<td><code>speechcommands_v0.02</code> — Torchaudio / Google Speech Commands</td>
-</tr>
-<tr>
-<td>⚖️ Licencia del dataset</td>
-<td>Creative Commons BY 4.0</td>
-</tr>
-<tr>
-<td>🎯 Métrica de selección</td>
-<td><code>accuracy</code> sobre <code>validation</code></td>
-</tr>
-<tr>
-<td>📏 Línea base a superar</td>
-<td>MFCC + regresión logística</td>
-</tr>
-<tr>
-<td>🔒 Política de <code>test</code></td>
-<td>se abre una sola vez, tras escribir <code>experiment.lock.json</code></td>
-</tr>
-</tbody>
-</table>
-<h3 id="que-vas-a-poder-hacer-al-terminar">🎯 Qué vas a poder hacer al terminar</h3>
+<h2 id="que-vas-a-hacer-aqui">🎯 Qué vas a hacer aquí</h2>
+<p>Clasificar comandos hablados desde waveform y log-mel spectrograms.</p>
+<p>Es la <strong>ruta 28 de 31</strong> del recorrido y pertenece a 🔬 la parte 7, <em>Especializaciones avanzadas</em>. Llegas desde <strong>Segmentación semántica con U-Net</strong> y lo que hagas aquí lo da por supuesto <strong>WGAN-GP sobre Fashion-MNIST</strong>.</p>
+<p>Trabajarás con el dataset <strong><code>speechcommands_v0.02</code></strong> (Torchaudio / Google Speech Commands, licencia: Creative Commons BY 4.0), y tendrás que superar la línea base <strong>MFCC + regresión logística</strong>, decidiendo con la métrica <code>accuracy</code> medida sobre <code>validation</code>. Nivel avanzado.</p>
+<p><strong>Qué recibe el modelo como entrada:</strong> audio mono de un segundo a 16 kHz.</p>
+<p><strong>Lo que conviene traer resuelto de las rutas anteriores:</strong> CNN, señales, transformada tiempo-frecuencia.</p>
+<p><strong>Al terminar deberías ser capaz de:</strong></p>
 <ul>
 <li>Clasificar comandos hablados desde waveform y log-mel spectrograms.</li>
 <li>Interpretar accuracy, macro_f1</li>
 <li>Aplicar sellado de test y reproducibilidad</li>
 </ul>
-<h3 id="prerrequisitos">🧩 Prerrequisitos</h3>
-<ul>
-<li>CNN</li>
-<li>señales</li>
-<li>transformada tiempo-frecuencia</li>
-</ul>
-<blockquote>
-<p>Si alguno te falta, retrocede antes de continuar. Viniendo de <a href="../../advanced_labs/26_segmentation_unet/index.html">🧷 Segmentación semántica con U-Net</a>.</p>
-</blockquote>
-<h3 id="entregables-y-criterios-de-aceptacion">📦 Entregables y criterios de aceptación</h3>
-<p><strong>Entregables</strong></p>
-<ul>
-<li>notebook ejecutado</li>
-<li>reporte experimental</li>
-<li>model card</li>
-</ul>
-<h3 id="recursos-del-laboratorio">🗂️ Recursos del laboratorio</h3>
+<h2 id="la-teoria-de-este-laboratorio">🧠 La teoría de este laboratorio</h2>
+<p>Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en <code>theory.md</code>, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)</p>
+<h3 id="la-matematica-paso-a-paso">La matemática, paso a paso</h3>
+<p>El audio crudo es una <strong>forma de onda</strong> (waveform): una señal x[t] de amplitud muestreada en el tiempo, aquí a 16 kHz durante un segundo (≈16 000 muestras por clip). Clasificar directamente sobre esa secuencia larga y unidimensional es difícil, porque la información fonética relevante vive en el <em>contenido frecuencial</em> que varía a lo largo del tiempo. Por eso se transforma la señal a una representación tiempo-frecuencia mediante la <strong>transformada de Fourier de corto tiempo</strong> (STFT): se divide la onda en ventanas solapadas y se calcula el espectro de cada una,</p>
+<p>X(m, k) = Σ_(n) x[n] · w[n − m] · e^(−j·2π·k·n / N),</p>
+<p>donde w es una ventana (p. ej. Hann), m indexa el tiempo y k la frecuencia. El <strong>espectrograma</strong> es la magnitud al cuadrado |X(m, k)|²: una "imagen" 2D donde un eje es tiempo y el otro frecuencia, y la intensidad es la energía.</p>
+<p>Sobre ese espectrograma se aplican dos transformaciones inspiradas en la percepción auditiva humana. Primero, la <strong>escala mel</strong> comprime el eje de frecuencia con un banco de filtros triangulares espaciados según mel(f) = 2595 · log₁₀(1 + f/700), que da más resolución a las frecuencias bajas —donde el oído distingue mejor— y agrupa las altas. Segundo, se toma el <strong>logaritmo</strong> de la energía, log(mel-energía + ε), imitando que percibimos la intensidad de forma aproximadamente logarítmica y comprimiendo el enorme rango dinámico; ε &gt; 0 evita log(0). El resultado es el <strong>espectrograma log-mel</strong>, la entrada del modelo. Los <strong>MFCC</strong> (coeficientes cepstrales en frecuencias mel) van un paso más allá aplicando una transformada coseno discreta que decorrelaciona los canales mel; se usan en la línea base MFCC + regresión logística.</p>
+<p>Como el log-mel es una imagen 2D, el modelo natural es una <strong>CNN 2D</strong>. Cada capa convolucional desliza filtros aprendidos K sobre la entrada, (X * K)(i, j) = Σ_(a,b) X(i+a, j+b) · K(a, b), detectando patrones locales tiempo-frecuencia (formantes, transiciones, ráfagas de energía) con pesos compartidos; el apilamiento con submuestreo construye representaciones cada vez más abstractas hasta una capa densa con softmax que produce p(clase | audio). El entrenamiento minimiza la entropía cruzada ℒ = −Σ_c y_c · log ŷ_c, y esta idea de tratar el audio como imagen espectral es la que Hershey et al. escalaron a clasificación de audio a gran escala.</p>
+<p>La <strong>robustez ante ruido</strong> es central: en uso real el micrófono capta fondo, reverberación y solapamientos. Se evalúa perturbando la entrada, por ejemplo x̃ = x + n con ruido n de una relación señal-ruido dada (SNR = 10·log₁₀(P_señal / P_ruido) dB), y midiendo cuánto cae la accuracy. Un modelo que aprende rasgos fonéticos estables degrada poco; uno que memoriza artefactos del set limpio colapsa. Esto también motiva aumentaciones (desplazamiento temporal, ruido, enmascarado de bandas) durante el entrenamiento.</p>
+<h3 id="que-conviene-graficar">Qué conviene graficar</h3>
+<p>Waveform, espectrograma, errores por palabra y ruido. Contrastar la onda cruda con su espectrograma log-mel muestra por qué la representación 2D facilita la clasificación; el desglose de errores por palabra revela confusiones entre comandos fonéticamente parecidos, y las pruebas con ruido cuantifican la robustez.</p>
+<h3 id="que-se-mide-y-con-que-se-decide">Qué se mide y con qué se decide</h3>
+<p>El laboratorio reporta <code>accuracy</code>, <code>macro_f1</code>, <code>confusion_matrix</code>, <code>noise_robustness</code>. De todas ellas, la que <strong>decide</strong> qué modelo se conserva es <code>accuracy</code>, y se mide siempre sobre <code>validation</code>: es la única forma de que <code>test</code> siga siendo una estimación honesta de lo que pasará con datos nuevos.</p>
+<h2 id="los-comandos-explicados">🖥️ Los comandos, explicados</h2>
+<p>Todo el laboratorio se maneja con una sola herramienta de terminal, <code>neural-labs</code>, que se instala junto con el paquete (<code>pip install -e ".[dev,notebooks]"</code>). Cada subcomando hace <strong>una</strong> cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.</p>
+<p>La forma general es siempre la misma:</p>
+<pre><code class="language-bash">neural-labs &lt;subcomando&gt; --track &lt;identificador&gt; [opciones]
+</code></pre>
 <table>
 <thead>
 <tr>
-<th>Recurso</th>
-<th>Archivo</th>
+<th>Opción</th>
+<th>Valor por defecto</th>
+<th>Valores</th>
+<th>Qué hace y cuándo cambiarla</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>🧠 Teoría y referencias</td>
-<td><a href="#theory"><code>theory.md</code></a></td>
+<td><code>--track</code></td>
+<td><code>27_audio_speechcommands</code></td>
+<td>obligatorio</td>
+<td>Qué especialización se entrena. Solo acepta los seis identificadores existentes.</td>
 </tr>
 <tr>
-<td>🔬 Plan de experimentos</td>
-<td><a href="#experiments"><code>experiments.md</code></a></td>
+<td><code>--quick</code></td>
+<td>desactivado</td>
+<td>—</td>
+<td>Reduce datos y épocas para comprobar que la ruta corre de extremo a extremo.</td>
 </tr>
 <tr>
-<td>📝 Evaluación y rúbrica</td>
-<td><a href="#assessment"><code>assessment.md</code></a></td>
+<td><code>--split-seed N</code></td>
+<td><code>42</code></td>
+<td>entero</td>
+<td>Semilla que decide <strong>qué ejemplo cae en qué partición</strong>. Se mantiene fija al comparar.</td>
 </tr>
 <tr>
-<td>📓 Notebook de recorrido</td>
-<td><a href="notebook.ipynb"><code>notebook.ipynb</code></a></td>
+<td><code>--training-seed N</code></td>
+<td><code>42</code></td>
+<td>entero</td>
+<td>Semilla de la inicialización de pesos y del barajado. Es la que se varía para medir dispersión.</td>
 </tr>
 <tr>
-<td>✏️ Notebook de estudiante</td>
-<td><a href="notebook_student.ipynb"><code>notebook_student.ipynb</code></a></td>
+<td><code>--device</code></td>
+<td><code>auto</code></td>
+<td><code>auto</code> · <code>cpu</code> · <code>cuda</code> · <code>mps</code></td>
+<td>Dónde entrenar. <code>auto</code> elige GPU si la hay.</td>
 </tr>
 <tr>
-<td>✅ Notebook de solución</td>
-<td><a href="notebook_solution.ipynb"><code>notebook_solution.ipynb</code></a></td>
-</tr>
-<tr>
-<td>🖥️ Script de terminal</td>
-<td><a href="train.py"><code>train.py</code></a></td>
-</tr>
-<tr>
-<td>🎛️ Configuración base</td>
-<td><a href="configs/baseline.yaml"><code>configs/baseline.yaml</code></a></td>
-</tr>
-<tr>
-<td>🎚️ Configuración ampliada</td>
-<td><a href="configs/improved.yaml"><code>configs/improved.yaml</code></a></td>
-</tr>
-<tr>
-<td>🗄️ Ficha del dataset</td>
-<td><a href="data/dataset.yaml"><code>data/dataset.yaml</code></a></td>
-</tr>
-<tr>
-<td>🧾 Metadatos de la lección</td>
-<td><a href="lesson.yaml"><code>lesson.yaml</code></a></td>
+<td><code>--output-dir</code></td>
+<td><code>runs-advanced</code></td>
+<td>ruta</td>
+<td>Dónde se escribe el directorio de la ejecución.</td>
 </tr>
 </tbody>
 </table>
-<!-- /ficha -->
+<h3 id="lo-mismo-desde-python">Lo mismo desde Python</h3>
+<pre><code class="language-python">from neural_labs.advanced.training import train_advanced
 
-<!-- guia -->
-<h2 id="que-vas-a-hacer-aqui">🎯 Qué vas a hacer aquí</h2>
-<p>Clasificar comandos hablados desde waveform y log-mel spectrograms.</p>
-<p>Es la <strong>ruta 28 de 31</strong> y pertenece a 🔬 <a href="../../parts/07-especializaciones-avanzadas.html">la parte 7, Especializaciones avanzadas</a>. Llegas desde <a href="../../advanced_labs/26_segmentation_unet/index.html">🧷 Segmentación semántica con U-Net</a> y lo que aprendas aquí lo da por supuesto <a href="../../advanced_labs/28_wgan_gp/index.html">🖌️ WGAN-GP sobre Fashion-MNIST</a>.</p>
-<p><strong>Entrada del modelo:</strong> audio mono de un segundo a 16 kHz.</p>
-<h2 id="la-idea-que-se-pone-a-prueba">🧠 La idea que se pone a prueba</h2>
-<p>Este laboratorio trabaja <strong>Waveform, espectrograma log-mel, convolución 2D y robustez ante ruido</strong>.</p>
-<p>El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en <a href="#theory"><code>theory.md</code></a>. Léelo antes de entrenar: los pasos de abajo te dicen <em>qué</em> hacer, y la teoría, <em>por qué</em> funciona y cuándo deja de funcionar.</p>
-<p><strong>Métricas que se reportan:</strong> <code>accuracy</code>, <code>macro_f1</code>, <code>confusion_matrix</code>, <code>noise_robustness</code>. La selección del modelo se decide con <code>accuracy</code> sobre <code>validation</code>.</p>
+resultado = train_advanced(
+    &quot;27_audio_speechcommands&quot;,
+    quick=True,
+    split_seed=42,
+    training_seed=43,
+)
+
+print(resultado[&quot;run_dir&quot;])
+print(resultado[&quot;metrics&quot;])
+</code></pre>
 <h2 id="paso-a-paso">🪜 Paso a paso</h2>
-<p>Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.</p>
+<p>Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.</p>
 <h3 id="paso-1-estudiar-la-teoria-antes-de-ejecutar-nada">Paso 1 — Estudiar la teoría antes de ejecutar nada</h3>
 <p><strong>Qué ocurre.</strong> Leer <a href="#theory"><code>theory.md</code></a>, que desarrolla Waveform, espectrograma log-mel, convolución 2D y robustez ante ruido. y cita las obras y papers de los que procede.</p>
 <p><strong>Por qué.</strong> Estas rutas usan arquitecturas donde un error de comprensión no se manifiesta como un fallo, sino como un número plausible pero equivocado.</p>
@@ -316,7 +270,7 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 <p><strong>Por qué.</strong> En generación y aprendizaje autosupervisado las métricas son aproximaciones: sin declarar qué NO demuestran, invitan a conclusiones que los números no sostienen.</p>
 <p><strong>Cómo sabes que salió bien.</strong> Tu reporte dice qué mejoró, cuánto costó y en qué condiciones no esperarías el mismo resultado.</p>
 <h2 id="como-leer-lo-que-produce-la-ejecucion">🔍 Cómo leer lo que produce la ejecución</h2>
-<p>Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:</p>
+<p>Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:</p>
 <table>
 <thead>
 <tr>
@@ -357,6 +311,8 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 <li><strong>Las dos semillas no son intercambiables.</strong> <code>--split-seed</code> cambia <em>qué datos</em> caen en cada partición; <code>--training-seed</code> cambia <em>cómo se inicializa y baraja</em> el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.</li>
 <li><strong>Límite declarado de este dataset.</strong> Acentos, micrófonos y ambientes no están representados uniformemente.</li>
 </ul>
+<h3 id="riesgos-al-interpretar-los-resultados">Riesgos al interpretar los resultados</h3>
+<p>Acentos, micrófonos y ambientes no están representados uniformemente. Una accuracy alta en el set limpio no garantiza desempeño con hablantes, dispositivos o entornos distintos a los del corpus, y la robustez debe verificarse explícitamente con ruido antes de confiar en el modelo.</p>
 <h2 id="antes-de-darlo-por-terminado">✅ Antes de darlo por terminado</h2>
 <p>Y cuando tienes estos entregables:</p>
 <ul>
@@ -364,16 +320,25 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 <li>[ ] reporte experimental</li>
 <li>[ ] model card</li>
 </ul>
-<p>Las preguntas y la rúbrica con la que se corrige están en <a href="#assessment"><code>assessment.md</code></a>; el plan de experimentos y la tabla multi-semilla que hay que completar, en <a href="#experiments"><code>experiments.md</code></a>.</p>
-<h2 id="para-ir-mas-lejos">🧪 Para ir más lejos</h2>
+<p>El plan experimental con la tabla que hay que completar está en <code>experiments.md</code>, y las preguntas con su rúbrica, en <code>assessment.md</code>. Ambos documentos se abren desde la barra de navegación de arriba.</p>
+<h3 id="para-ir-mas-lejos">Para ir más lejos</h3>
 <ul>
 <li>Cambia una decisión experimental y justifícala con el resultado en <code>validation</code>, no con la intuición.</li>
 <li>Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.</li>
 <li>Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.</li>
 <li>Documenta sesgos, limitaciones y usos para los que <strong>no</strong> recomendarías este modelo.</li>
 </ul>
-<h2 id="de-donde-sale-cada-cosa-de-esta-guia">📚 De dónde sale cada cosa de esta guía</h2>
-<p>Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:</p>
+<h2 id="fuentes">📚 Fuentes</h2>
+<p>La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:</p>
+<blockquote>
+<p>Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.</p>
+</blockquote>
+<ul>
+<li>Warden (2018), <em>Speech Commands: A Dataset for Limited-Vocabulary Speech Recognition</em>, arXiv — describe el corpus y el protocolo de evaluación de comandos hablados.</li>
+<li>Hershey et al. (2017), <em>CNN Architectures for Large-Scale Audio Classification</em>, ICASSP — muestra que arquitecturas convolucionales sobre espectrogramas escalan a la clasificación de audio.</li>
+</ul>
+<h3 id="como-comprobar-lo-que-dice-esta-guia">Cómo comprobar lo que dice esta guía</h3>
+<p>Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:</p>
 <table>
 <thead>
 <tr>
@@ -384,102 +349,329 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 <tbody>
 <tr>
 <td>Objetivo, línea base, métricas y arquitectura</td>
-<td><a href="../../configs/advanced_tracks.yaml"><code>configs/advanced_tracks.yaml</code></a></td>
+<td><code>configs/advanced_tracks.yaml</code></td>
 </tr>
 <tr>
 <td>Fuente, licencia, procedencia y límites del dataset</td>
-<td><a href="data/dataset.yaml"><code>data/dataset.yaml</code></a></td>
+<td><code>data/dataset.yaml</code></td>
 </tr>
 <tr>
 <td>Épocas, tamaño de lote, tasa de aprendizaje y recorte de <code>--quick</code></td>
-<td><a href="configs/baseline.yaml"><code>configs/baseline.yaml</code></a> · <a href="configs/improved.yaml"><code>configs/improved.yaml</code></a></td>
+<td><code>configs/baseline.yaml</code> y <code>configs/improved.yaml</code></td>
 </tr>
 <tr>
 <td>Nivel, prerrequisitos, resultados de aprendizaje y criterios</td>
-<td><a href="lesson.yaml"><code>lesson.yaml</code></a></td>
+<td><code>lesson.yaml</code></td>
+</tr>
+<tr>
+<td>Opciones de los comandos y sus valores por defecto</td>
+<td><code>src/neural_labs/cli.py</code></td>
 </tr>
 <tr>
 <td>El orden de los pasos y los archivos que escribe cada ejecución</td>
-<td><a href="../../src/neural_labs/advanced/training.py"><code>src/neural_labs/advanced/training.py</code></a></td>
+<td><code>src/neural_labs/advanced/training.py</code></td>
 </tr>
 <tr>
-<td>La teoría, los papers y los libros de referencia</td>
-<td><a href="#theory"><code>theory.md</code></a>, sección 🔗 Referencias</td>
+<td>La teoría y su bibliografía</td>
+<td><code>theory.md</code></td>
 </tr>
 <tr>
 <td>La regla general del protocolo</td>
-<td><a href="../../docs/experiment-protocol.md"><code>docs/experiment-protocol.md</code></a></td>
+<td><code>docs/experiment-protocol.md</code></td>
 </tr>
 </tbody>
 </table>
-<p>Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.</p>
-<!-- /guia --><h2 class="doc-sep" id="theory">🧠 Teoría</h2><h1 id="teoria-clasificacion-de-audio-con-speechcommands">Teoría — Clasificación de audio con SpeechCommands</h1>
-<p>Waveform, espectrograma log-mel, convolución 2D y robustez ante ruido.</p>
-<h2 id="fundamento-matematico">Fundamento matemático</h2>
-<p>El audio crudo es una <strong>forma de onda</strong> (waveform): una señal x[t] de amplitud muestreada en el tiempo, aquí a 16 kHz durante un segundo (≈16 000 muestras por clip). Clasificar directamente sobre esa secuencia larga y unidimensional es difícil, porque la información fonética relevante vive en el <em>contenido frecuencial</em> que varía a lo largo del tiempo. Por eso se transforma la señal a una representación tiempo-frecuencia mediante la <strong>transformada de Fourier de corto tiempo</strong> (STFT): se divide la onda en ventanas solapadas y se calcula el espectro de cada una,</p>
-<p>X(m, k) = Σ_(n) x[n] · w[n − m] · e^(−j·2π·k·n / N),</p>
-<p>donde w es una ventana (p. ej. Hann), m indexa el tiempo y k la frecuencia. El <strong>espectrograma</strong> es la magnitud al cuadrado |X(m, k)|²: una "imagen" 2D donde un eje es tiempo y el otro frecuencia, y la intensidad es la energía.</p>
-<p>Sobre ese espectrograma se aplican dos transformaciones inspiradas en la percepción auditiva humana. Primero, la <strong>escala mel</strong> comprime el eje de frecuencia con un banco de filtros triangulares espaciados según mel(f) = 2595 · log₁₀(1 + f/700), que da más resolución a las frecuencias bajas —donde el oído distingue mejor— y agrupa las altas. Segundo, se toma el <strong>logaritmo</strong> de la energía, log(mel-energía + ε), imitando que percibimos la intensidad de forma aproximadamente logarítmica y comprimiendo el enorme rango dinámico; ε &gt; 0 evita log(0). El resultado es el <strong>espectrograma log-mel</strong>, la entrada del modelo. Los <strong>MFCC</strong> (coeficientes cepstrales en frecuencias mel) van un paso más allá aplicando una transformada coseno discreta que decorrelaciona los canales mel; se usan en la línea base MFCC + regresión logística.</p>
-<p>Como el log-mel es una imagen 2D, el modelo natural es una <strong>CNN 2D</strong>. Cada capa convolucional desliza filtros aprendidos K sobre la entrada, (X * K)(i, j) = Σ_(a,b) X(i+a, j+b) · K(a, b), detectando patrones locales tiempo-frecuencia (formantes, transiciones, ráfagas de energía) con pesos compartidos; el apilamiento con submuestreo construye representaciones cada vez más abstractas hasta una capa densa con softmax que produce p(clase | audio). El entrenamiento minimiza la entropía cruzada ℒ = −Σ_c y_c · log ŷ_c, y esta idea de tratar el audio como imagen espectral es la que Hershey et al. escalaron a clasificación de audio a gran escala.</p>
-<p>La <strong>robustez ante ruido</strong> es central: en uso real el micrófono capta fondo, reverberación y solapamientos. Se evalúa perturbando la entrada, por ejemplo x̃ = x + n con ruido n de una relación señal-ruido dada (SNR = 10·log₁₀(P_señal / P_ruido) dB), y midiendo cuánto cae la accuracy. Un modelo que aprende rasgos fonéticos estables degrada poco; uno que memoriza artefactos del set limpio colapsa. Esto también motiva aumentaciones (desplazamiento temporal, ruido, enmascarado de bandas) durante el entrenamiento.</p>
-<h2 id="visualizacion-especifica">Visualización específica</h2>
-<p>Waveform, espectrograma, errores por palabra y ruido. Contrastar la onda cruda con su espectrograma log-mel muestra por qué la representación 2D facilita la clasificación; el desglose de errores por palabra revela confusiones entre comandos fonéticamente parecidos, y las pruebas con ruido cuantifican la robustez.</p>
-<h2 id="riesgo-de-interpretacion">Riesgo de interpretación</h2>
-<p>Acentos, micrófonos y ambientes no están representados uniformemente. Una accuracy alta en el set limpio no garantiza desempeño con hablantes, dispositivos o entornos distintos a los del corpus, y la robustez debe verificarse explícitamente con ruido antes de confiar en el modelo.</p>
-<h2 id="referencias">🔗 Referencias</h2>
+<p>Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.</p><h2 class="doc-sep" id="experiments">🔬 Experimentos</h2><h1 id="plan-de-experimentos-clasificacion-de-audio-con-speechcommands">Plan de experimentos — Clasificación de audio con SpeechCommands</h1>
+<h2 id="que-significa-experimentar-aqui">Qué significa «experimentar» aquí</h2>
+<p>Entrenar un modelo y mirar el número que sale <strong>no</strong> es un experimento: es una observación. Un experimento empieza por una afirmación que podría resultar falsa, sigue fijando todo lo que no se está poniendo a prueba, y termina midiendo si la afirmación se sostiene cuando se repite.</p>
+<p>La diferencia importa porque el entrenamiento de una red tiene azar por dentro: la inicialización de los pesos y el orden en que se barajan los lotes cambian el resultado aunque no cambies nada más. Si comparas una sola corrida contra otra sola corrida, no sabes si la diferencia viene de tu idea o de la semilla. Por eso todo lo que sigue está organizado para separar <strong>la señal</strong> (el efecto de lo que cambiaste) del <strong>ruido</strong> (la variabilidad propia del entrenamiento).</p>
+<h2 id="la-hipotesis-de-este-laboratorio">La hipótesis de este laboratorio</h2>
 <blockquote>
-<p>Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.</p>
+<p>Clasificar comandos hablados desde waveform y log-mel spectrograms.</p>
 </blockquote>
+<p>Formulada como algo que se puede refutar: <strong>el modelo de este laboratorio supera a MFCC + regresión logística en <code>accuracy</code>, y la diferencia es mayor que la dispersión entre semillas.</strong></p>
+<p>Qué la haría falsa —y esto también es un resultado que hay que reportar—:</p>
 <ul>
-<li>Warden (2018), <em>Speech Commands: A Dataset for Limited-Vocabulary Speech Recognition</em>, arXiv — describe el corpus y el protocolo de evaluación de comandos hablados.</li>
-<li>Hershey et al. (2017), <em>CNN Architectures for Large-Scale Audio Classification</em>, ICASSP — muestra que arquitecturas convolucionales sobre espectrogramas escalan a la clasificación de audio.</li>
-</ul><h2 class="doc-sep" id="experiments">🔬 Experimentos</h2><h1 id="experimentos-clasificacion-de-audio-con-speechcommands">Experimentos — Clasificación de audio con SpeechCommands</h1>
-<h2 id="hipotesis-principal">Hipótesis principal</h2>
-<p>Comparar señal limpia, ruido añadido y SpecAugment usando los splits oficiales.</p>
-<h2 id="variables-controladas">Variables controladas</h2>
-<ul>
-<li>Dataset y partición.</li>
-<li>Presupuesto de épocas o actualizaciones.</li>
-<li>Semillas de entrenamiento.</li>
-<li>Política de acceso a test.</li>
+<li>El modelo no supera a MFCC + regresión logística.</li>
+<li>Lo supera, pero por menos de lo que varía el propio modelo al cambiar la semilla de entrenamiento.</li>
+<li>Lo supera solo con una semilla concreta y no con las demás.</li>
+<li>Lo supera a costa de un tiempo o un tamaño que el problema no justifica.</li>
 </ul>
-<h2 id="reporte-minimo">Reporte mínimo</h2>
-<p>Media, desviación estándar, costo de entrenamiento, latencia y análisis de errores.</p><h2 class="doc-sep" id="assessment">📝 Evaluación</h2><h1 id="evaluacion">Evaluación</h1>
+<h3 id="el-experimento-propio-de-esta-ruta">El experimento propio de esta ruta</h3>
+<p>Además de la comparación con la línea base, aquí interesa una pregunta específica: <strong>Comparar señal limpia, ruido añadido y SpecAugment usando los splits oficiales</strong>. Es la comparación que da sentido al tema de este laboratorio; la de la línea base solo dice si el modelo sirve, mientras que esta dice <em>qué parte</em> del diseño es la que aporta.</p>
+<h2 id="que-se-varia-y-que-se-mantiene-fijo">Qué se varía y qué se mantiene fijo</h2>
+<p>Un experimento es interpretable cuando cambia <strong>una</strong> cosa a la vez. Esta tabla dice qué papel juega cada elemento y, sobre todo, por qué:</p>
 <table>
 <thead>
 <tr>
-<th>Criterio</th>
-<th style="text-align: right;">Puntos</th>
+<th>Elemento</th>
+<th>En este experimento</th>
+<th>Por qué</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Procedencia y auditoría del dataset</td>
-<td style="text-align: right;">15</td>
+<td>Partición de los datos (<code>--split-seed</code>)</td>
+<td><strong>Fija</strong> en 42</td>
+<td>Si cambiara entre corridas, no podrías saber si la diferencia viene de tu modelo o de que le tocaron datos distintos.</td>
 </tr>
 <tr>
-<td>Protocolo sin fuga de test</td>
-<td style="text-align: right;">20</td>
+<td>Semilla de entrenamiento (<code>--training-seed</code>)</td>
+<td><strong>Varía</strong>: 41, 42, 43</td>
+<td>Es exactamente el ruido que quieres medir. Sin varias semillas no tienes con qué comparar la mejora.</td>
 </tr>
 <tr>
-<td>Implementación del modelo</td>
-<td style="text-align: right;">20</td>
+<td>Configuración (<code>--config</code>)</td>
+<td><strong>Varía</strong>: <code>baseline</code> y <code>improved</code></td>
+<td>Es la intervención bajo estudio: lo único que estás poniendo a prueba.</td>
 </tr>
 <tr>
-<td>Métricas y comparación con baseline</td>
-<td style="text-align: right;">20</td>
+<td>Dataset y preprocesamiento</td>
+<td><strong>Fijos</strong></td>
+<td>Ajustar la normalización o el vocabulario con otros datos cambiaría el problema, no el modelo.</td>
 </tr>
 <tr>
-<td>Análisis de errores y riesgos</td>
-<td style="text-align: right;">15</td>
+<td>Presupuesto de épocas y criterio de parada</td>
+<td><strong>Fijos dentro de cada configuración</strong></td>
+<td>Dar más épocas a una variante que a otra es comparar dos cosas distintas.</td>
 </tr>
 <tr>
-<td>Reproducibilidad y documentación</td>
-<td style="text-align: right;">10</td>
+<td>Hardware y versiones</td>
+<td><strong>Registrados</strong> en <code>environment.json</code></td>
+<td>No siempre se pueden fijar, pero sí dejar anotados: explican diferencias de tiempo y, a veces, de resultado.</td>
+</tr>
+<tr>
+<td>El conjunto <code>test</code></td>
+<td><strong>Intacto</strong> hasta el final</td>
+<td>Se abre una sola vez, después de que <code>accuracy</code> sobre <code>validation</code> haya elegido al ganador.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Total: 100 puntos.</strong></p>
+<h2 id="como-ejecutar-la-serie">Cómo ejecutar la serie</h2>
+<p>En las especializaciones no hay comando de repetición automática: se lanza el entrenamiento una vez por semilla, manteniendo fija la partición.</p>
+<pre><code class="language-bash">neural-labs train-advanced --track 27_audio_speechcommands --split-seed 42 --training-seed 41
+neural-labs train-advanced --track 27_audio_speechcommands --split-seed 42 --training-seed 42
+neural-labs train-advanced --track 27_audio_speechcommands --split-seed 42 --training-seed 43
+</code></pre>
+<p>Cada corrida escribe su propio directorio en <code>runs-advanced/</code>, con <code>metrics.json</code> e <code>history.json</code>.</p>
+<h2 id="la-tabla-que-debes-completar">La tabla que debes completar</h2>
+<table>
+<thead>
+<tr>
+<th>Variante</th>
+<th style="text-align: right;">Semilla</th>
+<th style="text-align: right;">Métrica en <code>validation</code></th>
+<th style="text-align: right;">Métrica en <code>test</code></th>
+<th style="text-align: right;">Tiempo</th>
+<th style="text-align: right;">Parámetros</th>
+<th>Observación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>baseline</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>baseline</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>baseline</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>improved</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>improved</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td>improved</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>De dónde sale cada columna, para que no haya que adivinarlo:</p>
+<ul>
+<li><strong>Métrica en <code>validation</code></strong>: el mejor valor de <code>accuracy</code> durante el entrenamiento; está en <code>history.csv</code> y resumido en <code>metrics.json</code>.</li>
+<li><strong>Métrica en <code>test</code></strong>: el valor final, en <code>metrics.json</code>, ya con el modelo congelado.</li>
+<li><strong>Tiempo</strong>: <code>wall_time_seconds</code> de <code>metrics.json</code>.</li>
+<li><strong>Parámetros</strong>: <code>parameters</code> de <code>metrics.json</code>; es la medida honesta del tamaño del modelo.</li>
+<li><strong>Observación</strong>: lo que viste y los números no dicen —una curva que se dispara, una clase que concentra los errores, una corrida que no convergió—.</li>
+</ul>
+<h2 id="como-decidir-con-esos-numeros">Cómo decidir con esos números</h2>
+<ol>
+<li><strong>Compara medias, pero decide con la dispersión.</strong> Calcula media y desviación entre las tres semillas de cada variante. Una mejora de 0,3 puntos entre variantes cuya dispersión interna es de 1,2 puntos no es una mejora: es ruido con buena suerte.</li>
+<li><strong>Si los rangos se solapan, dilo.</strong> «No se observó una diferencia distinguible del ruido con tres semillas» es una conclusión legítima y mucho más útil que un número inventado de confianza.</li>
+<li><strong>Decide con <code>validation</code>.</strong> La columna de <code>test</code> sirve para reportar el resultado final una vez, no para elegir la variante ganadora.</li>
+<li><strong>El costo forma parte del resultado.</strong> Si <code>improved</code> gana por poco y cuesta el triple de tiempo, la conclusión honesta menciona ambas cosas.</li>
+<li><strong>Vuelve a la línea base.</strong> La comparación contra MFCC + regresión logística es la que dice si todo el aparato de la red neuronal estaba justificado para este problema.</li>
+</ol>
+<h2 id="que-debe-decir-tu-conclusion">Qué debe decir tu conclusión</h2>
+<p>Una conclusión completa contiene cinco cosas, y se puede escribir en un párrafo:</p>
+<ul>
+<li><strong>Magnitud</strong>: cuánto mejoró, en qué métrica y sobre qué conjunto.</li>
+<li><strong>Incertidumbre</strong>: cuánto varió entre semillas, y si la mejora sobrevive a esa variación.</li>
+<li><strong>Costo</strong>: tiempo, memoria o tamaño adicional que hubo que pagar.</li>
+<li><strong>Errores</strong>: dónde falla el modelo, no solo cuánto acierta.</li>
+<li><strong>Condiciones</strong>: en qué circunstancias no esperarías que este resultado se repitiera.</li>
+</ul>
+<h2 id="errores-de-diseno-que-invalidan-el-experimento">Errores de diseño que invalidan el experimento</h2>
+<ul>
+<li><strong>Cambiar dos cosas a la vez.</strong> Si tocas la arquitectura y la tasa de aprendizaje en la misma corrida, el resultado no atribuye el efecto a ninguna de las dos.</li>
+<li><strong>Comparar con particiones distintas.</strong> Es el error más frecuente y el más difícil de detectar después: parece una mejora del modelo y es un reparto distinto de los datos.</li>
+<li><strong>Quedarse con la mejor semilla.</strong> Elegir la corrida más favorable y reportar solo esa es seleccionar el ruido. Se reportan todas.</li>
+<li><strong>Ajustar mirando <code>test</code>.</strong> En cuanto una decisión se toma con el resultado de <code>test</code>, ese conjunto deja de estimar el rendimiento con datos nuevos.</li>
+<li><strong>No registrar el entorno.</strong> Sin versiones ni hardware, una diferencia de tiempo o de resultado se vuelve inexplicable meses después.</li>
+</ul><h2 class="doc-sep" id="assessment">📝 Evaluación</h2><h1 id="evaluacion-clasificacion-de-audio-con-speechcommands">Evaluación — Clasificación de audio con SpeechCommands</h1>
+<h2 id="como-se-evalua-este-laboratorio">Cómo se evalúa este laboratorio</h2>
+<p>No se evalúa el número final. Un modelo con una métrica alta obtenida mirando <code>test</code>, o sin compararse con nada, vale menos que uno modesto cuyo resultado se puede auditar. Lo que se califica es el <strong>proceso</strong>: si las particiones están limpias, si la decisión se tomó donde debía, si la conclusión distingue lo que se midió de lo que se supone.</p>
+<h2 id="evidencias-que-debes-entregar">Evidencias que debes entregar</h2>
+<table>
+<thead>
+<tr>
+<th>Evidencia</th>
+<th>Dónde vive</th>
+<th>Por qué se pide</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dataset preparado y auditado</td>
+<td>salida de <code>neural-labs audit</code></td>
+<td>Es la única prueba de que el resultado no está contaminado por una fuga entre particiones.</td>
+</tr>
+<tr>
+<td>Notebook ejecutado sin celdas omitidas</td>
+<td><code>notebook.ipynb</code></td>
+<td>Una celda saltada suele ser justo la que rompía el argumento.</td>
+</tr>
+<tr>
+<td>Comparación contra MFCC + regresión logística</td>
+<td><code>metrics.json</code> y <code>baseline_metrics.json</code></td>
+<td>Sin línea base, una métrica no dice si el modelo aporta algo.</td>
+</tr>
+<tr>
+<td>Al menos tres semillas de entrenamiento, o la justificación de por qué no</td>
+<td>salida de <code>benchmark</code></td>
+<td>Una sola corrida no permite separar mejora de azar.</td>
+</tr>
+<tr>
+<td>Análisis de errores y limitaciones</td>
+<td>tu reporte</td>
+<td>Saber <em>dónde</em> falla vale más que saber cuánto acierta.</td>
+</tr>
+<tr>
+<td>Model card actualizada</td>
+<td><code>model_card.md</code></td>
+<td>Es lo que permite a otra persona saber cuándo <strong>no</strong> debería usar tu modelo.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="las-preguntas-y-que-se-busca-en-tu-respuesta">Las preguntas, y qué se busca en tu respuesta</h2>
+<p>No se corrige la longitud de la respuesta, sino si demuestra comprensión. Debajo de cada pregunta está lo que una buena respuesta debería contener.</p>
+<p><strong>1. Explica con tus palabras: Waveform, espectrograma log-mel, convolución 2D y robustez ante ruido.</strong></p>
+<p><em>Qué se busca:</em> Una buena respuesta conecta cuatro cosas —cómo se representa la entrada, qué calcula el modelo, qué mide la función de pérdida y cómo se actualizan los pesos— en vez de repetir la definición del libro. Si puedes explicarlo sin la fórmula delante, lo entendiste.</p>
+<p><strong>2. ¿Qué información del dataset solo puede usarse durante el entrenamiento?</strong></p>
+<p><em>Qué se busca:</em> Se espera que nombres casos concretos: las estadísticas de normalización, el vocabulario, la selección de variables, los umbrales. Todo eso se ajusta <strong>solo</strong> con <code>train</code>; calcularlo sobre el conjunto completo es una fuga silenciosa que infla el resultado sin dar ningún aviso.</p>
+<p><strong>3. ¿Por qué MFCC + regresión logística es una comparación razonable para este problema?</strong></p>
+<p><em>Qué se busca:</em> Una buena respuesta explica qué captura la línea base y qué no, y por qué superarla —o no superarla— es informativo aquí. Si la línea base ya resuelve el problema, la conclusión correcta es que la red no estaba justificada.</p>
+<p><strong>4. ¿Qué te dice <code>accuracy</code> que no te dirían las otras métricas?</strong></p>
+<p><em>Qué se busca:</em> Cada métrica pondera distinto los errores. Se espera que expliques por qué esa es la que decide aquí y en qué situación sería una mala elección.</p>
+<p><strong>5. ¿Qué cambiarías antes de usar este modelo fuera del laboratorio?</strong></p>
+<p><em>Qué se busca:</em> Aquí se evalúa el criterio, no la técnica: licencias y condiciones de uso de <code>speechcommands_v0.02</code>, representatividad de la población, calibración de las probabilidades, vigilancia de la deriva, desempeño por subgrupo y supervisión humana. Un «funcionaría bien» sin condiciones se corrige como respuesta incompleta.</p>
+<h2 id="la-rubrica-explicada">La rúbrica, explicada</h2>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Insuficiente</th>
+<th>Adecuado</th>
+<th>Excelente</th>
+<th style="text-align: right;">Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Integridad de los datos</td>
+<td>mezcla particiones o no puede demostrar que no lo hizo</td>
+<td>las tres particiones están separadas y auditadas</td>
+<td>además documenta hashes, política de partición y justifica la estrategia elegida</td>
+<td style="text-align: right;">20 %</td>
+</tr>
+<tr>
+<td>Implementación</td>
+<td>no ejecuta o produce resultados irreproducibles</td>
+<td>entrena y evalúa siguiendo el protocolo</td>
+<td>código claro y reutilizable, con las decisiones explicadas</td>
+<td style="text-align: right;">20 %</td>
+</tr>
+<tr>
+<td>Diseño experimental</td>
+<td>un solo resultado aislado</td>
+<td>comparación controlada contra la línea base</td>
+<td>varias semillas, dispersión reportada y variables controladas explícitas</td>
+<td style="text-align: right;">20 %</td>
+</tr>
+<tr>
+<td>Análisis</td>
+<td>repite las métricas sin interpretarlas</td>
+<td>interpreta los errores y su distribución</td>
+<td>identifica sesgos, límites y costo, y distingue evidencia de suposición</td>
+<td style="text-align: right;">25 %</td>
+</tr>
+<tr>
+<td>Comunicación</td>
+<td>incompleta o sin contexto</td>
+<td>reporte entendible y model card presente</td>
+<td>conclusiones verificables por un tercero a partir de los artefactos</td>
+<td style="text-align: right;">15 %</td>
+</tr>
+</tbody>
+</table>
+<p>La diferencia entre <em>adecuado</em> y <em>excelente</em> casi nunca está en la métrica: está en si el trabajo permite que otra persona llegue a la misma conclusión con los artefactos que dejaste. Un resultado peor, bien medido y bien explicado, se califica por encima de uno mejor que no se puede auditar.</p>
+<p><strong>La aprobación exige al menos 70 % y cero errores críticos de fuga de datos.</strong> La fuga es eliminatoria por sí sola porque invalida todas las demás cifras del trabajo, por buenas que parezcan.</p>
+<h2 id="autoevaluacion-antes-de-entregar">Autoevaluación antes de entregar</h2>
+<ul>
+<li>[ ] Puedo explicar el laboratorio a alguien que no lo hizo, sin leer el código.</li>
+<li>[ ] Sé qué decisión tomé en cada paso y con qué evidencia la tomé.</li>
+<li>[ ] Miré <code>test</code> una sola vez, después de que existiera <code>experiment.lock.json</code>.</li>
+<li>[ ] Mi conclusión dice magnitud, incertidumbre, costo, errores y condiciones.</li>
+<li>[ ] Puedo señalar al menos una limitación real de mi resultado.</li>
+</ul>
     </article>
     <nav class="pager"><a class="pg pg-prev" href="../../advanced_labs/26_segmentation_unet/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🧷 Segmentación semántica con U-Net</span></a><a class="pg pg-next" href="../../advanced_labs/28_wgan_gp/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🖌️ WGAN-GP sobre Fashion-MNIST</span></a></nav>
   </main>

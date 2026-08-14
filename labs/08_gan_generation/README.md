@@ -8,25 +8,17 @@
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-<!-- ficha -->
-## 📋 Ficha del laboratorio
+## 🎯 Qué vas a hacer aquí
 
-![ruta](https://img.shields.io/badge/ruta-9%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-avanzado-8957e5?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Central-2e8b57?style=flat-square) ![horas](https://img.shields.io/badge/horas-~8%20h-f0b429?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-fashion__mnist-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-f1-8957e5?style=flat-square)
+Generar prendas a partir de imágenes reales de Fashion-MNIST.
 
-| Campo | Valor |
-|---|---|
-| 🧭 Posición | Ruta **9 de 31** del recorrido · categoría central |
-| 🎚️ Nivel | avanzado |
-| ⏱️ Dedicación estimada | 8 horas |
-| 🧩 Tarea | `generation` |
-| 🏗️ Arquitectura | `dcgan` |
-| 🗄️ Dataset | [`fashion_mnist`](https://github.com/zalandoresearch/fashion-mnist) — Torchvision / Zalando Research |
-| ⚖️ Licencia del dataset | MIT |
-| 🎯 Métrica de selección | `f1` sobre `validation` |
-| 📏 Línea base a superar | PCA generativa y distribución real de referencia |
-| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+Es la **ruta 9 de 31** del recorrido y pertenece a 🟣 la parte 3, *Familias especializadas: generar, decidir, relacionar*. Llegas desde **Transformer para noticias** y lo que hagas aquí lo da por supuesto **GNN sobre red de citas**.
 
-### 🎯 Qué vas a poder hacer al terminar
+Trabajarás con el dataset **`fashion_mnist`** (Torchvision / Zalando Research, licencia: MIT), y tendrás que superar la línea base **PCA generativa y distribución real de referencia**, decidiendo con la métrica `f1` medida sobre `validation`. Nivel avanzado, unas **8 horas** de dedicación.
+
+**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
+
+**Al terminar deberías ser capaz de:**
 
 - Generar prendas a partir de imágenes reales de Fashion-MNIST.
 - Preparar y auditar el dataset real fashion_mnist sin fuga de datos.
@@ -34,81 +26,99 @@
 - Comparar contra la línea base: PCA generativa y distribución real de referencia.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-### 🧩 Prerrequisitos
+## 🧠 La teoría de este laboratorio
 
-- PyTorch intermedio
-- optimización
-- lectura de artículos técnicos
+Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
-> Si alguno te falta, retrocede antes de continuar. Viniendo de [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md).
+### De qué trata
 
-### ⚙️ `baseline` frente a `improved`
+Este laboratorio estudia **aprendizaje adversarial generativo** usando `fashion_mnist`, un dataset público real procedente de Torchvision / Zalando Research.
 
-| Parámetro | [`baseline.yaml`](configs/baseline.yaml) | [`improved.yaml`](configs/improved.yaml) |
-|---|---|---|
-| Épocas | `20` | `50` |
-| Tasa de aprendizaje | `0.001` | `0.0005` |
-| Paciencia (early stopping) | `5` | `8` |
-| Precisión mixta (AMP) | no | sí |
-| Procesos de carga | `0` | `2` |
+Una **red generativa adversarial (GAN)** plantea el aprendizaje como un juego entre dos redes con objetivos opuestos. El **generador** G toma ruido aleatorio z y trata de producir imágenes que parezcan prendas reales. El **discriminador** D es un clasificador que recibe una imagen y estima la probabilidad de que sea real (proveniente del dataset) y no falsa (generada por G). Ambos se entrenan a la vez: D mejora en distinguir real de falso, y G mejora en engañar a D. La metáfora habitual es la del falsificador (G) y el detective (D): cada uno fuerza al otro a mejorar, y en el equilibrio ideal el falsificador produce prendas indistinguibles de las auténticas.
 
-> Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con `validation`, nunca con `test`.
+Lo elegante es que G nunca ve las imágenes reales directamente ni recibe una pérdida de reconstrucción píxel a píxel; aprende **solo a través del gradiente que le pasa D**. En vez de decirle a G "copia esta imagen", D le dice "esto todavía se nota falso por aquí", y ese señal guía a G hacia la variedad de imágenes plausibles. Este laboratorio usa una **DCGAN** (GAN convolucional profunda), donde G usa convoluciones transpuestas para expandir el ruido hasta una imagen de 28×28 y D usa convoluciones para clasificarla; esta receta convolucional es la que estabilizó el entrenamiento de GANs sobre imágenes.
 
-### 📦 Entregables y criterios de aceptación
+### La matemática, paso a paso
 
-**Entregables**
+El objetivo original es un juego minimax de suma cero sobre el valor V(D, G):
 
-- notebook ejecutado
-- reporte experimental
-- model card
-- comparación con línea base
-- respuesta a preguntas críticas
+    min_G max_D  V(D, G) = 𝔼_{x∼p_data}[ log D(x) ] + 𝔼_{z∼p_z}[ log(1 − D(G(z))) ]
 
-**Criterios de éxito**
+Leámoslo por partes. El discriminador D quiere **maximizar** V: para muestras reales x quiere D(x) → 1 (así log D(x) → 0, su máximo), y para muestras falsas G(z) quiere D(G(z)) → 0 (así log(1 − D(G(z))) → 0). El generador G quiere **minimizar** V respecto al segundo término: busca que D(G(z)) → 1, es decir, engañar a D. z se muestrea de una distribución simple p_z (típicamente 𝒩(0, I)) y G la transforma en la distribución generada p_g. El entrenamiento alterna pasos: se congela G y se da un paso de ascenso de gradiente en θ_D, luego se congela D y se da un paso de descenso en θ_G.
 
-- cero solapamiento entre train, validation y test
-- selección basada únicamente en validation
-- métricas finales acompañadas por incertidumbre
-- conclusiones que distinguen evidencia de suposición
+¿Por qué este juego produce imágenes realistas? Goodfellow et al. probaron que, para un G fijo, el discriminador óptimo es D*(x) = p_data(x) / (p_data(x) + p_g(x)). Sustituyendo D* en V, el objetivo de G se vuelve equivalente a minimizar la **divergencia de Jensen–Shannon** entre la distribución real p_data y la generada p_g (salvo constantes): min_G V = 2·D_JS(p_data ‖ p_g) − log 4. El mínimo global se alcanza cuando p_g = p_data, es decir, cuando el generador reproduce exactamente la distribución de las prendas reales y D no puede hacer mejor que responder ½ en todo. Ese es el sentido preciso de "generar imágenes indistinguibles".
 
-### 🗂️ Recursos del laboratorio
+En la práctica, el término log(1 − D(G(z))) tiene gradiente casi nulo justo cuando G es malo (al inicio, D lo detecta con facilidad), así que se suele entrenar G maximizando 𝔼_z[ log D(G(z)) ] —el truco del "gradiente no saturante"— que apunta al mismo óptimo pero da señal fuerte desde el principio. Conectando con los cuatro elementos: la **representación de entrada** es el vector de ruido z para G y la imagen (28×28) para D; la **función del modelo** son las dos redes convolucionales G y D; la **función de pérdida** es la entropía cruzada binaria derivada de V (una para D, otra para G); y la **regla de actualización** son los dos pasos de gradiente alternados θ_D ← θ_D + η ∇_{θ_D} V y θ_G ← θ_G − η ∇_{θ_G} V. El notebook muestra las dimensiones de los tensores en cada capa y conserva la misma implementación que el script de terminal.
 
-| Recurso | Archivo |
-|---|---|
-| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
-| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
-| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
-| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
-| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
-| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
-| 🖥️ Script de terminal | [`train.py`](train.py) |
-| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
-| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
-| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+El riesgo técnico característico es el **colapso de modos** (mode collapse): G descubre unas pocas imágenes que engañan a D y las produce siempre, perdiendo diversidad aunque la pérdida parezca buena. Por eso este laboratorio no se conforma con las curvas de pérdida y mide diversidad, distancia al vecino real más cercano y discrepancia de momentos: distinguir *diversidad real* de *ruido visual* o de un puñado de prototipos repetidos es exactamente el reto de evaluar una GAN.
 
-<!-- /ficha -->
+> **La pregunta que deberías poder responder al terminar:** ¿Cómo se distingue diversidad real de ruido visual?
 
-<!-- guia -->
-## 🎯 Qué vas a hacer aquí
+### Qué se mide y con qué se decide
 
-Generar prendas a partir de imágenes reales de Fashion-MNIST.
+El laboratorio reporta `generator_loss`, `discriminator_loss`, `mmd_rbf`, `diversity`, `nearest_real_distance`, `moment_distance`. De todas ellas, la que **decide** qué modelo se conserva es `f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
-Es la **ruta 9 de 31** y pertenece a 🟣 [la parte 3, Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md). Llegas desde [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) y lo que aprendas aquí lo da por supuesto [🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/README.md).
+## 🖥️ Los comandos, explicados
 
-## 🧠 La idea que se pone a prueba
+Todo el laboratorio se maneja con una sola herramienta de terminal, `neural-labs`, que se instala junto con el paquete (`pip install -e ".[dev,notebooks]"`). Cada subcomando hace **una** cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.
 
-Este laboratorio trabaja **min_G max_D E[log D(x)] + E[log(1-D(G(z)))]**.
+La forma general es siempre la misma:
 
-El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
+```bash
+neural-labs <subcomando> --lab <identificador> [opciones]
+```
 
-> **La pregunta que deberías poder responder al final:** ¿Cómo se distingue diversidad real de ruido visual?
+| Opción | Valor por defecto | Valores | Qué hace y cuándo cambiarla |
+|---|---|---|---|
+| `--lab` | `08_gan_generation` | obligatorio | Qué laboratorio se ejecuta. Solo acepta los identificadores del catálogo. |
+| `--quick` | desactivado | — | Usa una fracción real del dataset y pocas épocas. Sirve para comprobar la instalación, no para concluir nada sobre el modelo. |
+| `--split-seed N` | `42` | entero | Semilla que decide **qué ejemplo cae en qué partición**. Se mantiene fija al comparar modelos. |
+| `--training-seed N` | `42` | entero | Semilla de la inicialización de pesos y del barajado de lotes. Es la que se varía para medir cuánta diferencia es simple azar. |
+| `--config` | `baseline` | `baseline` · `improved` | Cuál de las dos configuraciones del laboratorio se usa. |
+| `--device` | `auto` | `auto` · `cpu` · `cuda` · `mps` | Dónde entrenar. `auto` elige GPU si está disponible y cae a CPU si no. |
+| `--training-seeds A B C` | `41 42 43` | enteros | Solo en `benchmark`: la lista de semillas de entrenamiento que se repiten. |
+| `--output-dir` | `runs` | ruta | Dónde se escribe el directorio de la ejecución. |
 
-**Métricas que se reportan:** `generator_loss`, `discriminator_loss`, `mmd_rbf`, `diversity`, `nearest_real_distance`, `moment_distance`. La selección del modelo se decide con `f1` sobre `validation`.
+### El script del laboratorio
+
+`labs/08_gan_generation/train.py` no es un programa distinto: fija el `--lab` y delega en la misma herramienta, de modo que estas dos líneas hacen exactamente lo mismo.
+
+```bash
+python labs/08_gan_generation/train.py --quick
+neural-labs train --lab 08_gan_generation --quick
+```
+
+### Lo mismo desde Python
+
+Si prefieres trabajar en un cuaderno o llamar al laboratorio desde tu propio código, la misma ejecución se lanza así. La función devuelve un objeto con el directorio de la ejecución, las métricas y el historial ya cargados:
+
+```python
+from neural_labs.experiments import run_lab
+
+resultado = run_lab(
+    "08_gan_generation",
+    quick=True,          # False para la ejecución completa
+    config_name="baseline",
+    split_seed=42,       # fija la partición
+    training_seed=43,    # varía la inicialización
+)
+
+print(resultado.run_dir)   # dónde quedaron los archivos
+print(resultado.metrics)   # el diccionario de métricas finales
+```
+
+Y para preparar el dataset sin entrenar —útil para inspeccionarlo antes—:
+
+```python
+from neural_labs.datasets import prepare_dataset
+
+datos = prepare_dataset("08_gan_generation", quick=True, seed=42)
+print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
+```
 
 ## 🪜 Paso a paso
 
-Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
 ### Paso 1 — Traer el dataset real y partirlo
 
@@ -214,7 +224,7 @@ neural-labs benchmark --lab 08_gan_generation --quick --split-seed 42 --training
 
 ## 🔍 Cómo leer lo que produce la ejecución
 
-Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:
 
 | Archivo | Qué contiene y qué mirar |
 |---|---|
@@ -239,6 +249,12 @@ Cada ejecución escribe su propio directorio. Estos son los archivos que encontr
 - **Aquí no vas a ver `predictions.csv` ni `confusion_matrix.png`, y no es un error.** La tarea es `generation`, y el código solo genera esos archivos cuando hay una predicción por ejemplo comparable contra una etiqueta.
 - **Límite declarado de este dataset.** No usa anillos ni puntos inventados; entrena con prendas reales etiquetadas.
 
+### Riesgos al interpretar los resultados
+
+No usa anillos ni puntos inventados; entrena con prendas reales etiquetadas.
+
+El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.
+
 ## ✅ Antes de darlo por terminado
 
 El laboratorio está aprobado cuando se cumplen estos criterios:
@@ -256,31 +272,42 @@ Y cuando tienes estos entregables:
 - [ ] comparación con línea base
 - [ ] respuesta a preguntas críticas
 
-Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+El plan experimental con la tabla que hay que completar está en `experiments.md`, y las preguntas con su rúbrica, en `assessment.md`. Ambos documentos se abren desde la barra de navegación de arriba.
 
-## 🧪 Para ir más lejos
+### Para ir más lejos
 
 - Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
 - Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
 - Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
 - Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
 
-## 📚 De dónde sale cada cosa de esta guía
+## 📚 Fuentes
 
-Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:
+
+- Foster — *Generative Deep Learning* (2.ª ed., O'Reilly) — tratamiento práctico de GANs, DCGAN y evaluación de modelos generativos.
+- Goodfellow, Bengio & Courville — *Deep Learning* (MIT Press, 2016), cap. 20 — modelos generativos profundos y fundamentos del marco adversarial.
+- Goodfellow et al. (2014), *Generative Adversarial Nets*, NeurIPS — formulación original del juego minimax y prueba del óptimo p_g = p_data.
+- Radford, Metz & Chintala (2016), *Unsupervised Representation Learning with Deep Convolutional GANs (DCGAN)*, ICLR — arquitectura convolucional que estabilizó el entrenamiento de GANs sobre imágenes.
+- Fuente del dataset: https://github.com/zalandoresearch/fashion-mnist
+- Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+### Cómo comprobar lo que dice esta guía
+
+Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:
 
 | Lo que dice la guía | Dónde comprobarlo |
 |---|---|
-| Objetivo, línea base, métricas y arquitectura | [`configs/labs.yaml`](../../configs/labs.yaml) |
-| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
-| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
-| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/experiments.py`](../../src/neural_labs/experiments.py) |
-| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
-| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+| Objetivo, línea base, métricas y arquitectura | `configs/labs.yaml` |
+| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | `configs/baseline.yaml` y `configs/improved.yaml` |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |
+| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |
+| El orden de los pasos y los archivos que escribe cada ejecución | `src/neural_labs/experiments.py` |
+| La teoría y su bibliografía | `theory.md` |
+| La regla general del protocolo | `docs/experiment-protocol.md` |
 
-Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
-<!-- /guia -->
+Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

@@ -8,25 +8,17 @@
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-<!-- ficha -->
-## 📋 Ficha del laboratorio
+## 🎯 Qué vas a hacer aquí
 
-![ruta](https://img.shields.io/badge/ruta-11%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-avanzado-8957e5?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Central-2e8b57?style=flat-square) ![horas](https://img.shields.io/badge/horas-~8%20h-f0b429?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-online__retail-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-mean__return-8957e5?style=flat-square)
+Aprender una política de reposición usando una secuencia de demanda observada en transacciones reales.
 
-| Campo | Valor |
-|---|---|
-| 🧭 Posición | Ruta **11 de 31** del recorrido · categoría central |
-| 🎚️ Nivel | avanzado |
-| ⏱️ Dedicación estimada | 8 horas |
-| 🧩 Tarea | `reinforcement_learning` |
-| 🏗️ Arquitectura | `dqn_inventory` |
-| 🗄️ Dataset | [`online_retail`](https://archive.ics.uci.edu/dataset/352/online+retail) — UCI |
-| ⚖️ Licencia del dataset | CC BY 4.0 |
-| 🎯 Métrica de selección | `mean_return` sobre `validation` |
-| 📏 Línea base a superar | Política de reposición periódica basada en demanda media histórica |
-| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+Es la **ruta 11 de 31** del recorrido y pertenece a 🟣 la parte 3, *Familias especializadas: generar, decidir, relacionar*. Llegas desde **GNN sobre red de citas** y lo que hagas aquí lo da por supuesto **Transfer learning con mascotas**.
 
-### 🎯 Qué vas a poder hacer al terminar
+Trabajarás con el dataset **`online_retail`** (UCI, licencia: CC BY 4.0), y tendrás que superar la línea base **Política de reposición periódica basada en demanda media histórica**, decidiendo con la métrica `mean_return` medida sobre `validation`. Nivel avanzado, unas **8 horas** de dedicación.
+
+**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
+
+**Al terminar deberías ser capaz de:**
 
 - Aprender una política de reposición usando una secuencia de demanda observada en transacciones reales.
 - Preparar y auditar el dataset real online_retail sin fuga de datos.
@@ -34,81 +26,101 @@
 - Comparar contra la línea base: Política de reposición periódica basada en demanda media histórica.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-### 🧩 Prerrequisitos
+## 🧠 La teoría de este laboratorio
 
-- PyTorch intermedio
-- optimización
-- lectura de artículos técnicos
+Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
-> Si alguno te falta, retrocede antes de continuar. Viniendo de [🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/README.md).
+### De qué trata
 
-### ⚙️ `baseline` frente a `improved`
+Este laboratorio estudia **valor de acciones con demanda histórica** usando `online_retail`, un dataset público real procedente de UCI.
 
-| Parámetro | [`baseline.yaml`](configs/baseline.yaml) | [`improved.yaml`](configs/improved.yaml) |
-|---|---|---|
-| Épocas | `20` | `50` |
-| Tasa de aprendizaje | `0.001` | `0.0005` |
-| Paciencia (early stopping) | `5` | `8` |
-| Precisión mixta (AMP) | no | sí |
-| Procesos de carga | `0` | `2` |
+El problema se plantea como **aprendizaje por refuerzo**: un agente observa el estado del inventario, elige cuánto reponer, y recibe una recompensa que penaliza tanto quedarse sin stock (ventas perdidas) como mantener inventario en exceso (coste de almacenamiento). No hay etiquetas de "acción correcta"; el agente debe descubrir una **política** —una regla que mapea estados a acciones— probando y observando consecuencias a lo largo del tiempo. La dificultad propia del refuerzo es que las decisiones tienen efectos diferidos: reponer poco hoy puede ahorrar coste ahora pero causar un quiebre de stock costoso mañana. El agente debe optimizar la recompensa *acumulada*, no la inmediata.
 
-> Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con `validation`, nunca con `test`.
+La pieza clave es aprender el **valor** de cada acción en cada estado: cuánta recompensa futura total cabe esperar si tomo esta acción y luego actúo bien. Con esa función de valor Q(s, a), la política óptima es trivial: en cada estado elegir la acción de mayor Q. **DQN** (Deep Q-Network) aproxima Q con una red neuronal, lo que permite manejar estados continuos (inventario, demanda reciente, posición temporal) sin tabular todos los casos. Lo distintivo de este laboratorio es que la demanda de cada paso no la genera un simulador arbitrario: proviene del **historial real** de transacciones de Online Retail, de modo que la política se enfrenta a la variabilidad genuina de la demanda.
 
-### 📦 Entregables y criterios de aceptación
+### La matemática, paso a paso
 
-**Entregables**
+El valor Q óptimo satisface la **ecuación de Bellman de optimalidad**, que expresa el valor de un par (s, a) como la recompensa inmediata más el mejor valor posible del estado siguiente, descontado:
 
-- notebook ejecutado
-- reporte experimental
-- model card
-- comparación con línea base
-- respuesta a preguntas críticas
+    Q*(s, a) = 𝔼[ r + γ · max_{a′} Q*(s′, a′) | s, a ]
 
-**Criterios de éxito**
+Aquí r es la recompensa recibida al ejecutar a en s, s′ es el estado siguiente, y γ ∈ [0, 1) es el **factor de descuento**, que fija cuánto pesan las recompensas futuras frente a las inmediatas (γ cercano a 1 → agente previsor). DQN entrena una red Q(s, a; θ) para satisfacer esta ecuación minimizando el **error de diferencia temporal (TD)** contra un objetivo (target):
 
-- cero solapamiento entre train, validation y test
-- selección basada únicamente en validation
-- métricas finales acompañadas por incertidumbre
-- conclusiones que distinguen evidencia de suposición
+    y = r + γ · max_{a′} Q_target(s′, a′; θ⁻)        ℒ(θ) = 𝔼_{(s,a,r,s′)∼𝒟}[ ( y − Q(s, a; θ) )² ]
 
-### 🗂️ Recursos del laboratorio
+Dos ingredientes hacen esto estable. Primero, la **repetición de experiencias** (replay buffer 𝒟): las transiciones (s, a, r, s′) se guardan y se muestrean en minibatches aleatorios, rompiendo la correlación temporal entre muestras consecutivas. Segundo, la **red objetivo** con parámetros θ⁻: una copia rezagada de θ que se actualiza cada cierto tiempo; usarla para calcular y evita que el objetivo persiga a la propia red en cada paso, lo que provocaría oscilaciones. La demanda de cada paso proviene del historial real, no de un generador. Conectando con los cuatro elementos: la **representación de entrada** es el vector de estado s (inventario, demanda reciente, tiempo); la **función del modelo** es la red Q que produce un valor por cada acción discreta de reposición; la **función de pérdida** es el error TD cuadrático de arriba; y la **regla de actualización** es descenso de gradiente, θ ← θ − η ∇_θ ℒ. El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.
 
-| Recurso | Archivo |
-|---|---|
-| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
-| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
-| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
-| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
-| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
-| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
-| 🖥️ Script de terminal | [`train.py`](train.py) |
-| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
-| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
-| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+Este laboratorio incorpora dos mejoras estándar sobre el DQN original. **Double DQN** corrige la sobreestimación del valor: el operador max en el target tiende a elegir acciones cuyo Q está inflado por ruido, así que se **desacopla** la selección de la evaluación —la red en línea elige la acción y la red objetivo la valora: y = r + γ · Q_target(s′, argmax_{a′} Q(s′, a′; θ); θ⁻). **Dueling DQN** reorganiza la arquitectura separando el valor del estado V(s) de la **ventaja** A(s, a) de cada acción, y las recombina como Q(s, a) = V(s) + ( A(s, a) − (1/|𝒜|) Σ_{a′} A(s, a′) ). La resta de la ventaja media es un truco de identificabilidad que estabiliza el aprendizaje; la intuición es que en muchos estados el valor depende poco de la acción concreta, y estimar V(s) por separado hace el aprendizaje más eficiente.
 
-<!-- /ficha -->
+Por último, el agente equilibra **exploración y explotación** típicamente con una política ε-greedy: con probabilidad ε toma una acción aleatoria (explora) y con probabilidad 1−ε toma argmax_a Q(s, a) (explota), reduciendo ε a lo largo del entrenamiento. Sin exploración suficiente, el agente podría fijar prematuramente una política de reposición subóptima.
 
-<!-- guia -->
-## 🎯 Qué vas a hacer aquí
+> **La pregunta que deberías poder responder al terminar:** ¿La política es robusta a cambios en costo y demanda?
 
-Aprender una política de reposición usando una secuencia de demanda observada en transacciones reales.
+### Qué se mide y con qué se decide
 
-Es la **ruta 11 de 31** y pertenece a 🟣 [la parte 3, Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md). Llegas desde [🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/README.md) y lo que aprendas aquí lo da por supuesto [♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/README.md).
+El laboratorio reporta `mean_return`, `stockout_rate`, `holding_cost`, `service_level`. De todas ellas, la que **decide** qué modelo se conserva es `mean_return`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
-## 🧠 La idea que se pone a prueba
+## 🖥️ Los comandos, explicados
 
-Este laboratorio trabaja **y=r+γ max_a Q_target(s′,a); la demanda de cada paso proviene del historial real, no de un generador**.
+Todo el laboratorio se maneja con una sola herramienta de terminal, `neural-labs`, que se instala junto con el paquete (`pip install -e ".[dev,notebooks]"`). Cada subcomando hace **una** cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.
 
-El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
+La forma general es siempre la misma:
 
-> **La pregunta que deberías poder responder al final:** ¿La política es robusta a cambios en costo y demanda?
+```bash
+neural-labs <subcomando> --lab <identificador> [opciones]
+```
 
-**Métricas que se reportan:** `mean_return`, `stockout_rate`, `holding_cost`, `service_level`. La selección del modelo se decide con `mean_return` sobre `validation`.
+| Opción | Valor por defecto | Valores | Qué hace y cuándo cambiarla |
+|---|---|---|---|
+| `--lab` | `10_dqn_reinforcement` | obligatorio | Qué laboratorio se ejecuta. Solo acepta los identificadores del catálogo. |
+| `--quick` | desactivado | — | Usa una fracción real del dataset y pocas épocas. Sirve para comprobar la instalación, no para concluir nada sobre el modelo. |
+| `--split-seed N` | `42` | entero | Semilla que decide **qué ejemplo cae en qué partición**. Se mantiene fija al comparar modelos. |
+| `--training-seed N` | `42` | entero | Semilla de la inicialización de pesos y del barajado de lotes. Es la que se varía para medir cuánta diferencia es simple azar. |
+| `--config` | `baseline` | `baseline` · `improved` | Cuál de las dos configuraciones del laboratorio se usa. |
+| `--device` | `auto` | `auto` · `cpu` · `cuda` · `mps` | Dónde entrenar. `auto` elige GPU si está disponible y cae a CPU si no. |
+| `--training-seeds A B C` | `41 42 43` | enteros | Solo en `benchmark`: la lista de semillas de entrenamiento que se repiten. |
+| `--output-dir` | `runs` | ruta | Dónde se escribe el directorio de la ejecución. |
+
+### El script del laboratorio
+
+`labs/10_dqn_reinforcement/train.py` no es un programa distinto: fija el `--lab` y delega en la misma herramienta, de modo que estas dos líneas hacen exactamente lo mismo.
+
+```bash
+python labs/10_dqn_reinforcement/train.py --quick
+neural-labs train --lab 10_dqn_reinforcement --quick
+```
+
+### Lo mismo desde Python
+
+Si prefieres trabajar en un cuaderno o llamar al laboratorio desde tu propio código, la misma ejecución se lanza así. La función devuelve un objeto con el directorio de la ejecución, las métricas y el historial ya cargados:
+
+```python
+from neural_labs.experiments import run_lab
+
+resultado = run_lab(
+    "10_dqn_reinforcement",
+    quick=True,          # False para la ejecución completa
+    config_name="baseline",
+    split_seed=42,       # fija la partición
+    training_seed=43,    # varía la inicialización
+)
+
+print(resultado.run_dir)   # dónde quedaron los archivos
+print(resultado.metrics)   # el diccionario de métricas finales
+```
+
+Y para preparar el dataset sin entrenar —útil para inspeccionarlo antes—:
+
+```python
+from neural_labs.datasets import prepare_dataset
+
+datos = prepare_dataset("10_dqn_reinforcement", quick=True, seed=42)
+print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
+```
 
 ## 🪜 Paso a paso
 
-Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
 ### Paso 1 — Traer el dataset real y partirlo
 
@@ -214,7 +226,7 @@ neural-labs benchmark --lab 10_dqn_reinforcement --quick --split-seed 42 --train
 
 ## 🔍 Cómo leer lo que produce la ejecución
 
-Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:
 
 | Archivo | Qué contiene y qué mirar |
 |---|---|
@@ -238,6 +250,12 @@ Cada ejecución escribe su propio directorio. Estos son los archivos que encontr
 - **Aquí no vas a ver `predictions.csv` ni `confusion_matrix.png`, y no es un error.** La tarea es `reinforcement_learning`, y el código solo genera esos archivos cuando hay una predicción por ejemplo comparable contra una etiqueta.
 - **Límite declarado de este dataset.** La dinámica de inventario es un entorno educativo, pero la demanda diaria se construye exclusivamente desde transacciones reales de Online Retail.
 
+### Riesgos al interpretar los resultados
+
+La dinámica de inventario es un entorno educativo, pero la demanda diaria se construye exclusivamente desde transacciones reales de Online Retail.
+
+El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.
+
 ## ✅ Antes de darlo por terminado
 
 El laboratorio está aprobado cuando se cumplen estos criterios:
@@ -255,31 +273,42 @@ Y cuando tienes estos entregables:
 - [ ] comparación con línea base
 - [ ] respuesta a preguntas críticas
 
-Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+El plan experimental con la tabla que hay que completar está en `experiments.md`, y las preguntas con su rúbrica, en `assessment.md`. Ambos documentos se abren desde la barra de navegación de arriba.
 
-## 🧪 Para ir más lejos
+### Para ir más lejos
 
 - Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
 - Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
 - Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
 - Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
 
-## 📚 De dónde sale cada cosa de esta guía
+## 📚 Fuentes
 
-Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:
+
+- Sutton & Barto — *Reinforcement Learning: An Introduction* (2.ª ed., MIT Press) — texto canónico: procesos de decisión de Markov, ecuación de Bellman, Q-learning y equilibrio exploración–explotación.
+- Mnih et al. (2015), *Human-level control through deep reinforcement learning (DQN)*, Nature — DQN con replay buffer y red objetivo, base del laboratorio.
+- van Hasselt, Guez & Silver (2016), *Deep Reinforcement Learning with Double Q-learning*, AAAI — corrección de la sobreestimación desacoplando selección y evaluación.
+- Wang et al. (2016), *Dueling Network Architectures for Deep Reinforcement Learning*, ICML — separación de valor de estado y ventaja de acción.
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/352/online+retail
+- Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+### Cómo comprobar lo que dice esta guía
+
+Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:
 
 | Lo que dice la guía | Dónde comprobarlo |
 |---|---|
-| Objetivo, línea base, métricas y arquitectura | [`configs/labs.yaml`](../../configs/labs.yaml) |
-| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
-| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
-| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/experiments.py`](../../src/neural_labs/experiments.py) |
-| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
-| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+| Objetivo, línea base, métricas y arquitectura | `configs/labs.yaml` |
+| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | `configs/baseline.yaml` y `configs/improved.yaml` |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |
+| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |
+| El orden de los pasos y los archivos que escribe cada ejecución | `src/neural_labs/experiments.py` |
+| La teoría y su bibliografía | `theory.md` |
+| La regla general del protocolo | `docs/experiment-protocol.md` |
 
-Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
-<!-- /guia -->
+Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

@@ -8,25 +8,17 @@
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-<!-- ficha -->
-## 📋 Ficha del laboratorio
+## 🎯 Qué vas a hacer aquí
 
-![ruta](https://img.shields.io/badge/ruta-21%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-intermedio-1f6feb?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Central-2e8b57?style=flat-square) ![horas](https://img.shields.io/badge/horas-~6%20h-f0b429?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-cifar10-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-macro__f1-8957e5?style=flat-square)
+Comparar recortes, volteos y perturbaciones sobre imágenes reales.
 
-| Campo | Valor |
-|---|---|
-| 🧭 Posición | Ruta **21 de 31** del recorrido · categoría central |
-| 🎚️ Nivel | intermedio |
-| ⏱️ Dedicación estimada | 6 horas |
-| 🧩 Tarea | `multiclass_classification` |
-| 🏗️ Arquitectura | `augmentation_comparison` |
-| 🗄️ Dataset | [`cifar10`](https://www.cs.toronto.edu/~kriz/cifar.html) — Torchvision / University of Toronto |
-| ⚖️ Licencia del dataset | Consultar términos CIFAR-10 |
-| 🎯 Métrica de selección | `macro_f1` sobre `validation` |
-| 📏 Línea base a superar | CNN sin aumento |
-| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+Es la **ruta 21 de 31** del recorrido y pertenece a 🔴 la parte 5, *La mecánica fina, ahora en profundidad*. Llegas desde **Regularización** y lo que hagas aquí lo da por supuesto **Explicabilidad**.
 
-### 🎯 Qué vas a poder hacer al terminar
+Trabajarás con el dataset **`cifar10`** (Torchvision / University of Toronto, licencia: Consultar términos CIFAR-10), y tendrás que superar la línea base **CNN sin aumento**, decidiendo con la métrica `macro_f1` medida sobre `validation`. Nivel intermedio, unas **6 horas** de dedicación.
+
+**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch básico, particiones train/validation/test, métricas de evaluación.
+
+**Al terminar deberías ser capaz de:**
 
 - Comparar recortes, volteos y perturbaciones sobre imágenes reales.
 - Preparar y auditar el dataset real cifar10 sin fuga de datos.
@@ -34,81 +26,95 @@
 - Comparar contra la línea base: CNN sin aumento.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-### 🧩 Prerrequisitos
+## 🧠 La teoría de este laboratorio
 
-- PyTorch básico
-- particiones train/validation/test
-- métricas de evaluación
+Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
-> Si alguno te falta, retrocede antes de continuar. Viniendo de [🛡️ Regularización](../../labs/19_regularization_dropout_batchnorm/README.md).
+### De qué trata
 
-### ⚙️ `baseline` frente a `improved`
+Este laboratorio estudia **aumento de datos seleccionado por validation** usando `cifar10`, un dataset público real procedente de Torchvision / University of Toronto.
 
-| Parámetro | [`baseline.yaml`](configs/baseline.yaml) | [`improved.yaml`](configs/improved.yaml) |
-|---|---|---|
-| Épocas | `20` | `50` |
-| Tasa de aprendizaje | `0.001` | `0.0005` |
-| Paciencia (early stopping) | `5` | `8` |
-| Precisión mixta (AMP) | no | sí |
-| Procesos de carga | `0` | `2` |
+El aumento de datos (*data augmentation*) genera, sobre la marcha, variantes transformadas de cada imagen de entrenamiento —recortes, volteos horizontales, cambios de brillo o color— manteniendo su etiqueta. La motivación es sencilla y profunda: si sabemos que la clase "gato" no cambia porque la imagen se desplace unos píxeles o se refleje en espejo, entonces exponer a la red a esas versiones le enseña una **invariancia** que de otro modo tendría que descubrir por sí sola (o no aprendería nunca). Efectivamente, ampliamos el conjunto de entrenamiento con ejemplos plausibles y así reducimos el sobreajuste sin recolectar más datos.
 
-> Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con `validation`, nunca con `test`.
+La clave metodológica es que las transformaciones codifican *conocimiento previo* sobre qué variaciones son irrelevantes para la tarea, y ese conocimiento debe ser correcto: un volteo horizontal es inocuo para reconocer animales, pero destruiría la etiqueta de un dígito o de un texto. Por eso el catálogo y la intensidad del aumento se eligen con `validation`, no con `test`, y la evaluación final se hace siempre sobre imágenes de test *sin* aumentar. Sobre `cifar10` (60.000 imágenes a color de 32×32 en 10 clases) comparamos una CNN con y sin aumento para aislar su contribución.
 
-### 📦 Entregables y criterios de aceptación
+### La matemática, paso a paso
 
-**Entregables**
+Invariancias y regularización por transformaciones.
 
-- notebook ejecutado
-- reporte experimental
-- model card
-- comparación con línea base
-- respuesta a preguntas críticas
+Sea T una transformación (recorte, volteo, jitter de color) muestreada de una distribución p(T) que preserva la etiqueta: si (x, y) es un par imagen–clase, queremos que el modelo cumpla f(T(x)) ≈ f(x) para toda T. El aumento de datos convierte el objetivo de entrenamiento en una **esperanza sobre transformaciones**: en lugar de minimizar ℒ(f(x), y) minimizamos 𝔼_{T∼p(T)}[ ℒ(f(T(x)), y) ]. En la práctica esa esperanza se aproxima con Monte Carlo: cada época, cada imagen se ve bajo una T distinta muestreada al azar, de modo que el modelo nunca recibe exactamente el mismo ejemplo dos veces. El efecto es que la red aprende a asignar la misma etiqueta a toda una *órbita* de versiones de x, es decir, aprende invariancia (o al menos robustez) frente a esa familia de transformaciones.
 
-**Criterios de éxito**
+Visto como regularización, el aumento suaviza la función aprendida: promediar la pérdida sobre pequeñas perturbaciones de la entrada penaliza que f cambie bruscamente ante variaciones que la etiqueta considera irrelevantes, lo que empuja hacia fronteras de decisión más estables. Frente a la regularización explícita (weight decay, que actúa sobre los pesos) o al dropout (que actúa sobre las activaciones), el aumento actúa sobre el **espacio de entrada** e inyecta el sesgo inductivo de forma directa e interpretable. Técnicas como Cutout borran una región rectangular de la imagen para forzar el uso de múltiples pistas, mientras que estrategias aprendidas como AutoAugment *buscan* la política de transformaciones p(T) que maximiza la exactitud de validación, en lugar de fijarla a mano.
 
-- cero solapamiento entre train, validation y test
-- selección basada únicamente en validation
-- métricas finales acompañadas por incertidumbre
-- conclusiones que distinguen evidencia de suposición
+El riesgo es que una transformación demasiado agresiva rompa la premisa de invariancia y cambie de hecho la etiqueta (un recorte que elimina el objeto, un giro que convierte un 6 en un 9): entonces se inyecta ruido de etiqueta y el rendimiento cae. La condición de validez es siempre la misma: T debe preservar la semántica de la clase. La medición sobre imágenes de test sin aumento garantiza que la mejora reportada refleje generalización real y no un artefacto del procedimiento de evaluación.
 
-### 🗂️ Recursos del laboratorio
+> **La pregunta que deberías poder responder al terminar:** ¿La mejora proviene de invariancias coherentes?
 
-| Recurso | Archivo |
-|---|---|
-| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
-| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
-| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
-| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
-| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
-| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
-| 🖥️ Script de terminal | [`train.py`](train.py) |
-| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
-| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
-| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+### Qué se mide y con qué se decide
 
-<!-- /ficha -->
+El laboratorio reporta `accuracy`, `macro_f1`, `robust_accuracy`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
-<!-- guia -->
-## 🎯 Qué vas a hacer aquí
+## 🖥️ Los comandos, explicados
 
-Comparar recortes, volteos y perturbaciones sobre imágenes reales.
+Todo el laboratorio se maneja con una sola herramienta de terminal, `neural-labs`, que se instala junto con el paquete (`pip install -e ".[dev,notebooks]"`). Cada subcomando hace **una** cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.
 
-Es la **ruta 21 de 31** y pertenece a 🔴 [la parte 5, La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md). Llegas desde [🛡️ Regularización](../../labs/19_regularization_dropout_batchnorm/README.md) y lo que aprendas aquí lo da por supuesto [🔍 Explicabilidad](../../labs/21_explainability/README.md).
+La forma general es siempre la misma:
 
-## 🧠 La idea que se pone a prueba
+```bash
+neural-labs <subcomando> --lab <identificador> [opciones]
+```
 
-Este laboratorio trabaja **Invariancias y regularización por transformaciones**.
+| Opción | Valor por defecto | Valores | Qué hace y cuándo cambiarla |
+|---|---|---|---|
+| `--lab` | `20_data_augmentation` | obligatorio | Qué laboratorio se ejecuta. Solo acepta los identificadores del catálogo. |
+| `--quick` | desactivado | — | Usa una fracción real del dataset y pocas épocas. Sirve para comprobar la instalación, no para concluir nada sobre el modelo. |
+| `--split-seed N` | `42` | entero | Semilla que decide **qué ejemplo cae en qué partición**. Se mantiene fija al comparar modelos. |
+| `--training-seed N` | `42` | entero | Semilla de la inicialización de pesos y del barajado de lotes. Es la que se varía para medir cuánta diferencia es simple azar. |
+| `--config` | `baseline` | `baseline` · `improved` | Cuál de las dos configuraciones del laboratorio se usa. |
+| `--device` | `auto` | `auto` · `cpu` · `cuda` · `mps` | Dónde entrenar. `auto` elige GPU si está disponible y cae a CPU si no. |
+| `--training-seeds A B C` | `41 42 43` | enteros | Solo en `benchmark`: la lista de semillas de entrenamiento que se repiten. |
+| `--output-dir` | `runs` | ruta | Dónde se escribe el directorio de la ejecución. |
 
-El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
+### El script del laboratorio
 
-> **La pregunta que deberías poder responder al final:** ¿La mejora proviene de invariancias coherentes?
+`labs/20_data_augmentation/train.py` no es un programa distinto: fija el `--lab` y delega en la misma herramienta, de modo que estas dos líneas hacen exactamente lo mismo.
 
-**Métricas que se reportan:** `accuracy`, `macro_f1`, `robust_accuracy`. La selección del modelo se decide con `macro_f1` sobre `validation`.
+```bash
+python labs/20_data_augmentation/train.py --quick
+neural-labs train --lab 20_data_augmentation --quick
+```
+
+### Lo mismo desde Python
+
+Si prefieres trabajar en un cuaderno o llamar al laboratorio desde tu propio código, la misma ejecución se lanza así. La función devuelve un objeto con el directorio de la ejecución, las métricas y el historial ya cargados:
+
+```python
+from neural_labs.experiments import run_lab
+
+resultado = run_lab(
+    "20_data_augmentation",
+    quick=True,          # False para la ejecución completa
+    config_name="baseline",
+    split_seed=42,       # fija la partición
+    training_seed=43,    # varía la inicialización
+)
+
+print(resultado.run_dir)   # dónde quedaron los archivos
+print(resultado.metrics)   # el diccionario de métricas finales
+```
+
+Y para preparar el dataset sin entrenar —útil para inspeccionarlo antes—:
+
+```python
+from neural_labs.datasets import prepare_dataset
+
+datos = prepare_dataset("20_data_augmentation", quick=True, seed=42)
+print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
+```
 
 ## 🪜 Paso a paso
 
-Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
 ### Paso 1 — Traer el dataset real y partirlo
 
@@ -214,7 +220,7 @@ neural-labs benchmark --lab 20_data_augmentation --quick --split-seed 42 --train
 
 ## 🔍 Cómo leer lo que produce la ejecución
 
-Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:
 
 | Archivo | Qué contiene y qué mirar |
 |---|---|
@@ -242,6 +248,12 @@ Cada ejecución escribe su propio directorio. Estos son los archivos que encontr
 - **Las dos semillas no son intercambiables.** `--split-seed` cambia *qué datos* caen en cada partición; `--training-seed` cambia *cómo se inicializa y baraja* el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.
 - **Límite declarado de este dataset.** La evaluación usa imágenes de test sin aumento.
 
+### Riesgos al interpretar los resultados
+
+La evaluación usa imágenes de test sin aumento.
+
+El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.
+
 ## ✅ Antes de darlo por terminado
 
 El laboratorio está aprobado cuando se cumplen estos criterios:
@@ -259,31 +271,44 @@ Y cuando tienes estos entregables:
 - [ ] comparación con línea base
 - [ ] respuesta a preguntas críticas
 
-Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+El plan experimental con la tabla que hay que completar está en `experiments.md`, y las preguntas con su rúbrica, en `assessment.md`. Ambos documentos se abren desde la barra de navegación de arriba.
 
-## 🧪 Para ir más lejos
+### Para ir más lejos
 
 - Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
 - Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
 - Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
 - Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
 
-## 📚 De dónde sale cada cosa de esta guía
+## 📚 Fuentes
 
-Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:
+
+> Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.
+
+- Géron — *Hands-On Machine Learning with Scikit-Learn, Keras & TensorFlow* (3.ª ed., O'Reilly, 2022), cap. 14 — visión por computador con CNN y uso del aumento de datos para mejorar la generalización.
+- Shorten y Khoshgoftaar (2019), *A survey on Image Data Augmentation for Deep Learning*, Journal of Big Data — panorámica sistemática de técnicas de aumento de imágenes.
+- DeVries y Taylor (2017), *Improved Regularization of Convolutional Neural Networks with Cutout*, arXiv — borrado aleatorio de regiones como regularizador.
+- Cubuk et al. (2019), *AutoAugment: Learning Augmentation Strategies from Data*, CVPR — búsqueda automática de políticas de aumento optimizadas por validación.
+- Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html
+- Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+### Cómo comprobar lo que dice esta guía
+
+Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:
 
 | Lo que dice la guía | Dónde comprobarlo |
 |---|---|
-| Objetivo, línea base, métricas y arquitectura | [`configs/labs.yaml`](../../configs/labs.yaml) |
-| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
-| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
-| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/experiments.py`](../../src/neural_labs/experiments.py) |
-| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
-| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+| Objetivo, línea base, métricas y arquitectura | `configs/labs.yaml` |
+| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | `configs/baseline.yaml` y `configs/improved.yaml` |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |
+| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |
+| El orden de los pasos y los archivos que escribe cada ejecución | `src/neural_labs/experiments.py` |
+| La teoría y su bibliografía | `theory.md` |
+| La regla general del protocolo | `docs/experiment-protocol.md` |
 
-Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
-<!-- /guia -->
+Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

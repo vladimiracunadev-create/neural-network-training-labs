@@ -58,6 +58,10 @@ MD = markdown.Markdown(
 # Enlaces del Markdown hacia otro laboratorio: ../../<base>/<slug>/<doc>
 CROSS_LAB_RE = re.compile(r"^\.\./\.\./(labs|advanced_labs)/([^/]+)/(.+)$")
 
+# La guía ya incrusta la explicación de `theory.md`, así que la página no vuelve a
+# renderizarla: aparecería dos veces en el mismo documento.
+SKIP_IN_PAGE = {"theory.md"}
+
 # Distintivos de shields.io del Markdown: en el HTML local se convierten en chips
 # CSS para que la página no dependa de la red.
 BADGE_RE = re.compile(
@@ -212,7 +216,7 @@ def pager(prev: dict | None, nxt: dict | None) -> str:
 def doc_tabs(lab: dict) -> str:
     links = []
     for doc, heading in LAB_DOCS:
-        if not (lab["dir"] / doc).exists():
+        if not (lab["dir"] / doc).exists() or doc in SKIP_IN_PAGE:
             continue
         text = heading or "📄 Guía"
         links.append(f'<a class="btn btn-ghost" href="#{anchor_for(doc)}">{text}</a>')
@@ -230,7 +234,7 @@ def lab_page(lab: dict, index: int, total: int, prev: dict | None, nxt: dict | N
     sections = []
     for doc, heading in LAB_DOCS:
         path = lab["dir"] / doc
-        if not path.exists():
+        if not path.exists() or doc in SKIP_IN_PAGE:
             continue
         rendered = render_doc(path)
         head = (f'<h2 class="doc-sep" id="{anchor_for(doc)}">{heading}</h2>'

@@ -8,25 +8,15 @@
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-<!-- ficha -->
-## 📋 Ficha del laboratorio
+## 🎯 Qué vas a hacer aquí
 
-![ruta](https://img.shields.io/badge/ruta-25%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-proyecto-6b7d92?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Central-2e8b57?style=flat-square) ![horas](https://img.shields.io/badge/horas-~10%20h-f0b429?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-iranian__churn-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-f1-8957e5?style=flat-square)
+Resolver de extremo a extremo un problema real de abandono de clientes con documentación, evaluación y despliegue.
 
-| Campo | Valor |
-|---|---|
-| 🧭 Posición | Ruta **25 de 31** del recorrido · categoría central |
-| 🎚️ Nivel | proyecto |
-| ⏱️ Dedicación estimada | 10 horas |
-| 🧩 Tarea | `binary_classification` |
-| 🏗️ Arquitectura | `capstone_mlp` |
-| 🗄️ Dataset | [`iranian_churn`](https://archive.ics.uci.edu/dataset/563/iranian+churn+dataset) — UCI |
-| ⚖️ Licencia del dataset | CC BY 4.0 |
-| 🎯 Métrica de selección | `f1` sobre `validation` |
-| 📏 Línea base a superar | Regresión logística y Gradient Boosting |
-| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+Es la **ruta 25 de 31** del recorrido y pertenece a ⚫ la parte 6, *Confiar en el modelo y sacarlo del cuaderno*. Llegas desde **Exportación e inferencia** y lo que hagas aquí lo da por supuesto **Fine-tuning eficiente de transformer**.
 
-### 🎯 Qué vas a poder hacer al terminar
+Trabajarás con el dataset **`iranian_churn`** (UCI, licencia: CC BY 4.0), y tendrás que superar la línea base **Regresión logística y Gradient Boosting**, decidiendo con la métrica `f1` medida sobre `validation`. Nivel proyecto, unas **10 horas** de dedicación.
+
+**Al terminar deberías ser capaz de:**
 
 - Resolver de extremo a extremo un problema real de abandono de clientes con documentación, evaluación y despliegue.
 - Preparar y auditar el dataset real iranian_churn sin fuga de datos.
@@ -34,73 +24,95 @@
 - Comparar contra la línea base: Regresión logística y Gradient Boosting.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-### ⚙️ `baseline` frente a `improved`
+## 🧠 La teoría de este laboratorio
 
-| Parámetro | [`baseline.yaml`](configs/baseline.yaml) | [`improved.yaml`](configs/improved.yaml) |
-|---|---|---|
-| Épocas | `20` | `50` |
-| Tasa de aprendizaje | `0.001` | `0.0005` |
-| Paciencia (early stopping) | `5` | `8` |
-| Precisión mixta (AMP) | no | sí |
-| Procesos de carga | `0` | `2` |
+Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
-> Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con `validation`, nunca con `test`.
+### De qué trata
 
-### 📦 Entregables y criterios de aceptación
+Este laboratorio estudia **proyecto integral de churn** usando `iranian_churn`, un dataset público real procedente de UCI.
 
-**Entregables**
+El *churn* —abandono de clientes— es un problema de negocio antes que un problema de aprendizaje: una operadora quiere anticipar qué clientes dejarán el servicio para intervenir con retención. Traducirlo a un modelo obliga a recorrer todo el ciclo de vida de un proyecto de ML: entender los datos y su procedencia, definir la métrica que importa, construir líneas base honestas, entrenar y calibrar, elegir un umbral de decisión ligado al *costo* de los errores, y documentar el resultado para que sea auditable y desplegable. Este capstone integra todo lo aprendido en los laboratorios anteriores sobre un caso real: 3.150 clientes de una empresa iraní de telecomunicaciones seguidos durante 12 meses.
 
-- notebook ejecutado
-- reporte experimental
-- model card
-- comparación con línea base
-- respuesta a preguntas críticas
+Lo distintivo de un proyecto end-to-end es que la exactitud bruta rara vez es la meta. El churn es un problema **desbalanceado** (los que se van son minoría) y con **costos asimétricos**: no cuesta lo mismo dejar escapar a un cliente que se iba (falso negativo, se pierde su valor) que ofrecer una promoción a alguien que se quedaba igual (falso positivo, gasto innecesario). Por eso el laboratorio insiste en métricas sensibles al desbalance, en calibración de probabilidades y en la selección de umbral como decisión de negocio, comparando siempre contra líneas base sólidas: regresión logística y gradient boosting.
 
-**Criterios de éxito**
+### La matemática, paso a paso
 
-- cero solapamiento entre train, validation y test
-- selección basada únicamente en validation
-- métricas finales acompañadas por incertidumbre
-- conclusiones que distinguen evidencia de suposición
+Clasificación, calibración, selección de umbral y costo de errores.
 
-### 🗂️ Recursos del laboratorio
+El modelo produce una probabilidad de abandono p = P(churn | x) para cada cliente, pero la *decisión* de actuar requiere un **umbral** τ: se interviene si p ≥ τ. La elección de τ no es un detalle técnico, sino donde entra la economía del problema. Cada resultado tiene un costo: un verdadero positivo detectado permite una acción de retención; un falso negativo (τ demasiado alto) deja escapar clientes; un falso positivo (τ demasiado bajo) malgasta recursos. Si asignamos costos c_FN y c_FP a cada tipo de error, el umbral óptimo minimiza el costo esperado y, bajo el análisis clásico, satisface una relación de la forma τ\* = c_FP / (c_FP + c_FN): cuanto más caro es dejar escapar a un cliente (c_FN grande), más bajo conviene poner el umbral para capturar a más candidatos. Este umbral se elige en **validación**, nunca en test.
 
-| Recurso | Archivo |
-|---|---|
-| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
-| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
-| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
-| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
-| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
-| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
-| 🖥️ Script de terminal | [`train.py`](train.py) |
-| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
-| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
-| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+Como el umbral depende de la probabilidad, esa probabilidad debe ser **confiable**, y aquí reaparece la calibración del laboratorio 22: un modelo sobreconfiado desplaza el punto de operación y distorsiona el análisis de costos. Por eso, antes de fijar τ, conviene recalibrar (p. ej. con temperature scaling o Platt scaling) para que p ≈ frecuencia real de churn. Para evaluar el modelo con independencia del umbral se usan métricas basadas en el *ranking*: el **ROC-AUC** mide la probabilidad de ordenar correctamente un par (cliente que abandona, cliente que se queda), mientras que el **PR-AUC** (precisión–recall) es más informativo en datos desbalanceados porque se centra en la clase positiva minoritaria y no se deja "inflar" por la abundancia de negativos. La **balanced accuracy** —media de la sensibilidad y la especificidad— corrige el sesgo de la exactitud simple cuando las clases están desequilibradas.
 
-<!-- /ficha -->
+La cadena de razonamiento del capstone es, entonces: entrenar un clasificador → recalibrar sus probabilidades → medir su capacidad de ordenamiento con AUC/PR-AUC de forma independiente del umbral → traducir esa capacidad en una política de decisión eligiendo τ según los costos del negocio en validación → y solo entonces reportar el desempeño una única vez en test. La contribución matemática no está en un algoritmo nuevo, sino en *encadenar correctamente* clasificación, calibración, coste y umbral para que el número final sea una decisión responsable y no una métrica aislada.
 
-<!-- guia -->
-## 🎯 Qué vas a hacer aquí
+> **La pregunta que deberías poder responder al terminar:** ¿Cómo convertir resultados en una decisión responsable?
 
-Resolver de extremo a extremo un problema real de abandono de clientes con documentación, evaluación y despliegue.
+### Qué se mide y con qué se decide
 
-Es la **ruta 25 de 31** y pertenece a ⚫ [la parte 6, Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md). Llegas desde [📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) y lo que aprendas aquí lo da por supuesto [🔧 Fine-tuning eficiente de transformer](../../advanced_labs/25_transformer_finetuning/README.md).
+El laboratorio reporta `accuracy`, `balanced_accuracy`, `precision`, `recall`, `f1`, `roc_auc`, `pr_auc`. De todas ellas, la que **decide** qué modelo se conserva es `f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
-## 🧠 La idea que se pone a prueba
+## 🖥️ Los comandos, explicados
 
-Este laboratorio trabaja **Clasificación, calibración, selección de umbral y costo de errores**.
+Todo el laboratorio se maneja con una sola herramienta de terminal, `neural-labs`, que se instala junto con el paquete (`pip install -e ".[dev,notebooks]"`). Cada subcomando hace **una** cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.
 
-El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
+La forma general es siempre la misma:
 
-> **La pregunta que deberías poder responder al final:** ¿Cómo convertir resultados en una decisión responsable?
+```bash
+neural-labs <subcomando> --lab <identificador> [opciones]
+```
 
-**Métricas que se reportan:** `accuracy`, `balanced_accuracy`, `precision`, `recall`, `f1`, `roc_auc`, `pr_auc`. La selección del modelo se decide con `f1` sobre `validation`.
+| Opción | Valor por defecto | Valores | Qué hace y cuándo cambiarla |
+|---|---|---|---|
+| `--lab` | `24_capstone_real_project` | obligatorio | Qué laboratorio se ejecuta. Solo acepta los identificadores del catálogo. |
+| `--quick` | desactivado | — | Usa una fracción real del dataset y pocas épocas. Sirve para comprobar la instalación, no para concluir nada sobre el modelo. |
+| `--split-seed N` | `42` | entero | Semilla que decide **qué ejemplo cae en qué partición**. Se mantiene fija al comparar modelos. |
+| `--training-seed N` | `42` | entero | Semilla de la inicialización de pesos y del barajado de lotes. Es la que se varía para medir cuánta diferencia es simple azar. |
+| `--config` | `baseline` | `baseline` · `improved` | Cuál de las dos configuraciones del laboratorio se usa. |
+| `--device` | `auto` | `auto` · `cpu` · `cuda` · `mps` | Dónde entrenar. `auto` elige GPU si está disponible y cae a CPU si no. |
+| `--training-seeds A B C` | `41 42 43` | enteros | Solo en `benchmark`: la lista de semillas de entrenamiento que se repiten. |
+| `--output-dir` | `runs` | ruta | Dónde se escribe el directorio de la ejecución. |
+
+### El script del laboratorio
+
+`labs/24_capstone_real_project/train.py` no es un programa distinto: fija el `--lab` y delega en la misma herramienta, de modo que estas dos líneas hacen exactamente lo mismo.
+
+```bash
+python labs/24_capstone_real_project/train.py --quick
+neural-labs train --lab 24_capstone_real_project --quick
+```
+
+### Lo mismo desde Python
+
+Si prefieres trabajar en un cuaderno o llamar al laboratorio desde tu propio código, la misma ejecución se lanza así. La función devuelve un objeto con el directorio de la ejecución, las métricas y el historial ya cargados:
+
+```python
+from neural_labs.experiments import run_lab
+
+resultado = run_lab(
+    "24_capstone_real_project",
+    quick=True,          # False para la ejecución completa
+    config_name="baseline",
+    split_seed=42,       # fija la partición
+    training_seed=43,    # varía la inicialización
+)
+
+print(resultado.run_dir)   # dónde quedaron los archivos
+print(resultado.metrics)   # el diccionario de métricas finales
+```
+
+Y para preparar el dataset sin entrenar —útil para inspeccionarlo antes—:
+
+```python
+from neural_labs.datasets import prepare_dataset
+
+datos = prepare_dataset("24_capstone_real_project", quick=True, seed=42)
+print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
+```
 
 ## 🪜 Paso a paso
 
-Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
 ### Paso 1 — Traer el dataset real y partirlo
 
@@ -206,7 +218,7 @@ neural-labs benchmark --lab 24_capstone_real_project --quick --split-seed 42 --t
 
 ## 🔍 Cómo leer lo que produce la ejecución
 
-Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:
 
 | Archivo | Qué contiene y qué mirar |
 |---|---|
@@ -233,6 +245,12 @@ Cada ejecución escribe su propio directorio. Estos son los archivos que encontr
 - **Las dos semillas no son intercambiables.** `--split-seed` cambia *qué datos* caen en cada partición; `--training-seed` cambia *cómo se inicializa y baraja* el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.
 - **Límite declarado de este dataset.** 3.150 clientes recolectados aleatoriamente de la base de una empresa iraní de telecomunicaciones durante 12 meses.
 
+### Riesgos al interpretar los resultados
+
+3.150 clientes recolectados aleatoriamente de la base de una empresa iraní de telecomunicaciones durante 12 meses.
+
+El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.
+
 ## ✅ Antes de darlo por terminado
 
 El laboratorio está aprobado cuando se cumplen estos criterios:
@@ -250,31 +268,43 @@ Y cuando tienes estos entregables:
 - [ ] comparación con línea base
 - [ ] respuesta a preguntas críticas
 
-Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+El plan experimental con la tabla que hay que completar está en `experiments.md`, y las preguntas con su rúbrica, en `assessment.md`. Ambos documentos se abren desde la barra de navegación de arriba.
 
-## 🧪 Para ir más lejos
+### Para ir más lejos
 
 - Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
 - Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
 - Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
 - Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
 
-## 📚 De dónde sale cada cosa de esta guía
+## 📚 Fuentes
 
-Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:
+
+> Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.
+
+- Géron — *Hands-On Machine Learning with Scikit-Learn, Keras & TensorFlow* (3.ª ed., O'Reilly, 2022), cap. 2 — recorrido completo de un proyecto de ML de punta a punta, del marco del problema al despliegue.
+- Huyen — *Designing Machine Learning Systems* (O'Reilly, 2022) — diseño de sistemas de ML en producción: métricas de negocio, monitorización y despliegue responsable.
+- Kuhn y Johnson — *Applied Predictive Modeling* (Springer, 2013) — modelado predictivo aplicado: preprocesamiento, evaluación con clases desbalanceadas y selección de umbral.
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/563/iranian+churn+dataset
+- Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+### Cómo comprobar lo que dice esta guía
+
+Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:
 
 | Lo que dice la guía | Dónde comprobarlo |
 |---|---|
-| Objetivo, línea base, métricas y arquitectura | [`configs/labs.yaml`](../../configs/labs.yaml) |
-| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
-| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
-| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/experiments.py`](../../src/neural_labs/experiments.py) |
-| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
-| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+| Objetivo, línea base, métricas y arquitectura | `configs/labs.yaml` |
+| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | `configs/baseline.yaml` y `configs/improved.yaml` |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |
+| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |
+| El orden de los pasos y los archivos que escribe cada ejecución | `src/neural_labs/experiments.py` |
+| La teoría y su bibliografía | `theory.md` |
+| La regla general del protocolo | `docs/experiment-protocol.md` |
 
-Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
-<!-- /guia -->
+Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

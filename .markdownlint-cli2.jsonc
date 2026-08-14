@@ -18,7 +18,11 @@
     "MD049": false, // estilo de énfasis: la notación matemática usa * (óptimo) y _ (subíndice)
     "MD037": false, // espacios en marcadores de énfasis: colisiona con expresiones como "λ* = argmin_{...}"
     "MD028": false, // línea en blanco dentro de blockquote (nota de redacción original + cita)
-    "MD010": { "code_blocks": false } // permitir tabs dentro de bloques de código
+    "MD010": { "code_blocks": false }, // permitir tabs dentro de bloques de código
+    // Cinco laboratorios escriben sus fórmulas en bloques indentados y la guía usa
+    // bloques con vallas para los comandos: ambas formas conviven a propósito en el
+    // mismo documento, y GitHub las renderiza igual.
+    "MD046": false // estilo de bloque de código (indentado frente a vallas)
   },
   "ignores": [
     "node_modules",

@@ -145,65 +145,17 @@ body { margin: 0; background: var(--bg); color: var(--ink);
     <div class="lab-hero">
       <div class="lab-kicker">Laboratorio 03 · Central · Ruta 4 / 31 · <a href="../../parts/02-arquitecturas.html">Parte 2 — Arquitecturas según la forma del dato</a></div>
       <h1>🖼️ CNN para visión</h1>
-      <div class="lab-actions"><a class="btn btn-ghost" href="#README">📄 Guía</a><a class="btn btn-ghost" href="#theory">🧠 Teoría</a><a class="btn btn-ghost" href="#experiments">🔬 Experimentos</a><a class="btn btn-ghost" href="#assessment">📝 Evaluación</a><a class="btn btn-ghost" href="notebook.ipynb">📓 Recorrido</a><a class="btn btn-ghost" href="notebook_student.ipynb">✏️ Estudiante</a><a class="btn btn-ghost" href="notebook_solution.ipynb">✅ Solución</a></div>
+      <div class="lab-actions"><a class="btn btn-ghost" href="#README">📄 Guía</a><a class="btn btn-ghost" href="#experiments">🔬 Experimentos</a><a class="btn btn-ghost" href="#assessment">📝 Evaluación</a><a class="btn btn-ghost" href="notebook.ipynb">📓 Recorrido</a><a class="btn btn-ghost" href="notebook_student.ipynb">✏️ Estudiante</a><a class="btn btn-ghost" href="notebook_solution.ipynb">✅ Solución</a></div>
     </div>
     <nav class="pager"><a class="pg pg-prev" href="../../labs/02_mlp_nonlinear/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🌀 MLP multiclase</span></a><a class="pg pg-next" href="../../labs/04_rnn_sequences/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🔁 RNN para texto</span></a></nav>
     <article class="content">
       <span id="README"></span><h1 id="cnn-para-vision">CNN para visión</h1>
-<!-- ficha -->
-<h2 id="ficha-del-laboratorio">📋 Ficha del laboratorio</h2>
-<div class="chips"><span class="chip"><b>ruta</b><span style="background:#7c5cff">4 de 31</span></span> <span class="chip"><b>nivel</b><span style="background:#1f6feb">intermedio</span></span> <span class="chip"><b>categoría</b><span style="background:#2e8b57">Central</span></span> <span class="chip"><b>horas</b><span style="background:#f0b429">~6 h</span></span> <span class="chip"><b>dataset</b><span style="background:#1f6feb">cifar10</span></span> <span class="chip"><b>selección</b><span style="background:#8957e5">macro_f1</span></span></div>
-<table>
-<thead>
-<tr>
-<th>Campo</th>
-<th>Valor</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>🧭 Posición</td>
-<td>Ruta <strong>4 de 31</strong> del recorrido · categoría central</td>
-</tr>
-<tr>
-<td>🎚️ Nivel</td>
-<td>intermedio</td>
-</tr>
-<tr>
-<td>⏱️ Dedicación estimada</td>
-<td>6 horas</td>
-</tr>
-<tr>
-<td>🧩 Tarea</td>
-<td><code>multiclass_classification</code></td>
-</tr>
-<tr>
-<td>🏗️ Arquitectura</td>
-<td><code>cnn</code></td>
-</tr>
-<tr>
-<td>🗄️ Dataset</td>
-<td><a href="https://www.cs.toronto.edu/~kriz/cifar.html"><code>cifar10</code></a> — Torchvision / University of Toronto</td>
-</tr>
-<tr>
-<td>⚖️ Licencia del dataset</td>
-<td>Consultar términos CIFAR-10</td>
-</tr>
-<tr>
-<td>🎯 Métrica de selección</td>
-<td><code>macro_f1</code> sobre <code>validation</code></td>
-</tr>
-<tr>
-<td>📏 Línea base a superar</td>
-<td>Clasificador lineal sobre píxeles</td>
-</tr>
-<tr>
-<td>🔒 Política de <code>test</code></td>
-<td>se abre una sola vez, tras escribir <code>experiment.lock.json</code></td>
-</tr>
-</tbody>
-</table>
-<h3 id="que-vas-a-poder-hacer-al-terminar">🎯 Qué vas a poder hacer al terminar</h3>
+<h2 id="que-vas-a-hacer-aqui">🎯 Qué vas a hacer aquí</h2>
+<p>Entrenar una CNN y analizar errores sobre fotografías reales de diez clases.</p>
+<p>Es la <strong>ruta 4 de 31</strong> del recorrido y pertenece a 🔵 la parte 2, <em>Arquitecturas según la forma del dato</em>. Llegas desde <strong>MLP multiclase</strong> y lo que hagas aquí lo da por supuesto <strong>RNN para texto</strong>.</p>
+<p>Trabajarás con el dataset <strong><code>cifar10</code></strong> (Torchvision / University of Toronto, licencia: Consultar términos CIFAR-10), y tendrás que superar la línea base <strong>Clasificador lineal sobre píxeles</strong>, decidiendo con la métrica <code>macro_f1</code> medida sobre <code>validation</code>. Nivel intermedio, unas <strong>6 horas</strong> de dedicación.</p>
+<p><strong>Lo que conviene traer resuelto de las rutas anteriores:</strong> PyTorch básico, particiones train/validation/test, métricas de evaluación.</p>
+<p><strong>Al terminar deberías ser capaz de:</strong></p>
 <ul>
 <li>Entrenar una CNN y analizar errores sobre fotografías reales de diez clases.</li>
 <li>Preparar y auditar el dataset real cifar10 sin fuga de datos.</li>
@@ -211,141 +163,120 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 <li>Comparar contra la línea base: Clasificador lineal sobre píxeles.</li>
 <li>Interpretar intervalos de confianza, errores y limitaciones.</li>
 </ul>
-<h3 id="prerrequisitos">🧩 Prerrequisitos</h3>
-<ul>
-<li>PyTorch básico</li>
-<li>particiones train/validation/test</li>
-<li>métricas de evaluación</li>
-</ul>
+<h2 id="la-teoria-de-este-laboratorio">🧠 La teoría de este laboratorio</h2>
+<p>Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en <code>theory.md</code>, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)</p>
+<h3 id="de-que-trata">De qué trata</h3>
+<p>Este laboratorio estudia <strong>convoluciones para patrones espaciales</strong> usando <code>cifar10</code>, un dataset público real procedente de Torchvision / University of Toronto.</p>
+<p>Aplanar una imagen de 32×32×3 y pasarla por un MLP funciona, pero desperdicia la estructura del problema: ignora que los píxeles vecinos están correlacionados y que un objeto es el mismo aunque se desplace unos píxeles. La red convolucional (CNN) incorpora dos sesgos inductivos que encajan con las imágenes: <strong>localidad</strong> (cada neurona mira solo una región pequeña) e <strong>invariancia por traslación</strong> (el mismo filtro se aplica en toda la imagen, compartiendo parámetros). Esto reduce drásticamente el número de pesos y obliga al modelo a aprender detectores de patrones reutilizables.</p>
+<p>La consecuencia es una jerarquía de representaciones: las primeras capas aprenden bordes y colores, las intermedias combinan esos bordes en texturas y partes, y las profundas responden a objetos completos. El laboratorio entrena esta jerarquía sobre CIFAR-10 (60.000 fotografías reales de 10 clases) y contrasta contra un clasificador lineal sobre píxeles para hacer patente cuánto aporta explotar la estructura espacial.</p>
+<h3 id="la-matematica-paso-a-paso">La matemática, paso a paso</h3>
+<p>La operación central es la <strong>convolución</strong>: un filtro (kernel) de pesos K de tamaño pequeño se desliza sobre la imagen de entrada X y, en cada posición, calcula un producto punto local. Para un filtro de tamaño F×F sobre un mapa de entrada:</p>
+<p>Y(i, j) = Σₘ Σₙ X(i+m, j+n)·K(m, n) + b</p>
+<p>El mismo K se reutiliza en todas las posiciones (i, j): eso es el <strong>peso compartido</strong> que da la invariancia por traslación y reduce los parámetros de millones (como en una capa densa) a apenas F×F por canal de filtro. Cada filtro produce un <strong>mapa de activación</strong> que señala dónde aparece el patrón que ese filtro detecta. Tras la convolución se aplica una no linealidad (ReLU), sin la cual toda la pila colapsaría a una única convolución lineal.</p>
+<p>El tamaño del mapa de salida depende del <em>stride</em> s (paso del deslizamiento) y del <em>padding</em> p (relleno de bordes): dimensión_salida = ⌊(dimensión_entrada − F + 2p)/s⌋ + 1. El <strong>pooling</strong> (típicamente max-pooling) submuestrea cada región tomando su máximo, lo que reduce la resolución espacial, aporta cierta invariancia a pequeñas traslaciones y amplía el campo receptivo de las capas posteriores sin añadir parámetros.</p>
+<p>Un ingrediente decisivo para entrenar redes profundas es la <strong>normalización por lotes</strong> (batch normalization), que estandariza las activaciones de cada canal dentro del minilote:</p>
+<p>x̂ = (x − μ_B) / √(σ²_B + ε),    y = γ·x̂ + β</p>
+<p>donde μ_B y σ²_B son la media y varianza del lote, ε evita la división por cero, y γ, β son parámetros aprendibles que restauran la capacidad expresiva. Esto estabiliza y acelera el entrenamiento al mantener las activaciones en un rango controlado, reduciendo la sensibilidad a la inicialización.</p>
+<p>Tras varias etapas de convolución + ReLU + pooling, los mapas finales se aplanan (o se promedian con global average pooling) y pasan a una cabeza densa que produce los 10 logits, entrenados con entropía cruzada categórica y softmax igual que en el MLP. Una idea arquitectónica que el laboratorio deja como horizonte es la <strong>conexión residual</strong> (ResNet): sumar la entrada de un bloque a su salida, y = F(x) + x, lo que crea un atajo por el que el gradiente fluye sin atenuarse y permite entrenar redes de cientos de capas.</p>
+<p>La formulación debe conectarse con cuatro elementos: representación de entrada, función del modelo, función de pérdida y regla de actualización. El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.</p>
 <blockquote>
-<p>Si alguno te falta, retrocede antes de continuar. Viniendo de <a href="../../labs/02_mlp_nonlinear/index.html">🌀 MLP multiclase</a>.</p>
+<p><strong>La pregunta que deberías poder responder al terminar:</strong> ¿Qué clases concentran errores visualmente plausibles?</p>
 </blockquote>
-<h3 id="baseline-frente-a-improved">⚙️ <code>baseline</code> frente a <code>improved</code></h3>
+<h3 id="que-se-mide-y-con-que-se-decide">Qué se mide y con qué se decide</h3>
+<p>El laboratorio reporta <code>accuracy</code>, <code>balanced_accuracy</code>, <code>macro_precision</code>, <code>macro_recall</code>, <code>macro_f1</code>. De todas ellas, la que <strong>decide</strong> qué modelo se conserva es <code>macro_f1</code>, y se mide siempre sobre <code>validation</code>: es la única forma de que <code>test</code> siga siendo una estimación honesta de lo que pasará con datos nuevos.</p>
+<h2 id="los-comandos-explicados">🖥️ Los comandos, explicados</h2>
+<p>Todo el laboratorio se maneja con una sola herramienta de terminal, <code>neural-labs</code>, que se instala junto con el paquete (<code>pip install -e ".[dev,notebooks]"</code>). Cada subcomando hace <strong>una</strong> cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.</p>
+<p>La forma general es siempre la misma:</p>
+<pre><code class="language-bash">neural-labs &lt;subcomando&gt; --lab &lt;identificador&gt; [opciones]
+</code></pre>
 <table>
 <thead>
 <tr>
-<th>Parámetro</th>
-<th><a href="configs/baseline.yaml"><code>baseline.yaml</code></a></th>
-<th><a href="configs/improved.yaml"><code>improved.yaml</code></a></th>
+<th>Opción</th>
+<th>Valor por defecto</th>
+<th>Valores</th>
+<th>Qué hace y cuándo cambiarla</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Épocas</td>
-<td><code>20</code></td>
-<td><code>50</code></td>
+<td><code>--lab</code></td>
+<td><code>03_cnn_vision</code></td>
+<td>obligatorio</td>
+<td>Qué laboratorio se ejecuta. Solo acepta los identificadores del catálogo.</td>
 </tr>
 <tr>
-<td>Tasa de aprendizaje</td>
-<td><code>0.001</code></td>
-<td><code>0.0005</code></td>
+<td><code>--quick</code></td>
+<td>desactivado</td>
+<td>—</td>
+<td>Usa una fracción real del dataset y pocas épocas. Sirve para comprobar la instalación, no para concluir nada sobre el modelo.</td>
 </tr>
 <tr>
-<td>Paciencia (early stopping)</td>
-<td><code>5</code></td>
-<td><code>8</code></td>
+<td><code>--split-seed N</code></td>
+<td><code>42</code></td>
+<td>entero</td>
+<td>Semilla que decide <strong>qué ejemplo cae en qué partición</strong>. Se mantiene fija al comparar modelos.</td>
 </tr>
 <tr>
-<td>Precisión mixta (AMP)</td>
-<td>no</td>
-<td>sí</td>
+<td><code>--training-seed N</code></td>
+<td><code>42</code></td>
+<td>entero</td>
+<td>Semilla de la inicialización de pesos y del barajado de lotes. Es la que se varía para medir cuánta diferencia es simple azar.</td>
 </tr>
 <tr>
-<td>Procesos de carga</td>
-<td><code>0</code></td>
-<td><code>2</code></td>
+<td><code>--config</code></td>
+<td><code>baseline</code></td>
+<td><code>baseline</code> · <code>improved</code></td>
+<td>Cuál de las dos configuraciones del laboratorio se usa.</td>
+</tr>
+<tr>
+<td><code>--device</code></td>
+<td><code>auto</code></td>
+<td><code>auto</code> · <code>cpu</code> · <code>cuda</code> · <code>mps</code></td>
+<td>Dónde entrenar. <code>auto</code> elige GPU si está disponible y cae a CPU si no.</td>
+</tr>
+<tr>
+<td><code>--training-seeds A B C</code></td>
+<td><code>41 42 43</code></td>
+<td>enteros</td>
+<td>Solo en <code>benchmark</code>: la lista de semillas de entrenamiento que se repiten.</td>
+</tr>
+<tr>
+<td><code>--output-dir</code></td>
+<td><code>runs</code></td>
+<td>ruta</td>
+<td>Dónde se escribe el directorio de la ejecución.</td>
 </tr>
 </tbody>
 </table>
-<blockquote>
-<p>Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con <code>validation</code>, nunca con <code>test</code>.</p>
-</blockquote>
-<h3 id="entregables-y-criterios-de-aceptacion">📦 Entregables y criterios de aceptación</h3>
-<p><strong>Entregables</strong></p>
-<ul>
-<li>notebook ejecutado</li>
-<li>reporte experimental</li>
-<li>model card</li>
-<li>comparación con línea base</li>
-<li>respuesta a preguntas críticas</li>
-</ul>
-<p><strong>Criterios de éxito</strong></p>
-<ul>
-<li>cero solapamiento entre train, validation y test</li>
-<li>selección basada únicamente en validation</li>
-<li>métricas finales acompañadas por incertidumbre</li>
-<li>conclusiones que distinguen evidencia de suposición</li>
-</ul>
-<h3 id="recursos-del-laboratorio">🗂️ Recursos del laboratorio</h3>
-<table>
-<thead>
-<tr>
-<th>Recurso</th>
-<th>Archivo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>🧠 Teoría y referencias</td>
-<td><a href="#theory"><code>theory.md</code></a></td>
-</tr>
-<tr>
-<td>🔬 Plan de experimentos</td>
-<td><a href="#experiments"><code>experiments.md</code></a></td>
-</tr>
-<tr>
-<td>📝 Evaluación y rúbrica</td>
-<td><a href="#assessment"><code>assessment.md</code></a></td>
-</tr>
-<tr>
-<td>📓 Notebook de recorrido</td>
-<td><a href="notebook.ipynb"><code>notebook.ipynb</code></a></td>
-</tr>
-<tr>
-<td>✏️ Notebook de estudiante</td>
-<td><a href="notebook_student.ipynb"><code>notebook_student.ipynb</code></a></td>
-</tr>
-<tr>
-<td>✅ Notebook de solución</td>
-<td><a href="notebook_solution.ipynb"><code>notebook_solution.ipynb</code></a></td>
-</tr>
-<tr>
-<td>🖥️ Script de terminal</td>
-<td><a href="train.py"><code>train.py</code></a></td>
-</tr>
-<tr>
-<td>🎛️ Configuración base</td>
-<td><a href="configs/baseline.yaml"><code>configs/baseline.yaml</code></a></td>
-</tr>
-<tr>
-<td>🎚️ Configuración ampliada</td>
-<td><a href="configs/improved.yaml"><code>configs/improved.yaml</code></a></td>
-</tr>
-<tr>
-<td>🗄️ Ficha del dataset</td>
-<td><a href="data/dataset.yaml"><code>data/dataset.yaml</code></a></td>
-</tr>
-<tr>
-<td>🧾 Metadatos de la lección</td>
-<td><a href="lesson.yaml"><code>lesson.yaml</code></a></td>
-</tr>
-</tbody>
-</table>
-<!-- /ficha -->
+<h3 id="el-script-del-laboratorio">El script del laboratorio</h3>
+<p><code>labs/03_cnn_vision/train.py</code> no es un programa distinto: fija el <code>--lab</code> y delega en la misma herramienta, de modo que estas dos líneas hacen exactamente lo mismo.</p>
+<pre><code class="language-bash">python labs/03_cnn_vision/train.py --quick
+neural-labs train --lab 03_cnn_vision --quick
+</code></pre>
+<h3 id="lo-mismo-desde-python">Lo mismo desde Python</h3>
+<p>Si prefieres trabajar en un cuaderno o llamar al laboratorio desde tu propio código, la misma ejecución se lanza así. La función devuelve un objeto con el directorio de la ejecución, las métricas y el historial ya cargados:</p>
+<pre><code class="language-python">from neural_labs.experiments import run_lab
 
-<!-- guia -->
-<h2 id="que-vas-a-hacer-aqui">🎯 Qué vas a hacer aquí</h2>
-<p>Entrenar una CNN y analizar errores sobre fotografías reales de diez clases.</p>
-<p>Es la <strong>ruta 4 de 31</strong> y pertenece a 🔵 <a href="../../parts/02-arquitecturas.html">la parte 2, Arquitecturas según la forma del dato</a>. Llegas desde <a href="../../labs/02_mlp_nonlinear/index.html">🌀 MLP multiclase</a> y lo que aprendas aquí lo da por supuesto <a href="../../labs/04_rnn_sequences/index.html">🔁 RNN para texto</a>.</p>
-<h2 id="la-idea-que-se-pone-a-prueba">🧠 La idea que se pone a prueba</h2>
-<p>Este laboratorio trabaja <strong>Convolución, pooling, normalización y clasificación</strong>.</p>
-<p>El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en <a href="#theory"><code>theory.md</code></a>. Léelo antes de entrenar: los pasos de abajo te dicen <em>qué</em> hacer, y la teoría, <em>por qué</em> funciona y cuándo deja de funcionar.</p>
-<blockquote>
-<p><strong>La pregunta que deberías poder responder al final:</strong> ¿Qué clases concentran errores visualmente plausibles?</p>
-</blockquote>
-<p><strong>Métricas que se reportan:</strong> <code>accuracy</code>, <code>balanced_accuracy</code>, <code>macro_precision</code>, <code>macro_recall</code>, <code>macro_f1</code>. La selección del modelo se decide con <code>macro_f1</code> sobre <code>validation</code>.</p>
+resultado = run_lab(
+    &quot;03_cnn_vision&quot;,
+    quick=True,          # False para la ejecución completa
+    config_name=&quot;baseline&quot;,
+    split_seed=42,       # fija la partición
+    training_seed=43,    # varía la inicialización
+)
+
+print(resultado.run_dir)   # dónde quedaron los archivos
+print(resultado.metrics)   # el diccionario de métricas finales
+</code></pre>
+<p>Y para preparar el dataset sin entrenar —útil para inspeccionarlo antes—:</p>
+<pre><code class="language-python">from neural_labs.datasets import prepare_dataset
+
+datos = prepare_dataset(&quot;03_cnn_vision&quot;, quick=True, seed=42)
+print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
+</code></pre>
 <h2 id="paso-a-paso">🪜 Paso a paso</h2>
-<p>Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.</p>
+<p>Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.</p>
 <h3 id="paso-1-traer-el-dataset-real-y-partirlo">Paso 1 — Traer el dataset real y partirlo</h3>
 <p><strong>Qué ocurre.</strong> Descarga <code>cifar10</code> desde su proveedor y construye las tres particiones —<code>train</code>, <code>validation</code> y <code>test</code>— con la semilla de partición que le pases.</p>
 <p><strong>Por qué.</strong> La partición se fija <strong>antes</strong> de entrenar y su semilla (<code>--split-seed</code>) es independiente de la del entrenamiento (<code>--training-seed</code>). Si ambas fueran la misma, no podrías distinguir si un cambio en el resultado viene de haber repartido los datos de otro modo o de haber inicializado los pesos de otro modo.</p>
@@ -399,7 +330,7 @@ neural-labs train --lab 03_cnn_vision --config baseline --split-seed 42 --traini
 <p><strong>Por qué.</strong> Un resultado sin su contexto —qué datos, qué decisiones, qué límites— no es reutilizable. La model card es lo que permite que otra persona sepa cuándo <em>no</em> debería usar tu modelo.</p>
 <p><strong>Cómo sabes que salió bien.</strong> Completaste la tabla multi-semilla de <code>experiments.md</code> y respondiste las preguntas de <code>assessment.md</code>.</p>
 <h2 id="como-leer-lo-que-produce-la-ejecucion">🔍 Cómo leer lo que produce la ejecución</h2>
-<p>Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:</p>
+<p>Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:</p>
 <table>
 <thead>
 <tr>
@@ -477,6 +408,9 @@ neural-labs train --lab 03_cnn_vision --config baseline --split-seed 42 --traini
 <li><strong>Las dos semillas no son intercambiables.</strong> <code>--split-seed</code> cambia <em>qué datos</em> caen en cada partición; <code>--training-seed</code> cambia <em>cómo se inicializa y baraja</em> el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.</li>
 <li><strong>Límite declarado de este dataset.</strong> CIFAR-10 contiene 60.000 imágenes reales de 32×32.</li>
 </ul>
+<h3 id="riesgos-al-interpretar-los-resultados">Riesgos al interpretar los resultados</h3>
+<p>CIFAR-10 contiene 60.000 imágenes reales de 32×32.</p>
+<p>El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.</p>
 <h2 id="antes-de-darlo-por-terminado">✅ Antes de darlo por terminado</h2>
 <p>El laboratorio está aprobado cuando se cumplen estos criterios:</p>
 <ul>
@@ -493,88 +427,16 @@ neural-labs train --lab 03_cnn_vision --config baseline --split-seed 42 --traini
 <li>[ ] comparación con línea base</li>
 <li>[ ] respuesta a preguntas críticas</li>
 </ul>
-<p>Las preguntas y la rúbrica con la que se corrige están en <a href="#assessment"><code>assessment.md</code></a>; el plan de experimentos y la tabla multi-semilla que hay que completar, en <a href="#experiments"><code>experiments.md</code></a>.</p>
-<h2 id="para-ir-mas-lejos">🧪 Para ir más lejos</h2>
+<p>El plan experimental con la tabla que hay que completar está en <code>experiments.md</code>, y las preguntas con su rúbrica, en <code>assessment.md</code>. Ambos documentos se abren desde la barra de navegación de arriba.</p>
+<h3 id="para-ir-mas-lejos">Para ir más lejos</h3>
 <ul>
 <li>Cambia una decisión experimental y justifícala con el resultado en <code>validation</code>, no con la intuición.</li>
 <li>Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.</li>
 <li>Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.</li>
 <li>Documenta sesgos, limitaciones y usos para los que <strong>no</strong> recomendarías este modelo.</li>
 </ul>
-<h2 id="de-donde-sale-cada-cosa-de-esta-guia">📚 De dónde sale cada cosa de esta guía</h2>
-<p>Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:</p>
-<table>
-<thead>
-<tr>
-<th>Lo que dice la guía</th>
-<th>Dónde comprobarlo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Objetivo, línea base, métricas y arquitectura</td>
-<td><a href="../../configs/labs.yaml"><code>configs/labs.yaml</code></a></td>
-</tr>
-<tr>
-<td>Fuente, licencia, procedencia y límites del dataset</td>
-<td><a href="data/dataset.yaml"><code>data/dataset.yaml</code></a></td>
-</tr>
-<tr>
-<td>Épocas, tamaño de lote, tasa de aprendizaje y recorte de <code>--quick</code></td>
-<td><a href="configs/baseline.yaml"><code>configs/baseline.yaml</code></a> · <a href="configs/improved.yaml"><code>configs/improved.yaml</code></a></td>
-</tr>
-<tr>
-<td>Nivel, prerrequisitos, resultados de aprendizaje y criterios</td>
-<td><a href="lesson.yaml"><code>lesson.yaml</code></a></td>
-</tr>
-<tr>
-<td>El orden de los pasos y los archivos que escribe cada ejecución</td>
-<td><a href="../../src/neural_labs/experiments.py"><code>src/neural_labs/experiments.py</code></a></td>
-</tr>
-<tr>
-<td>La teoría, los papers y los libros de referencia</td>
-<td><a href="#theory"><code>theory.md</code></a>, sección 🔗 Referencias</td>
-</tr>
-<tr>
-<td>La regla general del protocolo</td>
-<td><a href="../../docs/experiment-protocol.md"><code>docs/experiment-protocol.md</code></a></td>
-</tr>
-</tbody>
-</table>
-<p>Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.</p>
-<!-- /guia --><h2 class="doc-sep" id="theory">🧠 Teoría</h2><h1 id="teoria-cnn-para-vision">Teoría — CNN para visión</h1>
-<h2 id="proposito">Propósito</h2>
-<p>Entrenar una CNN y analizar errores sobre fotografías reales de diez clases.</p>
-<h2 id="idea-central">Idea central</h2>
-<p>Este laboratorio estudia <strong>convoluciones para patrones espaciales</strong> usando <code>cifar10</code>, un dataset público real procedente de Torchvision / University of Toronto.</p>
-<p>Aplanar una imagen de 32×32×3 y pasarla por un MLP funciona, pero desperdicia la estructura del problema: ignora que los píxeles vecinos están correlacionados y que un objeto es el mismo aunque se desplace unos píxeles. La red convolucional (CNN) incorpora dos sesgos inductivos que encajan con las imágenes: <strong>localidad</strong> (cada neurona mira solo una región pequeña) e <strong>invariancia por traslación</strong> (el mismo filtro se aplica en toda la imagen, compartiendo parámetros). Esto reduce drásticamente el número de pesos y obliga al modelo a aprender detectores de patrones reutilizables.</p>
-<p>La consecuencia es una jerarquía de representaciones: las primeras capas aprenden bordes y colores, las intermedias combinan esos bordes en texturas y partes, y las profundas responden a objetos completos. El laboratorio entrena esta jerarquía sobre CIFAR-10 (60.000 fotografías reales de 10 clases) y contrasta contra un clasificador lineal sobre píxeles para hacer patente cuánto aporta explotar la estructura espacial.</p>
-<h2 id="fundamento-matematico">Fundamento matemático</h2>
-<p>La operación central es la <strong>convolución</strong>: un filtro (kernel) de pesos K de tamaño pequeño se desliza sobre la imagen de entrada X y, en cada posición, calcula un producto punto local. Para un filtro de tamaño F×F sobre un mapa de entrada:</p>
-<p>Y(i, j) = Σₘ Σₙ X(i+m, j+n)·K(m, n) + b</p>
-<p>El mismo K se reutiliza en todas las posiciones (i, j): eso es el <strong>peso compartido</strong> que da la invariancia por traslación y reduce los parámetros de millones (como en una capa densa) a apenas F×F por canal de filtro. Cada filtro produce un <strong>mapa de activación</strong> que señala dónde aparece el patrón que ese filtro detecta. Tras la convolución se aplica una no linealidad (ReLU), sin la cual toda la pila colapsaría a una única convolución lineal.</p>
-<p>El tamaño del mapa de salida depende del <em>stride</em> s (paso del deslizamiento) y del <em>padding</em> p (relleno de bordes): dimensión_salida = ⌊(dimensión_entrada − F + 2p)/s⌋ + 1. El <strong>pooling</strong> (típicamente max-pooling) submuestrea cada región tomando su máximo, lo que reduce la resolución espacial, aporta cierta invariancia a pequeñas traslaciones y amplía el campo receptivo de las capas posteriores sin añadir parámetros.</p>
-<p>Un ingrediente decisivo para entrenar redes profundas es la <strong>normalización por lotes</strong> (batch normalization), que estandariza las activaciones de cada canal dentro del minilote:</p>
-<p>x̂ = (x − μ_B) / √(σ²_B + ε),    y = γ·x̂ + β</p>
-<p>donde μ_B y σ²_B son la media y varianza del lote, ε evita la división por cero, y γ, β son parámetros aprendibles que restauran la capacidad expresiva. Esto estabiliza y acelera el entrenamiento al mantener las activaciones en un rango controlado, reduciendo la sensibilidad a la inicialización.</p>
-<p>Tras varias etapas de convolución + ReLU + pooling, los mapas finales se aplanan (o se promedian con global average pooling) y pasan a una cabeza densa que produce los 10 logits, entrenados con entropía cruzada categórica y softmax igual que en el MLP. Una idea arquitectónica que el laboratorio deja como horizonte es la <strong>conexión residual</strong> (ResNet): sumar la entrada de un bloque a su salida, y = F(x) + x, lo que crea un atajo por el que el gradiente fluye sin atenuarse y permite entrenar redes de cientos de capas.</p>
-<p>La formulación debe conectarse con cuatro elementos: representación de entrada, función del modelo, función de pérdida y regla de actualización. El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.</p>
-<h2 id="protocolo-cientifico">Protocolo científico</h2>
-<ul>
-<li>Ajustar transformaciones, vocabulario, normalización y selección de variables solo con <code>train</code>.</li>
-<li>Usar <code>validation</code> para arquitectura, hiperparámetros, checkpoint y umbrales.</li>
-<li>Evaluar <code>test</code> una vez, después de congelar las decisiones.</li>
-<li>Comparar contra <strong>Clasificador lineal sobre píxeles</strong>.</li>
-<li>Reportar variación entre semillas e intervalos de confianza; una métrica puntual no expresa toda la incertidumbre.</li>
-</ul>
-<h2 id="riesgos-de-interpretacion">Riesgos de interpretación</h2>
-<p>CIFAR-10 contiene 60.000 imágenes reales de 32×32.</p>
-<p>El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.</p>
-<h2 id="pregunta-critica">Pregunta crítica</h2>
-<blockquote>
-<p>¿Qué clases concentran errores visualmente plausibles?</p>
-</blockquote>
-<h2 id="referencias">🔗 Referencias</h2>
+<h2 id="fuentes">📚 Fuentes</h2>
+<p>La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:</p>
 <blockquote>
 <p>Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.</p>
 </blockquote>
@@ -587,36 +449,195 @@ neural-labs train --lab 03_cnn_vision --config baseline --split-seed 42 --traini
 <li>He et al. (2016), <em>Deep Residual Learning for Image Recognition (ResNet)</em>, CVPR — conexiones residuales para redes muy profundas.</li>
 <li>Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html</li>
 <li>Consulte <code>docs/experiment-protocol.md</code>, <code>docs/reproducibility.md</code> y <code>docs/ethics-and-licenses.md</code>.</li>
-</ul><h2 class="doc-sep" id="experiments">🔬 Experimentos</h2><h1 id="plan-de-experimentos-cnn-para-vision">Plan de experimentos — CNN para visión</h1>
-<h2 id="hipotesis-principal">Hipótesis principal</h2>
-<p>Entrenar una CNN y analizar errores sobre fotografías reales de diez clases. La hipótesis debe aceptarse o rechazarse comparando el modelo con <strong>Clasificador lineal sobre píxeles</strong> y no solo observando que la pérdida disminuye.</p>
-<h2 id="experimento-minimo">Experimento mínimo</h2>
-<ol>
-<li>Ejecutar <code>baseline.yaml</code> con tres semillas.</li>
-<li>Ejecutar <code>improved.yaml</code> con las mismas semillas.</li>
-<li>Mantener fija la partición de datos dentro de cada semilla.</li>
-<li>Elegir la variante con <code>validation</code>.</li>
-<li>Comparar la variante elegida contra la línea base en <code>test</code>.</li>
-<li>Revisar intervalos de confianza, errores y costo computacional.</li>
-</ol>
-<h2 id="experimento-especifico">Experimento específico</h2>
-<p>Comparar kernel, normalización y aumento.</p>
-<h2 id="variables-controladas">Variables controladas</h2>
-<ul>
-<li>Dataset y política de partición.</li>
-<li>Semillas declaradas.</li>
-<li>Presupuesto de épocas y criterio de parada.</li>
-<li>Métrica de selección: <code>accuracy</code> o la especificada en la configuración.</li>
-<li>Hardware y versiones registradas en <code>environment.json</code>.</li>
 </ul>
-<h2 id="tabla-que-debe-completarse">Tabla que debe completarse</h2>
+<h3 id="como-comprobar-lo-que-dice-esta-guia">Cómo comprobar lo que dice esta guía</h3>
+<p>Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:</p>
+<table>
+<thead>
+<tr>
+<th>Lo que dice la guía</th>
+<th>Dónde comprobarlo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Objetivo, línea base, métricas y arquitectura</td>
+<td><code>configs/labs.yaml</code></td>
+</tr>
+<tr>
+<td>Fuente, licencia, procedencia y límites del dataset</td>
+<td><code>data/dataset.yaml</code></td>
+</tr>
+<tr>
+<td>Épocas, tamaño de lote, tasa de aprendizaje y recorte de <code>--quick</code></td>
+<td><code>configs/baseline.yaml</code> y <code>configs/improved.yaml</code></td>
+</tr>
+<tr>
+<td>Nivel, prerrequisitos, resultados de aprendizaje y criterios</td>
+<td><code>lesson.yaml</code></td>
+</tr>
+<tr>
+<td>Opciones de los comandos y sus valores por defecto</td>
+<td><code>src/neural_labs/cli.py</code></td>
+</tr>
+<tr>
+<td>El orden de los pasos y los archivos que escribe cada ejecución</td>
+<td><code>src/neural_labs/experiments.py</code></td>
+</tr>
+<tr>
+<td>La teoría y su bibliografía</td>
+<td><code>theory.md</code></td>
+</tr>
+<tr>
+<td>La regla general del protocolo</td>
+<td><code>docs/experiment-protocol.md</code></td>
+</tr>
+</tbody>
+</table>
+<p>Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.</p><h2 class="doc-sep" id="experiments">🔬 Experimentos</h2><h1 id="plan-de-experimentos-cnn-para-vision">Plan de experimentos — CNN para visión</h1>
+<h2 id="que-significa-experimentar-aqui">Qué significa «experimentar» aquí</h2>
+<p>Entrenar un modelo y mirar el número que sale <strong>no</strong> es un experimento: es una observación. Un experimento empieza por una afirmación que podría resultar falsa, sigue fijando todo lo que no se está poniendo a prueba, y termina midiendo si la afirmación se sostiene cuando se repite.</p>
+<p>La diferencia importa porque el entrenamiento de una red tiene azar por dentro: la inicialización de los pesos y el orden en que se barajan los lotes cambian el resultado aunque no cambies nada más. Si comparas una sola corrida contra otra sola corrida, no sabes si la diferencia viene de tu idea o de la semilla. Por eso todo lo que sigue está organizado para separar <strong>la señal</strong> (el efecto de lo que cambiaste) del <strong>ruido</strong> (la variabilidad propia del entrenamiento).</p>
+<h2 id="la-hipotesis-de-este-laboratorio">La hipótesis de este laboratorio</h2>
+<blockquote>
+<p>Entrenar una CNN y analizar errores sobre fotografías reales de diez clases.</p>
+</blockquote>
+<p>Formulada como algo que se puede refutar: <strong>el modelo de este laboratorio supera a Clasificador lineal sobre píxeles en <code>macro_f1</code>, y la diferencia es mayor que la dispersión entre semillas.</strong></p>
+<p>Qué la haría falsa —y esto también es un resultado que hay que reportar—:</p>
+<ul>
+<li>El modelo no supera a Clasificador lineal sobre píxeles.</li>
+<li>Lo supera, pero por menos de lo que varía el propio modelo al cambiar la semilla de entrenamiento.</li>
+<li>Lo supera solo con una semilla concreta y no con las demás.</li>
+<li>Lo supera a costa de un tiempo o un tamaño que el problema no justifica.</li>
+</ul>
+<h3 id="el-experimento-propio-de-esta-ruta">El experimento propio de esta ruta</h3>
+<p>Además de la comparación con la línea base, aquí interesa una pregunta específica: <strong>Comparar kernel, normalización y aumento</strong>. Es la comparación que da sentido al tema de este laboratorio; la de la línea base solo dice si el modelo sirve, mientras que esta dice <em>qué parte</em> del diseño es la que aporta.</p>
+<h2 id="que-se-varia-y-que-se-mantiene-fijo">Qué se varía y qué se mantiene fijo</h2>
+<p>Un experimento es interpretable cuando cambia <strong>una</strong> cosa a la vez. Esta tabla dice qué papel juega cada elemento y, sobre todo, por qué:</p>
+<table>
+<thead>
+<tr>
+<th>Elemento</th>
+<th>En este experimento</th>
+<th>Por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Partición de los datos (<code>--split-seed</code>)</td>
+<td><strong>Fija</strong> en 42</td>
+<td>Si cambiara entre corridas, no podrías saber si la diferencia viene de tu modelo o de que le tocaron datos distintos.</td>
+</tr>
+<tr>
+<td>Semilla de entrenamiento (<code>--training-seed</code>)</td>
+<td><strong>Varía</strong>: 41, 42, 43</td>
+<td>Es exactamente el ruido que quieres medir. Sin varias semillas no tienes con qué comparar la mejora.</td>
+</tr>
+<tr>
+<td>Configuración (<code>--config</code>)</td>
+<td><strong>Varía</strong>: <code>baseline</code> y <code>improved</code></td>
+<td>Es la intervención bajo estudio: lo único que estás poniendo a prueba.</td>
+</tr>
+<tr>
+<td>Dataset y preprocesamiento</td>
+<td><strong>Fijos</strong></td>
+<td>Ajustar la normalización o el vocabulario con otros datos cambiaría el problema, no el modelo.</td>
+</tr>
+<tr>
+<td>Presupuesto de épocas y criterio de parada</td>
+<td><strong>Fijos dentro de cada configuración</strong></td>
+<td>Dar más épocas a una variante que a otra es comparar dos cosas distintas.</td>
+</tr>
+<tr>
+<td>Hardware y versiones</td>
+<td><strong>Registrados</strong> en <code>environment.json</code></td>
+<td>No siempre se pueden fijar, pero sí dejar anotados: explican diferencias de tiempo y, a veces, de resultado.</td>
+</tr>
+<tr>
+<td>El conjunto <code>test</code></td>
+<td><strong>Intacto</strong> hasta el final</td>
+<td>Se abre una sola vez, después de que <code>macro_f1</code> sobre <code>validation</code> haya elegido al ganador.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="las-dos-configuraciones-que-vas-a-comparar">Las dos configuraciones que vas a comparar</h2>
+<p>El laboratorio trae dos configuraciones ya escritas. Estos son los parámetros en los que <strong>difieren</strong> —el resto es idéntico, que es justamente lo que hace legible la comparación—:</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th><code>baseline.yaml</code></th>
+<th><code>improved.yaml</code></th>
+<th>Qué controla</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Épocas</td>
+<td><code>20</code></td>
+<td><code>50</code></td>
+<td>Cuántas pasadas completas sobre <code>train</code>.</td>
+</tr>
+<tr>
+<td>Tasa de aprendizaje</td>
+<td><code>0.001</code></td>
+<td><code>0.0005</code></td>
+<td>Cuánto se mueve cada peso en la dirección del gradiente.</td>
+</tr>
+<tr>
+<td>Paciencia</td>
+<td><code>5</code></td>
+<td><code>8</code></td>
+<td>Épocas sin mejorar en <code>validation</code> antes de detener el entrenamiento.</td>
+</tr>
+<tr>
+<td>Precisión mixta</td>
+<td>no</td>
+<td>sí</td>
+<td>Usar float16 donde se puede: acelera en GPU, no cambia el protocolo.</td>
+</tr>
+<tr>
+<td>Procesos de carga</td>
+<td><code>0</code></td>
+<td><code>2</code></td>
+<td>Procesos que preparan los lotes en paralelo.</td>
+</tr>
+</tbody>
+</table>
+<p>Elegir entre ellas es una decisión de <code>validation</code>. Si <code>improved</code> gana en validación, se queda; si no, la configuración base es la respuesta y hay que decirlo así.</p>
+<h2 id="como-ejecutar-la-serie">Cómo ejecutar la serie</h2>
+<p>El comando <code>benchmark</code> hace exactamente esto: repite el entrenamiento manteniendo la partición fija y cambiando solo la semilla de entrenamiento.</p>
+<pre><code class="language-bash">neural-labs benchmark --lab 03_cnn_vision \
+  --config baseline --split-seed 42 --training-seeds 41 42 43
+
+neural-labs benchmark --lab 03_cnn_vision \
+  --config improved --split-seed 42 --training-seeds 41 42 43
+</code></pre>
+<p>Por dentro, <code>benchmark</code> no hace magia: llama a <code>run_lab</code> una vez por semilla con la misma partición y resume los resultados. Desde Python es literalmente eso:</p>
+<pre><code class="language-python">from neural_labs.experiments import run_lab
+from neural_labs.benchmarking import summarize_benchmark
+
+registros = []
+for semilla in (41, 42, 43):
+    resultado = run_lab(
+        &quot;03_cnn_vision&quot;,
+        config_name=&quot;baseline&quot;,
+        split_seed=42,          # la partición NO cambia
+        training_seed=semilla,  # solo cambia la inicialización
+    )
+    registros.append({&quot;training_seed&quot;: semilla, &quot;metrics&quot;: resultado.metrics})
+
+print(summarize_benchmark(registros))   # media y dispersión entre semillas
+</code></pre>
+<p>Empieza con <code>--quick</code> para comprobar que la serie corre entera; los números que se reportan salen de la ejecución completa.</p>
+<h2 id="la-tabla-que-debes-completar">La tabla que debes completar</h2>
 <table>
 <thead>
 <tr>
 <th>Variante</th>
 <th style="text-align: right;">Semilla</th>
-<th style="text-align: right;">Métrica validation</th>
-<th style="text-align: right;">Métrica test</th>
+<th style="text-align: right;">Métrica en <code>validation</code></th>
+<th style="text-align: right;">Métrica en <code>test</code></th>
 <th style="text-align: right;">Tiempo</th>
 <th style="text-align: right;">Parámetros</th>
 <th>Observación</th>
@@ -679,26 +700,98 @@ neural-labs train --lab 03_cnn_vision --config baseline --split-seed 42 --traini
 </tr>
 </tbody>
 </table>
-<h2 id="criterio-de-conclusion">Criterio de conclusión</h2>
-<p>La conclusión debe declarar magnitud de la mejora, incertidumbre, costo adicional, errores relevantes y condiciones bajo las cuales el resultado podría no repetirse.</p><h2 class="doc-sep" id="assessment">📝 Evaluación</h2><h1 id="evaluacion-cnn-para-vision">Evaluación — CNN para visión</h1>
-<h2 id="evidencias-obligatorias">Evidencias obligatorias</h2>
+<p>De dónde sale cada columna, para que no haya que adivinarlo:</p>
 <ul>
-<li>Dataset preparado y auditoría sin solapamientos.</li>
-<li>Notebook ejecutado sin celdas omitidas.</li>
-<li>Línea base y modelo neuronal comparados.</li>
-<li>Resultados de al menos tres semillas o justificación del costo.</li>
-<li>Análisis de errores y limitaciones.</li>
-<li>Model card actualizada.</li>
+<li><strong>Métrica en <code>validation</code></strong>: el mejor valor de <code>macro_f1</code> durante el entrenamiento; está en <code>history.csv</code> y resumido en <code>metrics.json</code>.</li>
+<li><strong>Métrica en <code>test</code></strong>: el valor final, en <code>metrics.json</code>, ya con el modelo congelado.</li>
+<li><strong>Tiempo</strong>: <code>wall_time_seconds</code> de <code>metrics.json</code>.</li>
+<li><strong>Parámetros</strong>: <code>parameters</code> de <code>metrics.json</code>; es la medida honesta del tamaño del modelo.</li>
+<li><strong>Observación</strong>: lo que viste y los números no dicen —una curva que se dispara, una clase que concentra los errores, una corrida que no convergió—.</li>
 </ul>
-<h2 id="preguntas">Preguntas</h2>
+<h2 id="como-decidir-con-esos-numeros">Cómo decidir con esos números</h2>
 <ol>
-<li>Explique con sus palabras: Convolución, pooling, normalización y clasificación.</li>
-<li>¿Qué información del dataset solo puede utilizarse durante entrenamiento?</li>
-<li>¿Por qué la línea base <strong>Clasificador lineal sobre píxeles</strong> es una comparación razonable?</li>
-<li>¿Qué clases concentran errores visualmente plausibles?</li>
-<li>¿Qué cambiaría antes de usar este modelo fuera del laboratorio?</li>
+<li><strong>Compara medias, pero decide con la dispersión.</strong> Calcula media y desviación entre las tres semillas de cada variante. Una mejora de 0,3 puntos entre variantes cuya dispersión interna es de 1,2 puntos no es una mejora: es ruido con buena suerte.</li>
+<li><strong>Si los rangos se solapan, dilo.</strong> «No se observó una diferencia distinguible del ruido con tres semillas» es una conclusión legítima y mucho más útil que un número inventado de confianza.</li>
+<li><strong>Decide con <code>validation</code>.</strong> La columna de <code>test</code> sirve para reportar el resultado final una vez, no para elegir la variante ganadora.</li>
+<li><strong>El costo forma parte del resultado.</strong> Si <code>improved</code> gana por poco y cuesta el triple de tiempo, la conclusión honesta menciona ambas cosas.</li>
+<li><strong>Vuelve a la línea base.</strong> La comparación contra Clasificador lineal sobre píxeles es la que dice si todo el aparato de la red neuronal estaba justificado para este problema.</li>
 </ol>
-<h2 id="rubrica">Rúbrica</h2>
+<h2 id="que-debe-decir-tu-conclusion">Qué debe decir tu conclusión</h2>
+<p>Una conclusión completa contiene cinco cosas, y se puede escribir en un párrafo:</p>
+<ul>
+<li><strong>Magnitud</strong>: cuánto mejoró, en qué métrica y sobre qué conjunto.</li>
+<li><strong>Incertidumbre</strong>: cuánto varió entre semillas, y si la mejora sobrevive a esa variación.</li>
+<li><strong>Costo</strong>: tiempo, memoria o tamaño adicional que hubo que pagar.</li>
+<li><strong>Errores</strong>: dónde falla el modelo, no solo cuánto acierta.</li>
+<li><strong>Condiciones</strong>: en qué circunstancias no esperarías que este resultado se repitiera.</li>
+</ul>
+<h2 id="errores-de-diseno-que-invalidan-el-experimento">Errores de diseño que invalidan el experimento</h2>
+<ul>
+<li><strong>Cambiar dos cosas a la vez.</strong> Si tocas la arquitectura y la tasa de aprendizaje en la misma corrida, el resultado no atribuye el efecto a ninguna de las dos.</li>
+<li><strong>Comparar con particiones distintas.</strong> Es el error más frecuente y el más difícil de detectar después: parece una mejora del modelo y es un reparto distinto de los datos.</li>
+<li><strong>Quedarse con la mejor semilla.</strong> Elegir la corrida más favorable y reportar solo esa es seleccionar el ruido. Se reportan todas.</li>
+<li><strong>Ajustar mirando <code>test</code>.</strong> En cuanto una decisión se toma con el resultado de <code>test</code>, ese conjunto deja de estimar el rendimiento con datos nuevos.</li>
+<li><strong>No registrar el entorno.</strong> Sin versiones ni hardware, una diferencia de tiempo o de resultado se vuelve inexplicable meses después.</li>
+</ul><h2 class="doc-sep" id="assessment">📝 Evaluación</h2><h1 id="evaluacion-cnn-para-vision">Evaluación — CNN para visión</h1>
+<h2 id="como-se-evalua-este-laboratorio">Cómo se evalúa este laboratorio</h2>
+<p>No se evalúa el número final. Un modelo con una métrica alta obtenida mirando <code>test</code>, o sin compararse con nada, vale menos que uno modesto cuyo resultado se puede auditar. Lo que se califica es el <strong>proceso</strong>: si las particiones están limpias, si la decisión se tomó donde debía, si la conclusión distingue lo que se midió de lo que se supone.</p>
+<h2 id="evidencias-que-debes-entregar">Evidencias que debes entregar</h2>
+<table>
+<thead>
+<tr>
+<th>Evidencia</th>
+<th>Dónde vive</th>
+<th>Por qué se pide</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dataset preparado y auditado</td>
+<td>salida de <code>neural-labs audit</code></td>
+<td>Es la única prueba de que el resultado no está contaminado por una fuga entre particiones.</td>
+</tr>
+<tr>
+<td>Notebook ejecutado sin celdas omitidas</td>
+<td><code>notebook.ipynb</code></td>
+<td>Una celda saltada suele ser justo la que rompía el argumento.</td>
+</tr>
+<tr>
+<td>Comparación contra Clasificador lineal sobre píxeles</td>
+<td><code>metrics.json</code> y <code>baseline_metrics.json</code></td>
+<td>Sin línea base, una métrica no dice si el modelo aporta algo.</td>
+</tr>
+<tr>
+<td>Al menos tres semillas de entrenamiento, o la justificación de por qué no</td>
+<td>salida de <code>benchmark</code></td>
+<td>Una sola corrida no permite separar mejora de azar.</td>
+</tr>
+<tr>
+<td>Análisis de errores y limitaciones</td>
+<td>tu reporte</td>
+<td>Saber <em>dónde</em> falla vale más que saber cuánto acierta.</td>
+</tr>
+<tr>
+<td>Model card actualizada</td>
+<td><code>model_card.md</code></td>
+<td>Es lo que permite a otra persona saber cuándo <strong>no</strong> debería usar tu modelo.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="las-preguntas-y-que-se-busca-en-tu-respuesta">Las preguntas, y qué se busca en tu respuesta</h2>
+<p>No se corrige la longitud de la respuesta, sino si demuestra comprensión. Debajo de cada pregunta está lo que una buena respuesta debería contener.</p>
+<p><strong>1. Explica con tus palabras: Convolución, pooling, normalización y clasificación.</strong></p>
+<p><em>Qué se busca:</em> Una buena respuesta conecta cuatro cosas —cómo se representa la entrada, qué calcula el modelo, qué mide la función de pérdida y cómo se actualizan los pesos— en vez de repetir la definición del libro. Si puedes explicarlo sin la fórmula delante, lo entendiste.</p>
+<p><strong>2. ¿Qué información del dataset solo puede usarse durante el entrenamiento?</strong></p>
+<p><em>Qué se busca:</em> Se espera que nombres casos concretos: las estadísticas de normalización, el vocabulario, la selección de variables, los umbrales. Todo eso se ajusta <strong>solo</strong> con <code>train</code>; calcularlo sobre el conjunto completo es una fuga silenciosa que infla el resultado sin dar ningún aviso.</p>
+<p><strong>3. ¿Por qué Clasificador lineal sobre píxeles es una comparación razonable para este problema?</strong></p>
+<p><em>Qué se busca:</em> Una buena respuesta explica qué captura la línea base y qué no, y por qué superarla —o no superarla— es informativo aquí. Si la línea base ya resuelve el problema, la conclusión correcta es que la red no estaba justificada.</p>
+<p><strong>4. ¿Qué clases concentran errores visualmente plausibles?</strong></p>
+<p><em>Qué se busca:</em> Esta es la pregunta propia del tema. Responde con evidencia de tu ejecución —predicciones, matriz de confusión, curvas, artefactos del directorio de la corrida—, no con una impresión general.</p>
+<p><strong>5. ¿Qué te dice <code>macro_f1</code> que no te dirían las otras métricas?</strong></p>
+<p><em>Qué se busca:</em> Cada métrica pondera distinto los errores. Se espera que expliques por qué esa es la que decide aquí y en qué situación sería una mala elección.</p>
+<p><strong>6. ¿Qué cambiarías antes de usar este modelo fuera del laboratorio?</strong></p>
+<p><em>Qué se busca:</em> Aquí se evalúa el criterio, no la técnica: licencias y condiciones de uso de <code>cifar10</code>, representatividad de la población, calibración de las probabilidades, vigilancia de la deriva, desempeño por subgrupo y supervisión humana. Un «funcionaría bien» sin condiciones se corrige como respuesta incompleta.</p>
+<h2 id="la-rubrica-explicada">La rúbrica, explicada</h2>
 <table>
 <thead>
 <tr>
@@ -711,43 +804,60 @@ neural-labs train --lab 03_cnn_vision --config baseline --split-seed 42 --traini
 </thead>
 <tbody>
 <tr>
-<td>Integridad de datos</td>
-<td>mezcla particiones</td>
-<td>separación correcta</td>
-<td>auditoría, hashes y justificación</td>
-<td style="text-align: right;">20%</td>
+<td>Integridad de los datos</td>
+<td>mezcla particiones o no puede demostrar que no lo hizo</td>
+<td>las tres particiones están separadas y auditadas</td>
+<td>además documenta hashes, política de partición y justifica la estrategia elegida</td>
+<td style="text-align: right;">20 %</td>
 </tr>
 <tr>
 <td>Implementación</td>
-<td>no ejecuta</td>
-<td>entrena y evalúa</td>
-<td>código claro, reusable y probado</td>
-<td style="text-align: right;">20%</td>
+<td>no ejecuta o produce resultados irreproducibles</td>
+<td>entrena y evalúa siguiendo el protocolo</td>
+<td>código claro y reutilizable, con las decisiones explicadas</td>
+<td style="text-align: right;">20 %</td>
 </tr>
 <tr>
 <td>Diseño experimental</td>
-<td>resultado aislado</td>
-<td>comparación controlada</td>
-<td>multi-semilla e incertidumbre</td>
-<td style="text-align: right;">20%</td>
+<td>un solo resultado aislado</td>
+<td>comparación controlada contra la línea base</td>
+<td>varias semillas, dispersión reportada y variables controladas explícitas</td>
+<td style="text-align: right;">20 %</td>
 </tr>
 <tr>
 <td>Análisis</td>
-<td>repite métricas</td>
-<td>interpreta errores</td>
-<td>identifica sesgos, límites y costo</td>
-<td style="text-align: right;">25%</td>
+<td>repite las métricas sin interpretarlas</td>
+<td>interpreta los errores y su distribución</td>
+<td>identifica sesgos, límites y costo, y distingue evidencia de suposición</td>
+<td style="text-align: right;">25 %</td>
 </tr>
 <tr>
 <td>Comunicación</td>
-<td>incompleta</td>
-<td>reporte entendible</td>
-<td>model card y conclusiones verificables</td>
-<td style="text-align: right;">15%</td>
+<td>incompleta o sin contexto</td>
+<td>reporte entendible y model card presente</td>
+<td>conclusiones verificables por un tercero a partir de los artefactos</td>
+<td style="text-align: right;">15 %</td>
 </tr>
 </tbody>
 </table>
-<p>La aprobación exige al menos 70% y cero errores críticos de fuga de datos.</p>
+<p>La diferencia entre <em>adecuado</em> y <em>excelente</em> casi nunca está en la métrica: está en si el trabajo permite que otra persona llegue a la misma conclusión con los artefactos que dejaste. Un resultado peor, bien medido y bien explicado, se califica por encima de uno mejor que no se puede auditar.</p>
+<p><strong>La aprobación exige al menos 70 % y cero errores críticos de fuga de datos.</strong> La fuga es eliminatoria por sí sola porque invalida todas las demás cifras del trabajo, por buenas que parezcan.</p>
+<h2 id="autoevaluacion-antes-de-entregar">Autoevaluación antes de entregar</h2>
+<ul>
+<li>[ ] Puedo explicar el laboratorio a alguien que no lo hizo, sin leer el código.</li>
+<li>[ ] Sé qué decisión tomé en cada paso y con qué evidencia la tomé.</li>
+<li>[ ] Miré <code>test</code> una sola vez, después de que existiera <code>experiment.lock.json</code>.</li>
+<li>[ ] Mi conclusión dice magnitud, incertidumbre, costo, errores y condiciones.</li>
+<li>
+<p>[ ] Puedo señalar al menos una limitación real de mi resultado.</p>
+</li>
+<li>
+<p>[ ] cero solapamiento entre train, validation y test</p>
+</li>
+<li>[ ] selección basada únicamente en validation</li>
+<li>[ ] métricas finales acompañadas por incertidumbre</li>
+<li>[ ] conclusiones que distinguen evidencia de suposición</li>
+</ul>
     </article>
     <nav class="pager"><a class="pg pg-prev" href="../../labs/02_mlp_nonlinear/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🌀 MLP multiclase</span></a><a class="pg pg-next" href="../../labs/04_rnn_sequences/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🔁 RNN para texto</span></a></nav>
   </main>

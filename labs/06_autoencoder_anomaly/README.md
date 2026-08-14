@@ -8,25 +8,17 @@
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-<!-- ficha -->
-## 📋 Ficha del laboratorio
+## 🎯 Qué vas a hacer aquí
 
-![ruta](https://img.shields.io/badge/ruta-7%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-intermedio-1f6feb?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Central-2e8b57?style=flat-square) ![horas](https://img.shields.io/badge/horas-~6%20h-f0b429?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-credit__card__fraud-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-f1-8957e5?style=flat-square)
+Detectar transacciones fraudulentas mediante error de reconstrucción.
 
-| Campo | Valor |
-|---|---|
-| 🧭 Posición | Ruta **7 de 31** del recorrido · categoría central |
-| 🎚️ Nivel | intermedio |
-| ⏱️ Dedicación estimada | 6 horas |
-| 🧩 Tarea | `anomaly_detection` |
-| 🏗️ Arquitectura | `autoencoder` |
-| 🗄️ Dataset | [`credit_card_fraud`](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) — Kaggle / ULB |
-| ⚖️ Licencia del dataset | Uso sujeto a términos de Kaggle y autor |
-| 🎯 Métrica de selección | `f1` sobre `validation` |
-| 📏 Línea base a superar | Isolation Forest |
-| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+Es la **ruta 7 de 31** del recorrido y pertenece a 🔵 la parte 2, *Arquitecturas según la forma del dato*. Llegas desde **LSTM para series temporales** y lo que hagas aquí lo da por supuesto **Transformer para noticias**.
 
-### 🎯 Qué vas a poder hacer al terminar
+Trabajarás con el dataset **`credit_card_fraud`** (Kaggle / ULB, licencia: Uso sujeto a términos de Kaggle y autor), y tendrás que superar la línea base **Isolation Forest**, decidiendo con la métrica `f1` medida sobre `validation`. Nivel intermedio, unas **6 horas** de dedicación.
+
+**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch básico, particiones train/validation/test, métricas de evaluación.
+
+**Al terminar deberías ser capaz de:**
 
 - Detectar transacciones fraudulentas mediante error de reconstrucción.
 - Preparar y auditar el dataset real credit_card_fraud sin fuga de datos.
@@ -34,81 +26,97 @@
 - Comparar contra la línea base: Isolation Forest.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-### 🧩 Prerrequisitos
+## 🧠 La teoría de este laboratorio
 
-- PyTorch básico
-- particiones train/validation/test
-- métricas de evaluación
+Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
-> Si alguno te falta, retrocede antes de continuar. Viniendo de [📈 LSTM para series temporales](../../labs/05_lstm_time_series/README.md).
+### De qué trata
 
-### ⚙️ `baseline` frente a `improved`
+Este laboratorio estudia **reconstrucción para detección de anomalías** usando `credit_card_fraud`, un dataset público real procedente de Kaggle / ULB.
 
-| Parámetro | [`baseline.yaml`](configs/baseline.yaml) | [`improved.yaml`](configs/improved.yaml) |
-|---|---|---|
-| Épocas | `20` | `50` |
-| Tasa de aprendizaje | `0.001` | `0.0005` |
-| Paciencia (early stopping) | `5` | `8` |
-| Precisión mixta (AMP) | no | sí |
-| Procesos de carga | `0` | `2` |
+La idea rectora es entrenar un modelo que solo aprenda a describir bien lo *normal*. Un **autoencoder** es una red con forma de reloj de arena: un codificador comprime la entrada x a una representación latente z de baja dimensión (el "cuello de botella"), y un decodificador intenta reconstruir x a partir de z. Si únicamente mostramos transacciones legítimas durante el entrenamiento, la red se especializa en la geometría de esa mayoría y aprende a copiar sus regularidades. Cuando más tarde le presentamos una transacción fraudulenta —que vive fuera de esa variedad aprendida— el decodificador falla y el **error de reconstrucción** se dispara. Ese error es, en la práctica, un detector de anomalías: no clasificamos "fraude vs. no fraude" directamente, sino que medimos cuánto se desvía cada caso del patrón normal.
 
-> Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con `validation`, nunca con `test`.
+El cuello de botella es lo que hace que esto funcione: al forzar z a tener menos dimensiones que x, la red no puede memorizar la identidad y debe descubrir los factores latentes que explican las transacciones comunes. Esto es especialmente valioso en fraude, donde los positivos son rarísimos (≈0,17 % del total) y un clasificador supervisado clásico tiende a ignorarlos; el enfoque no supervisado por reconstrucción esquiva ese desbalance porque nunca necesita ejemplos de fraude para aprender.
 
-### 📦 Entregables y criterios de aceptación
+### La matemática, paso a paso
 
-**Entregables**
+Formalmente, el codificador es una función f con parámetros θ que produce el código z = f(x; θ) ∈ ℝᵏ, y el decodificador g con parámetros φ produce la reconstrucción x̂ = g(z; φ) = g(f(x; θ); φ). Con k ≪ d (dimensión de x), la composición está obligada a ser una **proyección con pérdida** sobre una variedad de baja dimensión. El objetivo de entrenamiento minimiza el error cuadrático medio de reconstrucción sobre las transacciones normales:
 
-- notebook ejecutado
-- reporte experimental
-- model card
-- comparación con línea base
-- respuesta a preguntas críticas
+    ℒ(θ, φ) = 𝔼ₓ ‖ x − g(f(x; θ); φ) ‖²  ≈  (1/N) Σᵢ ‖ xᵢ − x̂ᵢ ‖²
 
-**Criterios de éxito**
+El gradiente ∇_{θ,φ} ℒ se propaga por retropropagación a través de decodificador y codificador, y los pesos se actualizan con descenso de gradiente estocástico o Adam: θ ← θ − η ∇_θ ℒ. La conexión con los cuatro elementos del laboratorio es: la **representación de entrada** es el vector x de características de la transacción (28 componentes PCA anonimizadas más `Time` y `Amount` normalizados); la **función del modelo** es la composición g∘f; la **función de pérdida** es el MSE de reconstrucción arriba; y la **regla de actualización** es el paso de gradiente. El notebook muestra las dimensiones de los tensores en cada capa y conserva la misma implementación que el script de terminal.
 
-- cero solapamiento entre train, validation y test
-- selección basada únicamente en validation
-- métricas finales acompañadas por incertidumbre
-- conclusiones que distinguen evidencia de suposición
+¿Por qué el MSE minimizado sobre datos normales sirve como puntaje de anomalía? Si asumimos que la reconstrucción está sujeta a un ruido gaussiano isótropo, minimizar ‖x − x̂‖² equivale a maximizar la log-verosimilitud de x bajo el modelo. Tras entrenar, el error r(x) = ‖x − g(f(x))‖² es bajo para lo que la red sabe reconstruir (lo normal) y alto para lo que nunca vio (el fraude). La regla de decisión es un simple umbral: se marca anomalía cuando r(x) > τ. El umbral τ **no se elige a ojo**: se calibra en `validation`, por ejemplo tomando un percentil alto (p. ej. el 99) de la distribución de errores sobre datos legítimos, o el punto que optimiza F1/coste esperado. Variar τ recorre la curva precision–recall completa, y por eso el laboratorio reporta ROC-AUC y PR-AUC en lugar de una sola métrica puntual.
 
-### 🗂️ Recursos del laboratorio
+Una extensión conceptual importante es el **autoencoder variacional (VAE)**: en lugar de un código puntual z, el codificador produce una distribución q(z|x) = 𝒩(μ(x), σ²(x)) y se optimiza el ELBO, que suma el término de reconstrucción y una regularización KL, ℒ = 𝔼_q[‖x − x̂‖²] + β·D_KL(q(z|x) ‖ 𝒩(0, I)). El término KL empuja el espacio latente hacia una gaussiana estándar y da un puntaje de anomalía probabilístico más estable; entender el autoencoder determinista de este laboratorio es el paso previo natural hacia esa formulación.
 
-| Recurso | Archivo |
-|---|---|
-| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
-| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
-| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
-| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
-| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
-| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
-| 🖥️ Script de terminal | [`train.py`](train.py) |
-| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
-| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
-| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+> **La pregunta que deberías poder responder al terminar:** ¿Qué costo tiene priorizar recall frente a precision?
 
-<!-- /ficha -->
+### Qué se mide y con qué se decide
 
-<!-- guia -->
-## 🎯 Qué vas a hacer aquí
+El laboratorio reporta `precision`, `recall`, `f1`, `roc_auc`, `pr_auc`. De todas ellas, la que **decide** qué modelo se conserva es `f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
-Detectar transacciones fraudulentas mediante error de reconstrucción.
+## 🖥️ Los comandos, explicados
 
-Es la **ruta 7 de 31** y pertenece a 🔵 [la parte 2, Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md). Llegas desde [📈 LSTM para series temporales](../../labs/05_lstm_time_series/README.md) y lo que aprendas aquí lo da por supuesto [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md).
+Todo el laboratorio se maneja con una sola herramienta de terminal, `neural-labs`, que se instala junto con el paquete (`pip install -e ".[dev,notebooks]"`). Cada subcomando hace **una** cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.
 
-## 🧠 La idea que se pone a prueba
+La forma general es siempre la misma:
 
-Este laboratorio trabaja **Minimizar ||x-decoder(encoder(x))||² sobre transacciones normales**.
+```bash
+neural-labs <subcomando> --lab <identificador> [opciones]
+```
 
-El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
+| Opción | Valor por defecto | Valores | Qué hace y cuándo cambiarla |
+|---|---|---|---|
+| `--lab` | `06_autoencoder_anomaly` | obligatorio | Qué laboratorio se ejecuta. Solo acepta los identificadores del catálogo. |
+| `--quick` | desactivado | — | Usa una fracción real del dataset y pocas épocas. Sirve para comprobar la instalación, no para concluir nada sobre el modelo. |
+| `--split-seed N` | `42` | entero | Semilla que decide **qué ejemplo cae en qué partición**. Se mantiene fija al comparar modelos. |
+| `--training-seed N` | `42` | entero | Semilla de la inicialización de pesos y del barajado de lotes. Es la que se varía para medir cuánta diferencia es simple azar. |
+| `--config` | `baseline` | `baseline` · `improved` | Cuál de las dos configuraciones del laboratorio se usa. |
+| `--device` | `auto` | `auto` · `cpu` · `cuda` · `mps` | Dónde entrenar. `auto` elige GPU si está disponible y cae a CPU si no. |
+| `--training-seeds A B C` | `41 42 43` | enteros | Solo en `benchmark`: la lista de semillas de entrenamiento que se repiten. |
+| `--output-dir` | `runs` | ruta | Dónde se escribe el directorio de la ejecución. |
 
-> **La pregunta que deberías poder responder al final:** ¿Qué costo tiene priorizar recall frente a precision?
+### El script del laboratorio
 
-**Métricas que se reportan:** `precision`, `recall`, `f1`, `roc_auc`, `pr_auc`. La selección del modelo se decide con `f1` sobre `validation`.
+`labs/06_autoencoder_anomaly/train.py` no es un programa distinto: fija el `--lab` y delega en la misma herramienta, de modo que estas dos líneas hacen exactamente lo mismo.
+
+```bash
+python labs/06_autoencoder_anomaly/train.py --quick
+neural-labs train --lab 06_autoencoder_anomaly --quick
+```
+
+### Lo mismo desde Python
+
+Si prefieres trabajar en un cuaderno o llamar al laboratorio desde tu propio código, la misma ejecución se lanza así. La función devuelve un objeto con el directorio de la ejecución, las métricas y el historial ya cargados:
+
+```python
+from neural_labs.experiments import run_lab
+
+resultado = run_lab(
+    "06_autoencoder_anomaly",
+    quick=True,          # False para la ejecución completa
+    config_name="baseline",
+    split_seed=42,       # fija la partición
+    training_seed=43,    # varía la inicialización
+)
+
+print(resultado.run_dir)   # dónde quedaron los archivos
+print(resultado.metrics)   # el diccionario de métricas finales
+```
+
+Y para preparar el dataset sin entrenar —útil para inspeccionarlo antes—:
+
+```python
+from neural_labs.datasets import prepare_dataset
+
+datos = prepare_dataset("06_autoencoder_anomaly", quick=True, seed=42)
+print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
+```
 
 ## 🪜 Paso a paso
 
-Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
 ### Paso 1 — Traer el dataset real y partirlo
 
@@ -214,7 +222,7 @@ neural-labs benchmark --lab 06_autoencoder_anomaly --quick --split-seed 42 --tra
 
 ## 🔍 Cómo leer lo que produce la ejecución
 
-Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:
 
 | Archivo | Qué contiene y qué mirar |
 |---|---|
@@ -238,6 +246,12 @@ Cada ejecución escribe su propio directorio. Estos son los archivos que encontr
 - **Aquí no vas a ver `predictions.csv` ni `confusion_matrix.png`, y no es un error.** La tarea es `anomaly_detection`, y el código solo genera esos archivos cuando hay una predicción por ejemplo comparable contra una etiqueta.
 - **Límite declarado de este dataset.** 284.807 transacciones reales; el laboratorio evita reequilibrar el conjunto de test.
 
+### Riesgos al interpretar los resultados
+
+284.807 transacciones reales; el laboratorio evita reequilibrar el conjunto de test.
+
+El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.
+
 ## ✅ Antes de darlo por terminado
 
 El laboratorio está aprobado cuando se cumplen estos criterios:
@@ -255,31 +269,42 @@ Y cuando tienes estos entregables:
 - [ ] comparación con línea base
 - [ ] respuesta a preguntas críticas
 
-Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+El plan experimental con la tabla que hay que completar está en `experiments.md`, y las preguntas con su rúbrica, en `assessment.md`. Ambos documentos se abren desde la barra de navegación de arriba.
 
-## 🧪 Para ir más lejos
+### Para ir más lejos
 
 - Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
 - Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
 - Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
 - Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
 
-## 📚 De dónde sale cada cosa de esta guía
+## 📚 Fuentes
 
-Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:
+
+- Goodfellow, Bengio & Courville — *Deep Learning* (MIT Press, 2016), cap. 14 — teoría de autoencoders, cuello de botella y autoencoders regularizados/de reducción de dimensión.
+- Géron — *Hands-On Machine Learning with Scikit-Learn, Keras & TensorFlow* (3.ª ed., O'Reilly), cap. 17 — autoencoders y GANs en la práctica, detección de anomalías por reconstrucción.
+- Hinton & Salakhutdinov (2006), *Reducing the Dimensionality of Data with Neural Networks*, Science — mostró que un autoencoder profundo aprende códigos compactos mejores que PCA.
+- Kingma & Welling (2014), *Auto-Encoding Variational Bayes (VAE)*, ICLR — formulación variacional del autoencoder y base del puntaje de anomalía probabilístico.
+- Fuente del dataset: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
+- Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+### Cómo comprobar lo que dice esta guía
+
+Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:
 
 | Lo que dice la guía | Dónde comprobarlo |
 |---|---|
-| Objetivo, línea base, métricas y arquitectura | [`configs/labs.yaml`](../../configs/labs.yaml) |
-| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
-| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
-| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/experiments.py`](../../src/neural_labs/experiments.py) |
-| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
-| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+| Objetivo, línea base, métricas y arquitectura | `configs/labs.yaml` |
+| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | `configs/baseline.yaml` y `configs/improved.yaml` |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |
+| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |
+| El orden de los pasos y los archivos que escribe cada ejecución | `src/neural_labs/experiments.py` |
+| La teoría y su bibliografía | `theory.md` |
+| La regla general del protocolo | `docs/experiment-protocol.md` |
 
-Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
-<!-- /guia -->
+Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

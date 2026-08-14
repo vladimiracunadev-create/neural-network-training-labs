@@ -8,25 +8,17 @@
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-<!-- ficha -->
-## 📋 Ficha del laboratorio
+## 🎯 Qué vas a hacer aquí
 
-![ruta](https://img.shields.io/badge/ruta-18%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-fundamentos-3fb950?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Central-2e8b57?style=flat-square) ![horas](https://img.shields.io/badge/horas-~4%20h-f0b429?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-wine__quality-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-macro__f1-8957e5?style=flat-square)
+Comparar ReLU, GELU, Tanh y pérdidas apropiadas en clases desbalanceadas.
 
-| Campo | Valor |
-|---|---|
-| 🧭 Posición | Ruta **18 de 31** del recorrido · categoría central |
-| 🎚️ Nivel | fundamentos |
-| ⏱️ Dedicación estimada | 4 horas |
-| 🧩 Tarea | `multiclass_classification` |
-| 🏗️ Arquitectura | `activation_comparison` |
-| 🗄️ Dataset | [`wine_quality`](https://archive.ics.uci.edu/dataset/186/wine+quality) — UCI |
-| ⚖️ Licencia del dataset | CC BY 4.0 |
-| 🎯 Métrica de selección | `macro_f1` sobre `validation` |
-| 📏 Línea base a superar | Regresión ordinal y Random Forest |
-| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+Es la **ruta 18 de 31** del recorrido y pertenece a 🔴 la parte 5, *La mecánica fina, ahora en profundidad*. Llegas desde **Backpropagation manual** y lo que hagas aquí lo da por supuesto **Optimizadores y schedulers**.
 
-### 🎯 Qué vas a poder hacer al terminar
+Trabajarás con el dataset **`wine_quality`** (UCI, licencia: CC BY 4.0), y tendrás que superar la línea base **Regresión ordinal y Random Forest**, decidiendo con la métrica `macro_f1` medida sobre `validation`. Nivel fundamentos, unas **4 horas** de dedicación.
+
+**Lo que conviene traer resuelto de las rutas anteriores:** Python básico, NumPy, álgebra lineal elemental.
+
+**Al terminar deberías ser capaz de:**
 
 - Comparar ReLU, GELU, Tanh y pérdidas apropiadas en clases desbalanceadas.
 - Preparar y auditar el dataset real wine_quality sin fuga de datos.
@@ -34,81 +26,107 @@
 - Comparar contra la línea base: Regresión ordinal y Random Forest.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-### 🧩 Prerrequisitos
+## 🧠 La teoría de este laboratorio
 
-- Python básico
-- NumPy
-- álgebra lineal elemental
+Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
-> Si alguno te falta, retrocede antes de continuar. Viniendo de [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md).
+### De qué trata
 
-### ⚙️ `baseline` frente a `improved`
+Este laboratorio estudia **comparación controlada de activaciones y pérdidas** usando `wine_quality`, un dataset público real procedente de UCI. Dos decisiones de diseño gobiernan cómo aprende una red: qué **función de activación** introduce la no linealidad entre capas y qué **función de pérdida** define qué significa equivocarse. El laboratorio las aísla y las compara de forma controlada, cambiando una variable a la vez para atribuir con honestidad las diferencias de desempeño.
 
-| Parámetro | [`baseline.yaml`](configs/baseline.yaml) | [`improved.yaml`](configs/improved.yaml) |
-|---|---|---|
-| Épocas | `20` | `50` |
-| Tasa de aprendizaje | `0.001` | `0.0005` |
-| Paciencia (early stopping) | `5` | `8` |
-| Precisión mixta (AMP) | no | sí |
-| Procesos de carga | `0` | `2` |
+Sobre las **activaciones**: sin no linealidad, apilar capas lineales colapsa en una sola transformación lineal, incapaz de modelar fronteras complejas. Tanh satura en ambos extremos (su derivada tiende a 0 para entradas grandes), lo que frena el aprendizaje en redes profundas por gradientes que se desvanecen. ReLU evita esa saturación en el lado positivo manteniendo la derivada en 1, lo que acelera el entrenamiento y favorece representaciones dispersas, aunque puede "morir" si una neurona queda siempre en la zona negativa. GELU es una alternativa suave que pondera la entrada por su probabilidad bajo una gaussiana, combinando parte de la no saturación de ReLU con una transición diferenciable.
 
-> Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con `validation`, nunca con `test`.
+Sobre las **pérdidas**: el dataset de calidad de vino está desbalanceado (hay muchas más muestras de calidad media que de los extremos). La entropía cruzada estándar trata todos los ejemplos por igual y tiende a optimizar la clase mayoritaria, ignorando las minoritarias. La **Focal Loss** reescala la pérdida para bajar el peso de los ejemplos ya bien clasificados y concentrar el aprendizaje en los difíciles. La pregunta crítica —si la conclusión se mantiene en varias semillas— recuerda que en comparaciones finas la diferencia entre dos activaciones puede ser menor que el ruido de entrenamiento.
 
-### 📦 Entregables y criterios de aceptación
+### La matemática, paso a paso
 
-**Entregables**
+Una activación transforma cada preactivación z de forma no lineal. Sus definiciones y derivadas explican su comportamiento:
 
-- notebook ejecutado
-- reporte experimental
-- model card
-- comparación con línea base
-- respuesta a preguntas críticas
+  Tanh:  σ(z) = (eᶻ − e⁻ᶻ)/(eᶻ + e⁻ᶻ),   σ′(z) = 1 − σ(z)²
 
-**Criterios de éxito**
+  ReLU:  σ(z) = max(0, z),   σ′(z) = 1 si z > 0, 0 si z < 0
 
-- cero solapamiento entre train, validation y test
-- selección basada únicamente en validation
-- métricas finales acompañadas por incertidumbre
-- conclusiones que distinguen evidencia de suposición
+  GELU:  σ(z) = z · Φ(z),   con Φ la función de distribución acumulada de la normal estándar
 
-### 🗂️ Recursos del laboratorio
+La clave está en la derivada, porque es el factor por el que backpropagation multiplica el gradiente al atravesar la capa. Para Tanh, σ′(z) = 1 − σ(z)² tiende a 0 cuando |z| es grande: la neurona **satura** y el gradiente se desvanece. Para ReLU, σ′(z) = 1 en toda la región activa: el gradiente pasa sin atenuarse, lo que combate el desvanecimiento pero deja gradiente nulo (neuronas muertas) cuando z < 0. GELU suaviza esa transición, evitando el corte brusco en z = 0.
 
-| Recurso | Archivo |
-|---|---|
-| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
-| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
-| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
-| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
-| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
-| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
-| 🖥️ Script de terminal | [`train.py`](train.py) |
-| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
-| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
-| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+Para la salida de clasificación se usa softmax, ŷₖ = e^{zₖ} / Σⱼ e^{zⱼ}, y sobre él se define la pérdida. La **entropía cruzada** para la clase verdadera es:
 
-<!-- /ficha -->
+  CE = −Σₖ yₖ · log ŷₖ
 
-<!-- guia -->
-## 🎯 Qué vas a hacer aquí
+La **Focal Loss** añade un factor modulador (1 − p_t)^γ, donde p_t es la probabilidad asignada a la clase correcta y γ ≥ 0 controla cuánto se atenúan los ejemplos fáciles:
 
-Comparar ReLU, GELU, Tanh y pérdidas apropiadas en clases desbalanceadas.
+  FL = −α_t · (1 − p_t)^γ · log(p_t)
 
-Es la **ruta 18 de 31** y pertenece a 🔴 [la parte 5, La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md). Llegas desde [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md) y lo que aprendas aquí lo da por supuesto [⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md).
+Cuando el modelo ya acierta con confianza, p_t → 1, el factor (1 − p_t)^γ → 0 y ese ejemplo casi no contribuye al gradiente; los ejemplos difíciles (p_t bajo) conservan casi toda su pérdida. Con γ = 0 la Focal Loss se reduce a la entropía cruzada ponderada. Por eso ayuda en clases desbalanceadas: reorienta la señal de aprendizaje ∇ hacia las clases minoritarias mal clasificadas en vez de reforzar la mayoría ya resuelta. Todo se optimiza con descenso de gradiente, θ ← θ − η · ∇_θ ℒ. La formulación conecta cuatro elementos: representación de entrada, función del modelo (con su activación), función de pérdida (CE o Focal) y regla de actualización (SGD con ∇). El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.
 
-## 🧠 La idea que se pone a prueba
+> **La pregunta que deberías poder responder al terminar:** ¿La conclusión se mantiene en varias semillas?
 
-Este laboratorio trabaja **Derivadas, saturación y sensibilidad de CrossEntropy/Focal Loss**.
+### Qué se mide y con qué se decide
 
-El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
+El laboratorio reporta `accuracy`, `balanced_accuracy`, `macro_f1`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
-> **La pregunta que deberías poder responder al final:** ¿La conclusión se mantiene en varias semillas?
+## 🖥️ Los comandos, explicados
 
-**Métricas que se reportan:** `accuracy`, `balanced_accuracy`, `macro_f1`. La selección del modelo se decide con `macro_f1` sobre `validation`.
+Todo el laboratorio se maneja con una sola herramienta de terminal, `neural-labs`, que se instala junto con el paquete (`pip install -e ".[dev,notebooks]"`). Cada subcomando hace **una** cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.
+
+La forma general es siempre la misma:
+
+```bash
+neural-labs <subcomando> --lab <identificador> [opciones]
+```
+
+| Opción | Valor por defecto | Valores | Qué hace y cuándo cambiarla |
+|---|---|---|---|
+| `--lab` | `17_activations_and_losses` | obligatorio | Qué laboratorio se ejecuta. Solo acepta los identificadores del catálogo. |
+| `--quick` | desactivado | — | Usa una fracción real del dataset y pocas épocas. Sirve para comprobar la instalación, no para concluir nada sobre el modelo. |
+| `--split-seed N` | `42` | entero | Semilla que decide **qué ejemplo cae en qué partición**. Se mantiene fija al comparar modelos. |
+| `--training-seed N` | `42` | entero | Semilla de la inicialización de pesos y del barajado de lotes. Es la que se varía para medir cuánta diferencia es simple azar. |
+| `--config` | `baseline` | `baseline` · `improved` | Cuál de las dos configuraciones del laboratorio se usa. |
+| `--device` | `auto` | `auto` · `cpu` · `cuda` · `mps` | Dónde entrenar. `auto` elige GPU si está disponible y cae a CPU si no. |
+| `--training-seeds A B C` | `41 42 43` | enteros | Solo en `benchmark`: la lista de semillas de entrenamiento que se repiten. |
+| `--output-dir` | `runs` | ruta | Dónde se escribe el directorio de la ejecución. |
+
+### El script del laboratorio
+
+`labs/17_activations_and_losses/train.py` no es un programa distinto: fija el `--lab` y delega en la misma herramienta, de modo que estas dos líneas hacen exactamente lo mismo.
+
+```bash
+python labs/17_activations_and_losses/train.py --quick
+neural-labs train --lab 17_activations_and_losses --quick
+```
+
+### Lo mismo desde Python
+
+Si prefieres trabajar en un cuaderno o llamar al laboratorio desde tu propio código, la misma ejecución se lanza así. La función devuelve un objeto con el directorio de la ejecución, las métricas y el historial ya cargados:
+
+```python
+from neural_labs.experiments import run_lab
+
+resultado = run_lab(
+    "17_activations_and_losses",
+    quick=True,          # False para la ejecución completa
+    config_name="baseline",
+    split_seed=42,       # fija la partición
+    training_seed=43,    # varía la inicialización
+)
+
+print(resultado.run_dir)   # dónde quedaron los archivos
+print(resultado.metrics)   # el diccionario de métricas finales
+```
+
+Y para preparar el dataset sin entrenar —útil para inspeccionarlo antes—:
+
+```python
+from neural_labs.datasets import prepare_dataset
+
+datos = prepare_dataset("17_activations_and_losses", quick=True, seed=42)
+print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
+```
 
 ## 🪜 Paso a paso
 
-Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
 ### Paso 1 — Traer el dataset real y partirlo
 
@@ -214,7 +232,7 @@ neural-labs benchmark --lab 17_activations_and_losses --quick --split-seed 42 --
 
 ## 🔍 Cómo leer lo que produce la ejecución
 
-Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:
 
 | Archivo | Qué contiene y qué mirar |
 |---|---|
@@ -242,6 +260,12 @@ Cada ejecución escribe su propio directorio. Estos son los archivos que encontr
 - **Las dos semillas no son intercambiables.** `--split-seed` cambia *qué datos* caen en cada partición; `--training-seed` cambia *cómo se inicializa y baraja* el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.
 - **Límite declarado de este dataset.** Muestras reales de vinho verde con análisis fisicoquímico y evaluación sensorial.
 
+### Riesgos al interpretar los resultados
+
+Muestras reales de vinho verde con análisis fisicoquímico y evaluación sensorial.
+
+El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.
+
 ## ✅ Antes de darlo por terminado
 
 El laboratorio está aprobado cuando se cumplen estos criterios:
@@ -259,31 +283,45 @@ Y cuando tienes estos entregables:
 - [ ] comparación con línea base
 - [ ] respuesta a preguntas críticas
 
-Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+El plan experimental con la tabla que hay que completar está en `experiments.md`, y las preguntas con su rúbrica, en `assessment.md`. Ambos documentos se abren desde la barra de navegación de arriba.
 
-## 🧪 Para ir más lejos
+### Para ir más lejos
 
 - Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
 - Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
 - Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
 - Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
 
-## 📚 De dónde sale cada cosa de esta guía
+## 📚 Fuentes
 
-Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:
+
+> Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.
+
+- Goodfellow, Bengio & Courville — *Deep Learning* (MIT Press, 2016), cap. 6 — unidades de activación, no linealidades y funciones de salida con sus pérdidas asociadas.
+- Géron — *Hands-On Machine Learning with Scikit-Learn, Keras & TensorFlow* (3.ª ed., O'Reilly 2022), cap. 10–11 — activaciones en la práctica y entrenamiento de redes profundas.
+- Bishop — *Pattern Recognition and Machine Learning* (Springer, 2006), cap. 5 — funciones de error y su relación con la interpretación probabilística de la salida.
+- Nair & Hinton (2010), *Rectified Linear Units Improve Restricted Boltzmann Machines (ReLU)*, ICML — introducción de la unidad ReLU.
+- Glorot, Bordes & Bengio (2011), *Deep Sparse Rectifier Neural Networks*, AISTATS — evidencia de que los rectificadores facilitan el entrenamiento de redes profundas.
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/186/wine+quality
+- Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+### Cómo comprobar lo que dice esta guía
+
+Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:
 
 | Lo que dice la guía | Dónde comprobarlo |
 |---|---|
-| Objetivo, línea base, métricas y arquitectura | [`configs/labs.yaml`](../../configs/labs.yaml) |
-| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
-| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
-| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/experiments.py`](../../src/neural_labs/experiments.py) |
-| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
-| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+| Objetivo, línea base, métricas y arquitectura | `configs/labs.yaml` |
+| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | `configs/baseline.yaml` y `configs/improved.yaml` |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |
+| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |
+| El orden de los pasos y los archivos que escribe cada ejecución | `src/neural_labs/experiments.py` |
+| La teoría y su bibliografía | `theory.md` |
+| La regla general del protocolo | `docs/experiment-protocol.md` |
 
-Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
-<!-- /guia -->
+Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

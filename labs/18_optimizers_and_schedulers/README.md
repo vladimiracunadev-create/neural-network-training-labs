@@ -8,25 +8,17 @@
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-<!-- ficha -->
-## 📋 Ficha del laboratorio
+## 🎯 Qué vas a hacer aquí
 
-![ruta](https://img.shields.io/badge/ruta-19%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-fundamentos-3fb950?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Central-2e8b57?style=flat-square) ![horas](https://img.shields.io/badge/horas-~4%20h-f0b429?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-california__housing-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-rmse-8957e5?style=flat-square)
+Comparar SGD, Momentum, Adam y reducción de tasa de aprendizaje.
 
-| Campo | Valor |
-|---|---|
-| 🧭 Posición | Ruta **19 de 31** del recorrido · categoría central |
-| 🎚️ Nivel | fundamentos |
-| ⏱️ Dedicación estimada | 4 horas |
-| 🧩 Tarea | `regression` |
-| 🏗️ Arquitectura | `optimizer_comparison` |
-| 🗄️ Dataset | [`california_housing`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html) — scikit-learn / StatLib |
-| ⚖️ Licencia del dataset | Consultar fuente StatLib |
-| 🎯 Métrica de selección | `rmse` sobre `validation` |
-| 📏 Línea base a superar | Media y Ridge |
-| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+Es la **ruta 19 de 31** del recorrido y pertenece a 🔴 la parte 5, *La mecánica fina, ahora en profundidad*. Llegas desde **Activaciones y funciones de pérdida** y lo que hagas aquí lo da por supuesto **Regularización**.
 
-### 🎯 Qué vas a poder hacer al terminar
+Trabajarás con el dataset **`california_housing`** (scikit-learn / StatLib, licencia: Consultar fuente StatLib), y tendrás que superar la línea base **Media y Ridge**, decidiendo con la métrica `rmse` medida sobre `validation`. Nivel fundamentos, unas **4 horas** de dedicación.
+
+**Lo que conviene traer resuelto de las rutas anteriores:** Python básico, NumPy, álgebra lineal elemental.
+
+**Al terminar deberías ser capaz de:**
 
 - Comparar SGD, Momentum, Adam y reducción de tasa de aprendizaje.
 - Preparar y auditar el dataset real california_housing sin fuga de datos.
@@ -34,81 +26,97 @@
 - Comparar contra la línea base: Media y Ridge.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-### 🧩 Prerrequisitos
+## 🧠 La teoría de este laboratorio
 
-- Python básico
-- NumPy
-- álgebra lineal elemental
+Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
-> Si alguno te falta, retrocede antes de continuar. Viniendo de [📐 Activaciones y funciones de pérdida](../../labs/17_activations_and_losses/README.md).
+### De qué trata
 
-### ⚙️ `baseline` frente a `improved`
+Este laboratorio estudia **comparación controlada de optimizadores y schedulers** usando `california_housing`, un dataset público real procedente de scikit-learn / StatLib.
 
-| Parámetro | [`baseline.yaml`](configs/baseline.yaml) | [`improved.yaml`](configs/improved.yaml) |
-|---|---|---|
-| Épocas | `20` | `50` |
-| Tasa de aprendizaje | `0.001` | `0.0005` |
-| Paciencia (early stopping) | `5` | `8` |
-| Precisión mixta (AMP) | no | sí |
-| Procesos de carga | `0` | `2` |
+Entrenar una red neuronal es resolver un problema de **optimización**: buscar los parámetros θ que minimizan una función de pérdida ℒ(θ) sobre datos reales. Como no podemos evaluar el gradiente exacto sobre todo el conjunto (sería costoso y redundante), estimamos ∇ℒ con **mini-lotes** aleatorios. El optimizador es la regla que traduce ese gradiente ruidoso en un paso de actualización, y el *scheduler* es la política que hace variar la tasa de aprendizaje η a lo largo del entrenamiento. Dos decisiones aparentemente técnicas —qué optimizador y qué programación de η— determinan si el modelo converge rápido, se estanca en una meseta o diverge.
 
-> Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con `validation`, nunca con `test`.
+La comparación es "controlada" porque solo cambiamos el optimizador/scheduler mientras mantenemos fijos arquitectura, partición, semillas y presupuesto de cómputo. Así, cualquier diferencia observada en velocidad de convergencia o generalización se atribuye a la regla de actualización y no a factores de confusión. Sobre `california_housing` —una regresión del valor mediano de vivienda a partir de variables socioeconómicas— medimos cuán rápido baja la pérdida de entrenamiento y cuán bien se comporta el modelo en validación.
 
-### 📦 Entregables y criterios de aceptación
+### La matemática, paso a paso
 
-**Entregables**
+Actualizaciones de parámetros y programación de learning rate.
 
-- notebook ejecutado
-- reporte experimental
-- model card
-- comparación con línea base
-- respuesta a preguntas críticas
+El **descenso de gradiente estocástico (SGD)** actualiza cada parámetro moviéndose en dirección opuesta al gradiente del mini-lote: θ ← θ − η · ∇θ ℒ(θ). El signo negativo es la intuición central: −∇ℒ apunta hacia donde la pérdida decrece más rápido, y η controla la longitud del paso. Un η demasiado grande hace que el paso "sobrepase" el mínimo y oscile o diverja; uno demasiado pequeño convierte el entrenamiento en un avance lentísimo. Como el gradiente proviene de un mini-lote, es un estimador *ruidoso* del gradiente verdadero, y ese ruido es a la vez un obstáculo (trayectoria zigzagueante) y una ayuda (permite escapar de mínimos pobres).
 
-**Criterios de éxito**
+El **momentum** acumula una media exponencial de los gradientes recientes para suavizar la trayectoria: vₜ ← β·vₜ₋₁ + (1−β)·∇θ ℒ, luego θ ← θ − η·vₜ. La velocidad v actúa como inercia física: en direcciones donde el gradiente es consistente, los pasos se suman y el avance se acelera; en direcciones donde oscila, las contribuciones se cancelan y el zigzag se amortigua. El factor β ≈ 0.9 fija cuánta "memoria" se conserva.
 
-- cero solapamiento entre train, validation y test
-- selección basada únicamente en validation
-- métricas finales acompañadas por incertidumbre
-- conclusiones que distinguen evidencia de suposición
+**Adam** combina momentum con una normalización por la magnitud reciente de cada gradiente. Mantiene dos medias exponenciales, la del gradiente (primer momento mₜ) y la de su cuadrado (segundo momento vₜ), aplica una corrección de sesgo m̂ₜ, v̂ₜ (necesaria porque ambas medias arrancan en cero) y actualiza θ ← θ − η · m̂ₜ / (√v̂ₜ + ε). Dividir por √v̂ₜ da a cada parámetro una tasa de aprendizaje *efectiva* propia: los parámetros con gradientes grandes reciben pasos más cortos y los de gradientes pequeños pasos más largos, lo que hace a Adam robusto a la escala y suele acelerar las primeras épocas. **AdamW** corrige un detalle sutil: desacopla el *weight decay* (λ·θ) de la actualización adaptativa, aplicándolo directamente sobre θ en vez de mezclarlo con el gradiente, lo que restaura la interpretación de regularización L2 que Adam distorsiona.
 
-### 🗂️ Recursos del laboratorio
+El **scheduler** hace evolucionar η con el tiempo. La motivación es que conviene un η grande al principio, para avanzar deprisa por regiones lejanas del mínimo, y un η pequeño al final, para asentarse con precisión sin oscilar. Programaciones típicas son el decaimiento por pasos (η se divide por un factor cada cierto número de épocas), el decaimiento coseno η(t) = η_min + ½(η_max − η_min)(1 + cos(π·t/T)), o la reducción en meseta cuando la métrica de validación deja de mejorar. La regla práctica: el optimizador decide *la dirección y forma* del paso; el scheduler decide *su tamaño a lo largo del tiempo*.
 
-| Recurso | Archivo |
-|---|---|
-| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
-| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
-| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
-| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
-| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
-| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
-| 🖥️ Script de terminal | [`train.py`](train.py) |
-| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
-| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
-| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+> **La pregunta que deberías poder responder al terminar:** ¿Cuál mejora más rápido y cuál generaliza mejor?
 
-<!-- /ficha -->
+### Qué se mide y con qué se decide
 
-<!-- guia -->
-## 🎯 Qué vas a hacer aquí
+El laboratorio reporta `mae`, `rmse`, `r2`. De todas ellas, la que **decide** qué modelo se conserva es `rmse`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
-Comparar SGD, Momentum, Adam y reducción de tasa de aprendizaje.
+## 🖥️ Los comandos, explicados
 
-Es la **ruta 19 de 31** y pertenece a 🔴 [la parte 5, La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md). Llegas desde [📐 Activaciones y funciones de pérdida](../../labs/17_activations_and_losses/README.md) y lo que aprendas aquí lo da por supuesto [🛡️ Regularización](../../labs/19_regularization_dropout_batchnorm/README.md).
+Todo el laboratorio se maneja con una sola herramienta de terminal, `neural-labs`, que se instala junto con el paquete (`pip install -e ".[dev,notebooks]"`). Cada subcomando hace **una** cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.
 
-## 🧠 La idea que se pone a prueba
+La forma general es siempre la misma:
 
-Este laboratorio trabaja **Actualizaciones de parámetros y programación de learning rate**.
+```bash
+neural-labs <subcomando> --lab <identificador> [opciones]
+```
 
-El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
+| Opción | Valor por defecto | Valores | Qué hace y cuándo cambiarla |
+|---|---|---|---|
+| `--lab` | `18_optimizers_and_schedulers` | obligatorio | Qué laboratorio se ejecuta. Solo acepta los identificadores del catálogo. |
+| `--quick` | desactivado | — | Usa una fracción real del dataset y pocas épocas. Sirve para comprobar la instalación, no para concluir nada sobre el modelo. |
+| `--split-seed N` | `42` | entero | Semilla que decide **qué ejemplo cae en qué partición**. Se mantiene fija al comparar modelos. |
+| `--training-seed N` | `42` | entero | Semilla de la inicialización de pesos y del barajado de lotes. Es la que se varía para medir cuánta diferencia es simple azar. |
+| `--config` | `baseline` | `baseline` · `improved` | Cuál de las dos configuraciones del laboratorio se usa. |
+| `--device` | `auto` | `auto` · `cpu` · `cuda` · `mps` | Dónde entrenar. `auto` elige GPU si está disponible y cae a CPU si no. |
+| `--training-seeds A B C` | `41 42 43` | enteros | Solo en `benchmark`: la lista de semillas de entrenamiento que se repiten. |
+| `--output-dir` | `runs` | ruta | Dónde se escribe el directorio de la ejecución. |
 
-> **La pregunta que deberías poder responder al final:** ¿Cuál mejora más rápido y cuál generaliza mejor?
+### El script del laboratorio
 
-**Métricas que se reportan:** `mae`, `rmse`, `r2`. La selección del modelo se decide con `rmse` sobre `validation`.
+`labs/18_optimizers_and_schedulers/train.py` no es un programa distinto: fija el `--lab` y delega en la misma herramienta, de modo que estas dos líneas hacen exactamente lo mismo.
+
+```bash
+python labs/18_optimizers_and_schedulers/train.py --quick
+neural-labs train --lab 18_optimizers_and_schedulers --quick
+```
+
+### Lo mismo desde Python
+
+Si prefieres trabajar en un cuaderno o llamar al laboratorio desde tu propio código, la misma ejecución se lanza así. La función devuelve un objeto con el directorio de la ejecución, las métricas y el historial ya cargados:
+
+```python
+from neural_labs.experiments import run_lab
+
+resultado = run_lab(
+    "18_optimizers_and_schedulers",
+    quick=True,          # False para la ejecución completa
+    config_name="baseline",
+    split_seed=42,       # fija la partición
+    training_seed=43,    # varía la inicialización
+)
+
+print(resultado.run_dir)   # dónde quedaron los archivos
+print(resultado.metrics)   # el diccionario de métricas finales
+```
+
+Y para preparar el dataset sin entrenar —útil para inspeccionarlo antes—:
+
+```python
+from neural_labs.datasets import prepare_dataset
+
+datos = prepare_dataset("18_optimizers_and_schedulers", quick=True, seed=42)
+print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
+```
 
 ## 🪜 Paso a paso
 
-Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
 ### Paso 1 — Traer el dataset real y partirlo
 
@@ -214,7 +222,7 @@ neural-labs benchmark --lab 18_optimizers_and_schedulers --quick --split-seed 42
 
 ## 🔍 Cómo leer lo que produce la ejecución
 
-Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:
 
 | Archivo | Qué contiene y qué mirar |
 |---|---|
@@ -242,6 +250,12 @@ Cada ejecución escribe su propio directorio. Estos son los archivos que encontr
 - **No hay `confusion_matrix.png`, y no es un error.** Es una tarea de regresión: no existen clases que confundir.
 - **Límite declarado de este dataset.** Datos reales del censo de California de 1990.
 
+### Riesgos al interpretar los resultados
+
+Datos reales del censo de California de 1990.
+
+El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.
+
 ## ✅ Antes de darlo por terminado
 
 El laboratorio está aprobado cuando se cumplen estos criterios:
@@ -259,31 +273,45 @@ Y cuando tienes estos entregables:
 - [ ] comparación con línea base
 - [ ] respuesta a preguntas críticas
 
-Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+El plan experimental con la tabla que hay que completar está en `experiments.md`, y las preguntas con su rúbrica, en `assessment.md`. Ambos documentos se abren desde la barra de navegación de arriba.
 
-## 🧪 Para ir más lejos
+### Para ir más lejos
 
 - Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
 - Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
 - Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
 - Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
 
-## 📚 De dónde sale cada cosa de esta guía
+## 📚 Fuentes
 
-Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:
+
+> Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.
+
+- Goodfellow, Bengio y Courville — *Deep Learning* (MIT Press, 2016), cap. 8 — tratamiento formal de la optimización para entrenamiento de redes profundas: SGD, momentum y métodos adaptativos.
+- Ruder (2016), *An overview of gradient descent optimization algorithms*, arXiv — panorámica comparada de SGD, momentum, Adagrad, RMSProp y Adam con intuición geométrica.
+- Robbins y Monro (1951), *A Stochastic Approximation Method*, Annals of Mathematical Statistics — origen teórico del descenso estocástico y las condiciones de convergencia.
+- Kingma y Ba (2015), *Adam: A Method for Stochastic Optimization*, ICLR — definición del optimizador Adam y su corrección de sesgo de momentos.
+- Loshchilov y Hutter (2019), *Decoupled Weight Decay Regularization (AdamW)*, ICLR — desacoplamiento del weight decay respecto de la actualización adaptativa.
+- Fuente del dataset: https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html
+- Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+### Cómo comprobar lo que dice esta guía
+
+Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:
 
 | Lo que dice la guía | Dónde comprobarlo |
 |---|---|
-| Objetivo, línea base, métricas y arquitectura | [`configs/labs.yaml`](../../configs/labs.yaml) |
-| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
-| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
-| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/experiments.py`](../../src/neural_labs/experiments.py) |
-| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
-| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+| Objetivo, línea base, métricas y arquitectura | `configs/labs.yaml` |
+| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | `configs/baseline.yaml` y `configs/improved.yaml` |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |
+| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |
+| El orden de los pasos y los archivos que escribe cada ejecución | `src/neural_labs/experiments.py` |
+| La teoría y su bibliografía | `theory.md` |
+| La regla general del protocolo | `docs/experiment-protocol.md` |
 
-Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
-<!-- /guia -->
+Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

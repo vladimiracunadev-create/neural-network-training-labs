@@ -269,7 +269,7 @@ Se recomienda Python 3.11 o 3.12 para la mayor compatibilidad de extras científ
 
 ```text
 labs/03_cnn_vision/
-├── README.md            ← guía: ficha, prerrequisitos, entregables y navegación
+├── README.md            ← la clase completa: teoría, comandos y paso a paso
 ├── theory.md            ← teoría anclada en libros y papers, con 🔗 Referencias
 ├── experiments.md       ← hipótesis, variables controladas y tabla multi-semilla
 ├── assessment.md        ← preguntas y rúbrica de evaluación

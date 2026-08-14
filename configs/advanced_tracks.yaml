@@ -19,6 +19,8 @@ tracks:
   - trainable_parameters
   notes: El corpus contiene titulares históricos y sesgos editoriales; no representa
     todo el lenguaje contemporáneo.
+  experiment: Comparar fine-tuning completo con LoRA manteniendo la partición y la
+    semilla de entrenamiento.
 - id: 26_segmentation_unet
   title: Segmentación semántica con U-Net
   domain: vision
@@ -38,6 +40,8 @@ tracks:
   - dice
   notes: Las imágenes se concentran en mascotas y fondos cotidianos; no generaliza
     a segmentación médica o industrial.
+  experiment: Comparar U-Net pequeña con y sin aumento geométrico y ponderación de
+    clases.
 - id: 27_audio_speechcommands
   title: Clasificación de audio con SpeechCommands
   domain: audio
@@ -55,6 +59,8 @@ tracks:
   - confusion_matrix
   - noise_robustness
   notes: Acentos, micrófonos y ambientes no están representados uniformemente.
+  experiment: Comparar señal limpia, ruido añadido y SpecAugment usando los splits
+    oficiales.
 - id: 28_wgan_gp
   title: WGAN-GP sobre Fashion-MNIST
   domain: generative
@@ -74,6 +80,7 @@ tracks:
   - training_stability
   notes: Las métricas generativas aproximadas no sustituyen evaluación humana ni validación
     del uso previsto.
+  experiment: Comparar DCGAN y WGAN-GP con igual presupuesto de actualizaciones.
 - id: 29_diffusion_ddpm
   title: Difusión DDPM sobre Fashion-MNIST
   domain: generative
@@ -93,6 +100,7 @@ tracks:
   - reconstruction_proxy
   notes: El modelo pequeño sirve para estudio; no debe extrapolarse a generación fotográfica
     de alta resolución.
+  experiment: Comparar 100 y 500 pasos, cronograma lineal y coseno, con igual dataset.
 - id: 30_self_supervised_simclr
   title: Aprendizaje autosupervisado SimCLR
   domain: vision
@@ -112,3 +120,5 @@ tracks:
   - embedding_uniformity
   notes: La elección de aumentos define invariancias y puede borrar información relevante
     para tareas posteriores.
+  experiment: Comparar intensidad de aumento y tamaño de batch manteniendo fijo el
+    split.

@@ -8,25 +8,17 @@
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-<!-- ficha -->
-## 📋 Ficha del laboratorio
+## 🎯 Qué vas a hacer aquí
 
-![ruta](https://img.shields.io/badge/ruta-20%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-intermedio-1f6feb?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Central-2e8b57?style=flat-square) ![horas](https://img.shields.io/badge/horas-~6%20h-f0b429?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-fashion__mnist-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-macro__f1-8957e5?style=flat-square)
+Medir dropout, weight decay y batch normalization.
 
-| Campo | Valor |
-|---|---|
-| 🧭 Posición | Ruta **20 de 31** del recorrido · categoría central |
-| 🎚️ Nivel | intermedio |
-| ⏱️ Dedicación estimada | 6 horas |
-| 🧩 Tarea | `multiclass_classification` |
-| 🏗️ Arquitectura | `regularization_comparison` |
-| 🗄️ Dataset | [`fashion_mnist`](https://github.com/zalandoresearch/fashion-mnist) — Torchvision / Zalando Research |
-| ⚖️ Licencia del dataset | MIT |
-| 🎯 Métrica de selección | `macro_f1` sobre `validation` |
-| 📏 Línea base a superar | MLP sin regularización |
-| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+Es la **ruta 20 de 31** del recorrido y pertenece a 🔴 la parte 5, *La mecánica fina, ahora en profundidad*. Llegas desde **Optimizadores y schedulers** y lo que hagas aquí lo da por supuesto **Aumento de datos**.
 
-### 🎯 Qué vas a poder hacer al terminar
+Trabajarás con el dataset **`fashion_mnist`** (Torchvision / Zalando Research, licencia: MIT), y tendrás que superar la línea base **MLP sin regularización**, decidiendo con la métrica `macro_f1` medida sobre `validation`. Nivel intermedio, unas **6 horas** de dedicación.
+
+**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch básico, particiones train/validation/test, métricas de evaluación.
+
+**Al terminar deberías ser capaz de:**
 
 - Medir dropout, weight decay y batch normalization.
 - Preparar y auditar el dataset real fashion_mnist sin fuga de datos.
@@ -34,81 +26,97 @@
 - Comparar contra la línea base: MLP sin regularización.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-### 🧩 Prerrequisitos
+## 🧠 La teoría de este laboratorio
 
-- PyTorch básico
-- particiones train/validation/test
-- métricas de evaluación
+Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
-> Si alguno te falta, retrocede antes de continuar. Viniendo de [⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md).
+### De qué trata
 
-### ⚙️ `baseline` frente a `improved`
+Este laboratorio estudia **dropout, batch normalization y weight decay** usando `fashion_mnist`, un dataset público real procedente de Torchvision / Zalando Research.
 
-| Parámetro | [`baseline.yaml`](configs/baseline.yaml) | [`improved.yaml`](configs/improved.yaml) |
-|---|---|---|
-| Épocas | `20` | `50` |
-| Tasa de aprendizaje | `0.001` | `0.0005` |
-| Paciencia (early stopping) | `5` | `8` |
-| Precisión mixta (AMP) | no | sí |
-| Procesos de carga | `0` | `2` |
+Una red con suficiente capacidad puede *memorizar* el conjunto de entrenamiento —incluido su ruido— sin aprender el patrón que generaliza. Esa brecha entre el rendimiento en `train` y en `validation` es la señal del **sobreajuste**. La regularización es el conjunto de técnicas que restringen o perturban el modelo para que prefiera soluciones más simples y estables, sacrificando algo de ajuste en `train` a cambio de un mejor comportamiento en datos no vistos. El laboratorio compara tres mecanismos complementarios sobre imágenes reales de prendas (`fashion_mnist`, 28×28 en escala de grises, 10 clases).
 
-> Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con `validation`, nunca con `test`.
+La idea que conecta las tres técnicas es que penalizar la complejidad o introducir ruido controlado durante el entrenamiento actúa como un *prior* hacia funciones suaves. **Weight decay** limita la magnitud de los pesos; **dropout** impide que las neuronas dependan de coadaptaciones frágiles; **batch normalization** estabiliza las distribuciones internas y añade un ruido de mini-lote con efecto regularizador. Medimos su impacto observando cómo cambia la brecha train–validation y la exactitud final.
 
-### 📦 Entregables y criterios de aceptación
+### La matemática, paso a paso
 
-**Entregables**
+Regularización explícita e implícita; brecha train-validation.
 
-- notebook ejecutado
-- reporte experimental
-- model card
-- comparación con línea base
-- respuesta a preguntas críticas
+**Weight decay (regularización L2)** añade a la pérdida un término proporcional al cuadrado de la norma de los pesos: ℒ_total = ℒ_datos + (λ/2)·‖θ‖². Su gradiente es λ·θ, de modo que en cada paso los pesos se contraen ligeramente hacia cero: θ ← θ − η(∇ℒ_datos + λ·θ). La intuición es que pesos grandes producen funciones con curvaturas abruptas que se ajustan al ruido; penalizar ‖θ‖² empuja hacia funciones más planas y suaves. El hiperparámetro λ gradúa el compromiso entre ajuste y simplicidad.
 
-**Criterios de éxito**
+**Dropout** apaga aleatoriamente una fracción p de las activaciones en cada paso de entrenamiento. Formalmente, cada activación se multiplica por una máscara Bernoulli: h̃ = h ⊙ m, con mᵢ ~ Bernoulli(1−p), y se reescala por 1/(1−p) para mantener la esperanza. Al forzar a la red a producir la salida correcta con subconjuntos distintos de neuronas, impide que unas pocas unidades formen "conspiraciones" (coadaptaciones) y reparte la representación de forma redundante. Puede leerse como un promedio implícito sobre un número exponencial de subredes que comparten pesos: en inferencia se usa la red completa sin máscara, aproximando ese ensamble.
 
-- cero solapamiento entre train, validation y test
-- selección basada únicamente en validation
-- métricas finales acompañadas por incertidumbre
-- conclusiones que distinguen evidencia de suposición
+**Batch normalization** normaliza cada activación dentro del mini-lote antes de la no linealidad. Para una activación x calcula la media μ_B y varianza σ²_B del lote, normaliza x̂ = (x − μ_B)/√(σ²_B + ε), y luego reescala y desplaza con parámetros aprendidos: y = γ·x̂ + β. Al mantener las distribuciones internas con media y varianza estables reduce el *internal covariate shift*, permite tasas de aprendizaje mayores y hace el entrenamiento menos sensible a la inicialización; los parámetros γ, β devuelven a la red la libertad de recuperar cualquier escala útil. Además, como μ_B y σ²_B dependen del mini-lote, inyectan un ruido estocástico que actúa como regularizador implícito. En inferencia se sustituyen por estadísticas acumuladas durante el entrenamiento, para que la predicción de un ejemplo no dependa de sus compañeros de lote.
 
-### 🗂️ Recursos del laboratorio
+La lectura conjunta: weight decay actúa sobre la *magnitud* de los pesos, dropout sobre la *estructura* de las representaciones y batch norm sobre la *escala de las activaciones*. Ninguno elimina el sobreajuste por decreto; cada uno desplaza el equilibrio sesgo–varianza, y el laboratorio mide empíricamente cuál reduce la brecha train–validation sin caer en el subajuste.
 
-| Recurso | Archivo |
-|---|---|
-| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
-| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
-| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
-| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
-| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
-| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
-| 🖥️ Script de terminal | [`train.py`](train.py) |
-| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
-| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
-| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+> **La pregunta que deberías poder responder al terminar:** ¿Qué técnica reduce sobreajuste sin subajustar?
 
-<!-- /ficha -->
+### Qué se mide y con qué se decide
 
-<!-- guia -->
-## 🎯 Qué vas a hacer aquí
+El laboratorio reporta `accuracy`, `macro_f1`, `generalization_gap`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
-Medir dropout, weight decay y batch normalization.
+## 🖥️ Los comandos, explicados
 
-Es la **ruta 20 de 31** y pertenece a 🔴 [la parte 5, La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md). Llegas desde [⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md) y lo que aprendas aquí lo da por supuesto [🔄 Aumento de datos](../../labs/20_data_augmentation/README.md).
+Todo el laboratorio se maneja con una sola herramienta de terminal, `neural-labs`, que se instala junto con el paquete (`pip install -e ".[dev,notebooks]"`). Cada subcomando hace **una** cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.
 
-## 🧠 La idea que se pone a prueba
+La forma general es siempre la misma:
 
-Este laboratorio trabaja **Regularización explícita e implícita; brecha train-validation**.
+```bash
+neural-labs <subcomando> --lab <identificador> [opciones]
+```
 
-El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
+| Opción | Valor por defecto | Valores | Qué hace y cuándo cambiarla |
+|---|---|---|---|
+| `--lab` | `19_regularization_dropout_batchnorm` | obligatorio | Qué laboratorio se ejecuta. Solo acepta los identificadores del catálogo. |
+| `--quick` | desactivado | — | Usa una fracción real del dataset y pocas épocas. Sirve para comprobar la instalación, no para concluir nada sobre el modelo. |
+| `--split-seed N` | `42` | entero | Semilla que decide **qué ejemplo cae en qué partición**. Se mantiene fija al comparar modelos. |
+| `--training-seed N` | `42` | entero | Semilla de la inicialización de pesos y del barajado de lotes. Es la que se varía para medir cuánta diferencia es simple azar. |
+| `--config` | `baseline` | `baseline` · `improved` | Cuál de las dos configuraciones del laboratorio se usa. |
+| `--device` | `auto` | `auto` · `cpu` · `cuda` · `mps` | Dónde entrenar. `auto` elige GPU si está disponible y cae a CPU si no. |
+| `--training-seeds A B C` | `41 42 43` | enteros | Solo en `benchmark`: la lista de semillas de entrenamiento que se repiten. |
+| `--output-dir` | `runs` | ruta | Dónde se escribe el directorio de la ejecución. |
 
-> **La pregunta que deberías poder responder al final:** ¿Qué técnica reduce sobreajuste sin subajustar?
+### El script del laboratorio
 
-**Métricas que se reportan:** `accuracy`, `macro_f1`, `generalization_gap`. La selección del modelo se decide con `macro_f1` sobre `validation`.
+`labs/19_regularization_dropout_batchnorm/train.py` no es un programa distinto: fija el `--lab` y delega en la misma herramienta, de modo que estas dos líneas hacen exactamente lo mismo.
+
+```bash
+python labs/19_regularization_dropout_batchnorm/train.py --quick
+neural-labs train --lab 19_regularization_dropout_batchnorm --quick
+```
+
+### Lo mismo desde Python
+
+Si prefieres trabajar en un cuaderno o llamar al laboratorio desde tu propio código, la misma ejecución se lanza así. La función devuelve un objeto con el directorio de la ejecución, las métricas y el historial ya cargados:
+
+```python
+from neural_labs.experiments import run_lab
+
+resultado = run_lab(
+    "19_regularization_dropout_batchnorm",
+    quick=True,          # False para la ejecución completa
+    config_name="baseline",
+    split_seed=42,       # fija la partición
+    training_seed=43,    # varía la inicialización
+)
+
+print(resultado.run_dir)   # dónde quedaron los archivos
+print(resultado.metrics)   # el diccionario de métricas finales
+```
+
+Y para preparar el dataset sin entrenar —útil para inspeccionarlo antes—:
+
+```python
+from neural_labs.datasets import prepare_dataset
+
+datos = prepare_dataset("19_regularization_dropout_batchnorm", quick=True, seed=42)
+print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
+```
 
 ## 🪜 Paso a paso
 
-Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
 ### Paso 1 — Traer el dataset real y partirlo
 
@@ -214,7 +222,7 @@ neural-labs benchmark --lab 19_regularization_dropout_batchnorm --quick --split-
 
 ## 🔍 Cómo leer lo que produce la ejecución
 
-Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:
 
 | Archivo | Qué contiene y qué mirar |
 |---|---|
@@ -242,6 +250,12 @@ Cada ejecución escribe su propio directorio. Estos son los archivos que encontr
 - **Las dos semillas no son intercambiables.** `--split-seed` cambia *qué datos* caen en cada partición; `--training-seed` cambia *cómo se inicializa y baraja* el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.
 - **Límite declarado de este dataset.** Prendas reales normalizadas en 28×28.
 
+### Riesgos al interpretar los resultados
+
+Prendas reales normalizadas en 28×28.
+
+El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.
+
 ## ✅ Antes de darlo por terminado
 
 El laboratorio está aprobado cuando se cumplen estos criterios:
@@ -259,31 +273,44 @@ Y cuando tienes estos entregables:
 - [ ] comparación con línea base
 - [ ] respuesta a preguntas críticas
 
-Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+El plan experimental con la tabla que hay que completar está en `experiments.md`, y las preguntas con su rúbrica, en `assessment.md`. Ambos documentos se abren desde la barra de navegación de arriba.
 
-## 🧪 Para ir más lejos
+### Para ir más lejos
 
 - Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
 - Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
 - Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
 - Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
 
-## 📚 De dónde sale cada cosa de esta guía
+## 📚 Fuentes
 
-Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:
+
+> Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.
+
+- Goodfellow, Bengio y Courville — *Deep Learning* (MIT Press, 2016), cap. 7 — marco general de la regularización en aprendizaje profundo: penalizaciones de norma, dropout y estrategias de generalización.
+- Géron — *Hands-On Machine Learning with Scikit-Learn, Keras & TensorFlow* (3.ª ed., O'Reilly, 2022), cap. 11 — técnicas prácticas para entrenar redes profundas, incluidas normalización por lotes y regularización.
+- Srivastava et al. (2014), *Dropout: A Simple Way to Prevent Neural Networks from Overfitting*, JMLR — formulación original de dropout y su interpretación como ensamble implícito.
+- Ioffe y Szegedy (2015), *Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift*, ICML — definición de batch normalization y su efecto sobre la estabilidad del entrenamiento.
+- Fuente del dataset: https://github.com/zalandoresearch/fashion-mnist
+- Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+### Cómo comprobar lo que dice esta guía
+
+Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:
 
 | Lo que dice la guía | Dónde comprobarlo |
 |---|---|
-| Objetivo, línea base, métricas y arquitectura | [`configs/labs.yaml`](../../configs/labs.yaml) |
-| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
-| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
-| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/experiments.py`](../../src/neural_labs/experiments.py) |
-| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
-| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+| Objetivo, línea base, métricas y arquitectura | `configs/labs.yaml` |
+| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | `configs/baseline.yaml` y `configs/improved.yaml` |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |
+| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |
+| El orden de los pasos y los archivos que escribe cada ejecución | `src/neural_labs/experiments.py` |
+| La teoría y su bibliografía | `theory.md` |
+| La regla general del protocolo | `docs/experiment-protocol.md` |
 
-Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
-<!-- /guia -->
+Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

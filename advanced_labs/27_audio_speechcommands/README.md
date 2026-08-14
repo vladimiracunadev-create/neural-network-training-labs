@@ -8,83 +8,88 @@
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-<!-- ficha -->
-## 📋 Ficha del laboratorio
+## 🎯 Qué vas a hacer aquí
 
-![ruta](https://img.shields.io/badge/ruta-28%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-avanzado-8957e5?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Avanzada-2e8b57?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-speechcommands__v0.02-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-accuracy-8957e5?style=flat-square)
+Clasificar comandos hablados desde waveform y log-mel spectrograms.
 
-| Campo | Valor |
-|---|---|
-| 🧭 Posición | Ruta **28 de 31** del recorrido · categoría avanzada |
-| 🎚️ Nivel | avanzado |
-| 🗺️ Dominio | `audio` |
-| 🏗️ Arquitectura | `audio-cnn` |
-| 🗄️ Dataset | `speechcommands_v0.02` — Torchaudio / Google Speech Commands |
-| ⚖️ Licencia del dataset | Creative Commons BY 4.0 |
-| 🎯 Métrica de selección | `accuracy` sobre `validation` |
-| 📏 Línea base a superar | MFCC + regresión logística |
-| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+Es la **ruta 28 de 31** del recorrido y pertenece a 🔬 la parte 7, *Especializaciones avanzadas*. Llegas desde **Segmentación semántica con U-Net** y lo que hagas aquí lo da por supuesto **WGAN-GP sobre Fashion-MNIST**.
 
-### 🎯 Qué vas a poder hacer al terminar
+Trabajarás con el dataset **`speechcommands_v0.02`** (Torchaudio / Google Speech Commands, licencia: Creative Commons BY 4.0), y tendrás que superar la línea base **MFCC + regresión logística**, decidiendo con la métrica `accuracy` medida sobre `validation`. Nivel avanzado.
+
+**Qué recibe el modelo como entrada:** audio mono de un segundo a 16 kHz.
+
+**Lo que conviene traer resuelto de las rutas anteriores:** CNN, señales, transformada tiempo-frecuencia.
+
+**Al terminar deberías ser capaz de:**
 
 - Clasificar comandos hablados desde waveform y log-mel spectrograms.
 - Interpretar accuracy, macro_f1
 - Aplicar sellado de test y reproducibilidad
 
-### 🧩 Prerrequisitos
+## 🧠 La teoría de este laboratorio
 
-- CNN
-- señales
-- transformada tiempo-frecuencia
+Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
-> Si alguno te falta, retrocede antes de continuar. Viniendo de [🧷 Segmentación semántica con U-Net](../../advanced_labs/26_segmentation_unet/README.md).
+### La matemática, paso a paso
 
-### 📦 Entregables y criterios de aceptación
+El audio crudo es una **forma de onda** (waveform): una señal x[t] de amplitud muestreada en el tiempo, aquí a 16 kHz durante un segundo (≈16 000 muestras por clip). Clasificar directamente sobre esa secuencia larga y unidimensional es difícil, porque la información fonética relevante vive en el *contenido frecuencial* que varía a lo largo del tiempo. Por eso se transforma la señal a una representación tiempo-frecuencia mediante la **transformada de Fourier de corto tiempo** (STFT): se divide la onda en ventanas solapadas y se calcula el espectro de cada una,
 
-**Entregables**
+X(m, k) = Σ_(n) x[n] · w[n − m] · e^(−j·2π·k·n / N),
 
-- notebook ejecutado
-- reporte experimental
-- model card
+donde w es una ventana (p. ej. Hann), m indexa el tiempo y k la frecuencia. El **espectrograma** es la magnitud al cuadrado |X(m, k)|²: una "imagen" 2D donde un eje es tiempo y el otro frecuencia, y la intensidad es la energía.
 
-### 🗂️ Recursos del laboratorio
+Sobre ese espectrograma se aplican dos transformaciones inspiradas en la percepción auditiva humana. Primero, la **escala mel** comprime el eje de frecuencia con un banco de filtros triangulares espaciados según mel(f) = 2595 · log₁₀(1 + f/700), que da más resolución a las frecuencias bajas —donde el oído distingue mejor— y agrupa las altas. Segundo, se toma el **logaritmo** de la energía, log(mel-energía + ε), imitando que percibimos la intensidad de forma aproximadamente logarítmica y comprimiendo el enorme rango dinámico; ε > 0 evita log(0). El resultado es el **espectrograma log-mel**, la entrada del modelo. Los **MFCC** (coeficientes cepstrales en frecuencias mel) van un paso más allá aplicando una transformada coseno discreta que decorrelaciona los canales mel; se usan en la línea base MFCC + regresión logística.
 
-| Recurso | Archivo |
-|---|---|
-| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
-| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
-| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
-| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
-| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
-| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
-| 🖥️ Script de terminal | [`train.py`](train.py) |
-| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
-| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
-| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+Como el log-mel es una imagen 2D, el modelo natural es una **CNN 2D**. Cada capa convolucional desliza filtros aprendidos K sobre la entrada, (X * K)(i, j) = Σ_(a,b) X(i+a, j+b) · K(a, b), detectando patrones locales tiempo-frecuencia (formantes, transiciones, ráfagas de energía) con pesos compartidos; el apilamiento con submuestreo construye representaciones cada vez más abstractas hasta una capa densa con softmax que produce p(clase | audio). El entrenamiento minimiza la entropía cruzada ℒ = −Σ_c y_c · log ŷ_c, y esta idea de tratar el audio como imagen espectral es la que Hershey et al. escalaron a clasificación de audio a gran escala.
 
-<!-- /ficha -->
+La **robustez ante ruido** es central: en uso real el micrófono capta fondo, reverberación y solapamientos. Se evalúa perturbando la entrada, por ejemplo x̃ = x + n con ruido n de una relación señal-ruido dada (SNR = 10·log₁₀(P_señal / P_ruido) dB), y midiendo cuánto cae la accuracy. Un modelo que aprende rasgos fonéticos estables degrada poco; uno que memoriza artefactos del set limpio colapsa. Esto también motiva aumentaciones (desplazamiento temporal, ruido, enmascarado de bandas) durante el entrenamiento.
 
-<!-- guia -->
-## 🎯 Qué vas a hacer aquí
+### Qué conviene graficar
 
-Clasificar comandos hablados desde waveform y log-mel spectrograms.
+Waveform, espectrograma, errores por palabra y ruido. Contrastar la onda cruda con su espectrograma log-mel muestra por qué la representación 2D facilita la clasificación; el desglose de errores por palabra revela confusiones entre comandos fonéticamente parecidos, y las pruebas con ruido cuantifican la robustez.
 
-Es la **ruta 28 de 31** y pertenece a 🔬 [la parte 7, Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md). Llegas desde [🧷 Segmentación semántica con U-Net](../../advanced_labs/26_segmentation_unet/README.md) y lo que aprendas aquí lo da por supuesto [🖌️ WGAN-GP sobre Fashion-MNIST](../../advanced_labs/28_wgan_gp/README.md).
+### Qué se mide y con qué se decide
 
-**Entrada del modelo:** audio mono de un segundo a 16 kHz.
+El laboratorio reporta `accuracy`, `macro_f1`, `confusion_matrix`, `noise_robustness`. De todas ellas, la que **decide** qué modelo se conserva es `accuracy`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
-## 🧠 La idea que se pone a prueba
+## 🖥️ Los comandos, explicados
 
-Este laboratorio trabaja **Waveform, espectrograma log-mel, convolución 2D y robustez ante ruido**.
+Todo el laboratorio se maneja con una sola herramienta de terminal, `neural-labs`, que se instala junto con el paquete (`pip install -e ".[dev,notebooks]"`). Cada subcomando hace **una** cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.
 
-El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
+La forma general es siempre la misma:
 
-**Métricas que se reportan:** `accuracy`, `macro_f1`, `confusion_matrix`, `noise_robustness`. La selección del modelo se decide con `accuracy` sobre `validation`.
+```bash
+neural-labs <subcomando> --track <identificador> [opciones]
+```
+
+| Opción | Valor por defecto | Valores | Qué hace y cuándo cambiarla |
+|---|---|---|---|
+| `--track` | `27_audio_speechcommands` | obligatorio | Qué especialización se entrena. Solo acepta los seis identificadores existentes. |
+| `--quick` | desactivado | — | Reduce datos y épocas para comprobar que la ruta corre de extremo a extremo. |
+| `--split-seed N` | `42` | entero | Semilla que decide **qué ejemplo cae en qué partición**. Se mantiene fija al comparar. |
+| `--training-seed N` | `42` | entero | Semilla de la inicialización de pesos y del barajado. Es la que se varía para medir dispersión. |
+| `--device` | `auto` | `auto` · `cpu` · `cuda` · `mps` | Dónde entrenar. `auto` elige GPU si la hay. |
+| `--output-dir` | `runs-advanced` | ruta | Dónde se escribe el directorio de la ejecución. |
+
+### Lo mismo desde Python
+
+```python
+from neural_labs.advanced.training import train_advanced
+
+resultado = train_advanced(
+    "27_audio_speechcommands",
+    quick=True,
+    split_seed=42,
+    training_seed=43,
+)
+
+print(resultado["run_dir"])
+print(resultado["metrics"])
+```
 
 ## 🪜 Paso a paso
 
-Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
 ### Paso 1 — Estudiar la teoría antes de ejecutar nada
 
@@ -140,7 +145,7 @@ neural-labs train-advanced --track 27_audio_speechcommands --split-seed 42 --tra
 
 ## 🔍 Cómo leer lo que produce la ejecución
 
-Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:
 
 | Archivo | Qué contiene y qué mirar |
 |---|---|
@@ -157,6 +162,10 @@ Cada ejecución escribe su propio directorio. Estos son los archivos que encontr
 - **Las dos semillas no son intercambiables.** `--split-seed` cambia *qué datos* caen en cada partición; `--training-seed` cambia *cómo se inicializa y baraja* el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.
 - **Límite declarado de este dataset.** Acentos, micrófonos y ambientes no están representados uniformemente.
 
+### Riesgos al interpretar los resultados
+
+Acentos, micrófonos y ambientes no están representados uniformemente. Una accuracy alta en el set limpio no garantiza desempeño con hablantes, dispositivos o entornos distintos a los del corpus, y la robustez debe verificarse explícitamente con ruido antes de confiar en el modelo.
+
 ## ✅ Antes de darlo por terminado
 
 Y cuando tienes estos entregables:
@@ -165,31 +174,40 @@ Y cuando tienes estos entregables:
 - [ ] reporte experimental
 - [ ] model card
 
-Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+El plan experimental con la tabla que hay que completar está en `experiments.md`, y las preguntas con su rúbrica, en `assessment.md`. Ambos documentos se abren desde la barra de navegación de arriba.
 
-## 🧪 Para ir más lejos
+### Para ir más lejos
 
 - Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
 - Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
 - Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
 - Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
 
-## 📚 De dónde sale cada cosa de esta guía
+## 📚 Fuentes
 
-Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:
+
+> Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.
+
+- Warden (2018), *Speech Commands: A Dataset for Limited-Vocabulary Speech Recognition*, arXiv — describe el corpus y el protocolo de evaluación de comandos hablados.
+- Hershey et al. (2017), *CNN Architectures for Large-Scale Audio Classification*, ICASSP — muestra que arquitecturas convolucionales sobre espectrogramas escalan a la clasificación de audio.
+
+### Cómo comprobar lo que dice esta guía
+
+Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:
 
 | Lo que dice la guía | Dónde comprobarlo |
 |---|---|
-| Objetivo, línea base, métricas y arquitectura | [`configs/advanced_tracks.yaml`](../../configs/advanced_tracks.yaml) |
-| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
-| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
-| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/advanced/training.py`](../../src/neural_labs/advanced/training.py) |
-| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
-| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+| Objetivo, línea base, métricas y arquitectura | `configs/advanced_tracks.yaml` |
+| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | `configs/baseline.yaml` y `configs/improved.yaml` |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |
+| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |
+| El orden de los pasos y los archivos que escribe cada ejecución | `src/neural_labs/advanced/training.py` |
+| La teoría y su bibliografía | `theory.md` |
+| La regla general del protocolo | `docs/experiment-protocol.md` |
 
-Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
-<!-- /guia -->
+Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

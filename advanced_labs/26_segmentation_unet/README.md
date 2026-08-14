@@ -8,83 +8,92 @@
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-<!-- ficha -->
-## 📋 Ficha del laboratorio
+## 🎯 Qué vas a hacer aquí
 
-![ruta](https://img.shields.io/badge/ruta-27%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-avanzado-8957e5?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Avanzada-2e8b57?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-oxford__iiit__pet__segmentation-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-mean__iou-8957e5?style=flat-square)
+Segmentar mascota, fondo y contorno con IoU por clase.
 
-| Campo | Valor |
-|---|---|
-| 🧭 Posición | Ruta **27 de 31** del recorrido · categoría avanzada |
-| 🎚️ Nivel | avanzado |
-| 🗺️ Dominio | `vision` |
-| 🏗️ Arquitectura | `unet-small` |
-| 🗄️ Dataset | `oxford_iiit_pet_segmentation` — Torchvision / University of Oxford |
-| ⚖️ Licencia del dataset | Consultar términos Oxford-IIIT Pet |
-| 🎯 Métrica de selección | `mean_iou` sobre `validation` |
-| 📏 Línea base a superar | Máscara de clase mayoritaria |
-| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+Es la **ruta 27 de 31** del recorrido y pertenece a 🔬 la parte 7, *Especializaciones avanzadas*. Llegas desde **Fine-tuning eficiente de transformer** y lo que hagas aquí lo da por supuesto **Clasificación de audio con SpeechCommands**.
 
-### 🎯 Qué vas a poder hacer al terminar
+Trabajarás con el dataset **`oxford_iiit_pet_segmentation`** (Torchvision / University of Oxford, licencia: Consultar términos Oxford-IIIT Pet), y tendrás que superar la línea base **Máscara de clase mayoritaria**, decidiendo con la métrica `mean_iou` medida sobre `validation`. Nivel avanzado.
+
+**Qué recibe el modelo como entrada:** imagen RGB y máscara trimap.
+
+**Lo que conviene traer resuelto de las rutas anteriores:** CNN, visión, métricas por píxel.
+
+**Al terminar deberías ser capaz de:**
 
 - Segmentar mascota, fondo y contorno con IoU por clase.
 - Interpretar mean_iou, iou_per_class
 - Aplicar sellado de test y reproducibilidad
 
-### 🧩 Prerrequisitos
+## 🧠 La teoría de este laboratorio
 
-- CNN
-- visión
-- métricas por píxel
+Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
-> Si alguno te falta, retrocede antes de continuar. Viniendo de [🔧 Fine-tuning eficiente de transformer](../../advanced_labs/25_transformer_finetuning/README.md).
+### La matemática, paso a paso
 
-### 📦 Entregables y criterios de aceptación
+La segmentación semántica asigna a *cada* píxel de la imagen una etiqueta de clase. Formalmente, dada una entrada X ∈ ℝ^(H×W×3) se busca una función que produzca un mapa de probabilidades ŷ ∈ ℝ^(H×W×C), donde C es el número de clases (aquí: mascota, fondo y contorno). Es una clasificación densa: en lugar de una etiqueta por imagen, se predice una por posición espacial. Las **redes totalmente convolucionales** (FCN) de Long, Shelhamer y Darrell hicieron esto viable al sustituir las capas densas finales de una CNN por convoluciones, permitiendo salidas del tamaño de la imagen mediante *upsampling* (convoluciones transpuestas).
 
-**Entregables**
+La **U-Net** refina esta idea con una arquitectura simétrica en forma de U. El **encoder** (camino de contracción) aplica bloques de convolución seguidos de submuestreo (max-pooling), reduciendo la resolución espacial y aumentando la profundidad de canales: captura el *qué* (contexto semántico) pero pierde el *dónde* (detalle espacial). El **decoder** (camino de expansión) revierte el proceso con upsampling progresivo hasta recuperar la resolución original. La clave son las **conexiones skip**: en cada nivel, los mapas de características del encoder se concatenan con los del decoder de igual resolución. Así se reinyecta la información espacial de alta frecuencia (bordes, contornos finos) que el submuestreo había diluido, resolviendo el compromiso entre contexto y localización. Esto es decisivo para la clase "contorno", que ocupa franjas delgadas de pocos píxeles.
 
-- notebook ejecutado
-- reporte experimental
-- model card
+El entrenamiento minimiza una **pérdida por píxel**, típicamente la entropía cruzada promediada sobre todas las posiciones:
 
-### 🗂️ Recursos del laboratorio
+ℒ_CE = −(1 / (H·W)) · Σ_(i,j) Σ_(c=1..C) y_(i,j,c) · log ŷ_(i,j,c),
 
-| Recurso | Archivo |
-|---|---|
-| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
-| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
-| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
-| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
-| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
-| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
-| 🖥️ Script de terminal | [`train.py`](train.py) |
-| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
-| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
-| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+donde la probabilidad por clase se obtiene con un softmax sobre el eje de canales, ŷ_(i,j,c) = e^(z_(i,j,c)) / Σ_k e^(z_(i,j,k)). Como las clases suelen estar desbalanceadas (el fondo domina), se complementa con la **pérdida Dice**, ℒ_Dice = 1 − (2·Σ ŷ·y + ε) / (Σ ŷ + Σ y + ε), donde ε > 0 evita división por cero; Dice premia el solape directo y es más robusta al desbalance.
 
-<!-- /ficha -->
+La métrica principal es la **intersección sobre unión** (IoU), o índice de Jaccard, definida por clase como
 
-<!-- guia -->
-## 🎯 Qué vas a hacer aquí
+IoU = |A ∩ B| / |A ∪ B| = TP / (TP + FP + FN),
 
-Segmentar mascota, fondo y contorno con IoU por clase.
+siendo A la máscara predicha y B la real. Vale 1 si coinciden perfectamente y 0 si no se solapan; el *mean IoU* promedia sobre clases y es el estándar de la segmentación semántica. La línea base "máscara de clase mayoritaria" predice siempre la clase más frecuente: fija un piso trivial que la U-Net debe superar ampliamente para demostrar que aprende estructura real y no solo la proporción de píxeles de fondo.
 
-Es la **ruta 27 de 31** y pertenece a 🔬 [la parte 7, Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md). Llegas desde [🔧 Fine-tuning eficiente de transformer](../../advanced_labs/25_transformer_finetuning/README.md) y lo que aprendas aquí lo da por supuesto [🎙️ Clasificación de audio con SpeechCommands](../../advanced_labs/27_audio_speechcommands/README.md).
+### Qué conviene graficar
 
-**Entrada del modelo:** imagen RGB y máscara trimap.
+Imagen, máscara real, máscara predicha, IoU por clase y mapas intermedios. Los mapas intermedios muestran cómo el encoder abstrae el contexto y las conexiones skip recuperan el detalle; el IoU por clase expone en qué categoría (mascota, fondo o contorno) falla más el modelo.
 
-## 🧠 La idea que se pone a prueba
+### Qué se mide y con qué se decide
 
-Este laboratorio trabaja **Arquitectura encoder-decoder, conexiones skip, pérdida por píxel e intersección sobre unión**.
+El laboratorio reporta `mean_iou`, `iou_per_class`, `pixel_accuracy`, `dice`. De todas ellas, la que **decide** qué modelo se conserva es `mean_iou`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
-El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
+## 🖥️ Los comandos, explicados
 
-**Métricas que se reportan:** `mean_iou`, `iou_per_class`, `pixel_accuracy`, `dice`. La selección del modelo se decide con `mean_iou` sobre `validation`.
+Todo el laboratorio se maneja con una sola herramienta de terminal, `neural-labs`, que se instala junto con el paquete (`pip install -e ".[dev,notebooks]"`). Cada subcomando hace **una** cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.
+
+La forma general es siempre la misma:
+
+```bash
+neural-labs <subcomando> --track <identificador> [opciones]
+```
+
+| Opción | Valor por defecto | Valores | Qué hace y cuándo cambiarla |
+|---|---|---|---|
+| `--track` | `26_segmentation_unet` | obligatorio | Qué especialización se entrena. Solo acepta los seis identificadores existentes. |
+| `--quick` | desactivado | — | Reduce datos y épocas para comprobar que la ruta corre de extremo a extremo. |
+| `--split-seed N` | `42` | entero | Semilla que decide **qué ejemplo cae en qué partición**. Se mantiene fija al comparar. |
+| `--training-seed N` | `42` | entero | Semilla de la inicialización de pesos y del barajado. Es la que se varía para medir dispersión. |
+| `--device` | `auto` | `auto` · `cpu` · `cuda` · `mps` | Dónde entrenar. `auto` elige GPU si la hay. |
+| `--output-dir` | `runs-advanced` | ruta | Dónde se escribe el directorio de la ejecución. |
+
+### Lo mismo desde Python
+
+```python
+from neural_labs.advanced.training import train_advanced
+
+resultado = train_advanced(
+    "26_segmentation_unet",
+    quick=True,
+    split_seed=42,
+    training_seed=43,
+)
+
+print(resultado["run_dir"])
+print(resultado["metrics"])
+```
 
 ## 🪜 Paso a paso
 
-Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
 ### Paso 1 — Estudiar la teoría antes de ejecutar nada
 
@@ -140,7 +149,7 @@ neural-labs train-advanced --track 26_segmentation_unet --split-seed 42 --traini
 
 ## 🔍 Cómo leer lo que produce la ejecución
 
-Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:
 
 | Archivo | Qué contiene y qué mirar |
 |---|---|
@@ -157,6 +166,10 @@ Cada ejecución escribe su propio directorio. Estos son los archivos que encontr
 - **Las dos semillas no son intercambiables.** `--split-seed` cambia *qué datos* caen en cada partición; `--training-seed` cambia *cómo se inicializa y baraja* el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.
 - **Límite declarado de este dataset.** Las imágenes se concentran en mascotas y fondos cotidianos; no generaliza a segmentación médica o industrial.
 
+### Riesgos al interpretar los resultados
+
+Las imágenes se concentran en mascotas y fondos cotidianos; no generaliza a segmentación médica o industrial. Un IoU global alto puede ocultar mal desempeño en clases minoritarias como el contorno, por lo que conviene leer siempre el IoU desglosado por clase.
+
 ## ✅ Antes de darlo por terminado
 
 Y cuando tienes estos entregables:
@@ -165,31 +178,41 @@ Y cuando tienes estos entregables:
 - [ ] reporte experimental
 - [ ] model card
 
-Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+El plan experimental con la tabla que hay que completar está en `experiments.md`, y las preguntas con su rúbrica, en `assessment.md`. Ambos documentos se abren desde la barra de navegación de arriba.
 
-## 🧪 Para ir más lejos
+### Para ir más lejos
 
 - Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
 - Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
 - Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
 - Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
 
-## 📚 De dónde sale cada cosa de esta guía
+## 📚 Fuentes
 
-Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:
+
+> Las referencias apuntan a las obras; no se reproduce su contenido, la redacción es original.
+
+- Long, Shelhamer & Darrell (2015), *Fully Convolutional Networks for Semantic Segmentation*, CVPR — funda la segmentación densa reemplazando capas densas por convoluciones y upsampling.
+- Ronneberger, Fischer & Brox (2015), *U-Net: Convolutional Networks for Biomedical Image Segmentation*, MICCAI — encoder-decoder simétrico con conexiones skip para localización precisa.
+- Goodfellow, Bengio & Courville — *Deep Learning* (MIT Press, 2016), cap. 9 — fundamentos de las redes convolucionales que sustentan el encoder-decoder.
+
+### Cómo comprobar lo que dice esta guía
+
+Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:
 
 | Lo que dice la guía | Dónde comprobarlo |
 |---|---|
-| Objetivo, línea base, métricas y arquitectura | [`configs/advanced_tracks.yaml`](../../configs/advanced_tracks.yaml) |
-| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
-| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
-| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/advanced/training.py`](../../src/neural_labs/advanced/training.py) |
-| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
-| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+| Objetivo, línea base, métricas y arquitectura | `configs/advanced_tracks.yaml` |
+| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | `configs/baseline.yaml` y `configs/improved.yaml` |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |
+| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |
+| El orden de los pasos y los archivos que escribe cada ejecución | `src/neural_labs/advanced/training.py` |
+| La teoría y su bibliografía | `theory.md` |
+| La regla general del protocolo | `docs/experiment-protocol.md` |
 
-Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
-<!-- /guia -->
+Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

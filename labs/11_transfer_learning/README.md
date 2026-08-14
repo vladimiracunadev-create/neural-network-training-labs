@@ -8,25 +8,17 @@
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-<!-- ficha -->
-## 📋 Ficha del laboratorio
+## 🎯 Qué vas a hacer aquí
 
-![ruta](https://img.shields.io/badge/ruta-12%20de%2031-7c5cff?style=flat-square) ![nivel](https://img.shields.io/badge/nivel-avanzado-8957e5?style=flat-square) ![categoría](https://img.shields.io/badge/categoría-Central-2e8b57?style=flat-square) ![horas](https://img.shields.io/badge/horas-~8%20h-f0b429?style=flat-square) ![dataset](https://img.shields.io/badge/dataset-oxford__iiit__pet-1f6feb?style=flat-square) ![selección](https://img.shields.io/badge/selección-macro__f1-8957e5?style=flat-square)
+Comparar extracción de características, fine-tuning y entrenamiento desde cero.
 
-| Campo | Valor |
-|---|---|
-| 🧭 Posición | Ruta **12 de 31** del recorrido · categoría central |
-| 🎚️ Nivel | avanzado |
-| ⏱️ Dedicación estimada | 8 horas |
-| 🧩 Tarea | `multiclass_classification` |
-| 🏗️ Arquitectura | `transfer_resnet18` |
-| 🗄️ Dataset | [`oxford_iiit_pet`](https://www.robots.ox.ac.uk/~vgg/data/pets/) — Torchvision / Oxford |
-| ⚖️ Licencia del dataset | Uso académico según fuente |
-| 🎯 Métrica de selección | `macro_f1` sobre `validation` |
-| 📏 Línea base a superar | CNN pequeña entrenada desde cero |
-| 🔒 Política de `test` | se abre una sola vez, tras escribir `experiment.lock.json` |
+Es la **ruta 12 de 31** del recorrido y pertenece a 🟣 la parte 3, *Familias especializadas: generar, decidir, relacionar*. Llegas desde **DQN para inventario con demanda real** y lo que hagas aquí lo da por supuesto **Fusión de sensores**.
 
-### 🎯 Qué vas a poder hacer al terminar
+Trabajarás con el dataset **`oxford_iiit_pet`** (Torchvision / Oxford, licencia: Uso académico según fuente), y tendrás que superar la línea base **CNN pequeña entrenada desde cero**, decidiendo con la métrica `macro_f1` medida sobre `validation`. Nivel avanzado, unas **8 horas** de dedicación.
+
+**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
+
+**Al terminar deberías ser capaz de:**
 
 - Comparar extracción de características, fine-tuning y entrenamiento desde cero.
 - Preparar y auditar el dataset real oxford_iiit_pet sin fuga de datos.
@@ -34,81 +26,93 @@
 - Comparar contra la línea base: CNN pequeña entrenada desde cero.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-### 🧩 Prerrequisitos
+## 🧠 La teoría de este laboratorio
 
-- PyTorch intermedio
-- optimización
-- lectura de artículos técnicos
+Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
-> Si alguno te falta, retrocede antes de continuar. Viniendo de [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md).
+### De qué trata
 
-### ⚙️ `baseline` frente a `improved`
+Este laboratorio estudia **reutilización de representaciones preentrenadas** usando `oxford_iiit_pet`, un dataset público real procedente de Torchvision / Oxford.
 
-| Parámetro | [`baseline.yaml`](configs/baseline.yaml) | [`improved.yaml`](configs/improved.yaml) |
-|---|---|---|
-| Épocas | `20` | `50` |
-| Tasa de aprendizaje | `0.001` | `0.0005` |
-| Paciencia (early stopping) | `5` | `8` |
-| Precisión mixta (AMP) | no | sí |
-| Procesos de carga | `0` | `2` |
+La idea del **aprendizaje por transferencia** es que una red entrenada sobre un problema grande (clasificar millones de imágenes de ImageNet en 1000 categorías) aprende representaciones visuales genéricas —bordes, texturas, formas, partes de objetos— que sirven para *otras* tareas de visión. En vez de partir de pesos aleatorios y aprender todo desde cero con nuestras 7.349 imágenes de 37 razas de perros y gatos (un dataset pequeño), reutilizamos esa red preentrenada como punto de partida. La intuición es que las primeras capas de una CNN capturan características de bajo nivel casi universales, y solo las últimas capas son específicas de la tarea original; por eso conviene conservar lo genérico y readaptar lo específico.
 
-> Solo se muestran los parámetros en los que ambas configuraciones difieren. La elección entre una y otra se decide con `validation`, nunca con `test`.
+El laboratorio contrasta tres estrategias sobre el mismo backbone. En la **extracción de características** se congela toda la red preentrenada y se entrena únicamente una nueva cabeza de clasificación: la red actúa como un extractor fijo de embeddings. En el **fine-tuning** se descongelan algunas (o todas) las capas y se las reajusta con una tasa de aprendizaje pequeña, adaptando las representaciones a las mascotas. Y el **entrenamiento desde cero** parte de pesos aleatorios como línea base. Comparar los tres responde una pregunta práctica central: ¿cuándo aporta el preentrenamiento y cuándo deja de compensar?
 
-### 📦 Entregables y criterios de aceptación
+### La matemática, paso a paso
 
-**Entregables**
+Sea un modelo dividido en un cuerpo de extracción de características f(·; θ_f) y una cabeza de clasificación h(·; θ_h), de modo que la predicción es ŷ = h(f(x; θ_f); θ_h). En un entrenamiento desde cero, θ_f y θ_h se inicializan al azar y se optimizan ambos minimizando la entropía cruzada ℒ = −Σ_c y_c log ŷ_c mediante θ ← θ − η ∇_θ ℒ. La transferencia cambia la **inicialización** y qué parámetros reciben gradiente: se parte de θ_f = θ_f^{ImageNet}, pesos ya optimizados sobre un problema masivo, en lugar de ruido aleatorio. Conectando con los cuatro elementos: la **representación de entrada** es la imagen normalizada con las mismas estadísticas de ImageNet; la **función del modelo** es h∘f con backbone preentrenado; la **función de pérdida** es la entropía cruzada sobre las 37 clases; y la **regla de actualización** es descenso de gradiente, aplicado a distintos subconjuntos de parámetros según la estrategia. El notebook muestra las dimensiones de los tensores y conserva la misma implementación que el script de terminal.
 
-- notebook ejecutado
-- reporte experimental
-- model card
-- comparación con línea base
-- respuesta a preguntas críticas
+La diferencia operativa entre estrategias es qué gradientes se propagan. En **extracción de características** se fija ∇_{θ_f} ℒ = 0 (capas congeladas) y solo se actualiza θ_h; esto es rápido, usa poca memoria y resiste el sobreajuste cuando hay pocos datos, porque hay muchos menos parámetros que ajustar. En **fine-tuning** se permite ∇_{θ_f} ℒ ≠ 0 en las capas descongeladas, pero con una tasa η pequeña: la razón es que los pesos preentrenados ya están cerca de una buena solución, y un η grande los destruiría (fenómeno de *olvido catastrófico*) antes de que la cabeza —inicialmente aleatoria— produzca gradientes sensatos. Una práctica común es entrenar primero solo la cabeza y luego descongelar gradualmente el cuerpo con learning rate reducido.
 
-**Criterios de éxito**
+¿Por qué transfieren las características? Yosinski et al. mostraron empíricamente que la transferibilidad **decae con la profundidad**: las capas iniciales aprenden filtros genéricos (parecidos a detectores de bordes y color, casi idénticos entre tareas) mientras que las capas finales se especializan en las clases de la tarea original. Cuanto más se parezcan la tarea origen y la destino, más capas conviene reutilizar; cuanto más difieran, más capas hay que readaptar. Formalmente, esto encaja en el marco de Pan & Yang: transferimos conocimiento de un dominio origen 𝒟_S (ImageNet) a un dominio destino 𝒟_T (mascotas) que comparten el espacio de características pero difieren en la distribución de entrada y en la tarea. El beneficio del preentrenamiento es mayor cuanto menor es el dataset destino y mayor la afinidad entre dominios; con suficientes datos destino, entrenar desde cero puede alcanzar —o superar— a la transferencia, y ahí es donde el preentrenamiento deja de aportar.
 
-- cero solapamiento entre train, validation y test
-- selección basada únicamente en validation
-- métricas finales acompañadas por incertidumbre
-- conclusiones que distinguen evidencia de suposición
+> **La pregunta que deberías poder responder al terminar:** ¿Cuándo el preentrenamiento deja de aportar?
 
-### 🗂️ Recursos del laboratorio
+### Qué se mide y con qué se decide
 
-| Recurso | Archivo |
-|---|---|
-| 🧠 Teoría y referencias | [`theory.md`](theory.md) |
-| 🔬 Plan de experimentos | [`experiments.md`](experiments.md) |
-| 📝 Evaluación y rúbrica | [`assessment.md`](assessment.md) |
-| 📓 Notebook de recorrido | [`notebook.ipynb`](notebook.ipynb) |
-| ✏️ Notebook de estudiante | [`notebook_student.ipynb`](notebook_student.ipynb) |
-| ✅ Notebook de solución | [`notebook_solution.ipynb`](notebook_solution.ipynb) |
-| 🖥️ Script de terminal | [`train.py`](train.py) |
-| 🎛️ Configuración base | [`configs/baseline.yaml`](configs/baseline.yaml) |
-| 🎚️ Configuración ampliada | [`configs/improved.yaml`](configs/improved.yaml) |
-| 🗄️ Ficha del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| 🧾 Metadatos de la lección | [`lesson.yaml`](lesson.yaml) |
+El laboratorio reporta `accuracy`, `balanced_accuracy`, `macro_f1`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
-<!-- /ficha -->
+## 🖥️ Los comandos, explicados
 
-<!-- guia -->
-## 🎯 Qué vas a hacer aquí
+Todo el laboratorio se maneja con una sola herramienta de terminal, `neural-labs`, que se instala junto con el paquete (`pip install -e ".[dev,notebooks]"`). Cada subcomando hace **una** cosa del protocolo, y por eso se pueden ejecutar por separado: preparar datos, auditar la partición, entrenar, repetir con varias semillas.
 
-Comparar extracción de características, fine-tuning y entrenamiento desde cero.
+La forma general es siempre la misma:
 
-Es la **ruta 12 de 31** y pertenece a 🟣 [la parte 3, Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md). Llegas desde [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) y lo que aprendas aquí lo da por supuesto [🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md).
+```bash
+neural-labs <subcomando> --lab <identificador> [opciones]
+```
 
-## 🧠 La idea que se pone a prueba
+| Opción | Valor por defecto | Valores | Qué hace y cuándo cambiarla |
+|---|---|---|---|
+| `--lab` | `11_transfer_learning` | obligatorio | Qué laboratorio se ejecuta. Solo acepta los identificadores del catálogo. |
+| `--quick` | desactivado | — | Usa una fracción real del dataset y pocas épocas. Sirve para comprobar la instalación, no para concluir nada sobre el modelo. |
+| `--split-seed N` | `42` | entero | Semilla que decide **qué ejemplo cae en qué partición**. Se mantiene fija al comparar modelos. |
+| `--training-seed N` | `42` | entero | Semilla de la inicialización de pesos y del barajado de lotes. Es la que se varía para medir cuánta diferencia es simple azar. |
+| `--config` | `baseline` | `baseline` · `improved` | Cuál de las dos configuraciones del laboratorio se usa. |
+| `--device` | `auto` | `auto` · `cpu` · `cuda` · `mps` | Dónde entrenar. `auto` elige GPU si está disponible y cae a CPU si no. |
+| `--training-seeds A B C` | `41 42 43` | enteros | Solo en `benchmark`: la lista de semillas de entrenamiento que se repiten. |
+| `--output-dir` | `runs` | ruta | Dónde se escribe el directorio de la ejecución. |
 
-Este laboratorio trabaja **Inicializar con pesos ImageNet y ajustar capas seleccionadas**.
+### El script del laboratorio
 
-El desarrollo completo —qué calcula cada parte, de dónde sale la fórmula, qué riesgos tiene interpretarla mal y en qué libros y papers se estudia— está en [`theory.md`](theory.md). Léelo antes de entrenar: los pasos de abajo te dicen *qué* hacer, y la teoría, *por qué* funciona y cuándo deja de funcionar.
+`labs/11_transfer_learning/train.py` no es un programa distinto: fija el `--lab` y delega en la misma herramienta, de modo que estas dos líneas hacen exactamente lo mismo.
 
-> **La pregunta que deberías poder responder al final:** ¿Cuándo el preentrenamiento deja de aportar?
+```bash
+python labs/11_transfer_learning/train.py --quick
+neural-labs train --lab 11_transfer_learning --quick
+```
 
-**Métricas que se reportan:** `accuracy`, `balanced_accuracy`, `macro_f1`. La selección del modelo se decide con `macro_f1` sobre `validation`.
+### Lo mismo desde Python
+
+Si prefieres trabajar en un cuaderno o llamar al laboratorio desde tu propio código, la misma ejecución se lanza así. La función devuelve un objeto con el directorio de la ejecución, las métricas y el historial ya cargados:
+
+```python
+from neural_labs.experiments import run_lab
+
+resultado = run_lab(
+    "11_transfer_learning",
+    quick=True,          # False para la ejecución completa
+    config_name="baseline",
+    split_seed=42,       # fija la partición
+    training_seed=43,    # varía la inicialización
+)
+
+print(resultado.run_dir)   # dónde quedaron los archivos
+print(resultado.metrics)   # el diccionario de métricas finales
+```
+
+Y para preparar el dataset sin entrenar —útil para inspeccionarlo antes—:
+
+```python
+from neural_labs.datasets import prepare_dataset
+
+datos = prepare_dataset("11_transfer_learning", quick=True, seed=42)
+print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
+```
 
 ## 🪜 Paso a paso
 
-Cada paso dice qué ocurre, por qué se hace así y cómo comprobar que salió bien. El orden no es una convención: es el que ejecuta el código, y cambiarlo rompe la validez del resultado.
+Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
 ### Paso 1 — Traer el dataset real y partirlo
 
@@ -214,7 +218,7 @@ neural-labs benchmark --lab 11_transfer_learning --quick --split-seed 42 --train
 
 ## 🔍 Cómo leer lo que produce la ejecución
 
-Cada ejecución escribe su propio directorio. Estos son los archivos que encontrarás y para qué sirve cada uno:
+Cada ejecución escribe su propio directorio con nombre único, de modo que dos corridas nunca se pisan. Esto es lo que encontrarás dentro:
 
 | Archivo | Qué contiene y qué mirar |
 |---|---|
@@ -242,6 +246,12 @@ Cada ejecución escribe su propio directorio. Estos son los archivos que encontr
 - **Las dos semillas no son intercambiables.** `--split-seed` cambia *qué datos* caen en cada partición; `--training-seed` cambia *cómo se inicializa y baraja* el entrenamiento. Para comparar modelos se fija la primera y se varía la segunda.
 - **Límite declarado de este dataset.** 7.349 imágenes reales de 37 razas de perros y gatos.
 
+### Riesgos al interpretar los resultados
+
+7.349 imágenes reales de 37 razas de perros y gatos.
+
+El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.
+
 ## ✅ Antes de darlo por terminado
 
 El laboratorio está aprobado cuando se cumplen estos criterios:
@@ -259,31 +269,42 @@ Y cuando tienes estos entregables:
 - [ ] comparación con línea base
 - [ ] respuesta a preguntas críticas
 
-Las preguntas y la rúbrica con la que se corrige están en [`assessment.md`](assessment.md); el plan de experimentos y la tabla multi-semilla que hay que completar, en [`experiments.md`](experiments.md).
+El plan experimental con la tabla que hay que completar está en `experiments.md`, y las preguntas con su rúbrica, en `assessment.md`. Ambos documentos se abren desde la barra de navegación de arriba.
 
-## 🧪 Para ir más lejos
+### Para ir más lejos
 
 - Cambia una decisión experimental y justifícala con el resultado en `validation`, no con la intuición.
 - Analiza los errores por clase o por segmento: casi siempre se concentran en un subconjunto reconocible.
 - Compara costo, precisión y latencia; el mejor modelo no siempre es el que gana por décimas.
 - Documenta sesgos, limitaciones y usos para los que **no** recomendarías este modelo.
 
-## 📚 De dónde sale cada cosa de esta guía
+## 📚 Fuentes
 
-Nada de lo anterior está escrito de memoria. Cada afirmación se puede comprobar en un archivo concreto del repositorio:
+La teoría de arriba no es original de este repositorio: se apoya en la literatura de referencia del área y en los papers originales de cada arquitectura. Estas son las obras concretas, y lo que aporta cada una:
+
+- Géron — *Hands-On Machine Learning* (3.ª ed., O'Reilly), cap. 14 — CNN profundas y reutilización de modelos preentrenados para visión.
+- Goodfellow, Bengio & Courville — *Deep Learning* (MIT Press, 2016), cap. 15 — aprendizaje de representaciones y transferencia entre tareas.
+- Yosinski et al. (2014), *How transferable are features in deep neural networks?*, NeurIPS — estudio empírico de cómo la transferibilidad decae con la profundidad de la capa.
+- Pan & Yang (2010), *A Survey on Transfer Learning*, IEEE Transactions on Knowledge and Data Engineering — marco conceptual de dominios y tareas origen/destino.
+- Fuente del dataset: https://www.robots.ox.ac.uk/~vgg/data/pets/
+- Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
+
+### Cómo comprobar lo que dice esta guía
+
+Ninguna cifra ni afirmación de esta página está escrita de memoria. Cada una se puede verificar en un archivo del repositorio:
 
 | Lo que dice la guía | Dónde comprobarlo |
 |---|---|
-| Objetivo, línea base, métricas y arquitectura | [`configs/labs.yaml`](../../configs/labs.yaml) |
-| Fuente, licencia, procedencia y límites del dataset | [`data/dataset.yaml`](data/dataset.yaml) |
-| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | [`configs/baseline.yaml`](configs/baseline.yaml) · [`configs/improved.yaml`](configs/improved.yaml) |
-| Nivel, prerrequisitos, resultados de aprendizaje y criterios | [`lesson.yaml`](lesson.yaml) |
-| El orden de los pasos y los archivos que escribe cada ejecución | [`src/neural_labs/experiments.py`](../../src/neural_labs/experiments.py) |
-| La teoría, los papers y los libros de referencia | [`theory.md`](theory.md), sección 🔗 Referencias |
-| La regla general del protocolo | [`docs/experiment-protocol.md`](../../docs/experiment-protocol.md) |
+| Objetivo, línea base, métricas y arquitectura | `configs/labs.yaml` |
+| Fuente, licencia, procedencia y límites del dataset | `data/dataset.yaml` |
+| Épocas, tamaño de lote, tasa de aprendizaje y recorte de `--quick` | `configs/baseline.yaml` y `configs/improved.yaml` |
+| Nivel, prerrequisitos, resultados de aprendizaje y criterios | `lesson.yaml` |
+| Opciones de los comandos y sus valores por defecto | `src/neural_labs/cli.py` |
+| El orden de los pasos y los archivos que escribe cada ejecución | `src/neural_labs/experiments.py` |
+| La teoría y su bibliografía | `theory.md` |
+| La regla general del protocolo | `docs/experiment-protocol.md` |
 
-Los datasets se descargan de su proveedor original y conservan su propia licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
-<!-- /guia -->
+Los datasets se descargan de su proveedor original y conservan su licencia; este repositorio no los redistribuye ni sustituye una descarga fallida por datos generados.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

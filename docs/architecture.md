@@ -36,7 +36,7 @@ Cada laboratorio (`labs/NN_slug/` o `advanced_labs/NN_slug/`) es autocontenido:
 
 ```text
 labs/03_cnn_vision/
-├── README.md            # objetivo, dataset, protocolo, ejecución y navegación anterior/siguiente
+├── README.md            # la clase completa: teoría incrustada, comandos explicados y paso a paso
 ├── theory.md            # fundamento matemático + sección "🔗 Referencias" (libros y papers)
 ├── experiments.md       # hipótesis, variables controladas y tabla multi-semilla
 ├── assessment.md        # preguntas y rúbrica de evaluación
@@ -54,7 +54,7 @@ La teoría de cada laboratorio se ancla en la literatura de referencia del tema 
 ```text
 scripts/
 ├── validate_repository.py           # valida estructura, catálogo y contratos de notebooks
-├── build_lab_docs.py                # ficha + navegación de cada laboratorio y las 7 partes (idempotente)
+├── build_lab_docs.py                # guía, experimentos, evaluación, partes y navegación (idempotente)
 ├── generate_lab_html.py             # página HTML autocontenida por laboratorio y por parte + índice offline
 ├── generate_site.py                 # genera el sitio de estudio (GitHub Pages) con navegación
 ├── generate_specialized_notebooks.py

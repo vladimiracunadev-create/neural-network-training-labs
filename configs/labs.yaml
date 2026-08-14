@@ -27,6 +27,7 @@ labs:
     masas mamarias.
   selection_metric: f1
   estimated_hours: 4
+  experiment: Comparar el gradiente analítico con diferencias finitas.
 - id: 01_pytorch_perceptron
   title: Perceptrón con PyTorch
   level: fundamentos
@@ -52,6 +53,7 @@ labs:
   notes: Características extraídas de imágenes reales de billetes.
   selection_metric: f1
   estimated_hours: 4
+  experiment: Verificar la frontera de decisión y el efecto de la normalización.
 - id: 02_mlp_nonlinear
   title: MLP multiclase
   level: fundamentos
@@ -75,6 +77,7 @@ labs:
   notes: 13.611 granos de siete variedades reales y 16 atributos de forma.
   selection_metric: macro_f1
   estimated_hours: 4
+  experiment: Comparar profundidad, activación y dropout.
 - id: 03_cnn_vision
   title: CNN para visión
   level: intermedio
@@ -99,6 +102,7 @@ labs:
   notes: CIFAR-10 contiene 60.000 imágenes reales de 32×32.
   selection_metric: macro_f1
   estimated_hours: 6
+  experiment: Comparar kernel, normalización y aumento.
 - id: 04_rnn_sequences
   title: RNN para texto
   level: intermedio
@@ -124,6 +128,7 @@ labs:
   notes: Reseñas cinematográficas reales con partición oficial.
   selection_metric: f1
   estimated_hours: 6
+  experiment: Comparar longitud máxima, embedding y regularización.
 - id: 05_lstm_time_series
   title: LSTM para series temporales
   level: intermedio
@@ -146,6 +151,7 @@ labs:
   notes: 8.760 observaciones reales de arriendo de bicicletas y clima en Seúl.
   selection_metric: rmse
   estimated_hours: 6
+  experiment: Comparar ventanas, variables y horizonte.
 - id: 06_autoencoder_anomaly
   title: Autoencoder para fraude
   level: intermedio
@@ -170,6 +176,7 @@ labs:
     de test.
   selection_metric: f1
   estimated_hours: 6
+  experiment: Seleccionar el umbral usando validation y no test.
 - id: 07_transformer_attention
   title: Transformer para noticias
   level: avanzado
@@ -193,6 +200,7 @@ labs:
   notes: Noticias reales en cuatro categorías con particiones públicas.
   selection_metric: macro_f1
   estimated_hours: 8
+  experiment: Analizar cabezas, posiciones y longitud.
 - id: 08_gan_generation
   title: GAN generativa
   level: avanzado
@@ -217,6 +225,7 @@ labs:
   notes: No usa anillos ni puntos inventados; entrena con prendas reales etiquetadas.
   selection_metric: f1
   estimated_hours: 8
+  experiment: Vigilar colapso de modos y estabilidad.
 - id: 09_gnn_graphs
   title: GNN sobre red de citas
   level: avanzado
@@ -237,6 +246,7 @@ labs:
   notes: Usa las máscaras públicas fijas de train, validación y test.
   selection_metric: f1
   estimated_hours: 8
+  experiment: Comparar con un mlp que ignore aristas.
 - id: 10_dqn_reinforcement
   title: DQN para inventario con demanda real
   level: avanzado
@@ -262,6 +272,7 @@ labs:
     se construye exclusivamente desde transacciones reales de Online Retail.
   selection_metric: mean_return
   estimated_hours: 8
+  experiment: Comparar retorno contra políticas heurísticas.
 - id: 11_transfer_learning
   title: Transfer learning con mascotas
   level: avanzado
@@ -284,6 +295,7 @@ labs:
   notes: 7.349 imágenes reales de 37 razas de perros y gatos.
   selection_metric: macro_f1
   estimated_hours: 8
+  experiment: Comparar congelamiento parcial y fine-tuning.
 - id: 12_multimodal_fusion
   title: Fusión de sensores
   level: avanzado
@@ -305,6 +317,7 @@ labs:
   notes: Señales inerciales reales de 30 participantes.
   selection_metric: macro_f1
   estimated_hours: 8
+  experiment: Ablacionar acelerómetro y giroscopio.
 - id: 13_hyperparameter_search
   title: Búsqueda de hiperparámetros
   level: avanzado
@@ -328,6 +341,7 @@ labs:
   notes: 48.842 registros reales del censo de 1994.
   selection_metric: f1
   estimated_hours: 8
+  experiment: Analizar presupuesto y estabilidad entre estudios.
 - id: 14_knowledge_distillation
   title: Destilación de conocimiento
   level: avanzado
@@ -350,6 +364,7 @@ labs:
   notes: Mismo test real para profesor, estudiante base y estudiante destilada.
   selection_metric: macro_f1
   estimated_hours: 8
+  experiment: Comparar calidad, tamaño y latencia.
 - id: 15_federated_learning
   title: Aprendizaje federado por participante
   level: avanzado
@@ -372,6 +387,7 @@ labs:
     de sujetos.
   selection_metric: macro_f1
   estimated_hours: 8
+  experiment: Medir rendimiento global y por participante.
 - id: 16_backpropagation_manual
   title: Backpropagation manual
   level: fundamentos
@@ -392,6 +408,7 @@ labs:
   notes: 150 mediciones botánicas reales de tres especies de Iris.
   selection_metric: macro_f1
   estimated_hours: 4
+  experiment: Validar derivadas capa por capa.
 - id: 17_activations_and_losses
   title: Activaciones y funciones de pérdida
   level: fundamentos
@@ -413,6 +430,7 @@ labs:
   notes: Muestras reales de vinho verde con análisis fisicoquímico y evaluación sensorial.
   selection_metric: macro_f1
   estimated_hours: 4
+  experiment: Mantener semilla, datos y arquitectura constantes.
 - id: 18_optimizers_and_schedulers
   title: Optimizadores y schedulers
   level: fundamentos
@@ -434,6 +452,7 @@ labs:
   notes: Datos reales del censo de California de 1990.
   selection_metric: rmse
   estimated_hours: 4
+  experiment: Comparar convergencia y costo por época.
 - id: 19_regularization_dropout_batchnorm
   title: Regularización
   level: intermedio
@@ -455,6 +474,7 @@ labs:
   notes: Prendas reales normalizadas en 28×28.
   selection_metric: macro_f1
   estimated_hours: 6
+  experiment: Medir brecha train-validation.
 - id: 20_data_augmentation
   title: Aumento de datos
   level: intermedio
@@ -476,6 +496,7 @@ labs:
   notes: La evaluación usa imágenes de test sin aumento.
   selection_metric: macro_f1
   estimated_hours: 6
+  experiment: Medir precisión limpia y robustez.
 - id: 21_explainability
   title: Explicabilidad
   level: avanzado
@@ -498,6 +519,7 @@ labs:
   notes: Incluye advertencias éticas sobre variables demográficas y sesgo.
   selection_metric: f1
   estimated_hours: 8
+  experiment: Contrastar explicaciones con permutaciones.
 - id: 22_uncertainty_calibration
   title: Incertidumbre y calibración
   level: avanzado
@@ -521,6 +543,7 @@ labs:
   notes: No constituye una herramienta clínica ni consejo médico.
   selection_metric: f1
   estimated_hours: 8
+  experiment: Comparar ece y brier antes y después.
 - id: 23_model_export_and_inference
   title: Exportación e inferencia
   level: avanzado
@@ -543,6 +566,7 @@ labs:
   notes: Incluye predicción, exportación y benchmark reproducible.
   selection_metric: macro_f1
   estimated_hours: 8
+  experiment: Comparar pytorch y onnx runtime.
 - id: 24_capstone_real_project
   title: 'Proyecto final: churn de telecomunicaciones'
   level: proyecto
@@ -570,3 +594,4 @@ labs:
     de telecomunicaciones durante 12 meses.
   selection_metric: f1
   estimated_hours: 6
+  experiment: Formular hipótesis, segmentar errores y documentar riesgos.
