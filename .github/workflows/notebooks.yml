@@ -1,6 +1,22 @@
 name: Notebook and assessment contracts
 
 on:
+  # También en push a main: el distintivo del README apunta a esta rama, y sin
+  # este disparador nunca reflejaría el estado real de los cuadernos.
+  push:
+    branches: ["main"]
+    paths:
+      - 'labs/**'
+      - 'advanced_labs/**'
+      - 'assignments/**'
+      - 'src/**'
+      - 'configs/**'
+      - 'tests/test_notebook_exercises_v3.py'
+      - 'nbgrader_config.py'
+      - 'scripts/lab_exercises.py'
+      - 'scripts/generate_specialized_notebooks.py'
+      - 'scripts/generate_advanced_exercises.py'
+      - '.github/workflows/notebooks.yml'
   pull_request:
     paths:
       - 'labs/**'
@@ -8,8 +24,12 @@ on:
       - 'assignments/**'
       - 'src/**'
       - 'configs/**'
+      - 'tests/test_notebook_exercises_v3.py'
       - 'nbgrader_config.py'
+      - 'scripts/lab_exercises.py'
       - 'scripts/generate_specialized_notebooks.py'
+      - 'scripts/generate_advanced_exercises.py'
+      - '.github/workflows/notebooks.yml'
 
 permissions:
   contents: read
