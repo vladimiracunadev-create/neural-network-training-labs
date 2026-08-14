@@ -3,7 +3,7 @@
 
 # 🧠 Neural Network Training Labs
 
-## **31 rutas · 93 notebooks · 21 datasets públicos reales · de la neurona en NumPy al modelo desplegado**
+## **31 rutas · 93 notebooks · 19 fuentes públicas reales · de la neurona en NumPy al modelo desplegado**
 
 **Laboratorio evolutivo y verificable para entrenar, validar, explicar, exportar y
 desplegar redes neuronales: de la derivada escrita a mano a CNN, RNN, transformers,
@@ -43,9 +43,9 @@ ONNX/INT8/edge, entrenamiento distribuido y cadena de suministro firmable.**
 
 <br>
 
-| 🧪 Rutas | 📓 Notebooks | 🗄️ Datasets reales | 🧰 Comandos CLI | 📖 Guías | ⚙️ Workflows |
+| 🧪 Rutas | 📓 Notebooks | 🗄️ Fuentes reales | 🧰 Comandos CLI | 📖 Guías | ⚙️ Workflows |
 |:---:|:---:|:---:|:---:|:---:|:---:|
-| **31** | **93** | **21** | **26** | **23** | **12** |
+| **31** | **93** | **19** | **26** | **23** | **12** |
 
 </div>
 
@@ -65,7 +65,7 @@ ONNX/INT8/edge, entrenamiento distribuido y cadena de suministro firmable.**
 |---|---|
 | Rutas | ✅ 31/31 construidas — 25 laboratorios centrales + 6 especializaciones avanzadas |
 | Notebooks | ✅ 31 recorridos + 31 estudiante + 31 solución (93 en total) |
-| Datasets | ✅ 21 fuentes públicas reales (UCI, Torchvision, Torchaudio, Hugging Face, PyG, Kaggle); **sin fallback sintético silencioso** |
+| Datasets | ✅ 31 fichas `dataset.yaml` sobre 19 fuentes públicas reales (UCI, Torchvision, Torchaudio, Hugging Face, PyG, Kaggle); **sin fallback sintético silencioso** |
 | Protocolo | ✅ `split_seed` ≠ `training_seed`, selección por `validation`, `test` sellado con `experiment.lock.json` |
 | CLI | ✅ 26 comandos: `catalog`, `dataset`, `audit`, `train`, `benchmark`, `registry`, `serve`, `export`, `supply-chain`… |
 | Registro | ✅ champion/challenger local + backend MLflow opcional |
@@ -398,7 +398,7 @@ Cada `theory.md` los complementa con los papers originales de su arquitectura (V
 ### ✅ Lo que sí es
 
 - 🧪 un **taller completo de entrenamiento**: 31 rutas de la neurona en NumPy a difusión y SimCLR, cada una con teoría, laboratorio, evaluación y notebook;
-- 🔬 material **ejecutable y verificable**: 93 notebooks, 21 datasets públicos reales y un contrato de experimento que se sella antes de mirar `test`;
+- 🔬 material **ejecutable y verificable**: 93 notebooks, 19 fuentes públicas reales y un contrato de experimento que se sella antes de mirar `test`;
 - 🚢 el **ciclo entero de ingeniería**: model card, registro champion/challenger, API de inferencia, ONNX/INT8, distribuido y SBOM firmable;
 - 📖 contenido **abierto y en español**, legible en GitHub o en un sitio de estudio con navegación anterior/siguiente;
 - 🔍 material **honesto sobre sus límites**: cada ejecución declara intervalos de confianza, subgrupos y deriva.
