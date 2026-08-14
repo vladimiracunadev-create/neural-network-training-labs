@@ -64,7 +64,7 @@ ONNX/INT8/edge, entrenamiento distribuido y cadena de suministro firmable.**
 | Superficie | Estado |
 |---|---|
 | Rutas | ✅ 31/31 construidas — 25 laboratorios centrales + 6 especializaciones avanzadas |
-| Notebooks | ✅ 93 archivos: 31 recorridos + 31 estudiante + 31 solución, todos ejecutables; ⚪ recorrido y solución son hoy idénticos y la versión de estudiante deja 2 celdas por completar ([roadmap](ROADMAP.md)) |
+| Notebooks | ✅ 93 archivos: 31 recorridos + 31 estudiante + 31 solución, los tres distintos entre sí, con **5 ejercicios evaluables por laboratorio** cuya solución de referencia se ejecuta en CI |
 | Datasets | ✅ 31 fichas `dataset.yaml` sobre 19 fuentes públicas reales (UCI, Torchvision, Torchaudio, Hugging Face, PyG, Kaggle); **sin fallback sintético silencioso** |
 | Protocolo | ✅ `split_seed` ≠ `training_seed`, selección por `validation`, `test` sellado con `experiment.lock.json` |
 | CLI | ✅ 26 comandos: `catalog`, `dataset`, `audit`, `train`, `benchmark`, `registry`, `serve`, `export`, `supply-chain`… |

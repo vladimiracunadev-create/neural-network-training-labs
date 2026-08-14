@@ -202,7 +202,7 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 <h3 id="que-se-mide-y-con-que-se-decide">Qué se mide y con qué se decide</h3>
 <p>El laboratorio reporta <code>accuracy</code>, <code>latency_ms</code>, <code>throughput</code>, <code>model_size_mb</code>. De todas ellas, la que <strong>decide</strong> qué modelo se conserva es <code>macro_f1</code>, y se mide siempre sobre <code>validation</code>: es la única forma de que <code>test</code> siga siendo una estimación honesta de lo que pasará con datos nuevos.</p>
 <h2 id="los-tres-cuadernos">📓 Los tres cuadernos</h2>
-<p>El laboratorio incluye tres cuadernos Jupyter de <strong>26 celdas</strong> cada uno, de las cuales <strong>13 son de código ejecutable</strong>. Los tres recorren el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar <code>test</code> una vez— y se diferencian en cuánto viene resuelto:</p>
+<p>El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar <code>test</code> una vez—; lo que cambia es qué te toca escribir a ti:</p>
 <table>
 <thead>
 <tr>
@@ -214,24 +214,23 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 <tbody>
 <tr>
 <td><a href="notebook.ipynb">📓 <code>notebook.ipynb</code></a></td>
-<td>El recorrido completo con <strong>todo el código escrito y ejecutable</strong>, celda a celda, intercalado con las explicaciones.</td>
-<td>Para leer y ejecutar de principio a fin, entendiendo qué hace cada paso.</td>
+<td>El <strong>recorrido de referencia</strong>: 22 celdas (9 de código) con <strong>todo el código escrito y ejecutable</strong>, intercalado con las explicaciones. No trae ejercicios.</td>
+<td>Para leer y ejecutar de principio a fin.</td>
 </tr>
 <tr>
 <td><a href="notebook_student.ipynb">✏️ <code>notebook_student.ipynb</code></a></td>
-<td>El mismo recorrido con <strong>2 celdas vaciadas</strong>, marcadas con <code># YOUR CODE HERE</code>, que hay que completar.</td>
-<td>Para practicar: se ejecuta igual, pero falla hasta que completas los huecos.</td>
+<td>El mismo recorrido más <strong>5 ejercicios evaluables</strong> (37 celdas en total). Las celdas de ejercicio están marcadas con <code># YOUR CODE HERE</code> y debajo de cada una hay una comprobación.</td>
+<td>Para practicar.</td>
 </tr>
 <tr>
 <td><a href="notebook_solution.ipynb">✅ <code>notebook_solution.ipynb</code></a></td>
-<td>Las celdas anteriores ya resueltas, marcadas con <code># SOLUCIÓN DE REFERENCIA</code>.</td>
-<td>Para contrastar tu respuesta después de intentarlo.</td>
+<td>Los mismos ejercicios <strong>resueltos</strong>, marcados con <code># SOLUCIÓN DE REFERENCIA</code>. Cada solución se ejecuta en la integración continua, así que se sabe que pasa.</td>
+<td>Para contrastar después de intentarlo.</td>
 </tr>
 </tbody>
 </table>
-<blockquote>
-<p><strong>Aviso honesto sobre el estado actual.</strong> Hoy <code>notebook.ipynb</code> y <code>notebook_solution.ipynb</code> tienen <strong>el mismo contenido</strong>, y los ejercicios que los separan del cuaderno de estudiante son <strong>2</strong>. Es decir: el código del laboratorio está completo y es ejecutable en los tres, pero la versión de estudiante todavía no propone una práctica extensa. Está anotado en el <a href="../../ROADMAP.md">roadmap</a> y se dice aquí para que nadie descubra el límite después de abrir el archivo.</p>
-</blockquote>
+<h3 id="que-se-practica-en-los-ejercicios">Qué se practica en los ejercicios</h3>
+<p>Cinco de ellos no son de arquitectura sino del <strong>contrato experimental</strong>, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con <code>validation</code>, compararse con la línea base, sellar antes de abrir <code>test</code> y dejar el plan por escrito. Se resuelven con Python estándar —<strong>sin descargar el dataset ni entrenar</strong>—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.</p>
 <h3 id="como-abrirlos">Cómo abrirlos</h3>
 <p>Los cuadernos necesitan el extra <code>notebooks</code>, que instala Jupyter junto con el paquete:</p>
 <pre><code class="language-bash">pip install -e &quot;.[dev,notebooks]&quot;

@@ -2,12 +2,17 @@ from __future__ import annotations
 
 import json
 import shutil
+import sys
 from pathlib import Path
 from typing import Any
 
 import nbformat
 import yaml
 from nbformat.v4 import new_code_cell, new_markdown_cell, new_notebook
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from lab_exercises import exercises, graded_metadata, test_metadata  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 LABS = yaml.safe_load((ROOT / "configs" / "labs.yaml").read_text(encoding="utf-8"))["labs"]
@@ -83,40 +88,54 @@ def domain_for(lab: dict[str, Any]) -> str:
     return "tabular"
 
 
-def graded_metadata(grade_id: str, points: int, solution: bool) -> dict[str, Any]:
-    return {
-        "nbgrader": {
-            "grade": False,
-            "grade_id": grade_id,
-            "locked": solution,
-            "points": points,
-            "schema_version": 3,
-            "solution": True,
-            "task": False,
-        }
-    }
+VARIANT_LABEL = {"walkthrough": "recorrido", "student": "estudiante", "solution": "solución"}
 
 
-def test_metadata(grade_id: str, points: int) -> dict[str, Any]:
-    return {
-        "nbgrader": {
-            "grade": True,
-            "grade_id": grade_id,
-            "locked": True,
-            "points": points,
-            "schema_version": 3,
-            "solution": False,
-            "task": False,
-        }
-    }
+def exercise_cells(lab: dict[str, Any], variant: str) -> list[Any]:
+    """Las celdas de los cinco ejercicios, según la variante del cuaderno.
+
+    El cuaderno de recorrido no lleva ejercicios: es la lectura de referencia con
+    todo el código resuelto. Los de estudiante y solución llevan los cinco, con
+    los mismos identificadores nbgrader y el mismo número de celdas, que es lo
+    que `scripts/validate_nbgrader.py` comprueba.
+    """
+    if variant == "walkthrough":
+        return [new_markdown_cell(
+            "## Ejercicios\n\nEste cuaderno es el recorrido de referencia y no trae ejercicios. "
+            "La práctica está en `notebook_student.ipynb` —cinco ejercicios evaluables sobre el "
+            "contrato experimental— y su corrección, en `notebook_solution.ipynb`."
+        )]
+
+    is_solution = variant == "solution"
+    cells: list[Any] = [new_markdown_cell(
+        "## Ejercicios evaluables\n\nCinco ejercicios sobre el contrato experimental de este "
+        "laboratorio. Se resuelven con Python estándar: **no hace falta descargar el dataset ni "
+        "entrenar**, y cada uno trae debajo una celda de comprobación que debe pasar sin error."
+    )]
+    for exercise in exercises(
+        metric=str(lab.get("selection_metric") or "loss"),
+        baseline=str(lab.get("baseline") or "la línea base declarada"),
+        experiment=str(lab.get("experiment") or lab.get("objective") or ""),
+        dataset=str(lab.get("dataset") or ""),
+    ):
+        cells.append(new_markdown_cell(f"### {exercise['title']}\n\n{exercise['statement']}"))
+        body = ("# SOLUCIÓN DE REFERENCIA\n" + exercise["solution"]) if is_solution \
+            else ("# YOUR CODE HERE\n" + exercise["student"])
+        cells.append(new_code_cell(
+            body, metadata=graded_metadata(exercise["id"], exercise["points"], is_solution)
+        ))
+        cells.append(new_code_cell(
+            exercise["test"], metadata=test_metadata(f"{exercise['id']}_test", exercise["points"])
+        ))
+    return cells
 
 
-def build_notebook(lab: dict[str, Any], *, solution: bool) -> nbformat.NotebookNode:
+def build_notebook(lab: dict[str, Any], *, variant: str) -> nbformat.NotebookNode:
     domain = domain_for(lab)
     content = DOMAIN_CONTENT[domain]
     lab_id = lab["id"]
     cells = [
-        new_markdown_cell(f"# {lab['title']}\n\n**Laboratorio:** `{lab_id}`  \n**Dataset real:** {lab['dataset']}  \n**Fuente:** {lab['source']}  \n**Versión:** {'solución' if solution else 'estudiante'}"),
+        new_markdown_cell(f"# {lab['title']}\n\n**Laboratorio:** `{lab_id}`  \n**Dataset real:** {lab['dataset']}  \n**Fuente:** {lab['source']}  \n**Versión:** {VARIANT_LABEL[variant]}"),
         new_markdown_cell(f"## Objetivo\n\n{lab['objective']}\n\n**Pregunta guía:** {content['question']}"),
         new_markdown_cell("## Contrato científico\n\n1. `split_seed` define las particiones.  \n2. `training_seed` define inicialización y batches.  \n3. Toda selección ocurre con validation.  \n4. `experiment.lock.json` congela decisiones antes de abrir test.  \n5. Test se informa una sola vez."),
         new_code_cell("from pathlib import Path\nimport json\nimport yaml\nimport torch\n\nfrom neural_labs.catalog import ROOT, get_lab, get_dataset\nfrom neural_labs.datasets import prepare_dataset, audit_bundle\nfrom neural_labs.baselines import run_baseline\nfrom neural_labs.experiments import run_lab\n\nLAB_ID = '" + lab_id + "'\nSPLIT_SEED = 42\nTRAINING_SEED = 42\nQUICK = True"),
@@ -135,25 +154,8 @@ def build_notebook(lab: dict[str, Any], *, solution: bool) -> nbformat.NotebookN
         new_code_cell("# result = run_lab(\n#     LAB_ID, quick=QUICK, config_name='baseline',\n#     split_seed=SPLIT_SEED, training_seed=TRAINING_SEED, device='auto',\n# )\n# result.run_dir, result.metrics"),
         new_markdown_cell("## Inspección de artefactos"),
         new_code_cell("# sorted(path.name for path in result.run_dir.iterdir())"),
-        new_markdown_cell("## Ejercicio evaluable"),
-        new_code_cell(
-            ("# SOLUCIÓN DE REFERENCIA\nEXPERIMENT_DESCRIPTION = " + repr(content["exercise"]) + "\nEXPECTED_SEEDS = [41, 42, 43]\nassert len(EXPECTED_SEEDS) >= 3")
-            if solution
-            else ("# YOUR CODE HERE\nEXPERIMENT_DESCRIPTION = ''\nEXPECTED_SEEDS = []"),
-            metadata=graded_metadata("experiment_design", 5, solution),
-        ),
-        new_code_cell(
-            "assert isinstance(EXPERIMENT_DESCRIPTION, str) and len(EXPERIMENT_DESCRIPTION) >= 20\nassert len(EXPECTED_SEEDS) >= 3",
-            metadata=test_metadata("experiment_design_test", 5),
-        ),
         new_markdown_cell("## Interpretación y responsabilidad\n\nDocumenta resultados negativos, sesgos, grupos con peor desempeño, costo computacional y usos no recomendados."),
-        new_code_cell(
-            ("CONCLUSION = 'El modelo debe compararse con la línea base, varias semillas y subgrupos antes de recomendar su uso.'")
-            if solution
-            else "# YOUR CODE HERE\nCONCLUSION = ''",
-            metadata=graded_metadata("conclusion", 5, solution),
-        ),
-        new_code_cell("assert len(CONCLUSION) >= 40", metadata=test_metadata("conclusion_test", 5)),
+        *exercise_cells(lab, variant),
         new_markdown_cell("## Próximos pasos\n\nEjecuta primero con `--quick`; después usa el dataset completo, varias semillas y el pipeline de benchmark."),
     ]
     notebook = new_notebook(cells=cells)
@@ -161,7 +163,7 @@ def build_notebook(lab: dict[str, Any], *, solution: bool) -> nbformat.NotebookN
         {
             "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
             "language_info": {"name": "python", "version": "3.11"},
-            "neural_labs": {"lab_id": lab_id, "domain": domain, "variant": "solution" if solution else "student"},
+            "neural_labs": {"lab_id": lab_id, "domain": domain, "variant": variant},
         }
     )
     return notebook
@@ -174,10 +176,13 @@ def main() -> None:
     release_root.mkdir(parents=True, exist_ok=True)
     for lab in LABS:
         folder = ROOT / "labs" / lab["id"]
-        solution = build_notebook(lab, solution=True)
-        student = build_notebook(lab, solution=False)
+        # Tres cuadernos distintos: el recorrido no lleva ejercicios, el de
+        # estudiante los deja vacíos y el de solución los trae resueltos.
+        solution = build_notebook(lab, variant="solution")
+        student = build_notebook(lab, variant="student")
+        walkthrough = build_notebook(lab, variant="walkthrough")
         nbformat.write(solution, folder / "notebook_solution.ipynb")
-        nbformat.write(solution, folder / "notebook.ipynb")
+        nbformat.write(walkthrough, folder / "notebook.ipynb")
         nbformat.write(student, folder / "notebook_student.ipynb")
         assignment_source = source_root / lab["id"]
         assignment_release = release_root / lab["id"]

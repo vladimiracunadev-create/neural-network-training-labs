@@ -3,7 +3,7 @@
 Cada laboratorio combina cuatro capas:
 
 1. `theory.md`: fundamento y pregunta crítica.
-2. `notebook.ipynb`: ejecución guiada.
+2. `notebook.ipynb`: ejecución guiada, sin ejercicios; `notebook_student.ipynb` y `notebook_solution.ipynb` añaden los cinco ejercicios evaluables y su corrección.
 3. `experiments.md`: diseño multi-semilla.
 4. `assessment.md`: evidencias, preguntas y rúbrica.
 

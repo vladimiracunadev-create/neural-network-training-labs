@@ -29,3 +29,9 @@ jobs:
       - run: pytest tests/test_repository_structure.py tests/test_schema_v2.py tests/test_notebook_specialization_v3.py -q
       - name: Validate nbgrader metadata
         run: python scripts/validate_nbgrader.py
+      # Un ejercicio cuya solución de referencia no ejecuta es peor que no
+      # tenerlo, así que aquí se ejecutan las 328 celdas evaluables.
+      - name: Los cinco ejercicios de cada laboratorio, con su solución
+        run: pytest tests/test_notebook_exercises_v3.py -q
+      - name: Los cuadernos con ejercicios están al día
+        run: python scripts/generate_advanced_exercises.py --check
