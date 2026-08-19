@@ -447,26 +447,12 @@ resoluble— vive en el registro, no en este README. Cada entrada resuelve por
 la **URL https de su fuente primaria** si es una norma, documentación oficial o un dataset.
 Lo que no resuelve se marca `pendiente` con su motivo: no se elimina ni se rellena a ojo.
 
-```bash
-python scripts/verify-sources
-```
-
 <!-- fuentes:inicio -->
 <!-- Generado por `python scripts/verify-sources --sync`. No editar a mano. -->
 
-El registro [`sources/bibliography.json`](sources/bibliography.json) reúne **111** fuentes: 19 datasets, 76 artículos, 13 libros y 3 documentos normativos u oficiales.
+Las 31 rutas del programa citan **113 obras distintas** entre libros, artículos, documentación y datasets. Las 113 están en el registro: **cobertura del 100 %**.
 
-| Métrica | Valor |
-|---|---:|
-| Rutas con bloque de fuentes | 31 / 31 |
-| Citas en las clases | 166 |
-| Obras y enlaces distintos | 113 |
-| Cubiertos por el registro | 113 |
-| **Cobertura** | **100.0 %** |
-| Entradas verificadas | 105 |
-| Entradas pendientes | 6 |
-| Datasets con licencia declarada | 19 / 19 |
-| Datasets con checksum SHA-256 | 16 / 19 |
+[`sources/bibliography.json`](sources/bibliography.json) las describe en 111 entradas —19 datasets, 76 artículos, 13 libros y 3 documentos oficiales—, de las que **105 tienen un localizador que resuelve** y 6 quedan pendientes con su motivo escrito. Los 19 datasets declaran licencia, y 16 de ellos traen además el SHA-256 de sus artefactos.
 
 ### Datasets y licencias
 

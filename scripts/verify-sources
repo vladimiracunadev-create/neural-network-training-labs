@@ -246,28 +246,28 @@ def render_readme_block(registry: dict, figures: dict) -> str:
         (e for e in registry["entries"] if e["type"] == "dataset"),
         key=lambda e: e["title"].lower(),
     )
+    docs = figures["entries_by_type"].get("standard", 0) + figures["entries_by_type"].get(
+        "reference", 0
+    )
+    coverage = figures["coverage_pct"]
+    coverage_text = f"{coverage:g}"
     lines = [
         BEGIN,
         "<!-- Generado por `python scripts/verify-sources --sync`. No editar a mano. -->",
         "",
-        f"El registro [`sources/bibliography.json`](sources/bibliography.json) reúne **{figures['entries']}** "
-        f"fuentes: {figures['entries_by_type'].get('dataset', 0)} datasets, "
-        f"{figures['entries_by_type'].get('paper', 0)} artículos, "
-        f"{figures['entries_by_type'].get('book', 0)} libros y "
-        f"{figures['entries_by_type'].get('standard', 0) + figures['entries_by_type'].get('reference', 0)} "
-        "documentos normativos u oficiales.",
+        f"Las {figures['courses']} rutas del programa citan **{figures['distinct_works']} obras "
+        f"distintas** entre libros, artículos, documentación y datasets. Las "
+        f"{figures['distinct_works']} están en el registro: **cobertura del "
+        f"{coverage_text} %**.",
         "",
-        "| Métrica | Valor |",
-        "|---|---:|",
-        f"| Rutas con bloque de fuentes | {figures['courses']} / {figures['courses']} |",
-        f"| Citas en las clases | {figures['citations']} |",
-        f"| Obras y enlaces distintos | {figures['distinct_works']} |",
-        f"| Cubiertos por el registro | {figures['covered_works']} |",
-        f"| **Cobertura** | **{figures['coverage_pct']} %** |",
-        f"| Entradas verificadas | {figures['entries_verified']} |",
-        f"| Entradas pendientes | {figures['entries_pending']} |",
-        f"| Datasets con licencia declarada | {figures['datasets_with_license']} / {figures['datasets']} |",
-        f"| Datasets con checksum SHA-256 | {figures['datasets_with_checksum']} / {figures['datasets']} |",
+        f"[`sources/bibliography.json`](sources/bibliography.json) las describe en "
+        f"{figures['entries']} entradas —{figures['entries_by_type'].get('dataset', 0)} datasets, "
+        f"{figures['entries_by_type'].get('paper', 0)} artículos, "
+        f"{figures['entries_by_type'].get('book', 0)} libros y {docs} documentos oficiales—, de las "
+        f"que **{figures['entries_verified']} tienen un localizador que resuelve** y "
+        f"{figures['entries_pending']} quedan pendientes con su motivo escrito. Los "
+        f"{figures['datasets']} datasets declaran licencia, y "
+        f"{figures['datasets_with_checksum']} de ellos traen además el SHA-256 de sus artefactos.",
         "",
         "### Datasets y licencias",
         "",
