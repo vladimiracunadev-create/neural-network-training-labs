@@ -89,7 +89,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Zhang et al. — *Dive into Deep Learning* (d2l.ai, 2023), cap. 3–5 — regresión lineal/softmax en frameworks modernos y mecánica de entrenamiento.
 - Paszke et al. (2019), *PyTorch: An Imperative Style, High-Performance Deep Learning Library*, NeurIPS — diseño del framework y del motor de diferenciación automática.
 - Documentación oficial de PyTorch (autograd) — https://pytorch.org/docs/stable/notes/autograd.html — grafo dinámico y semántica de `backward()`.
-- Fuente del dataset: https://archive.ics.uci.edu/dataset/267/banknote+authentication
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/267/banknote+authentication — **Banknote Authentication** (UCI Machine Learning Repository, CC BY 4.0); procedencia, versión y SHA-256 en el registro de fuentes, entrada `uci-banknote-authentication` — esta clase la usa para aprender tensores, autograd y optimizadores con un clasificador lineal sobre características extraídas de imágenes reales de billetes.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 <!-- nav-bottom -->

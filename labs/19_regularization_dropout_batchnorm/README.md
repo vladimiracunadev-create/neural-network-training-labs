@@ -359,7 +359,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - Géron — *Hands-On Machine Learning with Scikit-Learn, Keras & TensorFlow* (3.ª ed., O'Reilly, 2022), cap. 11 — técnicas prácticas para entrenar redes profundas, incluidas normalización por lotes y regularización.
 - Srivastava et al. (2014), *Dropout: A Simple Way to Prevent Neural Networks from Overfitting*, JMLR — formulación original de dropout y su interpretación como ensamble implícito.
 - Ioffe y Szegedy (2015), *Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift*, ICML — definición de batch normalization y su efecto sobre la estabilidad del entrenamiento.
-- Fuente del dataset: https://github.com/zalandoresearch/fashion-mnist
+- Fuente del dataset: https://github.com/zalandoresearch/fashion-mnist — **Fashion-MNIST** (Zalando Research (Zalando SE), MIT License); procedencia, versión y SHA-256 en el registro de fuentes, entrada `fashion-mnist` — esta clase la usa para medir el efecto de dropout, weight decay y normalización por lotes sobre imágenes reales de prendas.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 ### Los archivos de este laboratorio

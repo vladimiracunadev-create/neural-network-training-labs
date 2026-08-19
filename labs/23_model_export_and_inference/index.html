@@ -503,7 +503,7 @@ neural-labs train --lab 23_model_export_and_inference --config baseline --split-
 <li>Jacob et al. (2018), <em>Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference</em>, CVPR — esquema de cuantización INT8 con aritmética entera y su calibración.</li>
 <li>Documentación oficial de ONNX — especificación del formato de intercambio y conjunto de operadores: https://onnx.ai/</li>
 <li>Documentación oficial de PyTorch (<code>torch.onnx</code> / <code>torch.export</code>) — exportación de modelos y validación de paridad: https://pytorch.org/docs/stable/onnx.html</li>
-<li>Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html</li>
+<li>Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html — <strong>CIFAR-10</strong> (University of Toronto, La fuente no declara una licencia); procedencia, versión y SHA-256 en el registro de fuentes, entrada <code>cifar-10</code> — esta clase la usa para exportar a ONNX, validar la paridad numérica y medir latencia por lotes sobre fotografías reales.</li>
 <li>Consulte <code>docs/experiment-protocol.md</code>, <code>docs/reproducibility.md</code> y <code>docs/ethics-and-licenses.md</code>.</li>
 </ul>
 <h3 id="los-archivos-de-este-laboratorio">Los archivos de este laboratorio</h3>

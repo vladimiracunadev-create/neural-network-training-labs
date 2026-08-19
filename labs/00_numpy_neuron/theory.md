@@ -123,7 +123,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Géron — *Hands-On Machine Learning* (3.ª ed., O'Reilly 2022), cap. 4 y 10 — regresión logística práctica y la neurona como base de las redes.
 - Nielsen — *Neural Networks and Deep Learning* (online, 2015), cap. 1–2 — intuición de la neurona sigmoide y la retropropagación derivada a mano.
 - Rosenblatt (1958), *The perceptron: a probabilistic model for information storage and organization in the brain*, Psychological Review — origen histórico de la neurona artificial entrenable.
-- Fuente del dataset: https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic — **Breast Cancer Wisconsin (Diagnostic)** (UCI Machine Learning Repository, CC BY 4.0); procedencia, versión y SHA-256 en el registro de fuentes, entrada `uci-breast-cancer-wisconsin-diagnostic` — esta clase la usa para implementar propagación, entropía cruzada y descenso de gradiente sin autograd sobre mediciones clínicas reales de núcleos celulares.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 <!-- nav-bottom -->

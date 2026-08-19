@@ -109,7 +109,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Robbins y Monro (1951), *A Stochastic Approximation Method*, Annals of Mathematical Statistics — origen teórico del descenso estocástico y las condiciones de convergencia.
 - Kingma y Ba (2015), *Adam: A Method for Stochastic Optimization*, ICLR — definición del optimizador Adam y su corrección de sesgo de momentos.
 - Loshchilov y Hutter (2019), *Decoupled Weight Decay Regularization (AdamW)*, ICLR — desacoplamiento del weight decay respecto de la actualización adaptativa.
-- Fuente del dataset: https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html
+- Fuente del dataset: https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html — **California Housing (censo de 1990)** (StatLib (Carnegie Mellon University), StatLib no declara una licencia formal); procedencia, versión y SHA-256 en el registro de fuentes, entrada `california-housing-statlib` — esta clase la usa para comparar SGD, Momentum, Adam y la reducción de la tasa de aprendizaje en una regresión sobre datos censales reales.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 <!-- nav-bottom -->

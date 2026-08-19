@@ -339,7 +339,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - Goodfellow, Bengio & Courville — *Deep Learning* (MIT Press, 2016), cap. 15 — aprendizaje de representaciones y transferencia entre tareas.
 - Yosinski et al. (2014), *How transferable are features in deep neural networks?*, NeurIPS — estudio empírico de cómo la transferibilidad decae con la profundidad de la capa.
 - Pan & Yang (2010), *A Survey on Transfer Learning*, IEEE Transactions on Knowledge and Data Engineering — marco conceptual de dominios y tareas origen/destino.
-- Fuente del dataset: https://www.robots.ox.ac.uk/~vgg/data/pets/
+- Fuente del dataset: https://www.robots.ox.ac.uk/~vgg/data/pets/ — **The Oxford-IIIT Pet Dataset** (Visual Geometry Group, Creative Commons Attribution-ShareAlike 4.0 International); procedencia, versión y SHA-256 en el registro de fuentes, entrada `oxford-iiit-pet` — esta clase la usa para comparar extracción de características, fine-tuning y entrenamiento desde cero sobre 37 razas de mascotas.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 ### Los archivos de este laboratorio

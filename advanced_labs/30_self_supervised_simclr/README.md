@@ -273,6 +273,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - Grill et al. (2020), *Bootstrap Your Own Latent* (BYOL), NeurIPS — aprendizaje sin negativos mediante redes online/target y predictor asimétrico.
 - Wang & Isola (2020), *Understanding Contrastive Representation Learning through Alignment and Uniformity on the Hypersphere*, ICML — descompone la pérdida contrastiva en alineación y uniformidad, y define las métricas correspondientes.
 - Oord, Li & Vinyals (2018), *Representation Learning with Contrastive Predictive Coding*, arXiv — introduce InfoNCE, la pérdida de la que NT-Xent es un caso particular.
+- Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html — **CIFAR-10** (University of Toronto, La fuente no declara una licencia); procedencia, versión y SHA-256 en el registro de fuentes, entrada `cifar-10` — esta clase la usa sin etiquetas durante el preentrenamiento contrastivo, y solo las recupera para la sonda lineal que evalúa la representación.
 
 ### Los archivos de este laboratorio
 

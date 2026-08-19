@@ -94,6 +94,7 @@ Acentos, micrófonos y ambientes no están representados uniformemente. Una accu
 - Hershey et al. (2017), *CNN Architectures for Large-Scale Audio Classification*, ICASSP — muestra que arquitecturas convolucionales sobre espectrogramas escalan a la clasificación de audio.
 - Davis & Mermelstein (1980), *Comparison of Parametric Representations for Monosyllabic Word Recognition in Continuously Spoken Sentences*, IEEE TASSP — origen de los coeficientes cepstrales en escala mel (MFCC) usados en la línea base.
 - Park et al. (2019), *SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition*, Interspeech — enmascarado de bandas de tiempo y frecuencia directamente sobre el espectrograma.
+- Fuente del dataset: https://www.tensorflow.org/datasets/catalog/speech_commands — **Speech Commands v0.02** (Google, Creative Commons Attribution 4.0 International); procedencia, versión y SHA-256 en el registro de fuentes, entrada `google-speech-commands-v0-02` — esta clase la usa para clasificar comandos hablados sobre espectrogramas log-mel y medir la degradación ante ruido de fondo.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

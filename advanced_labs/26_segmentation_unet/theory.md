@@ -93,6 +93,7 @@ Las imágenes se concentran en mascotas y fondos cotidianos; no generaliza a seg
 - Long, Shelhamer & Darrell (2015), *Fully Convolutional Networks for Semantic Segmentation*, CVPR — funda la segmentación densa reemplazando capas densas por convoluciones y upsampling.
 - Ronneberger, Fischer & Brox (2015), *U-Net: Convolutional Networks for Biomedical Image Segmentation*, MICCAI — encoder-decoder simétrico con conexiones skip para localización precisa.
 - Goodfellow, Bengio & Courville — *Deep Learning* (MIT Press, 2016), cap. 9 — fundamentos de las redes convolucionales que sustentan el encoder-decoder.
+- Fuente del dataset: https://www.robots.ox.ac.uk/~vgg/data/pets/ — **The Oxford-IIIT Pet Dataset** (Visual Geometry Group, Creative Commons Attribution-ShareAlike 4.0 International); procedencia, versión y SHA-256 en el registro de fuentes, entrada `oxford-iiit-pet` — esta clase usa sus trimaps de segmentación para entrenar una U-Net y medir intersección sobre unión por clase, incluido el contorno.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

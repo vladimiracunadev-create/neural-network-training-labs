@@ -352,7 +352,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 
 - Kairouz et al. (2021), *Advances and Open Problems in Federated Learning*, Foundations and Trends in Machine Learning — monografía de referencia sobre el marco federado, datos no-IID, privacidad y problemas abiertos.
 - McMahan et al. (2017), *Communication-Efficient Learning of Deep Networks from Decentralized Data (FedAvg)*, AISTATS — artículo que introduce el algoritmo FedAvg implementado en este laboratorio.
-- Fuente del dataset: https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones — **Human Activity Recognition Using Smartphones** (UCI Machine Learning Repository, CC BY 4.0); procedencia, versión y SHA-256 en el registro de fuentes, entrada `uci-human-activity-recognition-smartphones` — esta clase la usa para aplicar FedAvg tomando a los participantes reales del estudio como clientes naturales, sin inventar particiones.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 ### Los archivos de este laboratorio

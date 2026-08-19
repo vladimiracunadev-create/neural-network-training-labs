@@ -74,7 +74,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Géron — *Hands-On Machine Learning with Scikit-Learn, Keras & TensorFlow* (3.ª ed., O'Reilly), cap. 17 — autoencoders y GANs en la práctica, detección de anomalías por reconstrucción.
 - Hinton & Salakhutdinov (2006), *Reducing the Dimensionality of Data with Neural Networks*, Science — mostró que un autoencoder profundo aprende códigos compactos mejores que PCA.
 - Kingma & Welling (2014), *Auto-Encoding Variational Bayes (VAE)*, ICLR — formulación variacional del autoencoder y base del puntaje de anomalía probabilístico.
-- Fuente del dataset: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
+- Fuente del dataset: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud — **Credit Card Fraud Detection** (Machine Learning Group, Open Database License); procedencia, versión y SHA-256 en el registro de fuentes, entrada `credit-card-fraud-ulb` — esta clase la usa para detectar transacciones fraudulentas por error de reconstrucción sin reequilibrar el conjunto de test.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 <!-- nav-bottom -->

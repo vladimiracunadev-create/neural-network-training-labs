@@ -100,7 +100,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Jacob et al. (2018), *Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference*, CVPR — esquema de cuantización INT8 con aritmética entera y su calibración.
 - Documentación oficial de ONNX — especificación del formato de intercambio y conjunto de operadores: https://onnx.ai/
 - Documentación oficial de PyTorch (`torch.onnx` / `torch.export`) — exportación de modelos y validación de paridad: https://pytorch.org/docs/stable/onnx.html
-- Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html
+- Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html — **CIFAR-10** (University of Toronto, La fuente no declara una licencia); procedencia, versión y SHA-256 en el registro de fuentes, entrada `cifar-10` — esta clase la usa para exportar a ONNX, validar la paridad numérica y medir latencia por lotes sobre fotografías reales.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 <!-- nav-bottom -->

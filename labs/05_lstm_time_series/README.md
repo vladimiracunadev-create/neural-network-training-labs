@@ -365,7 +365,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - Géron — *Hands-On Machine Learning* (3.ª ed., O'Reilly 2022), cap. 15 — procesamiento de secuencias y pronóstico con RNN/LSTM.
 - Hochreiter & Schmidhuber (1997), *Long Short-Term Memory*, Neural Computation — celda LSTM original y solución al gradiente que se desvanece.
 - Cho et al. (2014), *Learning Phrase Representations using RNN Encoder-Decoder (GRU)*, EMNLP — unidad recurrente con puertas simplificada.
-- Fuente del dataset: https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand — **Seoul Bike Sharing Demand** (UCI Machine Learning Repository, CC BY 4.0); procedencia, versión y SHA-256 en el registro de fuentes, entrada `uci-seoul-bike-sharing-demand` — esta clase la usa para pronosticar demanda horaria de bicicletas respetando el orden cronológico y sin filtrar el futuro al pasado.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 ### Los archivos de este laboratorio

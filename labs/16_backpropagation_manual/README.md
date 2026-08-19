@@ -365,7 +365,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - Bishop — *Pattern Recognition and Machine Learning* (Springer, 2006), cap. 5 — redes neuronales, propagación de errores y verificación numérica de gradientes.
 - Rumelhart, Hinton & Williams (1986), *Learning representations by back-propagating errors*, Nature — artículo que popularizó la retropropagación para entrenar redes multicapa.
 - Baydin et al. (2018), *Automatic Differentiation in Machine Learning: a Survey*, JMLR — panorama de la diferenciación automática que generaliza el backprop manual de este laboratorio.
-- Fuente del dataset: https://archive.ics.uci.edu/dataset/53/iris
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/53/iris — **Iris** (UCI Machine Learning Repository, CC BY 4.0); procedencia, versión y SHA-256 en el registro de fuentes, entrada `uci-iris` — esta clase la usa para derivar y programar backpropagation en una MLP pequeña sobre mediciones botánicas reales.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 ### Los archivos de este laboratorio

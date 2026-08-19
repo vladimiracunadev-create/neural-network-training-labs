@@ -92,7 +92,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Goodfellow, Bengio & Courville — *Deep Learning* (MIT Press, 2016), cap. 11 — metodología práctica para seleccionar hiperparámetros y depurar experimentos.
 - Bergstra & Bengio (2012), *Random Search for Hyper-Parameter Optimization*, JMLR — evidencia de por qué la búsqueda aleatoria supera a la malla cuando pocos hiperparámetros dominan.
 - Akiba et al. (2019), *Optuna: A Next-generation Hyperparameter Optimization Framework*, KDD — framework de búsqueda guiada con muestreo eficiente y poda temprana.
-- Fuente del dataset: https://archive.ics.uci.edu/dataset/2/adult
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/2/adult — **Adult** (UCI Machine Learning Repository, CC BY 4.0); procedencia, versión y SHA-256 en el registro de fuentes, entrada `uci-adult-census` — esta clase la usa para optimizar profundidad, ancho, dropout y tasa de aprendizaje sobre datos censales reales sin tocar el conjunto de test.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 <!-- nav-bottom -->

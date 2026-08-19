@@ -89,6 +89,7 @@ El corpus contiene titulares históricos y sesgos editoriales; no representa tod
 - Houlsby et al. (2019), *Parameter-Efficient Transfer Learning for NLP*, ICML — módulos adapter entrenables entre capas congeladas.
 - Hu et al. (2022), *LoRA: Low-Rank Adaptation of Large Language Models*, ICLR — adaptación de bajo rango que congela los pesos base y aprende una corrección B·A.
 - Géron — *Hands-On Machine Learning with Scikit-Learn, Keras & TensorFlow* (3.ª ed., O'Reilly 2022), cap. 16 — tratamiento didáctico de atención y transformers para NLP.
+- Fuente del dataset: https://huggingface.co/datasets/fancyzhx/ag_news — **AG News Topic Classification Dataset** (Distribuido por Hugging Face Datasets, La ficha de Hugging Face declara `unknown`); procedencia, versión y SHA-256 en el registro de fuentes, entrada `ag-news` — esta clase la usa para contrastar fine-tuning completo, LoRA y una línea base TF-IDF en la clasificación de titulares reales.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

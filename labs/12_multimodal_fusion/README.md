@@ -355,7 +355,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - Goodfellow, Bengio & Courville — *Deep Learning* (MIT Press, 2016) — marco general sobre aprendizaje de representaciones y por qué las capas intermedias abstraen mejor los datos heterogéneos.
 - Baltrušaitis, Ahuja & Morency (2019), *Multimodal Machine Learning: A Survey and Taxonomy*, IEEE TPAMI — taxonomía de estrategias de fusión (temprana, tardía, híbrida) y de los desafíos de alinear modalidades.
 - Radford et al. (2021), *Learning Transferable Visual Models from Natural Language Supervision (CLIP)*, ICML — ejemplo influyente de aprender un espacio compartido entre modalidades distintas.
-- Fuente del dataset: https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones — **Human Activity Recognition Using Smartphones** (UCI Machine Learning Repository, CC BY 4.0); procedencia, versión y SHA-256 en el registro de fuentes, entrada `uci-human-activity-recognition-smartphones` — esta clase la usa para fusionar acelerómetro y giroscopio de smartphones y reconocer actividades humanas.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 ### Los archivos de este laboratorio

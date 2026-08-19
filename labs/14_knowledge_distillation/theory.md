@@ -100,7 +100,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Buciluă, Caruana & Niculescu-Mizil (2006), *Model Compression*, KDD — idea seminal de comprimir un conjunto grande en un modelo pequeño que imita sus salidas.
 - Hinton, Vinyals & Dean (2015), *Distilling the Knowledge in a Neural Network*, NeurIPS Deep Learning Workshop — formulación de la destilación con temperatura y etiquetas blandas usada en este laboratorio.
 - Sanh et al. (2019), *DistilBERT, a distilled version of BERT* — aplicación a gran escala que muestra estudiantes compactos cercanos al profesor.
-- Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html
+- Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html — **CIFAR-10** (University of Toronto, La fuente no declara una licencia); procedencia, versión y SHA-256 en el registro de fuentes, entrada `cifar-10` — esta clase la usa para transferir conocimiento de una CNN profesora a una estudiante compacta sobre fotografías reales de diez clases.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 <!-- nav-bottom -->

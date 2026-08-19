@@ -364,7 +364,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - Montúfar et al. (2014), *On the Number of Linear Regions of Deep Neural Networks*, NeurIPS — el conteo de regiones lineales que cuantifica la ventaja de la profundidad.
 - Cybenko (1989), *Approximation by superpositions of a sigmoidal function*, Math. Control Signals Systems — teorema de aproximación universal para sigmoides.
 - Hornik (1991), *Approximation capabilities of multilayer feedforward networks*, Neural Networks — generalización del teorema a activaciones arbitrarias.
-- Fuente del dataset: https://archive.ics.uci.edu/dataset/602/dry+bean+dataset
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/602/dry+bean+dataset — **Dry Bean** (UCI Machine Learning Repository, CC BY 4.0); procedencia, versión y SHA-256 en el registro de fuentes, entrada `uci-dry-bean` — esta clase la usa para resolver una clasificación no lineal de siete variedades de grano con capas densas, activaciones y regularización.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 ### Los archivos de este laboratorio

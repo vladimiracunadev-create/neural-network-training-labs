@@ -364,7 +364,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - Bishop — *Pattern Recognition and Machine Learning* (Springer, 2006), cap. 5 — funciones de error y su relación con la interpretación probabilística de la salida.
 - Nair & Hinton (2010), *Rectified Linear Units Improve Restricted Boltzmann Machines (ReLU)*, ICML — introducción de la unidad ReLU.
 - Glorot, Bordes & Bengio (2011), *Deep Sparse Rectifier Neural Networks*, AISTATS — evidencia de que los rectificadores facilitan el entrenamiento de redes profundas.
-- Fuente del dataset: https://archive.ics.uci.edu/dataset/186/wine+quality
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/186/wine+quality — **Wine Quality** (UCI Machine Learning Repository, CC BY 4.0); procedencia, versión y SHA-256 en el registro de fuentes, entrada `uci-wine-quality` — esta clase la usa para comparar ReLU, GELU y Tanh, y las pérdidas apropiadas, sobre clases sensoriales desbalanceadas.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 ### Los archivos de este laboratorio

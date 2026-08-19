@@ -356,7 +356,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - Prince — *Understanding Deep Learning* (MIT Press 2024), cap. 12 — modelado de secuencias y arquitecturas recurrentes.
 - Elman (1990), *Finding Structure in Time*, Cognitive Science — RNN fundacional con estado oculto recurrente.
 - Mikolov et al. (2013), *Efficient Estimation of Word Representations in Vector Space (word2vec)* — embeddings distribuidos de palabras.
-- Fuente del dataset: https://huggingface.co/datasets/stanfordnlp/imdb
+- Fuente del dataset: https://huggingface.co/datasets/stanfordnlp/imdb — **IMDB Large Movie Review Dataset** (Stanford AI Lab, La ficha de Hugging Face declara `other`); procedencia, versión y SHA-256 en el registro de fuentes, entrada `imdb-large-movie-review` — esta clase la usa para clasificar sentimiento en reseñas reales con embeddings y recurrencia, respetando la partición oficial.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 ### Los archivos de este laboratorio

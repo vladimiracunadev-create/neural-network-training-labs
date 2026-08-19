@@ -351,7 +351,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - Géron — *Hands-On Machine Learning with Scikit-Learn, Keras & TensorFlow* (3.ª ed., O'Reilly, 2022), cap. 2 — recorrido completo de un proyecto de ML de punta a punta, del marco del problema al despliegue.
 - Huyen — *Designing Machine Learning Systems* (O'Reilly, 2022) — diseño de sistemas de ML en producción: métricas de negocio, monitorización y despliegue responsable.
 - Kuhn y Johnson — *Applied Predictive Modeling* (Springer, 2013) — modelado predictivo aplicado: preprocesamiento, evaluación con clases desbalanceadas y selección de umbral.
-- Fuente del dataset: https://archive.ics.uci.edu/dataset/563/iranian+churn+dataset
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/563/iranian+churn+dataset — **Iranian Churn** (UCI Machine Learning Repository, CC BY 4.0); procedencia, versión y SHA-256 en el registro de fuentes, entrada `uci-iranian-churn` — esta clase la usa para resolver de extremo a extremo un problema real de abandono de clientes, de la evaluación al despliegue documentado.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 ### Los archivos de este laboratorio

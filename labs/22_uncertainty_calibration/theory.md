@@ -103,7 +103,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Guo et al. (2017), *On Calibration of Modern Neural Networks*, ICML — evidencia de la sobreconfianza de las redes profundas y propuesta de temperature scaling; define ECE y reliability diagrams.
 - Gal y Ghahramani (2016), *Dropout as a Bayesian Approximation: Representing Model Uncertainty in Deep Learning (MC Dropout)*, ICML — estimación de incertidumbre epistémica manteniendo dropout activo en inferencia.
 - Lakshminarayanan, Pritzel y Blundell (2017), *Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles*, NeurIPS — ensambles como estimador robusto de incertidumbre predictiva.
-- Fuente del dataset: https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic — **Breast Cancer Wisconsin (Diagnostic)** (UCI Machine Learning Repository, CC BY 4.0); procedencia, versión y SHA-256 en el registro de fuentes, entrada `uci-breast-cancer-wisconsin-diagnostic` — esta clase la usa para medir confianza, Brier score, ECE y temperature scaling sobre mediciones clínicas reales.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 <!-- nav-bottom -->

@@ -368,7 +368,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - LeCun et al. (1998), *Gradient-based learning applied to document recognition (LeNet)*, Proc. IEEE — primera CNN entrenada de extremo a extremo.
 - Krizhevsky, Sutskever & Hinton (2012), *ImageNet Classification with Deep Convolutional Neural Networks (AlexNet)*, NeurIPS — hito que popularizó el aprendizaje profundo en visión.
 - He et al. (2016), *Deep Residual Learning for Image Recognition (ResNet)*, CVPR — conexiones residuales para redes muy profundas.
-- Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html
+- Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html — **CIFAR-10** (University of Toronto, La fuente no declara una licencia); procedencia, versión y SHA-256 en el registro de fuentes, entrada `cifar-10` — esta clase la usa para entrenar una CNN y analizar sus errores sobre fotografías reales de diez clases, contrastándola con un clasificador lineal sobre píxeles.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 ### Los archivos de este laboratorio

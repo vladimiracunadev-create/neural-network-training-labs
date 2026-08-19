@@ -98,7 +98,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Shorten y Khoshgoftaar (2019), *A survey on Image Data Augmentation for Deep Learning*, Journal of Big Data — panorámica sistemática de técnicas de aumento de imágenes.
 - DeVries y Taylor (2017), *Improved Regularization of Convolutional Neural Networks with Cutout*, arXiv — borrado aleatorio de regiones como regularizador.
 - Cubuk et al. (2019), *AutoAugment: Learning Augmentation Strategies from Data*, CVPR — búsqueda automática de políticas de aumento optimizadas por validación.
-- Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html
+- Fuente del dataset: https://www.cs.toronto.edu/~kriz/cifar.html — **CIFAR-10** (University of Toronto, La fuente no declara una licencia); procedencia, versión y SHA-256 en el registro de fuentes, entrada `cifar-10` — esta clase la usa para comparar recortes, volteos y perturbaciones sobre fotografías reales y medir cuánto aporta cada política.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 <!-- nav-bottom -->

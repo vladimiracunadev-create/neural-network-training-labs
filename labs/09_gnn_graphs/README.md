@@ -346,7 +346,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - Kipf & Welling (2017), *Semi-Supervised Classification with Graph Convolutional Networks*, ICLR — la GCN y la normalización simétrica de la adyacencia usada en este laboratorio.
 - Hamilton, Ying & Leskovec (2017), *Inductive Representation Learning on Large Graphs (GraphSAGE)*, NeurIPS — agregación por muestreo de vecinos y aprendizaje inductivo.
 - Veličković et al. (2018), *Graph Attention Networks*, ICLR — atención sobre vecinos para ponderar mensajes de forma aprendida.
-- Fuente del dataset: https://pytorch-geometric.readthedocs.io/en/stable/generated/torch_geometric.datasets.Planetoid.html
+- Fuente del dataset: https://pytorch-geometric.readthedocs.io/en/stable/generated/torch_geometric.datasets.Planetoid.html — **Cora (particiones Planetoid)** (PyTorch Geometric, Ni el distribuidor); procedencia, versión y SHA-256 en el registro de fuentes, entrada `cora-planetoid` — esta clase la usa para clasificar publicaciones científicas combinando texto y enlaces de citas, con las máscaras públicas fijas de Planetoid.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 ### Los archivos de este laboratorio

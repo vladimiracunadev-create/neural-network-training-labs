@@ -357,7 +357,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - Mnih et al. (2015), *Human-level control through deep reinforcement learning (DQN)*, Nature — DQN con replay buffer y red objetivo, base del laboratorio.
 - van Hasselt, Guez & Silver (2016), *Deep Reinforcement Learning with Double Q-learning*, AAAI — corrección de la sobreestimación desacoplando selección y evaluación.
 - Wang et al. (2016), *Dueling Network Architectures for Deep Reinforcement Learning*, ICML — separación de valor de estado y ventaja de acción.
-- Fuente del dataset: https://archive.ics.uci.edu/dataset/352/online+retail
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/352/online+retail — **Online Retail** (UCI Machine Learning Repository, CC BY 4.0); procedencia, versión y SHA-256 en el registro de fuentes, entrada `uci-online-retail` — esta clase la usa para construir la señal de demanda diaria a partir de transacciones reales y aprender sobre ella una política de reposición.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 ### Los archivos de este laboratorio

@@ -89,7 +89,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 - Prince — *Understanding Deep Learning* (MIT Press, 2024), cap. 12 — desarrollo moderno y didáctico de la autoatención y la arquitectura transformer.
 - Bahdanau, Cho & Bengio (2015), *Neural Machine Translation by Jointly Learning to Align and Translate*, ICLR — introdujo la atención como alineamiento suave en secuencia-a-secuencia.
 - Vaswani et al. (2017), *Attention Is All You Need*, NeurIPS — la arquitectura transformer basada íntegramente en autoatención multi-cabeza.
-- Fuente del dataset: https://huggingface.co/datasets/fancyzhx/ag_news
+- Fuente del dataset: https://huggingface.co/datasets/fancyzhx/ag_news — **AG News Topic Classification Dataset** (Distribuido por Hugging Face Datasets, La ficha de Hugging Face declara `unknown`); procedencia, versión y SHA-256 en el registro de fuentes, entrada `ag-news` — esta clase la usa para aplicar atención multi-cabeza a la clasificación de titulares reales en cuatro categorías.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 <!-- nav-bottom -->

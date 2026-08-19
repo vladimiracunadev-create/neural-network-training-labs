@@ -100,6 +100,7 @@ El modelo pequeño sirve para estudio; no debe extrapolarse a generación fotogr
 - Ho, Jain & Abbeel (2020), *Denoising Diffusion Probabilistic Models*, NeurIPS — establece el objetivo de predicción de ε y el muestreo DDPM.
 - Nichol & Dhariwal (2021), *Improved Denoising Diffusion Probabilistic Models*, ICML — varianzas aprendidas y cronogramas βₜ mejorados (coseno).
 - Foster — *Generative Deep Learning* (2.ª ed., O'Reilly 2023) — presentación accesible de los modelos de difusión y su implementación.
+- Fuente del dataset: https://github.com/zalandoresearch/fashion-mnist — **Fashion-MNIST** (Zalando Research (Zalando SE), MIT License); procedencia, versión y SHA-256 en el registro de fuentes, entrada `fashion-mnist` — esta clase la usa para entrenar la predicción de ruido de un DDPM y medir el coste del muestreo inverso paso a paso.
 
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido

@@ -271,6 +271,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - Arjovsky, Chintala & Bottou (2017), *Wasserstein GAN*, ICML — reemplaza la divergencia JS por la distancia de Wasserstein y define el crítico Lipschitz.
 - Gulrajani et al. (2017), *Improved Training of Wasserstein GANs*, NeurIPS — introduce la penalización de gradiente (WGAN-GP) en lugar del recorte de pesos.
 - Foster — *Generative Deep Learning* (2.ª ed., O'Reilly 2023) — exposición práctica de GANs, WGAN y estabilización del entrenamiento.
+- Fuente del dataset: https://github.com/zalandoresearch/fashion-mnist — **Fashion-MNIST** (Zalando Research (Zalando SE), MIT License); procedencia, versión y SHA-256 en el registro de fuentes, entrada `fashion-mnist` — esta clase la usa para entrenar un crítico Lipschitz con penalización de gradiente y comprobar que su pérdida correlaciona con la calidad visual.
 
 ### Los archivos de este laboratorio
 

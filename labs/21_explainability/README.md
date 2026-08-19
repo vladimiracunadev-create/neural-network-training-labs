@@ -357,7 +357,7 @@ La teoría de arriba no es original de este repositorio: se apoya en la literatu
 - Ribeiro, Singh y Guestrin (2016), *"Why Should I Trust You?": Explaining the Predictions of Any Classifier (LIME)*, KDD — explicaciones locales mediante modelos sustitutos interpretables.
 - Lundberg y Lee (2017), *A Unified Approach to Interpreting Model Predictions (SHAP)*, NeurIPS — marco unificado de atribución basado en valores de Shapley.
 - Selvaraju et al. (2017), *Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization*, ICCV — mapas de atribución basados en gradientes para redes convolucionales.
-- Fuente del dataset: https://archive.ics.uci.edu/dataset/2/adult
+- Fuente del dataset: https://archive.ics.uci.edu/dataset/2/adult — **Adult** (UCI Machine Learning Repository, CC BY 4.0); procedencia, versión y SHA-256 en el registro de fuentes, entrada `uci-adult-census` — esta clase la usa para explicar predicciones con Integrated Gradients y permutación sobre datos censales reales, sin convertir correlaciones históricas en reglas.
 - Consulte `docs/experiment-protocol.md`, `docs/reproducibility.md` y `docs/ethics-and-licenses.md`.
 
 ### Los archivos de este laboratorio
