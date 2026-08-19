@@ -1,4 +1,4 @@
-.PHONY: install dev mlops validate doctor test test-network lint format catalog quality benchmark leaderboard docs security clean
+.PHONY: install dev mlops validate doctor test test-network lint format catalog quality benchmark leaderboard docs security sources sources-refresh clean
 
 install:
 	python -m pip install -e ".[full]"
@@ -50,6 +50,12 @@ docs:
 security:
 	pip-audit
 	bandit -c pyproject.toml -r src
+
+sources:
+	python scripts/verify-sources
+
+sources-refresh:
+	python scripts/refresh-sources
 
 clean:
 	python scripts/clean_runs.py --runs --processed

@@ -26,6 +26,25 @@ El repositorio no versiona archivos de datos grandes. Versiona **manifiestos**, 
 | `california_housing` | scikit-learn / StatLib | `sklearn` | Consultar fuente StatLib | https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html |
 | `iranian_churn` | UCI | `uci` | CC BY 4.0 | https://archive.ics.uci.edu/dataset/563/iranian+churn+dataset |
 
+## Registro de fuentes
+
+La tabla de arriba es el **catálogo operativo**: lo que el adaptador necesita para
+descargar. La procedencia completa de cada dataset —autoridad que responde por él,
+licencia tal como la declara la fuente, versión concreta, SHA-256 de cada artefacto y la
+cita académica que pide su autor— vive en el registro de fuentes:
+
+- [`sources/bibliography.json`](../sources/bibliography.json) — el registro;
+- [`sources/README.md`](../sources/README.md) — cómo se lee y cómo se amplía.
+
+```bash
+python scripts/verify-sources     # offline, bloquea en CI
+python scripts/refresh-sources    # en red, informa, no bloquea
+```
+
+El verificador falla si un dataset entra al catálogo o a una ruta sin entrada en el
+registro. Donde esta tabla dice «consultar», el registro dice qué licencia declara
+realmente la fuente; cuando no declara ninguna, también lo dice.
+
 ## Política de almacenamiento
 
 ```text

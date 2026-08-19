@@ -439,6 +439,74 @@ las obras; **no se reproduce su contenido, la redacción es original**.
 Cada `theory.md` los complementa con los papers originales de su arquitectura (Vaswani et al.
 2017 para transformers, He et al. 2015 para ResNet, Ho et al. 2020 para difusión).
 
+### Registro de fuentes
+
+Los libros de arriba son las obras rectoras; la lista completa —con su localizador
+resoluble— vive en el registro, no en este README. Cada entrada resuelve por
+**ISBN-13** en Open Library si es un libro, por **DOI** en `doi.org` si es un artículo, y por
+la **URL https de su fuente primaria** si es una norma, documentación oficial o un dataset.
+Lo que no resuelve se marca `pendiente` con su motivo: no se elimina ni se rellena a ojo.
+
+```bash
+python scripts/verify-sources
+```
+
+<!-- fuentes:inicio -->
+<!-- Generado por `python scripts/verify-sources --sync`. No editar a mano. -->
+
+El registro [`sources/bibliography.json`](sources/bibliography.json) reúne **111** fuentes: 19 datasets, 76 artículos, 13 libros y 3 documentos normativos u oficiales.
+
+| Métrica | Valor |
+|---|---:|
+| Rutas con bloque de fuentes | 31 / 31 |
+| Citas en las clases | 166 |
+| Obras y enlaces distintos | 113 |
+| Cubiertos por el registro | 113 |
+| **Cobertura** | **100.0 %** |
+| Entradas verificadas | 105 |
+| Entradas pendientes | 6 |
+| Datasets con licencia declarada | 19 / 19 |
+| Datasets con checksum SHA-256 | 16 / 19 |
+
+### Datasets y licencias
+
+| Dataset | Procedencia | Licencia | Versión | SHA-256 | Rutas |
+|---|---|---|---|:---:|---:|
+| [Adult](https://archive.ics.uci.edu/dataset/2/adult) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 2 | ✅ 1 | 2 |
+| [AG News Topic Classification Dataset](https://huggingface.co/datasets/fancyzhx/ag_news) | Distribuido por Hugging Face Datasets | `unknown` | rev. eb185aa | ✅ 2 | 2 |
+| [Banknote Authentication](https://archive.ics.uci.edu/dataset/267/banknote+authentication) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 267 | ✅ 1 | 1 |
+| [Breast Cancer Wisconsin (Diagnostic)](https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 17 | ✅ 1 | 2 |
+| [California Housing (censo de 1990)](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html) | StatLib (Carnegie Mellon University) | sin licencia formal | cal_housing.tgz | ✅ 1 | 1 |
+| [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) | University of Toronto | sin licencia declarada · exige citar | python (cifar-10-python.tar.gz) | ⏳ pendiente | 5 |
+| [Cora (particiones Planetoid)](https://pytorch-geometric.readthedocs.io/en/stable/generated/torch_geometric.datasets.Planetoid.html) | PyTorch Geometric | sin licencia declarada | Planetoid ind.cora.* | ✅ 8 | 1 |
+| [Credit Card Fraud Detection](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) | Machine Learning Group, Université Libre de Bruxelles | ODbL 1.0 / DbCL 1.0 | creditcard.csv | ⏳ pendiente | 1 |
+| [Dry Bean](https://archive.ics.uci.edu/dataset/602/dry+bean+dataset) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 602 | ✅ 1 | 1 |
+| [Fashion-MNIST](https://github.com/zalandoresearch/fashion-mnist) | Zalando Research (Zalando SE) | MIT | IDX gz oficiales | ✅ 4 | 4 |
+| [Human Activity Recognition Using Smartphones](https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 240 | ✅ 1 | 2 |
+| [IMDB Large Movie Review Dataset](https://huggingface.co/datasets/stanfordnlp/imdb) | Stanford AI Lab, distribuido por Hugging Face Datasets | `other` (sin SPDX) | rev. e628166 | ✅ 3 | 1 |
+| [Iranian Churn](https://archive.ics.uci.edu/dataset/563/iranian+churn+dataset) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 563 | ✅ 1 | 1 |
+| [Iris](https://archive.ics.uci.edu/dataset/53/iris) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 53 | ✅ 1 | 1 |
+| [Online Retail](https://archive.ics.uci.edu/dataset/352/online+retail) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 352 | ✅ 1 | 1 |
+| [Seoul Bike Sharing Demand](https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 560 | ✅ 1 | 1 |
+| [Speech Commands v0.02](https://www.tensorflow.org/datasets/catalog/speech_commands) | Google | CC BY 4.0 | v0.02 | ✅ 1 | 1 |
+| [The Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets/) | Visual Geometry Group, University of Oxford e IIIT Hyderabad | CC BY-SA 4.0 | images + annotations | ⏳ pendiente | 2 |
+| [Wine Quality](https://archive.ics.uci.edu/dataset/186/wine+quality) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 186 | ✅ 1 | 1 |
+
+**Huecos declarados: 6 localizadores y 3 checksums.** No se eliminan ni se rellenan por intuición; cada uno lleva su motivo en el registro.
+
+- `neural-networks-and-deep-learning-nielsen` (book, sin localizador) — Obra publicada solo en línea: no tiene ISBN-13 y neuralnetworksanddeeplearning.com no presenta un certificado https válido para su propio nombre de host, de modo que no admite ninguna de las tres formas de localizador. Se conserva declarada.
+- `deep-sparse-rectifier-neural-networks` (paper, sin localizador) — AISTATS 2011 (PMLR v15): las actas no registran DOI.
+- `dropout-a-simple-way-to-prevent-neural-networks-from` (paper, sin localizador) — JMLR 15 (2014): la revista no registra DOI.
+- `random-search-for-hyper-parameter-optimization` (paper, sin localizador) — JMLR 13 (2012): la revista no registra DOI.
+- `rectified-linear-units-improve-restricted-boltzmann-machines` (paper, sin localizador) — ICML 2010: las actas no registran DOI.
+- `understanding-the-difficulty-of-training-deep-feedforward` (paper, sin localizador) — AISTATS 2010 (PMLR v9): las actas no registran DOI.
+- `cifar-10` (dataset, sin SHA-256) — El artefacto canónico (170 MB) no terminó de descargarse dentro del margen de esta verificación; la fuente sí publica su md5.
+- `credit-card-fraud-ulb` (dataset, sin SHA-256) — La descarga exige autenticación y aceptación de los términos de Kaggle: el repositorio no evita ese control, así que el SHA-256 no se puede calcular de forma anónima ni reproducible en CI.
+- `oxford-iiit-pet` (dataset, sin SHA-256) — El artefacto de imágenes (≈800 MB) no terminó de descargarse dentro del margen de esta verificación.
+
+Las cifras de esta sección las produce `python scripts/verify-sources --sync`; el mismo verificador falla en CI si alguien las edita a mano.
+<!-- fuentes:fin -->
+
 ## 🔗 Especializaciones conectadas
 
 | Repositorio | Rol |

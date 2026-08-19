@@ -44,6 +44,11 @@ jobs:
         run: python scripts/generate_lab_html.py --check
       - name: El sitio de Pages se genera sin errores
         run: python scripts/generate_site.py
+      # El registro de fuentes se comprueba SIN red: identificadores, cobertura,
+      # unicidad de los bloques y las cifras que el README publica. La resolución
+      # en red vive aparte, en scripts/refresh-sources, y no bloquea.
+      - name: Trazabilidad de fuentes
+        run: python scripts/verify-sources
 
   quality:
     runs-on: ubuntu-latest
