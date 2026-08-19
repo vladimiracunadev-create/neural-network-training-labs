@@ -1,0 +1,3541 @@
+{
+  "schema_version": 1,
+  "verified_on": "2026-08-19",
+  "policy": "Toda afirmación del programa se apoya en una entrada de este registro. Ninguna entrada se acepta sin localizador verificable: los libros resuelven por ISBN-13 en Open Library, los artículos por DOI en doi.org, y las normas, la documentación oficial y los datasets por la URL https de su fuente primaria. Lo que no resuelve se marca `pendiente` con su motivo; no se elimina ni se rellena.",
+  "entries": [
+    {
+      "id": "applied-predictive-modeling",
+      "type": "book",
+      "authors": [
+        "Kuhn, Max",
+        "Johnson, Kjell"
+      ],
+      "title": "Applied Predictive Modeling",
+      "published": "2013",
+      "publisher": "Springer",
+      "isbn13": "9781461468486",
+      "locator": "https://openlibrary.org/isbn/9781461468486",
+      "authority": "Open Library (Internet Archive) — resolución del ISBN-13",
+      "accessed": "2026-08-19",
+      "cited_as": [
+        "Applied Predictive Modeling"
+      ],
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "openlibrary",
+        "matched_title": "Applied predictive modeling"
+      },
+      "used_in": [
+        "labs/24_capstone_real_project/theory.md"
+      ]
+    },
+    {
+      "id": "deep-learning",
+      "type": "book",
+      "authors": [
+        "Goodfellow, Ian",
+        "Bengio, Yoshua",
+        "Courville, Aaron"
+      ],
+      "title": "Deep Learning",
+      "published": "2016",
+      "publisher": "MIT Press",
+      "isbn13": "9780262035613",
+      "locator": "https://openlibrary.org/isbn/9780262035613",
+      "authority": "Open Library (Internet Archive) — resolución del ISBN-13",
+      "accessed": "2026-08-19",
+      "cited_as": [
+        "Deep Learning"
+      ],
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "openlibrary",
+        "matched_title": "Deep Learning"
+      },
+      "used_in": [
+        "advanced_labs/26_segmentation_unet/theory.md",
+        "labs/00_numpy_neuron/theory.md",
+        "labs/01_pytorch_perceptron/theory.md",
+        "labs/02_mlp_nonlinear/theory.md",
+        "labs/03_cnn_vision/theory.md",
+        "labs/04_rnn_sequences/theory.md",
+        "labs/05_lstm_time_series/theory.md",
+        "labs/06_autoencoder_anomaly/theory.md",
+        "labs/07_transformer_attention/theory.md",
+        "labs/08_gan_generation/theory.md",
+        "labs/11_transfer_learning/theory.md",
+        "labs/12_multimodal_fusion/theory.md",
+        "labs/13_hyperparameter_search/theory.md",
+        "labs/14_knowledge_distillation/theory.md",
+        "labs/16_backpropagation_manual/theory.md",
+        "labs/17_activations_and_losses/theory.md",
+        "labs/18_optimizers_and_schedulers/theory.md",
+        "labs/19_regularization_dropout_batchnorm/theory.md"
+      ]
+    },
+    {
+      "id": "designing-machine-learning-systems",
+      "type": "book",
+      "authors": [
+        "Huyen, Chip"
+      ],
+      "title": "Designing Machine Learning Systems",
+      "published": "2022",
+      "publisher": "O'Reilly Media",
+      "isbn13": "9781098107963",
+      "locator": "https://openlibrary.org/isbn/9781098107963",
+      "authority": "Open Library (Internet Archive) — resolución del ISBN-13",
+      "accessed": "2026-08-19",
+      "cited_as": [
+        "Designing Machine Learning Systems"
+      ],
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "openlibrary",
+        "matched_title": "Designing Machine Learning Systems"
+      },
+      "used_in": [
+        "labs/23_model_export_and_inference/theory.md",
+        "labs/24_capstone_real_project/theory.md"
+      ]
+    },
+    {
+      "id": "dive-into-deep-learning",
+      "type": "book",
+      "authors": [
+        "Zhang, Aston",
+        "Lipton, Zachary C.",
+        "Li, Mu",
+        "Smola, Alexander J."
+      ],
+      "title": "Dive into Deep Learning",
+      "published": "2023",
+      "publisher": "Cambridge University Press",
+      "isbn13": "9781009389426",
+      "locator": "https://openlibrary.org/isbn/9781009389426",
+      "authority": "Open Library (Internet Archive) — resolución del ISBN-13",
+      "accessed": "2026-08-19",
+      "cited_as": [
+        "Dive into Deep Learning"
+      ],
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "openlibrary",
+        "matched_title": "Dive into Deep Learning"
+      },
+      "used_in": [
+        "labs/01_pytorch_perceptron/theory.md",
+        "labs/03_cnn_vision/theory.md"
+      ]
+    },
+    {
+      "id": "forecasting-principles-and-practice",
+      "type": "book",
+      "authors": [
+        "Hyndman, Rob J.",
+        "Athanasopoulos, George"
+      ],
+      "title": "Forecasting: Principles and Practice",
+      "published": "2021",
+      "publisher": "OTexts",
+      "isbn13": "9780987507136",
+      "locator": "https://openlibrary.org/isbn/9780987507136",
+      "authority": "Open Library (Internet Archive) — resolución del ISBN-13",
+      "accessed": "2026-08-19",
+      "cited_as": [
+        "Forecasting: Principles and Practice"
+      ],
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "openlibrary",
+        "matched_title": "Forecasting: Principles and Practice"
+      },
+      "edition": "3.ª edición",
+      "used_in": [
+        "labs/05_lstm_time_series/theory.md"
+      ]
+    },
+    {
+      "id": "generative-deep-learning",
+      "type": "book",
+      "authors": [
+        "Foster, David"
+      ],
+      "title": "Generative Deep Learning",
+      "published": "2023",
+      "publisher": "O'Reilly Media",
+      "isbn13": "9781098134181",
+      "locator": "https://openlibrary.org/isbn/9781098134181",
+      "authority": "Open Library (Internet Archive) — resolución del ISBN-13",
+      "accessed": "2026-08-19",
+      "cited_as": [
+        "Generative Deep Learning"
+      ],
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "openlibrary",
+        "matched_title": "Generative Deep Learning"
+      },
+      "edition": "2.ª edición",
+      "used_in": [
+        "advanced_labs/28_wgan_gp/theory.md",
+        "advanced_labs/29_diffusion_ddpm/theory.md",
+        "labs/08_gan_generation/theory.md"
+      ]
+    },
+    {
+      "id": "graph-representation-learning",
+      "type": "book",
+      "authors": [
+        "Hamilton, William L."
+      ],
+      "title": "Graph Representation Learning",
+      "published": "2020",
+      "publisher": "Morgan & Claypool Publishers",
+      "isbn13": "9781681739632",
+      "locator": "https://openlibrary.org/isbn/9781681739632",
+      "authority": "Open Library (Internet Archive) — resolución del ISBN-13",
+      "accessed": "2026-08-19",
+      "cited_as": [
+        "Graph Representation Learning"
+      ],
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "openlibrary",
+        "matched_title": "Graph Representation Learning"
+      },
+      "used_in": [
+        "labs/09_gnn_graphs/theory.md"
+      ]
+    },
+    {
+      "id": "hands-on-machine-learning-with-scikit-learn-keras-and",
+      "type": "book",
+      "authors": [
+        "Géron, Aurélien"
+      ],
+      "title": "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow",
+      "published": "2022",
+      "publisher": "O'Reilly Media",
+      "isbn13": "9781098125974",
+      "locator": "https://openlibrary.org/isbn/9781098125974",
+      "authority": "Open Library (Internet Archive) — resolución del ISBN-13",
+      "accessed": "2026-08-19",
+      "cited_as": [
+        "Hands-On Machine Learning",
+        "Hands-On Machine Learning with Scikit-Learn, Keras & TensorFlow"
+      ],
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "openlibrary",
+        "matched_title": "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow"
+      },
+      "edition": "3.ª edición",
+      "used_in": [
+        "advanced_labs/25_transformer_finetuning/theory.md",
+        "labs/00_numpy_neuron/theory.md",
+        "labs/01_pytorch_perceptron/theory.md",
+        "labs/02_mlp_nonlinear/theory.md",
+        "labs/03_cnn_vision/theory.md",
+        "labs/04_rnn_sequences/theory.md",
+        "labs/05_lstm_time_series/theory.md",
+        "labs/06_autoencoder_anomaly/theory.md",
+        "labs/07_transformer_attention/theory.md",
+        "labs/11_transfer_learning/theory.md",
+        "labs/13_hyperparameter_search/theory.md",
+        "labs/17_activations_and_losses/theory.md",
+        "labs/19_regularization_dropout_batchnorm/theory.md",
+        "labs/20_data_augmentation/theory.md",
+        "labs/24_capstone_real_project/theory.md"
+      ]
+    },
+    {
+      "id": "interpretable-machine-learning",
+      "type": "book",
+      "authors": [
+        "Molnar, Christoph"
+      ],
+      "title": "Interpretable Machine Learning",
+      "published": "2022",
+      "publisher": "Independently Published",
+      "isbn13": "9798411463330",
+      "locator": "https://openlibrary.org/isbn/9798411463330",
+      "authority": "Open Library (Internet Archive) — resolución del ISBN-13",
+      "accessed": "2026-08-19",
+      "cited_as": [
+        "Interpretable Machine Learning"
+      ],
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "openlibrary",
+        "matched_title": "Interpretable Machine Learning"
+      },
+      "used_in": [
+        "labs/21_explainability/theory.md"
+      ]
+    },
+    {
+      "id": "neural-networks-and-deep-learning-nielsen",
+      "type": "book",
+      "authors": [
+        "Nielsen, Michael A."
+      ],
+      "title": "Neural Networks and Deep Learning",
+      "published": "2015",
+      "publisher": "Determination Press (publicación en línea)",
+      "cited_as": [
+        "Neural Networks and Deep Learning"
+      ],
+      "status": "pendiente",
+      "pending_reason": "Obra publicada solo en línea: no tiene ISBN-13 y neuralnetworksanddeeplearning.com no presenta un certificado https válido para su propio nombre de host, de modo que no admite ninguna de las tres formas de localizador. Se conserva declarada.",
+      "used_in": [
+        "labs/00_numpy_neuron/theory.md",
+        "labs/16_backpropagation_manual/theory.md"
+      ]
+    },
+    {
+      "id": "pattern-recognition-and-machine-learning",
+      "type": "book",
+      "authors": [
+        "Bishop, Christopher M."
+      ],
+      "title": "Pattern Recognition and Machine Learning",
+      "published": "2006",
+      "publisher": "Springer",
+      "isbn13": "9781493938438",
+      "locator": "https://openlibrary.org/isbn/9781493938438",
+      "authority": "Open Library (Internet Archive) — resolución del ISBN-13",
+      "accessed": "2026-08-19",
+      "cited_as": [
+        "Pattern Recognition and Machine Learning"
+      ],
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "openlibrary",
+        "matched_title": "Pattern Recognition and Machine Learning"
+      },
+      "edition": "1.ª edición (reimpresión en rústica de 2016)",
+      "used_in": [
+        "labs/00_numpy_neuron/theory.md",
+        "labs/16_backpropagation_manual/theory.md",
+        "labs/17_activations_and_losses/theory.md"
+      ]
+    },
+    {
+      "id": "reinforcement-learning-an-introduction",
+      "type": "book",
+      "authors": [
+        "Sutton, Richard S.",
+        "Barto, Andrew G."
+      ],
+      "title": "Reinforcement Learning: An Introduction",
+      "published": "2018",
+      "publisher": "MIT Press / A Bradford Book",
+      "isbn13": "9780262039246",
+      "locator": "https://openlibrary.org/isbn/9780262039246",
+      "authority": "Open Library (Internet Archive) — resolución del ISBN-13",
+      "accessed": "2026-08-19",
+      "cited_as": [
+        "Reinforcement Learning: An Introduction"
+      ],
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "openlibrary",
+        "matched_title": "Reinforcement Learning: An Introduction"
+      },
+      "edition": "2.ª edición",
+      "used_in": [
+        "labs/10_dqn_reinforcement/theory.md"
+      ]
+    },
+    {
+      "id": "understanding-deep-learning",
+      "type": "book",
+      "authors": [
+        "Prince, Simon J. D."
+      ],
+      "title": "Understanding Deep Learning",
+      "published": "2023",
+      "publisher": "MIT Press",
+      "isbn13": "9780262048644",
+      "locator": "https://openlibrary.org/isbn/9780262048644",
+      "authority": "Open Library (Internet Archive) — resolución del ISBN-13",
+      "accessed": "2026-08-19",
+      "cited_as": [
+        "Understanding Deep Learning"
+      ],
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "openlibrary",
+        "matched_title": "Understanding Deep Learning"
+      },
+      "used_in": [
+        "labs/02_mlp_nonlinear/theory.md",
+        "labs/04_rnn_sequences/theory.md",
+        "labs/07_transformer_attention/theory.md"
+      ]
+    },
+    {
+      "id": "ag-news",
+      "type": "dataset",
+      "dataset_keys": [
+        "ag_news"
+      ],
+      "authors": [
+        "Zhang, Xiang",
+        "Zhao, Junbo",
+        "LeCun, Yann"
+      ],
+      "title": "AG News Topic Classification Dataset",
+      "published": "2015",
+      "locator": "https://huggingface.co/datasets/fancyzhx/ag_news",
+      "authority": "Distribuido por Hugging Face Datasets; corpus derivado del AG's corpus of news articles",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "huggingface.co",
+        "collection": "fancyzhx/ag_news",
+        "num_instances": 127600
+      },
+      "version": "revisión eb185aade064a813bc0b7f42de02595523103ca4",
+      "version_short": "rev. eb185aa",
+      "license": "La ficha de Hugging Face declara `unknown`: el distribuidor no fija licencia.",
+      "license_short": "`unknown`",
+      "cite_as": "Zhang, Xiang; Zhao, Junbo; LeCun, Yann (2015). Character-level Convolutional Networks for Text Classification. NIPS 2015.",
+      "status": "verificada",
+      "cited_urls": [
+        "https://huggingface.co/datasets/fancyzhx/ag_news"
+      ],
+      "provider_adapter": "huggingface",
+      "integrity": {
+        "algorithm": "sha256",
+        "source": "publicados por el proveedor (Hugging Face LFS) para la revisión fijada",
+        "revision": "eb185aade064a813bc0b7f42de02595523103ca4",
+        "artifacts": [
+          {
+            "artifact": "data/train-00000-of-00001.parquet",
+            "url": "https://huggingface.co/datasets/fancyzhx/ag_news/resolve/eb185aade064a813bc0b7f42de02595523103ca4/data/train-00000-of-00001.parquet",
+            "sha256": "fc508d6d9868594e3da960a8cfeb63ab5a4746598b93428c224397080c1f52ee",
+            "bytes": 18585438
+          },
+          {
+            "artifact": "data/test-00000-of-00001.parquet",
+            "url": "https://huggingface.co/datasets/fancyzhx/ag_news/resolve/eb185aade064a813bc0b7f42de02595523103ca4/data/test-00000-of-00001.parquet",
+            "sha256": "71de87ec66bc5737752a2502204dfa6d7fe9856ade3ea444dc6317789a4f13fb",
+            "bytes": 1234829
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums (lectura de la API del proveedor)"
+      },
+      "used_in": [
+        "advanced_labs/25_transformer_finetuning/theory.md",
+        "labs/07_transformer_attention/theory.md"
+      ]
+    },
+    {
+      "id": "california-housing-statlib",
+      "type": "dataset",
+      "dataset_keys": [
+        "california_housing"
+      ],
+      "authors": [
+        "Pace, R. Kelley",
+        "Barry, Ronald"
+      ],
+      "title": "California Housing (censo de 1990)",
+      "published": "1997",
+      "locator": "https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html",
+      "authority": "StatLib (Carnegie Mellon University); distribuido por scikit-learn",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "ndownloader.figshare.com",
+        "collection": "cal_housing.tgz — el mismo artefacto que descarga `sklearn.datasets.fetch_california_housing`",
+        "num_instances": 20640
+      },
+      "version": "cal_housing.tgz (distribución StatLib usada por scikit-learn)",
+      "version_short": "cal_housing.tgz",
+      "license": "StatLib no declara una licencia formal; scikit-learn lo distribuye como conjunto de dominio público de uso académico.",
+      "license_short": "sin licencia formal",
+      "cite_as": "Pace, R. Kelley; Barry, Ronald (1997). Sparse Spatial Autoregressions. Statistics & Probability Letters 33(3), 291–297. Es la cita que indica la documentación de scikit-learn.",
+      "status": "verificada",
+      "cited_urls": [
+        "https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html"
+      ],
+      "provider_adapter": "sklearn",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [
+          {
+            "artifact": "cal_housing.tgz",
+            "url": "https://ndownloader.figshare.com/files/5976036",
+            "sha256": "aaa5c9a6afe2225cc2aed2723682ae403280c4a3695a2ddda4ffb5d8215ea681",
+            "bytes": 441963
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums"
+      },
+      "used_in": [
+        "labs/18_optimizers_and_schedulers/theory.md"
+      ]
+    },
+    {
+      "id": "cifar-10",
+      "type": "dataset",
+      "dataset_keys": [
+        "cifar10"
+      ],
+      "authors": [
+        "Krizhevsky, Alex"
+      ],
+      "title": "CIFAR-10",
+      "published": "2009",
+      "locator": "https://www.cs.toronto.edu/~kriz/cifar.html",
+      "authority": "University of Toronto — Alex Krizhevsky",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "www.cs.toronto.edu",
+        "collection": "CIFAR-10 / CIFAR-100",
+        "num_instances": 60000
+      },
+      "version": "CIFAR-10 python version (cifar-10-python.tar.gz) · md5 publicado por la fuente: c58f30108f718f92721af3b95e74349a",
+      "version_short": "python (cifar-10-python.tar.gz)",
+      "license": "La fuente no declara una licencia: condiciona el uso a citar el informe técnico enlazado en su propia página.",
+      "license_short": "sin licencia declarada · exige citar",
+      "cite_as": "Krizhevsky, Alex (2009). Learning Multiple Layers of Features from Tiny Images. Informe técnico, University of Toronto. La página del dataset pide expresamente citar este informe.",
+      "status": "verificada",
+      "cited_urls": [
+        "https://www.cs.toronto.edu/~kriz/cifar.html"
+      ],
+      "provider_adapter": "torchvision",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [],
+        "status": "pendiente",
+        "pending_reason": "El artefacto canónico (170 MB) no terminó de descargarse dentro del margen de esta verificación; la fuente sí publica su md5."
+      },
+      "used_in": [
+        "advanced_labs/30_self_supervised_simclr/theory.md",
+        "labs/03_cnn_vision/theory.md",
+        "labs/14_knowledge_distillation/theory.md",
+        "labs/20_data_augmentation/theory.md",
+        "labs/23_model_export_and_inference/theory.md"
+      ]
+    },
+    {
+      "id": "cora-planetoid",
+      "type": "dataset",
+      "dataset_keys": [
+        "cora"
+      ],
+      "authors": [
+        "Yang, Zhilin",
+        "Cohen, William W.",
+        "Salakhutdinov, Ruslan"
+      ],
+      "title": "Cora (particiones Planetoid)",
+      "published": "2016",
+      "locator": "https://pytorch-geometric.readthedocs.io/en/stable/generated/torch_geometric.datasets.Planetoid.html",
+      "authority": "PyTorch Geometric — distribución Planetoid de Yang, Cohen & Salakhutdinov",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "github.com",
+        "collection": "kimiyoung/planetoid (ficheros ind.cora.*)",
+        "num_instances": 2708
+      },
+      "version": "ficheros ind.cora.* del repositorio Planetoid, con las máscaras públicas fijas",
+      "version_short": "Planetoid ind.cora.*",
+      "license": "Ni el distribuidor (PyTorch Geometric) ni el repositorio Planetoid declaran licencia para los datos.",
+      "license_short": "sin licencia declarada",
+      "cite_as": "Yang, Zhilin; Cohen, William W.; Salakhutdinov, Ruslan (2016). Revisiting Semi-Supervised Learning with Graph Embeddings. ICML 2016. El corpus original procede de McCallum, Andrew K. et al. (2000), Automating the Construction of Internet Portals with Machine Learning, Information Retrieval 3(2).",
+      "status": "verificada",
+      "cited_urls": [
+        "https://pytorch-geometric.readthedocs.io/en/stable/generated/torch_geometric.datasets.Planetoid.html"
+      ],
+      "provider_adapter": "pyg",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [
+          {
+            "artifact": "ind.cora.x",
+            "url": "https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.x",
+            "sha256": "23cfa55d91c6f624233f5eb7b6e3f141f1bd2b2ae39608a63cf5d084bb27baab",
+            "bytes": 22119
+          },
+          {
+            "artifact": "ind.cora.tx",
+            "url": "https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.tx",
+            "sha256": "b9afbaa4a400df991f6f02ef677e1e44da55ffc04801fd02f9e673987829226a",
+            "bytes": 148025
+          },
+          {
+            "artifact": "ind.cora.allx",
+            "url": "https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.allx",
+            "sha256": "9419ba2f26f5c35243db64aba110e0f35a04851609e0dc5433450676ca6b8543",
+            "bytes": 257305
+          },
+          {
+            "artifact": "ind.cora.y",
+            "url": "https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.y",
+            "sha256": "94465c14eb53e04ca262198dcbb2521ee8af60fb3f3d546cd6ca24a511b0e7d1",
+            "bytes": 4054
+          },
+          {
+            "artifact": "ind.cora.ty",
+            "url": "https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.ty",
+            "sha256": "41f5ac76596a1699cc33f53084a2419e92961c42bb75f36fc38e616d348532ad",
+            "bytes": 28135
+          },
+          {
+            "artifact": "ind.cora.ally",
+            "url": "https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.ally",
+            "sha256": "2b998f5cc7fedc86e7f97ca2498f47a1ffc1462c29e2d578b23bf3f62b6e7d71",
+            "bytes": 47959
+          },
+          {
+            "artifact": "ind.cora.graph",
+            "url": "https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.graph",
+            "sha256": "58f13302f39dde8852dad6fe6d15b89b077b6d7f837626bce671ef80344b383d",
+            "bytes": 59847
+          },
+          {
+            "artifact": "ind.cora.test.index",
+            "url": "https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.test.index",
+            "sha256": "297ce89af2b51a6a194181c7dbe1796c6a1cf9cd9349a88383b1b1e227867875",
+            "bytes": 5000
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums"
+      },
+      "used_in": [
+        "labs/09_gnn_graphs/theory.md"
+      ]
+    },
+    {
+      "id": "credit-card-fraud-ulb",
+      "type": "dataset",
+      "dataset_keys": [
+        "credit_card_fraud"
+      ],
+      "authors": [
+        "Machine Learning Group — Université Libre de Bruxelles (MLG-ULB)"
+      ],
+      "title": "Credit Card Fraud Detection",
+      "published": "2016",
+      "locator": "https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud",
+      "authority": "Machine Learning Group, Université Libre de Bruxelles; distribuido por Kaggle",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "www.kaggle.com",
+        "collection": "mlg-ulb/creditcardfraud",
+        "num_instances": 284807
+      },
+      "version": "distribución de Kaggle (creditcard.csv)",
+      "version_short": "creditcard.csv",
+      "license": "Open Database License (ODbL) 1.0 para la base y Database Contents License (DbCL) 1.0 para los contenidos, según la ficha de Kaggle (http://opendatacommons.org/licenses/dbcl/1.0/)",
+      "license_short": "ODbL 1.0 / DbCL 1.0",
+      "cite_as": "Dal Pozzolo, Andrea; Caelen, Olivier; Johnson, Reid A.; Bontempi, Gianluca (2015). Calibrating Probability with Undersampling for Unbalanced Classification. IEEE Symposium Series on Computational Intelligence. La ficha de Kaggle remite a las publicaciones del grupo MLG-ULB.",
+      "status": "verificada",
+      "cited_urls": [
+        "https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud"
+      ],
+      "provider_adapter": "kaggle",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [],
+        "status": "pendiente",
+        "pending_reason": "La descarga exige autenticación y aceptación de los términos de Kaggle: el repositorio no evita ese control, así que el SHA-256 no se puede calcular de forma anónima ni reproducible en CI."
+      },
+      "used_in": [
+        "labs/06_autoencoder_anomaly/theory.md"
+      ]
+    },
+    {
+      "id": "fashion-mnist",
+      "type": "dataset",
+      "dataset_keys": [
+        "fashion_mnist"
+      ],
+      "authors": [
+        "Xiao, Han",
+        "Rasul, Kashif",
+        "Vollgraf, Roland"
+      ],
+      "title": "Fashion-MNIST",
+      "published": "2017",
+      "locator": "https://github.com/zalandoresearch/fashion-mnist",
+      "authority": "Zalando Research (Zalando SE)",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "github.com",
+        "collection": "zalandoresearch/fashion-mnist",
+        "num_instances": 70000
+      },
+      "version": "ficheros IDX comprimidos oficiales (train/t10k, imágenes y etiquetas)",
+      "version_short": "IDX gz oficiales",
+      "license": "MIT License, © 2017 Zalando SE (declarada en el README del repositorio oficial)",
+      "license_short": "MIT",
+      "cite_as": "Xiao, Han; Rasul, Kashif; Vollgraf, Roland (2017). Fashion-MNIST: a Novel Image Dataset for Benchmarking Machine Learning Algorithms. arXiv:1708.07747. El README oficial pide citar este artículo.",
+      "status": "verificada",
+      "cited_urls": [
+        "https://github.com/zalandoresearch/fashion-mnist"
+      ],
+      "provider_adapter": "torchvision",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [
+          {
+            "artifact": "train-images-idx3-ubyte.gz",
+            "url": "http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-images-idx3-ubyte.gz",
+            "sha256": "3aede38d61863908ad78613f6a32ed271626dd12800ba2636569512369268a84",
+            "bytes": 26421880
+          },
+          {
+            "artifact": "train-labels-idx1-ubyte.gz",
+            "url": "http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-labels-idx1-ubyte.gz",
+            "sha256": "a04f17134ac03560a47e3764e11b92fc97de4d1bfaf8ba1a3aa29af54cc90845",
+            "bytes": 29515
+          },
+          {
+            "artifact": "t10k-images-idx3-ubyte.gz",
+            "url": "http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-images-idx3-ubyte.gz",
+            "sha256": "346e55b948d973a97e58d2351dde16a484bd415d4595297633bb08f03db6a073",
+            "bytes": 4422102
+          },
+          {
+            "artifact": "t10k-labels-idx1-ubyte.gz",
+            "url": "http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz",
+            "sha256": "67da17c76eaffca5446c3361aaab5c3cd6d1c2608764d35dfb1850b086bf8dd5",
+            "bytes": 5148
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums"
+      },
+      "used_in": [
+        "advanced_labs/28_wgan_gp/theory.md",
+        "advanced_labs/29_diffusion_ddpm/theory.md",
+        "labs/08_gan_generation/theory.md",
+        "labs/19_regularization_dropout_batchnorm/theory.md"
+      ]
+    },
+    {
+      "id": "google-speech-commands-v0-02",
+      "type": "dataset",
+      "dataset_keys": [
+        "speechcommands_v0.02"
+      ],
+      "authors": [
+        "Warden, Pete"
+      ],
+      "title": "Speech Commands v0.02",
+      "published": "2018",
+      "locator": "https://www.tensorflow.org/datasets/catalog/speech_commands",
+      "authority": "Google — Speech Commands dataset",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "download.tensorflow.org",
+        "collection": "speech_commands_v0.02.tar.gz",
+        "num_instances": 105829
+      },
+      "version": "v0.02",
+      "version_short": "v0.02",
+      "license": "Creative Commons Attribution 4.0 International (CC BY 4.0), declarada por la fuente.",
+      "license_short": "CC BY 4.0",
+      "cite_as": "Warden, Pete (2018). Speech Commands: A Dataset for Limited-Vocabulary Speech Recognition. arXiv:1804.03209.",
+      "status": "verificada",
+      "cited_urls": [
+        "https://www.tensorflow.org/datasets/catalog/speech_commands"
+      ],
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [
+          {
+            "artifact": "speech_commands_v0.02.tar.gz",
+            "url": "http://download.tensorflow.org/data/speech_commands_v0.02.tar.gz",
+            "sha256": "af14739ee7dc311471de98f5f9d2c9191b18aedfe957f4a6ff791c709868ff58",
+            "bytes": 2428923189
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums"
+      },
+      "used_in": [
+        "advanced_labs/27_audio_speechcommands/theory.md"
+      ]
+    },
+    {
+      "id": "imdb-large-movie-review",
+      "type": "dataset",
+      "dataset_keys": [
+        "imdb"
+      ],
+      "authors": [
+        "Maas, Andrew L.",
+        "Daly, Raymond E.",
+        "Pham, Peter T.",
+        "Huang, Dan",
+        "Ng, Andrew Y.",
+        "Potts, Christopher"
+      ],
+      "title": "IMDB Large Movie Review Dataset",
+      "published": "2011",
+      "locator": "https://huggingface.co/datasets/stanfordnlp/imdb",
+      "authority": "Stanford AI Lab, distribuido por Hugging Face Datasets",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "huggingface.co",
+        "collection": "stanfordnlp/imdb",
+        "num_instances": 50000
+      },
+      "version": "revisión e6281661ce1c48d982bc483cf8a173c1bbeb5d31",
+      "version_short": "rev. e628166",
+      "license": "La ficha de Hugging Face declara `other`: el corpus original no publica un identificador SPDX.",
+      "license_short": "`other` (sin SPDX)",
+      "cite_as": "Maas, Andrew L.; Daly, Raymond E.; Pham, Peter T.; Huang, Dan; Ng, Andrew Y.; Potts, Christopher (2011). Learning Word Vectors for Sentiment Analysis. ACL-HLT 2011.",
+      "status": "verificada",
+      "cited_urls": [
+        "https://huggingface.co/datasets/stanfordnlp/imdb"
+      ],
+      "provider_adapter": "huggingface",
+      "integrity": {
+        "algorithm": "sha256",
+        "source": "publicados por el proveedor (Hugging Face LFS) para la revisión fijada",
+        "revision": "e6281661ce1c48d982bc483cf8a173c1bbeb5d31",
+        "artifacts": [
+          {
+            "artifact": "plain_text/train-00000-of-00001.parquet",
+            "url": "https://huggingface.co/datasets/stanfordnlp/imdb/resolve/e6281661ce1c48d982bc483cf8a173c1bbeb5d31/plain_text/train-00000-of-00001.parquet",
+            "sha256": "db47d16b5c297cc0dd625e519c81319c24c9149e70e8496de5475f6fa928342c",
+            "bytes": 20979968
+          },
+          {
+            "artifact": "plain_text/test-00000-of-00001.parquet",
+            "url": "https://huggingface.co/datasets/stanfordnlp/imdb/resolve/e6281661ce1c48d982bc483cf8a173c1bbeb5d31/plain_text/test-00000-of-00001.parquet",
+            "sha256": "b52e26e2f872d282ffac460bf9770b25ac6f102cda0e6ca7158df98c94e8b3da",
+            "bytes": 20470363
+          },
+          {
+            "artifact": "plain_text/unsupervised-00000-of-00001.parquet",
+            "url": "https://huggingface.co/datasets/stanfordnlp/imdb/resolve/e6281661ce1c48d982bc483cf8a173c1bbeb5d31/plain_text/unsupervised-00000-of-00001.parquet",
+            "sha256": "74d14fbfcbb39fb7d299c38ca9f0ae6d231bf97108da85d620027ba437b6d52e",
+            "bytes": 41996509
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums (lectura de la API del proveedor)"
+      },
+      "used_in": [
+        "labs/04_rnn_sequences/theory.md"
+      ]
+    },
+    {
+      "id": "oxford-iiit-pet",
+      "type": "dataset",
+      "dataset_keys": [
+        "oxford_iiit_pet",
+        "oxford_iiit_pet_segmentation"
+      ],
+      "authors": [
+        "Parkhi, Omkar M.",
+        "Vedaldi, Andrea",
+        "Zisserman, Andrew",
+        "Jawahar, C. V."
+      ],
+      "title": "The Oxford-IIIT Pet Dataset",
+      "published": "2012",
+      "locator": "https://www.robots.ox.ac.uk/~vgg/data/pets/",
+      "authority": "Visual Geometry Group, University of Oxford e IIIT Hyderabad",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "www.robots.ox.ac.uk",
+        "collection": "VGG — Oxford-IIIT Pet",
+        "num_instances": 7349
+      },
+      "version": "images.tar.gz + annotations.tar.gz (trimaps de segmentación incluidos en las anotaciones)",
+      "version_short": "images + annotations",
+      "license": "Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0), declarada en la página del dataset; el copyright de las imágenes queda con sus autores originales.",
+      "license_short": "CC BY-SA 4.0",
+      "cite_as": "Parkhi, Omkar M.; Vedaldi, Andrea; Zisserman, Andrew; Jawahar, C. V. (2012). Cats and Dogs. IEEE Conference on Computer Vision and Pattern Recognition (CVPR).",
+      "status": "verificada",
+      "cited_urls": [
+        "https://www.robots.ox.ac.uk/~vgg/data/pets/"
+      ],
+      "provider_adapter": "torchvision",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [],
+        "status": "pendiente",
+        "pending_reason": "El artefacto de imágenes (≈800 MB) no terminó de descargarse dentro del margen de esta verificación."
+      },
+      "used_in": [
+        "advanced_labs/26_segmentation_unet/theory.md",
+        "labs/11_transfer_learning/theory.md"
+      ]
+    },
+    {
+      "id": "uci-adult-census",
+      "type": "dataset",
+      "dataset_keys": [
+        "adult_census"
+      ],
+      "authors": [
+        "Barry Becker",
+        "Ronny Kohavi"
+      ],
+      "title": "Adult",
+      "published": "1996",
+      "locator": "https://archive.ics.uci.edu/dataset/2/adult",
+      "authority": "UCI Machine Learning Repository — University of California, Irvine",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "archive.ics.uci.edu",
+        "collection": "UCI Machine Learning Repository",
+        "dataset_id": 2,
+        "num_instances": 48842
+      },
+      "version": "ficha UCI 2 · distribución estática adult.zip",
+      "version_short": "ficha UCI 2",
+      "license": "CC BY 4.0 (Creative Commons Attribution 4.0 International), declarada en la ficha del dataset",
+      "license_short": "CC BY 4.0",
+      "cite_as": "Barry Becker, Ronny Kohavi (1996). Adult. UCI Machine Learning Repository. https://doi.org/10.24432/C5XW20",
+      "status": "verificada",
+      "cited_urls": [
+        "https://archive.ics.uci.edu/dataset/2/adult"
+      ],
+      "dataset_doi": "10.24432/C5XW20",
+      "provider_adapter": "uci",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [
+          {
+            "artifact": "adult.zip",
+            "url": "https://archive.ics.uci.edu/static/public/2/adult.zip",
+            "sha256": "7537312dd56c2b98035880805ce99e68183a30ee468aa5329d6df0fbb3cc21bb",
+            "bytes": 620237
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums"
+      },
+      "used_in": [
+        "labs/13_hyperparameter_search/theory.md",
+        "labs/21_explainability/theory.md"
+      ]
+    },
+    {
+      "id": "uci-banknote-authentication",
+      "type": "dataset",
+      "dataset_keys": [
+        "banknote_authentication"
+      ],
+      "authors": [
+        "Volker Lohweg"
+      ],
+      "title": "Banknote Authentication",
+      "published": "2012",
+      "locator": "https://archive.ics.uci.edu/dataset/267/banknote+authentication",
+      "authority": "UCI Machine Learning Repository — University of California, Irvine",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "archive.ics.uci.edu",
+        "collection": "UCI Machine Learning Repository",
+        "dataset_id": 267,
+        "num_instances": 1372
+      },
+      "version": "ficha UCI 267 · distribución estática banknote+authentication.zip",
+      "version_short": "ficha UCI 267",
+      "license": "CC BY 4.0 (Creative Commons Attribution 4.0 International), declarada en la ficha del dataset",
+      "license_short": "CC BY 4.0",
+      "cite_as": "Volker Lohweg (2012). Banknote Authentication. UCI Machine Learning Repository. https://doi.org/10.24432/C55P57",
+      "status": "verificada",
+      "cited_urls": [
+        "https://archive.ics.uci.edu/dataset/267/banknote+authentication"
+      ],
+      "dataset_doi": "10.24432/C55P57",
+      "provider_adapter": "uci",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [
+          {
+            "artifact": "banknote+authentication.zip",
+            "url": "https://archive.ics.uci.edu/static/public/267/banknote+authentication.zip",
+            "sha256": "1e2acd9a2085fadf3d8145c12d3d22af853320d52294a6590c2eaf75fdc05227",
+            "bytes": 46562
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums"
+      },
+      "used_in": [
+        "labs/01_pytorch_perceptron/theory.md"
+      ]
+    },
+    {
+      "id": "uci-breast-cancer-wisconsin-diagnostic",
+      "type": "dataset",
+      "dataset_keys": [
+        "breast_cancer_wisconsin"
+      ],
+      "authors": [
+        "William Wolberg",
+        "Olvi Mangasarian",
+        "Nick Street",
+        "W. Street"
+      ],
+      "title": "Breast Cancer Wisconsin (Diagnostic)",
+      "published": "1993",
+      "locator": "https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic",
+      "authority": "UCI Machine Learning Repository — University of California, Irvine",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "archive.ics.uci.edu",
+        "collection": "UCI Machine Learning Repository",
+        "dataset_id": 17,
+        "num_instances": 569
+      },
+      "version": "ficha UCI 17 · distribución estática breast+cancer+wisconsin+diagnostic.zip",
+      "version_short": "ficha UCI 17",
+      "license": "CC BY 4.0 (Creative Commons Attribution 4.0 International), declarada en la ficha del dataset",
+      "license_short": "CC BY 4.0",
+      "cite_as": "William Wolberg, Olvi Mangasarian, Nick Street, W. Street (1993). Breast Cancer Wisconsin (Diagnostic). UCI Machine Learning Repository. https://doi.org/10.24432/C5DW2B Artículo de referencia: W. Street, W. Wolberg, O. Mangasarian (1993), «Nuclear feature extraction for breast tumor diagnosis», DOI 10.1117/12.148698.",
+      "status": "verificada",
+      "cited_urls": [
+        "https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic"
+      ],
+      "dataset_doi": "10.24432/C5DW2B",
+      "provider_adapter": "uci",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [
+          {
+            "artifact": "breast+cancer+wisconsin+diagnostic.zip",
+            "url": "https://archive.ics.uci.edu/static/public/17/breast+cancer+wisconsin+diagnostic.zip",
+            "sha256": "bc154869ef13f753f9e2b5a17e248cfe1ba4b6721db7c4da9f4880e40b05d3af",
+            "bytes": 51284
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums"
+      },
+      "used_in": [
+        "labs/00_numpy_neuron/theory.md",
+        "labs/22_uncertainty_calibration/theory.md"
+      ]
+    },
+    {
+      "id": "uci-dry-bean",
+      "type": "dataset",
+      "dataset_keys": [
+        "dry_bean"
+      ],
+      "authors": [
+        "UCI Machine Learning Repository"
+      ],
+      "title": "Dry Bean",
+      "published": "2020",
+      "locator": "https://archive.ics.uci.edu/dataset/602/dry+bean+dataset",
+      "authority": "UCI Machine Learning Repository — University of California, Irvine",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "archive.ics.uci.edu",
+        "collection": "UCI Machine Learning Repository",
+        "dataset_id": 602,
+        "num_instances": 13611
+      },
+      "version": "ficha UCI 602 · distribución estática dry+bean+dataset.zip",
+      "version_short": "ficha UCI 602",
+      "license": "CC BY 4.0 (Creative Commons Attribution 4.0 International), declarada en la ficha del dataset",
+      "license_short": "CC BY 4.0",
+      "cite_as": "UCI Machine Learning Repository (2020). Dry Bean. UCI Machine Learning Repository. https://doi.org/10.24432/C50S4B Artículo de referencia: M. Koklu, Ilker Ali Özkan (2020), «Multiclass classification of dry beans using computer vision and machine learning techniques», DOI 10.1016/j.compag.2020.105507.",
+      "status": "verificada",
+      "cited_urls": [
+        "https://archive.ics.uci.edu/dataset/602/dry+bean+dataset"
+      ],
+      "dataset_doi": "10.24432/C50S4B",
+      "provider_adapter": "uci",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [
+          {
+            "artifact": "dry+bean+dataset.zip",
+            "url": "https://archive.ics.uci.edu/static/public/602/dry+bean+dataset.zip",
+            "sha256": "0a64eff5be87f48c3dbbfc0a12a56c5d5b5167ef8e61cd45d69b3e7c7130c06f",
+            "bytes": 4738776
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums"
+      },
+      "used_in": [
+        "labs/02_mlp_nonlinear/theory.md"
+      ]
+    },
+    {
+      "id": "uci-human-activity-recognition-smartphones",
+      "type": "dataset",
+      "dataset_keys": [
+        "uci_har",
+        "uci_har_subjects"
+      ],
+      "authors": [
+        "Jorge Reyes-Ortiz",
+        "Davide Anguita",
+        "Alessandro Ghio",
+        "Luca Oneto",
+        "Xavier Parra"
+      ],
+      "title": "Human Activity Recognition Using Smartphones",
+      "published": "2013",
+      "locator": "https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones",
+      "authority": "UCI Machine Learning Repository — University of California, Irvine",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "archive.ics.uci.edu",
+        "collection": "UCI Machine Learning Repository",
+        "dataset_id": 240,
+        "num_instances": 10299
+      },
+      "version": "ficha UCI 240 · distribución estática human+activity+recognition+using+smartphones.zip",
+      "version_short": "ficha UCI 240",
+      "license": "CC BY 4.0 (Creative Commons Attribution 4.0 International), declarada en la ficha del dataset",
+      "license_short": "CC BY 4.0",
+      "cite_as": "Jorge Reyes-Ortiz, Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra (2013). Human Activity Recognition Using Smartphones. UCI Machine Learning Repository. https://doi.org/10.24432/C54S4K Artículo de referencia: D. Anguita, A. Ghio, L. Oneto, X. Parra, Jorge Luis Reyes-Ortiz (2013), «A Public Domain Dataset for Human Activity Recognition using Smartphones».",
+      "status": "verificada",
+      "cited_urls": [
+        "https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones"
+      ],
+      "dataset_doi": "10.24432/C54S4K",
+      "provider_adapter": "uci_har",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [
+          {
+            "artifact": "human+activity+recognition+using+smartphones.zip",
+            "url": "https://archive.ics.uci.edu/static/public/240/human+activity+recognition+using+smartphones.zip",
+            "sha256": "c00b803081a5c797cd5e4b83700a9810b38d53d9d84e01917e090e1fdbc81031",
+            "bytes": 61005872
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums"
+      },
+      "used_in": [
+        "labs/12_multimodal_fusion/theory.md",
+        "labs/15_federated_learning/theory.md"
+      ]
+    },
+    {
+      "id": "uci-iranian-churn",
+      "type": "dataset",
+      "dataset_keys": [
+        "iranian_churn"
+      ],
+      "authors": [
+        "UCI Machine Learning Repository"
+      ],
+      "title": "Iranian Churn",
+      "published": "2020",
+      "locator": "https://archive.ics.uci.edu/dataset/563/iranian+churn+dataset",
+      "authority": "UCI Machine Learning Repository — University of California, Irvine",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "archive.ics.uci.edu",
+        "collection": "UCI Machine Learning Repository",
+        "dataset_id": 563,
+        "num_instances": 3150
+      },
+      "version": "ficha UCI 563 · distribución estática iranian+churn+dataset.zip",
+      "version_short": "ficha UCI 563",
+      "license": "CC BY 4.0 (Creative Commons Attribution 4.0 International), declarada en la ficha del dataset",
+      "license_short": "CC BY 4.0",
+      "cite_as": "UCI Machine Learning Repository (2020). Iranian Churn. UCI Machine Learning Repository. https://doi.org/10.24432/C5JW3Z",
+      "status": "verificada",
+      "cited_urls": [
+        "https://archive.ics.uci.edu/dataset/563/iranian+churn+dataset"
+      ],
+      "dataset_doi": "10.24432/C5JW3Z",
+      "provider_adapter": "uci",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [
+          {
+            "artifact": "iranian+churn+dataset.zip",
+            "url": "https://archive.ics.uci.edu/static/public/563/iranian+churn+dataset.zip",
+            "sha256": "696c3a1812267980751f30d19193a1b430ac4ad76172bb089e664c96813ead66",
+            "bytes": 41943
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums"
+      },
+      "used_in": [
+        "labs/24_capstone_real_project/theory.md"
+      ]
+    },
+    {
+      "id": "uci-iris",
+      "type": "dataset",
+      "dataset_keys": [
+        "iris"
+      ],
+      "authors": [
+        "R. A. Fisher"
+      ],
+      "title": "Iris",
+      "published": "1936",
+      "locator": "https://archive.ics.uci.edu/dataset/53/iris",
+      "authority": "UCI Machine Learning Repository — University of California, Irvine",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "archive.ics.uci.edu",
+        "collection": "UCI Machine Learning Repository",
+        "dataset_id": 53,
+        "num_instances": 150
+      },
+      "version": "ficha UCI 53 · distribución estática iris.zip",
+      "version_short": "ficha UCI 53",
+      "license": "CC BY 4.0 (Creative Commons Attribution 4.0 International), declarada en la ficha del dataset",
+      "license_short": "CC BY 4.0",
+      "cite_as": "R. A. Fisher (1936). Iris. UCI Machine Learning Repository. https://doi.org/10.24432/C56C76 Artículo de referencia: A. Unwin, K. Kleinman (2021), «The Iris data set: In search of the source of virginica», DOI 1740-9713.01589.",
+      "status": "verificada",
+      "cited_urls": [
+        "https://archive.ics.uci.edu/dataset/53/iris"
+      ],
+      "dataset_doi": "10.24432/C56C76",
+      "provider_adapter": "uci",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [
+          {
+            "artifact": "iris.zip",
+            "url": "https://archive.ics.uci.edu/static/public/53/iris.zip",
+            "sha256": "d11fe30213d36434a0879aab7cb00ce3c812eb7ba2495874438abff7b7b762e9",
+            "bytes": 3738
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums"
+      },
+      "used_in": [
+        "labs/16_backpropagation_manual/theory.md"
+      ]
+    },
+    {
+      "id": "uci-online-retail",
+      "type": "dataset",
+      "dataset_keys": [
+        "online_retail"
+      ],
+      "authors": [
+        "Daqing Chen"
+      ],
+      "title": "Online Retail",
+      "published": "2015",
+      "locator": "https://archive.ics.uci.edu/dataset/352/online+retail",
+      "authority": "UCI Machine Learning Repository — University of California, Irvine",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "archive.ics.uci.edu",
+        "collection": "UCI Machine Learning Repository",
+        "dataset_id": 352,
+        "num_instances": 541909
+      },
+      "version": "ficha UCI 352 · distribución estática online+retail.zip",
+      "version_short": "ficha UCI 352",
+      "license": "CC BY 4.0 (Creative Commons Attribution 4.0 International), declarada en la ficha del dataset",
+      "license_short": "CC BY 4.0",
+      "cite_as": "Daqing Chen (2015). Online Retail. UCI Machine Learning Repository. https://doi.org/10.24432/C5BW33 Artículo de referencia: Daqing Chen, Sai Laing Sain, Kun Guo (2012), «Data mining for the online retail industry: A case study of RFM model-based customer segmentation using data mining», DOI 10.1057/dbm.2012.17.",
+      "status": "verificada",
+      "cited_urls": [
+        "https://archive.ics.uci.edu/dataset/352/online+retail"
+      ],
+      "dataset_doi": "10.24432/C5BW33",
+      "provider_adapter": "uci_retail",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [
+          {
+            "artifact": "online+retail.zip",
+            "url": "https://archive.ics.uci.edu/static/public/352/online+retail.zip",
+            "sha256": "f5385cbb54bbebf7196389109c6b0621faab0c304e3702548165e71c84aede8b",
+            "bytes": 23715478
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums"
+      },
+      "used_in": [
+        "labs/10_dqn_reinforcement/theory.md"
+      ]
+    },
+    {
+      "id": "uci-seoul-bike-sharing-demand",
+      "type": "dataset",
+      "dataset_keys": [
+        "seoul_bike"
+      ],
+      "authors": [
+        "UCI Machine Learning Repository"
+      ],
+      "title": "Seoul Bike Sharing Demand",
+      "published": "2020",
+      "locator": "https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand",
+      "authority": "UCI Machine Learning Repository — University of California, Irvine",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "archive.ics.uci.edu",
+        "collection": "UCI Machine Learning Repository",
+        "dataset_id": 560,
+        "num_instances": 8760
+      },
+      "version": "ficha UCI 560 · distribución estática seoul+bike+sharing+demand.zip",
+      "version_short": "ficha UCI 560",
+      "license": "CC BY 4.0 (Creative Commons Attribution 4.0 International), declarada en la ficha del dataset",
+      "license_short": "CC BY 4.0",
+      "cite_as": "UCI Machine Learning Repository (2020). Seoul Bike Sharing Demand. UCI Machine Learning Repository. https://doi.org/10.24432/C5F62R",
+      "status": "verificada",
+      "cited_urls": [
+        "https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand"
+      ],
+      "dataset_doi": "10.24432/C5F62R",
+      "provider_adapter": "uci",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [
+          {
+            "artifact": "seoul+bike+sharing+demand.zip",
+            "url": "https://archive.ics.uci.edu/static/public/560/seoul+bike+sharing+demand.zip",
+            "sha256": "139e9908f0a3544bb222386855c9ce107e96467306bb8e4ce936aab59e7baac4",
+            "bytes": 604298
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums"
+      },
+      "used_in": [
+        "labs/05_lstm_time_series/theory.md"
+      ]
+    },
+    {
+      "id": "uci-wine-quality",
+      "type": "dataset",
+      "dataset_keys": [
+        "wine_quality"
+      ],
+      "authors": [
+        "Paulo Cortez",
+        "A. Cerdeira",
+        "F. Almeida",
+        "T. Matos",
+        "J. Reis"
+      ],
+      "title": "Wine Quality",
+      "published": "2009",
+      "locator": "https://archive.ics.uci.edu/dataset/186/wine+quality",
+      "authority": "UCI Machine Learning Repository — University of California, Irvine",
+      "accessed": "2026-08-19",
+      "provenance": {
+        "host": "archive.ics.uci.edu",
+        "collection": "UCI Machine Learning Repository",
+        "dataset_id": 186,
+        "num_instances": 4898
+      },
+      "version": "ficha UCI 186 · distribución estática wine+quality.zip",
+      "version_short": "ficha UCI 186",
+      "license": "CC BY 4.0 (Creative Commons Attribution 4.0 International), declarada en la ficha del dataset",
+      "license_short": "CC BY 4.0",
+      "cite_as": "Paulo Cortez, A. Cerdeira, F. Almeida, T. Matos, J. Reis (2009). Wine Quality. UCI Machine Learning Repository. https://doi.org/10.24432/C56S3T Artículo de referencia: P. Cortez, A. Cerdeira, Fernando Almeida, Telmo Matos, J. Reis (2009), «Modeling wine preferences by data mining from physicochemical properties».",
+      "status": "verificada",
+      "cited_urls": [
+        "https://archive.ics.uci.edu/dataset/186/wine+quality"
+      ],
+      "dataset_doi": "10.24432/C56S3T",
+      "provider_adapter": "uci",
+      "integrity": {
+        "algorithm": "sha256",
+        "artifacts": [
+          {
+            "artifact": "wine+quality.zip",
+            "url": "https://archive.ics.uci.edu/static/public/186/wine+quality.zip",
+            "sha256": "3ed56667f4b828242bd732d7d1dd7f2861e54432239d7fa63877014cbb0304d4",
+            "bytes": 91353
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums"
+      },
+      "used_in": [
+        "labs/17_activations_and_losses/theory.md"
+      ]
+    },
+    {
+      "id": "a-simple-framework-for-contrastive-learning-of-visual",
+      "type": "paper",
+      "authors": [
+        "Chen, Ting",
+        "Kornblith, Simon",
+        "Norouzi, Mohammad",
+        "Hinton, Geoffrey"
+      ],
+      "title": "A Simple Framework for Contrastive Learning of Visual Representations",
+      "published": "2020",
+      "venue": "arXiv",
+      "cited_as": [
+        "A Simple Framework for Contrastive Learning of Visual Representations"
+      ],
+      "doi": "10.48550/arxiv.2002.05709",
+      "locator": "https://doi.org/10.48550/arxiv.2002.05709",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "A Simple Framework for Contrastive Learning of Visual Representations"
+      },
+      "used_in": [
+        "advanced_labs/30_self_supervised_simclr/theory.md"
+      ]
+    },
+    {
+      "id": "a-stochastic-approximation-method",
+      "type": "paper",
+      "authors": [
+        "Robbins, Herbert",
+        "Monro, Sutton"
+      ],
+      "title": "A Stochastic Approximation Method",
+      "published": "1951",
+      "venue": "The Annals of Mathematical Statistics",
+      "cited_as": [
+        "A Stochastic Approximation Method"
+      ],
+      "doi": "10.1214/aoms/1177729586",
+      "locator": "https://doi.org/10.1214/aoms/1177729586",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "A Stochastic Approximation Method"
+      },
+      "used_in": [
+        "labs/18_optimizers_and_schedulers/theory.md"
+      ]
+    },
+    {
+      "id": "a-survey-on-image-data-augmentation-for-deep-learning",
+      "type": "paper",
+      "authors": [
+        "Shorten, Connor",
+        "Khoshgoftaar, Taghi M."
+      ],
+      "title": "A survey on Image Data Augmentation for Deep Learning",
+      "published": "2019",
+      "venue": "Journal of Big Data",
+      "cited_as": [
+        "A survey on Image Data Augmentation for Deep Learning"
+      ],
+      "doi": "10.1186/s40537-019-0197-0",
+      "locator": "https://doi.org/10.1186/s40537-019-0197-0",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "A survey on Image Data Augmentation for Deep Learning"
+      },
+      "used_in": [
+        "labs/20_data_augmentation/theory.md"
+      ]
+    },
+    {
+      "id": "a-survey-on-transfer-learning",
+      "type": "paper",
+      "authors": [
+        "Pan, Sinno Jialin",
+        "Yang, Qiang"
+      ],
+      "title": "A Survey on Transfer Learning",
+      "published": "2010",
+      "venue": "IEEE Transactions on Knowledge and Data Engineering",
+      "cited_as": [
+        "A Survey on Transfer Learning"
+      ],
+      "doi": "10.1109/tkde.2009.191",
+      "locator": "https://doi.org/10.1109/tkde.2009.191",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "A Survey on Transfer Learning"
+      },
+      "used_in": [
+        "labs/11_transfer_learning/theory.md"
+      ]
+    },
+    {
+      "id": "a-unified-approach-to-interpreting-model-predictions",
+      "type": "paper",
+      "authors": [
+        "Lundberg, Scott",
+        "Lee, Su-In"
+      ],
+      "title": "A Unified Approach to Interpreting Model Predictions",
+      "published": "2017",
+      "venue": "arXiv",
+      "cited_as": [
+        "A Unified Approach to Interpreting Model Predictions (SHAP)"
+      ],
+      "doi": "10.48550/arxiv.1705.07874",
+      "locator": "https://doi.org/10.48550/arxiv.1705.07874",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "A Unified Approach to Interpreting Model Predictions"
+      },
+      "used_in": [
+        "labs/21_explainability/theory.md"
+      ]
+    },
+    {
+      "id": "adam-a-method-for-stochastic-optimization",
+      "type": "paper",
+      "authors": [
+        "Kingma, Diederik P.",
+        "Ba, Jimmy"
+      ],
+      "title": "Adam: A Method for Stochastic Optimization",
+      "published": "2014",
+      "venue": "arXiv",
+      "cited_as": [
+        "Adam: A Method for Stochastic Optimization"
+      ],
+      "doi": "10.48550/arxiv.1412.6980",
+      "locator": "https://doi.org/10.48550/arxiv.1412.6980",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Adam: A Method for Stochastic Optimization"
+      },
+      "used_in": [
+        "labs/18_optimizers_and_schedulers/theory.md"
+      ]
+    },
+    {
+      "id": "advances-and-open-problems-in-federated-learning",
+      "type": "paper",
+      "authors": [
+        "Kairouz, Peter",
+        "McMahan, H. Brendan"
+      ],
+      "title": "Advances and Open Problems in Federated Learning",
+      "published": "2021",
+      "venue": "Foundations and Trends® in Machine Learning",
+      "cited_as": [
+        "Advances and Open Problems in Federated Learning"
+      ],
+      "doi": "10.1561/2200000083",
+      "locator": "https://doi.org/10.1561/2200000083",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Advances and Open Problems in Federated Learning"
+      },
+      "used_in": [
+        "labs/15_federated_learning/theory.md"
+      ]
+    },
+    {
+      "id": "an-overview-of-gradient-descent-optimization-algorithms",
+      "type": "paper",
+      "authors": [
+        "Ruder, Sebastian"
+      ],
+      "title": "An overview of gradient descent optimization algorithms",
+      "published": "2016",
+      "venue": "arXiv",
+      "cited_as": [
+        "An overview of gradient descent optimization algorithms"
+      ],
+      "doi": "10.48550/arxiv.1609.04747",
+      "locator": "https://doi.org/10.48550/arxiv.1609.04747",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "An overview of gradient descent optimization algorithms"
+      },
+      "used_in": [
+        "labs/18_optimizers_and_schedulers/theory.md"
+      ]
+    },
+    {
+      "id": "approximation-by-superpositions-of-a-sigmoidal-function",
+      "type": "paper",
+      "authors": [
+        "Cybenko, G."
+      ],
+      "title": "Approximation by superpositions of a sigmoidal function",
+      "published": "1989",
+      "venue": "Mathematics of Control, Signals, and Systems",
+      "cited_as": [
+        "Approximation by superpositions of a sigmoidal function"
+      ],
+      "doi": "10.1007/bf02551274",
+      "locator": "https://doi.org/10.1007/bf02551274",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Approximation by superpositions of a sigmoidal function"
+      },
+      "used_in": [
+        "labs/02_mlp_nonlinear/theory.md"
+      ]
+    },
+    {
+      "id": "approximation-capabilities-of-multilayer-feedforward",
+      "type": "paper",
+      "authors": [
+        "Hornik, Kurt"
+      ],
+      "title": "Approximation capabilities of multilayer feedforward networks",
+      "published": "1991",
+      "venue": "Neural Networks",
+      "cited_as": [
+        "Approximation capabilities of multilayer feedforward networks"
+      ],
+      "doi": "10.1016/0893-6080(91)90009-t",
+      "locator": "https://doi.org/10.1016/0893-6080(91)90009-t",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Approximation capabilities of multilayer feedforward networks"
+      },
+      "used_in": [
+        "labs/02_mlp_nonlinear/theory.md"
+      ]
+    },
+    {
+      "id": "attention-is-all-you-need",
+      "type": "paper",
+      "authors": [
+        "Vaswani, Ashish",
+        "Shazeer, Noam",
+        "Parmar, Niki",
+        "Uszkoreit, Jakob",
+        "Jones, Llion",
+        "Gomez, Aidan N.",
+        "Kaiser, Lukasz",
+        "Polosukhin, Illia"
+      ],
+      "title": "Attention Is All You Need",
+      "published": "2017",
+      "venue": "arXiv",
+      "cited_as": [
+        "Attention Is All You Need"
+      ],
+      "doi": "10.48550/arxiv.1706.03762",
+      "locator": "https://doi.org/10.48550/arxiv.1706.03762",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Attention Is All You Need"
+      },
+      "used_in": [
+        "advanced_labs/25_transformer_finetuning/theory.md",
+        "labs/07_transformer_attention/theory.md"
+      ]
+    },
+    {
+      "id": "auto-encoding-variational-bayes",
+      "type": "paper",
+      "authors": [
+        "Kingma, Diederik P",
+        "Welling, Max"
+      ],
+      "title": "Auto-Encoding Variational Bayes",
+      "published": "2013",
+      "venue": "arXiv",
+      "cited_as": [
+        "Auto-Encoding Variational Bayes (VAE)"
+      ],
+      "doi": "10.48550/arxiv.1312.6114",
+      "locator": "https://doi.org/10.48550/arxiv.1312.6114",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Auto-Encoding Variational Bayes"
+      },
+      "used_in": [
+        "labs/06_autoencoder_anomaly/theory.md"
+      ]
+    },
+    {
+      "id": "autoaugment-learning-augmentation-strategies-from-data",
+      "type": "paper",
+      "authors": [
+        "Cubuk, Ekin D.",
+        "Zoph, Barret",
+        "Mané, Dandelion",
+        "Vasudevan, Vijay",
+        "Le, Quoc V."
+      ],
+      "title": "AutoAugment: Learning Augmentation Strategies From Data",
+      "published": "2019",
+      "venue": "2019 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)",
+      "cited_as": [
+        "AutoAugment: Learning Augmentation Strategies from Data"
+      ],
+      "doi": "10.1109/cvpr.2019.00020",
+      "locator": "https://doi.org/10.1109/cvpr.2019.00020",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "AutoAugment: Learning Augmentation Strategies From Data"
+      },
+      "used_in": [
+        "labs/20_data_augmentation/theory.md"
+      ]
+    },
+    {
+      "id": "automatic-differentiation-in-machine-learning-a-survey",
+      "type": "paper",
+      "authors": [
+        "Baydin, Atilim Gunes",
+        "Pearlmutter, Barak A.",
+        "Radul, Alexey Andreyevich",
+        "Siskind, Jeffrey Mark"
+      ],
+      "title": "Automatic differentiation in machine learning: a survey",
+      "published": "2015",
+      "venue": "arXiv",
+      "cited_as": [
+        "Automatic Differentiation in Machine Learning: a Survey"
+      ],
+      "doi": "10.48550/arxiv.1502.05767",
+      "locator": "https://doi.org/10.48550/arxiv.1502.05767",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Automatic differentiation in machine learning: a survey"
+      },
+      "used_in": [
+        "labs/16_backpropagation_manual/theory.md"
+      ]
+    },
+    {
+      "id": "batch-normalization-accelerating-deep-network-training-by",
+      "type": "paper",
+      "authors": [
+        "Ioffe, Sergey",
+        "Szegedy, Christian"
+      ],
+      "title": "Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift",
+      "published": "2015",
+      "venue": "arXiv",
+      "cited_as": [
+        "Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift"
+      ],
+      "doi": "10.48550/arxiv.1502.03167",
+      "locator": "https://doi.org/10.48550/arxiv.1502.03167",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift"
+      },
+      "used_in": [
+        "labs/19_regularization_dropout_batchnorm/theory.md"
+      ]
+    },
+    {
+      "id": "bert-pre-training-of-deep-bidirectional-transformers-for",
+      "type": "paper",
+      "authors": [
+        "Devlin, Jacob",
+        "Chang, Ming-Wei",
+        "Lee, Kenton",
+        "Toutanova, Kristina"
+      ],
+      "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+      "published": "2018",
+      "venue": "arXiv",
+      "cited_as": [
+        "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding"
+      ],
+      "doi": "10.48550/arxiv.1810.04805",
+      "locator": "https://doi.org/10.48550/arxiv.1810.04805",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding"
+      },
+      "used_in": [
+        "advanced_labs/25_transformer_finetuning/theory.md"
+      ]
+    },
+    {
+      "id": "bootstrap-your-own-latent",
+      "type": "paper",
+      "authors": [
+        "Grill, Jean-Bastien",
+        "Strub, Florian",
+        "Altché, Florent",
+        "Tallec, Corentin",
+        "Richemond, Pierre H.",
+        "Buchatskaya, Elena",
+        "Doersch, Carl",
+        "Pires, Bernardo Avila",
+        "Guo, Zhaohan Daniel",
+        "Azar, Mohammad Gheshlaghi",
+        "Piot, Bilal",
+        "Kavukcuoglu, Koray",
+        "Munos, Rémi",
+        "Valko, Michal"
+      ],
+      "title": "Bootstrap your own latent: A new approach to self-supervised Learning",
+      "published": "2020",
+      "venue": "arXiv",
+      "cited_as": [
+        "Bootstrap Your Own Latent"
+      ],
+      "doi": "10.48550/arxiv.2006.07733",
+      "locator": "https://doi.org/10.48550/arxiv.2006.07733",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Bootstrap your own latent: A new approach to self-supervised Learning"
+      },
+      "used_in": [
+        "advanced_labs/30_self_supervised_simclr/theory.md"
+      ]
+    },
+    {
+      "id": "cnn-architectures-for-large-scale-audio-classification",
+      "type": "paper",
+      "authors": [
+        "Hershey, Shawn",
+        "Chaudhuri, Sourish",
+        "Ellis, Daniel P. W.",
+        "Gemmeke, Jort F.",
+        "Jansen, Aren",
+        "Moore, R. Channing",
+        "Plakal, Manoj",
+        "Platt, Devin",
+        "Saurous, Rif A.",
+        "Seybold, Bryan",
+        "Slaney, Malcolm",
+        "Weiss, Ron J.",
+        "Wilson, Kevin"
+      ],
+      "title": "CNN architectures for large-scale audio classification",
+      "published": "2017",
+      "venue": "2017 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)",
+      "cited_as": [
+        "CNN Architectures for Large-Scale Audio Classification"
+      ],
+      "doi": "10.1109/icassp.2017.7952132",
+      "locator": "https://doi.org/10.1109/icassp.2017.7952132",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "CNN architectures for large-scale audio classification"
+      },
+      "used_in": [
+        "advanced_labs/27_audio_speechcommands/theory.md"
+      ]
+    },
+    {
+      "id": "communication-efficient-learning-of-deep-networks-from",
+      "type": "paper",
+      "authors": [
+        "McMahan, H. Brendan",
+        "Moore, Eider",
+        "Ramage, Daniel",
+        "Hampson, Seth",
+        "Arcas, Blaise Agüera y"
+      ],
+      "title": "Communication-Efficient Learning of Deep Networks from Decentralized Data",
+      "published": "2016",
+      "venue": "arXiv",
+      "cited_as": [
+        "Communication-Efficient Learning of Deep Networks from Decentralized Data (FedAvg)"
+      ],
+      "doi": "10.48550/arxiv.1602.05629",
+      "locator": "https://doi.org/10.48550/arxiv.1602.05629",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Communication-Efficient Learning of Deep Networks from Decentralized Data"
+      },
+      "used_in": [
+        "labs/15_federated_learning/theory.md"
+      ]
+    },
+    {
+      "id": "comparison-of-parametric-representations-for-monosyllabic",
+      "type": "paper",
+      "authors": [
+        "Davis, S.",
+        "Mermelstein, P."
+      ],
+      "title": "Comparison of parametric representations for monosyllabic word recognition in continuously spoken sentences",
+      "published": "1980",
+      "venue": "IEEE Transactions on Acoustics, Speech, and Signal Processing",
+      "cited_as": [
+        "Comparison of Parametric Representations for Monosyllabic Word Recognition in Continuously Spoken Sentences"
+      ],
+      "doi": "10.1109/tassp.1980.1163420",
+      "locator": "https://doi.org/10.1109/tassp.1980.1163420",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Comparison of parametric representations for monosyllabic word recognition in continuously spoken sentences"
+      },
+      "used_in": [
+        "advanced_labs/27_audio_speechcommands/theory.md"
+      ]
+    },
+    {
+      "id": "decoupled-weight-decay-regularization",
+      "type": "paper",
+      "authors": [
+        "Loshchilov, Ilya",
+        "Hutter, Frank"
+      ],
+      "title": "Decoupled Weight Decay Regularization",
+      "published": "2017",
+      "venue": "arXiv",
+      "cited_as": [
+        "Decoupled Weight Decay Regularization (AdamW)"
+      ],
+      "doi": "10.48550/arxiv.1711.05101",
+      "locator": "https://doi.org/10.48550/arxiv.1711.05101",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Decoupled Weight Decay Regularization"
+      },
+      "used_in": [
+        "labs/18_optimizers_and_schedulers/theory.md"
+      ]
+    },
+    {
+      "id": "deep-reinforcement-learning-with-double-q-learning",
+      "type": "paper",
+      "authors": [
+        "Van Hasselt, Hado",
+        "Guez, Arthur",
+        "Silver, David"
+      ],
+      "title": "Deep Reinforcement Learning with Double Q-Learning",
+      "published": "2016",
+      "venue": "Proceedings of the AAAI Conference on Artificial Intelligence",
+      "cited_as": [
+        "Deep Reinforcement Learning with Double Q-learning"
+      ],
+      "doi": "10.1609/aaai.v30i1.10295",
+      "locator": "https://doi.org/10.1609/aaai.v30i1.10295",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Deep Reinforcement Learning with Double Q-Learning"
+      },
+      "used_in": [
+        "labs/10_dqn_reinforcement/theory.md"
+      ]
+    },
+    {
+      "id": "deep-residual-learning-for-image-recognition",
+      "type": "paper",
+      "authors": [
+        "He, Kaiming",
+        "Zhang, Xiangyu",
+        "Ren, Shaoqing",
+        "Sun, Jian"
+      ],
+      "title": "Deep Residual Learning for Image Recognition",
+      "published": "2016",
+      "venue": "2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)",
+      "cited_as": [
+        "Deep Residual Learning for Image Recognition (ResNet)"
+      ],
+      "doi": "10.1109/cvpr.2016.90",
+      "locator": "https://doi.org/10.1109/cvpr.2016.90",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Deep Residual Learning for Image Recognition"
+      },
+      "used_in": [
+        "labs/03_cnn_vision/theory.md"
+      ]
+    },
+    {
+      "id": "deep-sparse-rectifier-neural-networks",
+      "type": "paper",
+      "authors": [
+        "Glorot, Bordes & Bengio"
+      ],
+      "title": "Deep Sparse Rectifier Neural Networks",
+      "published": "2011",
+      "venue": "AISTATS — evidencia de que los rectificadores facilitan el entrenamiento de redes profundas",
+      "cited_as": [
+        "Deep Sparse Rectifier Neural Networks"
+      ],
+      "status": "pendiente",
+      "pending_reason": "AISTATS 2011 (PMLR v15): las actas no registran DOI.",
+      "used_in": [
+        "labs/17_activations_and_losses/theory.md"
+      ]
+    },
+    {
+      "id": "deep-unsupervised-learning-using-nonequilibrium",
+      "type": "paper",
+      "authors": [
+        "Sohl-Dickstein, Jascha",
+        "Weiss, Eric A.",
+        "Maheswaranathan, Niru",
+        "Ganguli, Surya"
+      ],
+      "title": "Deep Unsupervised Learning using Nonequilibrium Thermodynamics",
+      "published": "2015",
+      "venue": "arXiv",
+      "cited_as": [
+        "Deep Unsupervised Learning using Nonequilibrium Thermodynamics"
+      ],
+      "doi": "10.48550/arxiv.1503.03585",
+      "locator": "https://doi.org/10.48550/arxiv.1503.03585",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Deep Unsupervised Learning using Nonequilibrium Thermodynamics"
+      },
+      "used_in": [
+        "advanced_labs/29_diffusion_ddpm/theory.md"
+      ]
+    },
+    {
+      "id": "delving-deep-into-rectifiers",
+      "type": "paper",
+      "authors": [
+        "He, Kaiming",
+        "Zhang, Xiangyu",
+        "Ren, Shaoqing",
+        "Sun, Jian"
+      ],
+      "title": "Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification",
+      "published": "2015",
+      "venue": "2015 IEEE International Conference on Computer Vision (ICCV)",
+      "cited_as": [
+        "Delving Deep into Rectifiers"
+      ],
+      "doi": "10.1109/iccv.2015.123",
+      "locator": "https://doi.org/10.1109/iccv.2015.123",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification"
+      },
+      "used_in": [
+        "labs/02_mlp_nonlinear/theory.md"
+      ]
+    },
+    {
+      "id": "denoising-diffusion-probabilistic-models",
+      "type": "paper",
+      "authors": [
+        "Ho, Jonathan",
+        "Jain, Ajay",
+        "Abbeel, Pieter"
+      ],
+      "title": "Denoising Diffusion Probabilistic Models",
+      "published": "2020",
+      "venue": "arXiv",
+      "cited_as": [
+        "Denoising Diffusion Probabilistic Models"
+      ],
+      "doi": "10.48550/arxiv.2006.11239",
+      "locator": "https://doi.org/10.48550/arxiv.2006.11239",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Denoising Diffusion Probabilistic Models"
+      },
+      "used_in": [
+        "advanced_labs/29_diffusion_ddpm/theory.md"
+      ]
+    },
+    {
+      "id": "distilbert-a-distilled-version-of-bert-smaller-faster",
+      "type": "paper",
+      "authors": [
+        "Sanh, Victor",
+        "Debut, Lysandre",
+        "Chaumond, Julien",
+        "Wolf, Thomas"
+      ],
+      "title": "DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter",
+      "published": "2019",
+      "venue": "arXiv",
+      "cited_as": [
+        "DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter",
+        "DistilBERT, a distilled version of BERT"
+      ],
+      "doi": "10.48550/arxiv.1910.01108",
+      "locator": "https://doi.org/10.48550/arxiv.1910.01108",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter"
+      },
+      "used_in": [
+        "advanced_labs/25_transformer_finetuning/theory.md",
+        "labs/14_knowledge_distillation/theory.md"
+      ]
+    },
+    {
+      "id": "distilling-the-knowledge-in-a-neural-network",
+      "type": "paper",
+      "authors": [
+        "Hinton, Geoffrey",
+        "Vinyals, Oriol",
+        "Dean, Jeff"
+      ],
+      "title": "Distilling the Knowledge in a Neural Network",
+      "published": "2015",
+      "venue": "arXiv",
+      "cited_as": [
+        "Distilling the Knowledge in a Neural Network"
+      ],
+      "doi": "10.48550/arxiv.1503.02531",
+      "locator": "https://doi.org/10.48550/arxiv.1503.02531",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Distilling the Knowledge in a Neural Network"
+      },
+      "used_in": [
+        "advanced_labs/25_transformer_finetuning/theory.md",
+        "labs/14_knowledge_distillation/theory.md"
+      ]
+    },
+    {
+      "id": "dropout-a-simple-way-to-prevent-neural-networks-from",
+      "type": "paper",
+      "authors": [
+        "Srivastava et al."
+      ],
+      "title": "Dropout: A Simple Way to Prevent Neural Networks from Overfitting",
+      "published": "2014",
+      "venue": "JMLR — formulación original de dropout y su interpretación como ensamble implícito",
+      "cited_as": [
+        "Dropout: A Simple Way to Prevent Neural Networks from Overfitting"
+      ],
+      "status": "pendiente",
+      "pending_reason": "JMLR 15 (2014): la revista no registra DOI.",
+      "used_in": [
+        "labs/19_regularization_dropout_batchnorm/theory.md"
+      ]
+    },
+    {
+      "id": "dropout-as-a-bayesian-approximation-representing-model",
+      "type": "paper",
+      "authors": [
+        "Gal, Yarin",
+        "Ghahramani, Zoubin"
+      ],
+      "title": "Dropout as a Bayesian Approximation: Representing Model Uncertainty in Deep Learning",
+      "published": "2015",
+      "venue": "arXiv",
+      "cited_as": [
+        "Dropout as a Bayesian Approximation: Representing Model Uncertainty in Deep Learning (MC Dropout)"
+      ],
+      "doi": "10.48550/arxiv.1506.02142",
+      "locator": "https://doi.org/10.48550/arxiv.1506.02142",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Dropout as a Bayesian Approximation: Representing Model Uncertainty in Deep Learning"
+      },
+      "used_in": [
+        "labs/22_uncertainty_calibration/theory.md"
+      ]
+    },
+    {
+      "id": "dueling-network-architectures-for-deep-reinforcement",
+      "type": "paper",
+      "authors": [
+        "Wang, Ziyu",
+        "Schaul, Tom",
+        "Hessel, Matteo",
+        "van Hasselt, Hado",
+        "Lanctot, Marc",
+        "de Freitas, Nando"
+      ],
+      "title": "Dueling Network Architectures for Deep Reinforcement Learning",
+      "published": "2015",
+      "venue": "arXiv",
+      "cited_as": [
+        "Dueling Network Architectures for Deep Reinforcement Learning"
+      ],
+      "doi": "10.48550/arxiv.1511.06581",
+      "locator": "https://doi.org/10.48550/arxiv.1511.06581",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Dueling Network Architectures for Deep Reinforcement Learning"
+      },
+      "used_in": [
+        "labs/10_dqn_reinforcement/theory.md"
+      ]
+    },
+    {
+      "id": "efficient-estimation-of-word-representations-in-vector-space",
+      "type": "paper",
+      "authors": [
+        "Mikolov, Tomas",
+        "Chen, Kai",
+        "Corrado, Greg",
+        "Dean, Jeffrey"
+      ],
+      "title": "Efficient Estimation of Word Representations in Vector Space",
+      "published": "2013",
+      "venue": "arXiv",
+      "cited_as": [
+        "Efficient Estimation of Word Representations in Vector Space (word2vec)"
+      ],
+      "doi": "10.48550/arxiv.1301.3781",
+      "locator": "https://doi.org/10.48550/arxiv.1301.3781",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Efficient Estimation of Word Representations in Vector Space"
+      },
+      "used_in": [
+        "labs/04_rnn_sequences/theory.md"
+      ]
+    },
+    {
+      "id": "finding-structure-in-time",
+      "type": "paper",
+      "authors": [
+        "Elman, Jeffrey L."
+      ],
+      "title": "Finding Structure in Time",
+      "published": "1990",
+      "venue": "Cognitive Science",
+      "cited_as": [
+        "Finding Structure in Time"
+      ],
+      "doi": "10.1207/s15516709cog1402_1",
+      "locator": "https://doi.org/10.1207/s15516709cog1402_1",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Finding Structure in Time"
+      },
+      "used_in": [
+        "labs/04_rnn_sequences/theory.md"
+      ]
+    },
+    {
+      "id": "fully-convolutional-networks-for-semantic-segmentation",
+      "type": "paper",
+      "authors": [
+        "Long, Jonathan",
+        "Shelhamer, Evan",
+        "Darrell, Trevor"
+      ],
+      "title": "Fully convolutional networks for semantic segmentation",
+      "published": "2015",
+      "venue": "2015 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)",
+      "cited_as": [
+        "Fully Convolutional Networks for Semantic Segmentation"
+      ],
+      "doi": "10.1109/cvpr.2015.7298965",
+      "locator": "https://doi.org/10.1109/cvpr.2015.7298965",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Fully convolutional networks for semantic segmentation"
+      },
+      "used_in": [
+        "advanced_labs/26_segmentation_unet/theory.md"
+      ]
+    },
+    {
+      "id": "generative-adversarial-nets",
+      "type": "paper",
+      "authors": [
+        "Goodfellow, Ian J.",
+        "Pouget-Abadie, Jean",
+        "Mirza, Mehdi",
+        "Xu, Bing",
+        "Warde-Farley, David",
+        "Ozair, Sherjil",
+        "Courville, Aaron",
+        "Bengio, Yoshua"
+      ],
+      "title": "Generative Adversarial Networks",
+      "published": "2014",
+      "venue": "arXiv",
+      "cited_as": [
+        "Generative Adversarial Nets"
+      ],
+      "doi": "10.48550/arxiv.1406.2661",
+      "locator": "https://doi.org/10.48550/arxiv.1406.2661",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Generative Adversarial Networks"
+      },
+      "used_in": [
+        "labs/08_gan_generation/theory.md"
+      ]
+    },
+    {
+      "id": "grad-cam-visual-explanations-from-deep-networks-via",
+      "type": "paper",
+      "authors": [
+        "Selvaraju, Ramprasaath R.",
+        "Cogswell, Michael",
+        "Das, Abhishek",
+        "Vedantam, Ramakrishna",
+        "Parikh, Devi",
+        "Batra, Dhruv"
+      ],
+      "title": "Grad-CAM: Visual Explanations from Deep Networks via Gradient-Based Localization",
+      "published": "2017",
+      "venue": "2017 IEEE International Conference on Computer Vision (ICCV)",
+      "cited_as": [
+        "Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization"
+      ],
+      "doi": "10.1109/iccv.2017.74",
+      "locator": "https://doi.org/10.1109/iccv.2017.74",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Grad-CAM: Visual Explanations from Deep Networks via Gradient-Based Localization"
+      },
+      "used_in": [
+        "labs/21_explainability/theory.md"
+      ]
+    },
+    {
+      "id": "gradient-based-learning-applied-to-document-recognition",
+      "type": "paper",
+      "authors": [
+        "Lecun, Y.",
+        "Bottou, L.",
+        "Bengio, Y.",
+        "Haffner, P."
+      ],
+      "title": "Gradient-based learning applied to document recognition",
+      "published": "1998",
+      "venue": "Proceedings of the IEEE",
+      "cited_as": [
+        "Gradient-based learning applied to document recognition (LeNet)"
+      ],
+      "doi": "10.1109/5.726791",
+      "locator": "https://doi.org/10.1109/5.726791",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Gradient-based learning applied to document recognition"
+      },
+      "used_in": [
+        "labs/03_cnn_vision/theory.md"
+      ]
+    },
+    {
+      "id": "graph-attention-networks",
+      "type": "paper",
+      "authors": [
+        "Veličković, Petar",
+        "Cucurull, Guillem",
+        "Casanova, Arantxa",
+        "Romero, Adriana",
+        "Liò, Pietro",
+        "Bengio, Yoshua"
+      ],
+      "title": "Graph Attention Networks",
+      "published": "2017",
+      "venue": "arXiv",
+      "cited_as": [
+        "Graph Attention Networks"
+      ],
+      "doi": "10.48550/arxiv.1710.10903",
+      "locator": "https://doi.org/10.48550/arxiv.1710.10903",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Graph Attention Networks"
+      },
+      "used_in": [
+        "labs/09_gnn_graphs/theory.md"
+      ]
+    },
+    {
+      "id": "how-transferable-are-features-in-deep-neural-networks",
+      "type": "paper",
+      "authors": [
+        "Yosinski, Jason",
+        "Clune, Jeff",
+        "Bengio, Yoshua",
+        "Lipson, Hod"
+      ],
+      "title": "How transferable are features in deep neural networks?",
+      "published": "2014",
+      "venue": "arXiv",
+      "cited_as": [
+        "How transferable are features in deep neural networks?"
+      ],
+      "doi": "10.48550/arxiv.1411.1792",
+      "locator": "https://doi.org/10.48550/arxiv.1411.1792",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "How transferable are features in deep neural networks?"
+      },
+      "used_in": [
+        "labs/11_transfer_learning/theory.md"
+      ]
+    },
+    {
+      "id": "human-level-control-through-deep-reinforcement-learning",
+      "type": "paper",
+      "authors": [
+        "Mnih, Volodymyr",
+        "Kavukcuoglu, Koray",
+        "Silver, David",
+        "Rusu, Andrei A.",
+        "Veness, Joel",
+        "Bellemare, Marc G.",
+        "Graves, Alex",
+        "Riedmiller, Martin",
+        "Fidjeland, Andreas K.",
+        "Ostrovski, Georg",
+        "Petersen, Stig",
+        "Beattie, Charles",
+        "Sadik, Amir",
+        "Antonoglou, Ioannis",
+        "King, Helen",
+        "Kumaran, Dharshan",
+        "Wierstra, Daan",
+        "Legg, Shane",
+        "Hassabis, Demis"
+      ],
+      "title": "Human-level control through deep reinforcement learning",
+      "published": "2015",
+      "venue": "Nature",
+      "cited_as": [
+        "Human-level control through deep reinforcement learning (DQN)"
+      ],
+      "doi": "10.1038/nature14236",
+      "locator": "https://doi.org/10.1038/nature14236",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Human-level control through deep reinforcement learning"
+      },
+      "used_in": [
+        "labs/10_dqn_reinforcement/theory.md"
+      ]
+    },
+    {
+      "id": "imagenet-classification-with-deep-convolutional-neural",
+      "type": "paper",
+      "authors": [
+        "Krizhevsky, Alex",
+        "Sutskever, Ilya",
+        "Hinton, Geoffrey E."
+      ],
+      "title": "ImageNet classification with deep convolutional neural networks",
+      "published": "2017",
+      "venue": "Communications of the ACM",
+      "cited_as": [
+        "ImageNet Classification with Deep Convolutional Neural Networks (AlexNet)"
+      ],
+      "doi": "10.1145/3065386",
+      "locator": "https://doi.org/10.1145/3065386",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "ImageNet classification with deep convolutional neural networks"
+      },
+      "used_in": [
+        "labs/03_cnn_vision/theory.md"
+      ]
+    },
+    {
+      "id": "improved-denoising-diffusion-probabilistic-models",
+      "type": "paper",
+      "authors": [
+        "Nichol, Alex",
+        "Dhariwal, Prafulla"
+      ],
+      "title": "Improved Denoising Diffusion Probabilistic Models",
+      "published": "2021",
+      "venue": "arXiv",
+      "cited_as": [
+        "Improved Denoising Diffusion Probabilistic Models"
+      ],
+      "doi": "10.48550/arxiv.2102.09672",
+      "locator": "https://doi.org/10.48550/arxiv.2102.09672",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Improved Denoising Diffusion Probabilistic Models"
+      },
+      "used_in": [
+        "advanced_labs/29_diffusion_ddpm/theory.md"
+      ]
+    },
+    {
+      "id": "improved-regularization-of-convolutional-neural-networks",
+      "type": "paper",
+      "authors": [
+        "DeVries, Terrance",
+        "Taylor, Graham W."
+      ],
+      "title": "Improved Regularization of Convolutional Neural Networks with Cutout",
+      "published": "2017",
+      "venue": "arXiv",
+      "cited_as": [
+        "Improved Regularization of Convolutional Neural Networks with Cutout"
+      ],
+      "doi": "10.48550/arxiv.1708.04552",
+      "locator": "https://doi.org/10.48550/arxiv.1708.04552",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Improved Regularization of Convolutional Neural Networks with Cutout"
+      },
+      "used_in": [
+        "labs/20_data_augmentation/theory.md"
+      ]
+    },
+    {
+      "id": "improved-training-of-wasserstein-gans",
+      "type": "paper",
+      "authors": [
+        "Gulrajani, Ishaan",
+        "Ahmed, Faruk",
+        "Arjovsky, Martin",
+        "Dumoulin, Vincent",
+        "Courville, Aaron"
+      ],
+      "title": "Improved Training of Wasserstein GANs",
+      "published": "2017",
+      "venue": "arXiv",
+      "cited_as": [
+        "Improved Training of Wasserstein GANs"
+      ],
+      "doi": "10.48550/arxiv.1704.00028",
+      "locator": "https://doi.org/10.48550/arxiv.1704.00028",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Improved Training of Wasserstein GANs"
+      },
+      "used_in": [
+        "advanced_labs/28_wgan_gp/theory.md"
+      ]
+    },
+    {
+      "id": "inductive-representation-learning-on-large-graphs",
+      "type": "paper",
+      "authors": [
+        "Hamilton, William L.",
+        "Ying, Rex",
+        "Leskovec, Jure"
+      ],
+      "title": "Inductive Representation Learning on Large Graphs",
+      "published": "2017",
+      "venue": "arXiv",
+      "cited_as": [
+        "Inductive Representation Learning on Large Graphs (GraphSAGE)"
+      ],
+      "doi": "10.48550/arxiv.1706.02216",
+      "locator": "https://doi.org/10.48550/arxiv.1706.02216",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Inductive Representation Learning on Large Graphs"
+      },
+      "used_in": [
+        "labs/09_gnn_graphs/theory.md"
+      ]
+    },
+    {
+      "id": "learning-phrase-representations-using-rnn-encoder-decoder",
+      "type": "paper",
+      "authors": [
+        "Cho, Kyunghyun",
+        "van Merrienboer, Bart",
+        "Gulcehre, Caglar",
+        "Bahdanau, Dzmitry",
+        "Bougares, Fethi",
+        "Schwenk, Holger",
+        "Bengio, Yoshua"
+      ],
+      "title": "Learning Phrase Representations using RNN Encoder–Decoder for Statistical Machine Translation",
+      "published": "2014",
+      "venue": "Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing (EMNLP)",
+      "cited_as": [
+        "Learning Phrase Representations using RNN Encoder-Decoder (GRU)"
+      ],
+      "doi": "10.3115/v1/d14-1179",
+      "locator": "https://doi.org/10.3115/v1/d14-1179",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Learning Phrase Representations using RNN Encoder–Decoder for Statistical Machine Translation"
+      },
+      "used_in": [
+        "labs/05_lstm_time_series/theory.md"
+      ]
+    },
+    {
+      "id": "learning-representations-by-back-propagating-errors",
+      "type": "paper",
+      "authors": [
+        "Rumelhart, David E.",
+        "Hinton, Geoffrey E.",
+        "Williams, Ronald J."
+      ],
+      "title": "Learning representations by back-propagating errors",
+      "published": "1986",
+      "venue": "Nature",
+      "cited_as": [
+        "Learning representations by back-propagating errors"
+      ],
+      "doi": "10.1038/323533a0",
+      "locator": "https://doi.org/10.1038/323533a0",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Learning representations by back-propagating errors"
+      },
+      "used_in": [
+        "labs/16_backpropagation_manual/theory.md"
+      ]
+    },
+    {
+      "id": "learning-transferable-visual-models-from-natural-language",
+      "type": "paper",
+      "authors": [
+        "Radford, Alec",
+        "Kim, Jong Wook",
+        "Hallacy, Chris",
+        "Ramesh, Aditya",
+        "Goh, Gabriel",
+        "Agarwal, Sandhini",
+        "Sastry, Girish",
+        "Askell, Amanda",
+        "Mishkin, Pamela",
+        "Clark, Jack",
+        "Krueger, Gretchen",
+        "Sutskever, Ilya"
+      ],
+      "title": "Learning Transferable Visual Models From Natural Language Supervision",
+      "published": "2021",
+      "venue": "arXiv",
+      "cited_as": [
+        "Learning Transferable Visual Models from Natural Language Supervision (CLIP)"
+      ],
+      "doi": "10.48550/arxiv.2103.00020",
+      "locator": "https://doi.org/10.48550/arxiv.2103.00020",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Learning Transferable Visual Models From Natural Language Supervision"
+      },
+      "used_in": [
+        "labs/12_multimodal_fusion/theory.md"
+      ]
+    },
+    {
+      "id": "long-short-term-memory",
+      "type": "paper",
+      "authors": [
+        "Hochreiter, Sepp",
+        "Schmidhuber, Jürgen"
+      ],
+      "title": "Long Short-Term Memory",
+      "published": "1997",
+      "venue": "Neural Computation",
+      "cited_as": [
+        "Long Short-Term Memory"
+      ],
+      "doi": "10.1162/neco.1997.9.8.1735",
+      "locator": "https://doi.org/10.1162/neco.1997.9.8.1735",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Long Short-Term Memory"
+      },
+      "used_in": [
+        "labs/05_lstm_time_series/theory.md"
+      ]
+    },
+    {
+      "id": "lora-low-rank-adaptation-of-large-language-models",
+      "type": "paper",
+      "authors": [
+        "Hu, Edward J.",
+        "Shen, Yelong",
+        "Wallis, Phillip",
+        "Allen-Zhu, Zeyuan",
+        "Li, Yuanzhi",
+        "Wang, Shean",
+        "Wang, Lu",
+        "Chen, Weizhu"
+      ],
+      "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+      "published": "2021",
+      "venue": "arXiv",
+      "cited_as": [
+        "LoRA: Low-Rank Adaptation of Large Language Models"
+      ],
+      "doi": "10.48550/arxiv.2106.09685",
+      "locator": "https://doi.org/10.48550/arxiv.2106.09685",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "LoRA: Low-Rank Adaptation of Large Language Models"
+      },
+      "used_in": [
+        "advanced_labs/25_transformer_finetuning/theory.md"
+      ]
+    },
+    {
+      "id": "model-compression",
+      "type": "paper",
+      "authors": [
+        "Buciluǎ, Cristian",
+        "Caruana, Rich",
+        "Niculescu-Mizil, Alexandru"
+      ],
+      "title": "Model compression",
+      "published": "2006",
+      "venue": "Proceedings of the 12th ACM SIGKDD international conference on Knowledge discovery and data mining",
+      "cited_as": [
+        "Model Compression"
+      ],
+      "doi": "10.1145/1150402.1150464",
+      "locator": "https://doi.org/10.1145/1150402.1150464",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Model compression"
+      },
+      "used_in": [
+        "labs/14_knowledge_distillation/theory.md"
+      ]
+    },
+    {
+      "id": "momentum-contrast-for-unsupervised-visual-representation",
+      "type": "paper",
+      "authors": [
+        "He, Kaiming",
+        "Fan, Haoqi",
+        "Wu, Yuxin",
+        "Xie, Saining",
+        "Girshick, Ross"
+      ],
+      "title": "Momentum Contrast for Unsupervised Visual Representation Learning",
+      "published": "2020",
+      "venue": "2020 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)",
+      "cited_as": [
+        "Momentum Contrast for Unsupervised Visual Representation Learning"
+      ],
+      "doi": "10.1109/cvpr42600.2020.00975",
+      "locator": "https://doi.org/10.1109/cvpr42600.2020.00975",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Momentum Contrast for Unsupervised Visual Representation Learning"
+      },
+      "used_in": [
+        "advanced_labs/30_self_supervised_simclr/theory.md"
+      ]
+    },
+    {
+      "id": "multimodal-machine-learning-a-survey-and-taxonomy",
+      "type": "paper",
+      "authors": [
+        "Baltrusaitis, Tadas",
+        "Ahuja, Chaitanya",
+        "Morency, Louis-Philippe"
+      ],
+      "title": "Multimodal Machine Learning: A Survey and Taxonomy",
+      "published": "2019",
+      "venue": "IEEE Transactions on Pattern Analysis and Machine Intelligence",
+      "cited_as": [
+        "Multimodal Machine Learning: A Survey and Taxonomy"
+      ],
+      "doi": "10.1109/tpami.2018.2798607",
+      "locator": "https://doi.org/10.1109/tpami.2018.2798607",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Multimodal Machine Learning: A Survey and Taxonomy"
+      },
+      "used_in": [
+        "labs/12_multimodal_fusion/theory.md"
+      ]
+    },
+    {
+      "id": "neural-machine-translation-by-jointly-learning-to-align-and",
+      "type": "paper",
+      "authors": [
+        "Bahdanau, Dzmitry",
+        "Cho, Kyunghyun",
+        "Bengio, Yoshua"
+      ],
+      "title": "Neural Machine Translation by Jointly Learning to Align and Translate",
+      "published": "2014",
+      "venue": "arXiv",
+      "cited_as": [
+        "Neural Machine Translation by Jointly Learning to Align and Translate"
+      ],
+      "doi": "10.48550/arxiv.1409.0473",
+      "locator": "https://doi.org/10.48550/arxiv.1409.0473",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Neural Machine Translation by Jointly Learning to Align and Translate"
+      },
+      "used_in": [
+        "labs/07_transformer_attention/theory.md"
+      ]
+    },
+    {
+      "id": "on-calibration-of-modern-neural-networks",
+      "type": "paper",
+      "authors": [
+        "Guo, Chuan",
+        "Pleiss, Geoff",
+        "Sun, Yu",
+        "Weinberger, Kilian Q."
+      ],
+      "title": "On Calibration of Modern Neural Networks",
+      "published": "2017",
+      "venue": "arXiv",
+      "cited_as": [
+        "On Calibration of Modern Neural Networks"
+      ],
+      "doi": "10.48550/arxiv.1706.04599",
+      "locator": "https://doi.org/10.48550/arxiv.1706.04599",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "On Calibration of Modern Neural Networks"
+      },
+      "used_in": [
+        "labs/22_uncertainty_calibration/theory.md"
+      ]
+    },
+    {
+      "id": "on-the-number-of-linear-regions-of-deep-neural-networks",
+      "type": "paper",
+      "authors": [
+        "Montúfar, Guido",
+        "Pascanu, Razvan",
+        "Cho, Kyunghyun",
+        "Bengio, Yoshua"
+      ],
+      "title": "On the Number of Linear Regions of Deep Neural Networks",
+      "published": "2014",
+      "venue": "arXiv",
+      "cited_as": [
+        "On the Number of Linear Regions of Deep Neural Networks"
+      ],
+      "doi": "10.48550/arxiv.1402.1869",
+      "locator": "https://doi.org/10.48550/arxiv.1402.1869",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "On the Number of Linear Regions of Deep Neural Networks"
+      },
+      "used_in": [
+        "labs/02_mlp_nonlinear/theory.md"
+      ]
+    },
+    {
+      "id": "optuna-a-next-generation-hyperparameter-optimization",
+      "type": "paper",
+      "authors": [
+        "Akiba, Takuya",
+        "Sano, Shotaro",
+        "Yanase, Toshihiko",
+        "Ohta, Takeru",
+        "Koyama, Masanori"
+      ],
+      "title": "Optuna: A Next-generation Hyperparameter Optimization Framework",
+      "published": "2019",
+      "venue": "arXiv",
+      "cited_as": [
+        "Optuna: A Next-generation Hyperparameter Optimization Framework"
+      ],
+      "doi": "10.48550/arxiv.1907.10902",
+      "locator": "https://doi.org/10.48550/arxiv.1907.10902",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Optuna: A Next-generation Hyperparameter Optimization Framework"
+      },
+      "used_in": [
+        "labs/13_hyperparameter_search/theory.md"
+      ]
+    },
+    {
+      "id": "parameter-efficient-transfer-learning-for-nlp",
+      "type": "paper",
+      "authors": [
+        "Houlsby, Neil",
+        "Giurgiu, Andrei",
+        "Jastrzebski, Stanislaw",
+        "Morrone, Bruna",
+        "de Laroussilhe, Quentin",
+        "Gesmundo, Andrea",
+        "Attariyan, Mona",
+        "Gelly, Sylvain"
+      ],
+      "title": "Parameter-Efficient Transfer Learning for NLP",
+      "published": "2019",
+      "venue": "arXiv",
+      "cited_as": [
+        "Parameter-Efficient Transfer Learning for NLP"
+      ],
+      "doi": "10.48550/arxiv.1902.00751",
+      "locator": "https://doi.org/10.48550/arxiv.1902.00751",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Parameter-Efficient Transfer Learning for NLP"
+      },
+      "used_in": [
+        "advanced_labs/25_transformer_finetuning/theory.md"
+      ]
+    },
+    {
+      "id": "pytorch-an-imperative-style-high-performance-deep-learning",
+      "type": "paper",
+      "authors": [
+        "Paszke, Adam",
+        "Gross, Sam",
+        "Massa, Francisco",
+        "Lerer, Adam",
+        "Bradbury, James",
+        "Chanan, Gregory",
+        "Killeen, Trevor",
+        "Lin, Zeming",
+        "Gimelshein, Natalia",
+        "Antiga, Luca",
+        "Desmaison, Alban",
+        "Köpf, Andreas",
+        "Yang, Edward",
+        "DeVito, Zach",
+        "Raison, Martin",
+        "Tejani, Alykhan",
+        "Chilamkurthy, Sasank",
+        "Steiner, Benoit",
+        "Fang, Lu",
+        "Bai, Junjie",
+        "Chintala, Soumith"
+      ],
+      "title": "PyTorch: An Imperative Style, High-Performance Deep Learning Library",
+      "published": "2019",
+      "venue": "arXiv",
+      "cited_as": [
+        "PyTorch: An Imperative Style, High-Performance Deep Learning Library"
+      ],
+      "doi": "10.48550/arxiv.1912.01703",
+      "locator": "https://doi.org/10.48550/arxiv.1912.01703",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "PyTorch: An Imperative Style, High-Performance Deep Learning Library"
+      },
+      "used_in": [
+        "labs/01_pytorch_perceptron/theory.md"
+      ]
+    },
+    {
+      "id": "quantization-and-training-of-neural-networks-for-efficient",
+      "type": "paper",
+      "authors": [
+        "Jacob, Benoit",
+        "Kligys, Skirmantas",
+        "Chen, Bo",
+        "Zhu, Menglong",
+        "Tang, Matthew",
+        "Howard, Andrew",
+        "Adam, Hartwig",
+        "Kalenichenko, Dmitry"
+      ],
+      "title": "Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference",
+      "published": "2018",
+      "venue": "2018 IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+      "cited_as": [
+        "Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference"
+      ],
+      "doi": "10.1109/cvpr.2018.00286",
+      "locator": "https://doi.org/10.1109/cvpr.2018.00286",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference"
+      },
+      "used_in": [
+        "labs/23_model_export_and_inference/theory.md"
+      ]
+    },
+    {
+      "id": "random-search-for-hyper-parameter-optimization",
+      "type": "paper",
+      "authors": [
+        "Bergstra & Bengio"
+      ],
+      "title": "Random Search for Hyper-Parameter Optimization",
+      "published": "2012",
+      "venue": "JMLR — evidencia de por qué la búsqueda aleatoria supera a la malla cuando pocos hiperparámetros dominan",
+      "cited_as": [
+        "Random Search for Hyper-Parameter Optimization"
+      ],
+      "status": "pendiente",
+      "pending_reason": "JMLR 13 (2012): la revista no registra DOI.",
+      "used_in": [
+        "labs/13_hyperparameter_search/theory.md"
+      ]
+    },
+    {
+      "id": "rectified-linear-units-improve-restricted-boltzmann-machines",
+      "type": "paper",
+      "authors": [
+        "Nair & Hinton"
+      ],
+      "title": "Rectified Linear Units Improve Restricted Boltzmann Machines (ReLU)",
+      "published": "2010",
+      "venue": "ICML — introducción de la unidad ReLU",
+      "cited_as": [
+        "Rectified Linear Units Improve Restricted Boltzmann Machines (ReLU)"
+      ],
+      "status": "pendiente",
+      "pending_reason": "ICML 2010: las actas no registran DOI.",
+      "used_in": [
+        "labs/17_activations_and_losses/theory.md"
+      ]
+    },
+    {
+      "id": "reducing-the-dimensionality-of-data-with-neural-networks",
+      "type": "paper",
+      "authors": [
+        "Hinton, G. E.",
+        "Salakhutdinov, R. R."
+      ],
+      "title": "Reducing the Dimensionality of Data with Neural Networks",
+      "published": "2006",
+      "venue": "Science",
+      "cited_as": [
+        "Reducing the Dimensionality of Data with Neural Networks"
+      ],
+      "doi": "10.1126/science.1127647",
+      "locator": "https://doi.org/10.1126/science.1127647",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "Reducing the Dimensionality of Data with Neural Networks"
+      },
+      "used_in": [
+        "labs/06_autoencoder_anomaly/theory.md"
+      ]
+    },
+    {
+      "id": "representation-learning-with-contrastive-predictive-coding",
+      "type": "paper",
+      "authors": [
+        "Oord, Aaron van den",
+        "Li, Yazhe",
+        "Vinyals, Oriol"
+      ],
+      "title": "Representation Learning with Contrastive Predictive Coding",
+      "published": "2018",
+      "venue": "arXiv",
+      "cited_as": [
+        "Representation Learning with Contrastive Predictive Coding"
+      ],
+      "doi": "10.48550/arxiv.1807.03748",
+      "locator": "https://doi.org/10.48550/arxiv.1807.03748",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Representation Learning with Contrastive Predictive Coding"
+      },
+      "used_in": [
+        "advanced_labs/30_self_supervised_simclr/theory.md"
+      ]
+    },
+    {
+      "id": "semi-supervised-classification-with-graph-convolutional",
+      "type": "paper",
+      "authors": [
+        "Kipf, Thomas N.",
+        "Welling, Max"
+      ],
+      "title": "Semi-Supervised Classification with Graph Convolutional Networks",
+      "published": "2016",
+      "venue": "arXiv",
+      "cited_as": [
+        "Semi-Supervised Classification with Graph Convolutional Networks"
+      ],
+      "doi": "10.48550/arxiv.1609.02907",
+      "locator": "https://doi.org/10.48550/arxiv.1609.02907",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Semi-Supervised Classification with Graph Convolutional Networks"
+      },
+      "used_in": [
+        "labs/09_gnn_graphs/theory.md"
+      ]
+    },
+    {
+      "id": "simple-and-scalable-predictive-uncertainty-estimation-using",
+      "type": "paper",
+      "authors": [
+        "Lakshminarayanan, Balaji",
+        "Pritzel, Alexander",
+        "Blundell, Charles"
+      ],
+      "title": "Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles",
+      "published": "2016",
+      "venue": "arXiv",
+      "cited_as": [
+        "Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles"
+      ],
+      "doi": "10.48550/arxiv.1612.01474",
+      "locator": "https://doi.org/10.48550/arxiv.1612.01474",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles"
+      },
+      "used_in": [
+        "labs/22_uncertainty_calibration/theory.md"
+      ]
+    },
+    {
+      "id": "specaugment-a-simple-data-augmentation-method-for-automatic",
+      "type": "paper",
+      "authors": [
+        "Park, Daniel S.",
+        "Chan, William",
+        "Zhang, Yu",
+        "Chiu, Chung-Cheng",
+        "Zoph, Barret",
+        "Cubuk, Ekin D.",
+        "Le, Quoc V."
+      ],
+      "title": "SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition",
+      "published": "2019",
+      "venue": "Interspeech 2019",
+      "cited_as": [
+        "SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition"
+      ],
+      "doi": "10.21437/interspeech.2019-2680",
+      "locator": "https://doi.org/10.21437/interspeech.2019-2680",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition"
+      },
+      "used_in": [
+        "advanced_labs/27_audio_speechcommands/theory.md"
+      ]
+    },
+    {
+      "id": "speech-commands-a-dataset-for-limited-vocabulary-speech",
+      "type": "paper",
+      "authors": [
+        "Warden, Pete"
+      ],
+      "title": "Speech Commands: A Dataset for Limited-Vocabulary Speech Recognition",
+      "published": "2018",
+      "venue": "arXiv",
+      "cited_as": [
+        "Speech Commands: A Dataset for Limited-Vocabulary Speech Recognition"
+      ],
+      "doi": "10.48550/arxiv.1804.03209",
+      "locator": "https://doi.org/10.48550/arxiv.1804.03209",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Speech Commands: A Dataset for Limited-Vocabulary Speech Recognition"
+      },
+      "used_in": [
+        "advanced_labs/27_audio_speechcommands/theory.md"
+      ]
+    },
+    {
+      "id": "the-perceptron-a-probabilistic-model-for-information",
+      "type": "paper",
+      "authors": [
+        "Rosenblatt, F."
+      ],
+      "title": "The perceptron: A probabilistic model for information storage and organization in the brain.",
+      "published": "1958",
+      "venue": "Psychological Review",
+      "cited_as": [
+        "The perceptron: a probabilistic model for information storage and organization in the brain"
+      ],
+      "doi": "10.1037/h0042519",
+      "locator": "https://doi.org/10.1037/h0042519",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "The perceptron: A probabilistic model for information storage and organization in the brain."
+      },
+      "used_in": [
+        "labs/00_numpy_neuron/theory.md"
+      ]
+    },
+    {
+      "id": "u-net-convolutional-networks-for-biomedical-image",
+      "type": "paper",
+      "authors": [
+        "Ronneberger, Olaf",
+        "Fischer, Philipp",
+        "Brox, Thomas"
+      ],
+      "title": "U-Net: Convolutional Networks for Biomedical Image Segmentation",
+      "published": "2015",
+      "venue": "Lecture Notes in Computer Science",
+      "cited_as": [
+        "U-Net: Convolutional Networks for Biomedical Image Segmentation"
+      ],
+      "doi": "10.1007/978-3-319-24574-4_28",
+      "locator": "https://doi.org/10.1007/978-3-319-24574-4_28",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "U-Net: Convolutional Networks for Biomedical Image Segmentation"
+      },
+      "used_in": [
+        "advanced_labs/26_segmentation_unet/theory.md"
+      ]
+    },
+    {
+      "id": "understanding-contrastive-representation-learning-through",
+      "type": "paper",
+      "authors": [
+        "Wang, Tongzhou",
+        "Isola, Phillip"
+      ],
+      "title": "Understanding Contrastive Representation Learning through Alignment and Uniformity on the Hypersphere",
+      "published": "2020",
+      "venue": "arXiv",
+      "cited_as": [
+        "Understanding Contrastive Representation Learning through Alignment and Uniformity on the Hypersphere"
+      ],
+      "doi": "10.48550/arxiv.2005.10242",
+      "locator": "https://doi.org/10.48550/arxiv.2005.10242",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Understanding Contrastive Representation Learning through Alignment and Uniformity on the Hypersphere"
+      },
+      "used_in": [
+        "advanced_labs/30_self_supervised_simclr/theory.md"
+      ]
+    },
+    {
+      "id": "understanding-the-difficulty-of-training-deep-feedforward",
+      "type": "paper",
+      "authors": [
+        "Glorot & Bengio"
+      ],
+      "title": "Understanding the difficulty of training deep feedforward neural networks",
+      "published": "2010",
+      "venue": "AISTATS — la inicialización que equilibra la varianza en ambos sentidos",
+      "cited_as": [
+        "Understanding the difficulty of training deep feedforward neural networks"
+      ],
+      "status": "pendiente",
+      "pending_reason": "AISTATS 2010 (PMLR v9): las actas no registran DOI.",
+      "used_in": [
+        "labs/02_mlp_nonlinear/theory.md"
+      ]
+    },
+    {
+      "id": "unsupervised-representation-learning-with-deep",
+      "type": "paper",
+      "authors": [
+        "Radford, Alec",
+        "Metz, Luke",
+        "Chintala, Soumith"
+      ],
+      "title": "Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks",
+      "published": "2015",
+      "venue": "arXiv",
+      "cited_as": [
+        "Unsupervised Representation Learning with Deep Convolutional GANs (DCGAN)"
+      ],
+      "doi": "10.48550/arxiv.1511.06434",
+      "locator": "https://doi.org/10.48550/arxiv.1511.06434",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks"
+      },
+      "used_in": [
+        "labs/08_gan_generation/theory.md"
+      ]
+    },
+    {
+      "id": "wasserstein-gan",
+      "type": "paper",
+      "authors": [
+        "Arjovsky, Martin",
+        "Chintala, Soumith",
+        "Bottou, Léon"
+      ],
+      "title": "Wasserstein GAN",
+      "published": "2017",
+      "venue": "arXiv",
+      "cited_as": [
+        "Wasserstein GAN"
+      ],
+      "doi": "10.48550/arxiv.1701.07875",
+      "locator": "https://doi.org/10.48550/arxiv.1701.07875",
+      "authority": "arXiv — DOI registrado por DataCite",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "datacite",
+        "matched_title": "Wasserstein GAN"
+      },
+      "used_in": [
+        "advanced_labs/28_wgan_gp/theory.md"
+      ]
+    },
+    {
+      "id": "why-should-i-trust-you-explaining-the-predictions-of-any",
+      "type": "paper",
+      "authors": [
+        "Ribeiro, Marco",
+        "Singh, Sameer",
+        "Guestrin, Carlos"
+      ],
+      "title": "“Why Should I Trust You?”: Explaining the Predictions of Any Classifier",
+      "published": "2016",
+      "venue": "Proceedings of the 2016 Conference of the North American Chapter of the Association for Computational Linguistics: Demonstrations",
+      "cited_as": [
+        "\"Why Should I Trust You?\": Explaining the Predictions of Any Classifier (LIME)"
+      ],
+      "doi": "10.18653/v1/n16-3020",
+      "locator": "https://doi.org/10.18653/v1/n16-3020",
+      "authority": "Editorial — DOI registrado por Crossref",
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "verification": {
+        "resolved_via": "crossref",
+        "matched_title": "“Why Should I Trust You?”: Explaining the Predictions of Any Classifier"
+      },
+      "used_in": [
+        "labs/21_explainability/theory.md"
+      ]
+    },
+    {
+      "id": "pytorch-docs-autograd",
+      "type": "reference",
+      "authors": [
+        "PyTorch Foundation"
+      ],
+      "title": "PyTorch — Autograd mechanics (documentación oficial)",
+      "published": "2019",
+      "locator": "https://pytorch.org/docs/stable/notes/autograd.html",
+      "authority": "PyTorch Foundation (Linux Foundation)",
+      "cited_urls": [
+        "https://pytorch.org/docs/stable/notes/autograd.html"
+      ],
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "used_in": [
+        "labs/01_pytorch_perceptron/theory.md"
+      ]
+    },
+    {
+      "id": "pytorch-docs-onnx-export",
+      "type": "reference",
+      "authors": [
+        "PyTorch Foundation"
+      ],
+      "title": "PyTorch — torch.onnx: exportación de modelos (documentación oficial)",
+      "published": "2019",
+      "locator": "https://pytorch.org/docs/stable/onnx.html",
+      "authority": "PyTorch Foundation (Linux Foundation)",
+      "cited_urls": [
+        "https://pytorch.org/docs/stable/onnx.html"
+      ],
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "used_in": [
+        "labs/23_model_export_and_inference/theory.md"
+      ]
+    },
+    {
+      "id": "onnx-specification",
+      "type": "standard",
+      "authors": [
+        "ONNX Community"
+      ],
+      "title": "ONNX — Open Neural Network Exchange: especificación y conjunto de operadores",
+      "published": "2017",
+      "locator": "https://onnx.ai/",
+      "authority": "LF AI & Data Foundation (proyecto ONNX)",
+      "cited_urls": [
+        "https://onnx.ai/"
+      ],
+      "accessed": "2026-08-19",
+      "status": "verificada",
+      "used_in": [
+        "labs/23_model_export_and_inference/theory.md"
+      ]
+    }
+  ]
+}
