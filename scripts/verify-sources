@@ -1,0 +1,425 @@
+#!/usr/bin/env python3
+"""Verificador de trazabilidad de fuentes. Offline, determinista, bloquea en CI.
+
+No hace ninguna llamada de red: solo compara el registro `sources/bibliography.json`
+con el árbol de clases y con las cifras que el README publica. La capa en red vive
+aparte, en `scripts/refresh-sources`, y nunca bloquea.
+
+    python scripts/verify-sources           # comprueba y devuelve 1 si algo falla
+    python scripts/verify-sources --sync    # regenera `used_in` y el bloque del README
+    python scripts/verify-sources --json    # vuelca las cifras y sale
+
+Comprobaciones:
+
+1.  el registro parsea y cumple el esquema;
+2.  todo `book` tiene ISBN-13 con dígito de control válido; todo `paper`, DOI;
+3.  el `locator` coincide con la forma canónica de su tipo;
+4.  toda obra usada en una clase existe en el registro;
+5.  ninguna entrada del registro queda sin usar;
+6.  `used_in` coincide con lo que dice la estructura de ficheros;
+7.  ningún bloque de fuentes se repite entre clases;
+8.  cada cita declara el uso que esa clase hace de la fuente;
+9.  todo dataset declara procedencia, licencia, versión y checksum;
+10. las cifras que muestra el README coinciden con el recuento del registro.
+
+Una entrada `pendiente` queda exenta de exigir localizador, pero debe declarar
+`pending_reason`: un hueco declarado es información; uno tapado es una invención.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from sources_lib import (  # noqa: E402
+    ROOT,
+    TYPES_WITH_URL_LOCATOR,
+    VALID_STATUS,
+    VALID_TYPES,
+    build_key_index,
+    collect_blocks,
+    counts,
+    doi_is_wellformed,
+    isbn13_is_valid,
+    load_registry,
+    used_in_from_structure,
+)
+
+README = ROOT / "README.md"
+REGISTRY = ROOT / "sources" / "bibliography.json"
+BEGIN = "<!-- fuentes:inicio -->"
+END = "<!-- fuentes:fin -->"
+
+REQUIRED_FIELDS = ("id", "type", "authors", "title", "published", "status")
+DATASET_FIELDS = ("provenance", "license", "version", "authority", "cite_as")
+
+
+class Report:
+    def __init__(self) -> None:
+        self.errors: list[str] = []
+        self.notes: list[str] = []
+
+    def fail(self, check: str, detail: str) -> None:
+        self.errors.append(f"[{check}] {detail}")
+
+    def note(self, text: str) -> None:
+        self.notes.append(text)
+
+
+def check_schema(registry: dict, report: Report) -> None:
+    if registry.get("schema_version") != 1:
+        report.fail("esquema", f"schema_version inesperada: {registry.get('schema_version')!r}")
+    for field in ("verified_on", "policy", "entries"):
+        if not registry.get(field):
+            report.fail("esquema", f"falta el campo obligatorio {field!r}")
+    seen: set[str] = set()
+    for entry in registry.get("entries", []):
+        eid = entry.get("id", "<sin id>")
+        for field in REQUIRED_FIELDS:
+            if not entry.get(field):
+                report.fail("esquema", f"{eid}: falta {field!r}")
+        if entry.get("type") not in VALID_TYPES:
+            report.fail("esquema", f"{eid}: type {entry.get('type')!r} no válido")
+        if entry.get("status") not in VALID_STATUS:
+            report.fail("esquema", f"{eid}: status {entry.get('status')!r} no válido")
+        if eid in seen:
+            report.fail("esquema", f"id duplicado: {eid}")
+        seen.add(eid)
+        if not entry.get("cited_as") and not entry.get("cited_urls") and not entry.get("dataset_keys"):
+            report.fail("esquema", f"{eid}: no declara cómo se la cita (cited_as/cited_urls/dataset_keys)")
+        if entry.get("status") == "pendiente" and not entry.get("pending_reason"):
+            report.fail("esquema", f"{eid}: pendiente sin `pending_reason`")
+
+
+def check_locators(registry: dict, report: Report) -> None:
+    for entry in registry["entries"]:
+        eid, etype = entry["id"], entry["type"]
+        locator = entry.get("locator", "")
+        if entry["status"] == "pendiente":
+            if locator:
+                report.fail("localizador", f"{eid}: pendiente pero declara localizador {locator!r}")
+            continue
+        if not locator:
+            report.fail("localizador", f"{eid}: entrada verificada sin localizador")
+            continue
+        if etype == "book":
+            isbn = entry.get("isbn13", "")
+            if not isbn13_is_valid(isbn):
+                report.fail("isbn", f"{eid}: ISBN-13 inválido o ausente ({isbn!r})")
+            elif locator != f"https://openlibrary.org/isbn/{isbn}":
+                report.fail("localizador", f"{eid}: un libro resuelve por https://openlibrary.org/isbn/{{isbn13}}, no {locator!r}")
+        elif etype == "paper":
+            doi = entry.get("doi", "")
+            if not doi_is_wellformed(doi):
+                report.fail("doi", f"{eid}: DOI mal formado o ausente ({doi!r})")
+            elif locator != f"https://doi.org/{doi}":
+                report.fail("localizador", f"{eid}: un artículo resuelve por https://doi.org/{{doi}}, no {locator!r}")
+        elif etype in TYPES_WITH_URL_LOCATOR:
+            if not locator.startswith("https://"):
+                report.fail("localizador", f"{eid}: la fuente primaria debe ser una URL https ({locator!r})")
+            if not entry.get("accessed"):
+                report.fail("localizador", f"{eid}: una URL como localizador exige `accessed`")
+
+
+def check_datasets(registry: dict, report: Report) -> None:
+    for entry in registry["entries"]:
+        if entry["type"] != "dataset":
+            continue
+        eid = entry["id"]
+        for field in DATASET_FIELDS:
+            if not entry.get(field):
+                report.fail("dataset", f"{eid}: falta {field!r}")
+        integrity = entry.get("integrity") or {}
+        artifacts = integrity.get("artifacts") or []
+        if not artifacts:
+            # La procedencia puede estar verificada y el checksum no: son cosas
+            # distintas. Lo que no se admite es un hueco sin declarar.
+            if integrity.get("status") != "pendiente" or not integrity.get("pending_reason"):
+                report.fail(
+                    "dataset",
+                    f"{eid}: sin checksum y sin `integrity.status: pendiente` con su motivo",
+                )
+            continue
+        for artifact in artifacts:
+            digest = artifact.get("sha256", "")
+            if len(digest) != 64 or not all(c in "0123456789abcdef" for c in digest):
+                report.fail("dataset", f"{eid}: SHA-256 mal formado en {artifact.get('artifact')!r}")
+            if not artifact.get("url"):
+                report.fail("dataset", f"{eid}: artefacto {artifact.get('artifact')!r} sin URL de origen")
+
+
+def check_catalog(registry: dict, report: Report) -> None:
+    """Ningún dataset puede entrar al catálogo operativo sin procedencia registrada."""
+    import yaml
+
+    known: set[str] = set()
+    for entry in registry["entries"]:
+        known.update(entry.get("dataset_keys", []))
+    catalog = yaml.safe_load((ROOT / "configs" / "datasets.yaml").read_text(encoding="utf-8"))
+    for name in sorted(catalog["datasets"]):
+        if name not in known:
+            report.fail("catálogo", f"configs/datasets.yaml declara {name!r} y el registro no lo cubre")
+    for card in sorted(ROOT.glob("labs/*/data/dataset.yaml")) + sorted(
+        ROOT.glob("advanced_labs/*/data/dataset.yaml")
+    ):
+        name = yaml.safe_load(card.read_text(encoding="utf-8"))["name"]
+        if name not in known:
+            route = card.relative_to(ROOT).as_posix()
+            report.fail("catálogo", f"{route} entrena con {name!r} y el registro no lo cubre")
+
+
+def check_coverage(blocks, registry: dict, index: dict[str, str], report: Report) -> None:
+    used = {c.key for b in blocks for c in b.citations if c.kind != "internal"}
+    for key in sorted(used):
+        if key not in index:
+            report.fail("cobertura", f"obra citada y no registrada: {key!r}")
+    structural = used_in_from_structure(blocks, index)
+    declared_ids = {e["id"] for e in registry["entries"]}
+    for entry_id in sorted(structural):
+        if entry_id not in declared_ids:
+            report.fail("cobertura", f"`used_in` apunta a una entrada inexistente: {entry_id}")
+    for entry in registry["entries"]:
+        if not entry.get("used_in"):
+            report.fail("cobertura", f"entrada del registro sin uso en ninguna clase: {entry['id']}")
+
+
+def expected_used_in(blocks, registry: dict, index: dict[str, str]) -> dict[str, list[str]]:
+    """`used_in` derivado de la estructura: citas en clase más fichas de dataset."""
+    import yaml
+
+    usage = used_in_from_structure(blocks, index)
+    by_dataset: dict[str, set[str]] = {}
+    for card in sorted(ROOT.glob("labs/*/data/dataset.yaml")) + sorted(
+        ROOT.glob("advanced_labs/*/data/dataset.yaml")
+    ):
+        name = yaml.safe_load(card.read_text(encoding="utf-8"))["name"]
+        route = card.parent.parent.relative_to(ROOT).as_posix() + "/theory.md"
+        by_dataset.setdefault(name, set()).add(route)
+    expected: dict[str, list[str]] = {}
+    for entry in registry["entries"]:
+        used = set(usage.get(entry["id"], []))
+        for key in entry.get("dataset_keys", []):
+            used |= by_dataset.get(key, set())
+        expected[entry["id"]] = sorted(used)
+    return expected
+
+
+def check_used_in(blocks, registry: dict, index: dict[str, str], report: Report) -> None:
+    expected = expected_used_in(blocks, registry, index)
+    for entry in registry["entries"]:
+        if entry.get("used_in", []) != expected[entry["id"]]:
+            report.fail(
+                "used_in",
+                f"{entry['id']}: `used_in` no coincide con la estructura "
+                f"(esperado {expected[entry['id']]}, declarado {entry.get('used_in')}). "
+                f"Ejecute `python scripts/verify-sources --sync`.",
+            )
+
+
+def check_blocks(blocks, report: Report) -> None:
+    fingerprints: dict[str, str] = {}
+    for block in blocks:
+        if block.fingerprint in fingerprints:
+            report.fail(
+                "bloques",
+                f"bloque de fuentes repetido entre {fingerprints[block.fingerprint]} y {block.course_path}",
+            )
+        else:
+            fingerprints[block.fingerprint] = block.course_path
+        for citation in block.citations:
+            if citation.kind == "internal":
+                continue
+            if not citation.declares_use:
+                report.fail(
+                    "uso",
+                    f"{block.course_path}:{citation.line_number} cita una fuente sin decir "
+                    f"qué uso hace de ella esta clase: {citation.raw[:70]!r}",
+                )
+
+
+def render_readme_block(registry: dict, figures: dict) -> str:
+    datasets = sorted(
+        (e for e in registry["entries"] if e["type"] == "dataset"),
+        key=lambda e: e["title"].lower(),
+    )
+    lines = [
+        BEGIN,
+        "<!-- Generado por `python scripts/verify-sources --sync`. No editar a mano. -->",
+        "",
+        f"El registro [`sources/bibliography.json`](sources/bibliography.json) reúne **{figures['entries']}** "
+        f"fuentes: {figures['entries_by_type'].get('dataset', 0)} datasets, "
+        f"{figures['entries_by_type'].get('paper', 0)} artículos, "
+        f"{figures['entries_by_type'].get('book', 0)} libros y "
+        f"{figures['entries_by_type'].get('standard', 0) + figures['entries_by_type'].get('reference', 0)} "
+        "documentos normativos u oficiales.",
+        "",
+        "| Métrica | Valor |",
+        "|---|---:|",
+        f"| Rutas con bloque de fuentes | {figures['courses']} / {figures['courses']} |",
+        f"| Citas en las clases | {figures['citations']} |",
+        f"| Obras y enlaces distintos | {figures['distinct_works']} |",
+        f"| Cubiertos por el registro | {figures['covered_works']} |",
+        f"| **Cobertura** | **{figures['coverage_pct']} %** |",
+        f"| Entradas verificadas | {figures['entries_verified']} |",
+        f"| Entradas pendientes | {figures['entries_pending']} |",
+        f"| Datasets con licencia declarada | {figures['datasets_with_license']} / {figures['datasets']} |",
+        f"| Datasets con checksum SHA-256 | {figures['datasets_with_checksum']} / {figures['datasets']} |",
+        "",
+        "### Datasets y licencias",
+        "",
+        "| Dataset | Procedencia | Licencia | Versión | SHA-256 | Rutas |",
+        "|---|---|---|---|:---:|---:|",
+    ]
+    for entry in datasets:
+        artifacts = (entry.get("integrity") or {}).get("artifacts") or []
+        checksum = f"✅ {len(artifacts)}" if artifacts else "⏳ pendiente"
+        lines.append(
+            f"| [{entry['title']}]({entry['locator']}) "
+            f"| {entry['authority'].split(';')[0].split('—')[0].strip()} "
+            f"| {entry['license_short']} "
+            f"| {entry['version_short']} "
+            f"| {checksum} "
+            f"| {len(entry['used_in'])} |"
+        )
+    pending = [e for e in registry["entries"] if e["status"] == "pendiente"]
+    no_checksum = [
+        e
+        for e in datasets
+        if not ((e.get("integrity") or {}).get("artifacts"))
+    ]
+    lines += [
+        "",
+        f"**Huecos declarados: {len(pending)} localizadores y {len(no_checksum)} checksums.** "
+        "No se eliminan ni se rellenan por intuición; cada uno lleva su motivo en el registro.",
+        "",
+    ]
+    for entry in sorted(pending, key=lambda e: (e["type"], e["id"])):
+        lines.append(f"- `{entry['id']}` ({entry['type']}, sin localizador) — {entry['pending_reason']}")
+    for entry in no_checksum:
+        reason = (entry.get("integrity") or {}).get("pending_reason", "")
+        lines.append(f"- `{entry['id']}` (dataset, sin SHA-256) — {reason}")
+    lines += [
+        "",
+        "Las cifras de esta sección las produce `python scripts/verify-sources --sync`; "
+        "el mismo verificador falla en CI si alguien las edita a mano.",
+        END,
+    ]
+    return "\n".join(lines)
+
+
+def readme_block_bounds(text: str) -> tuple[int, int] | None:
+    start = text.find(BEGIN)
+    end = text.find(END)
+    if start == -1 or end == -1:
+        return None
+    return start, end + len(END)
+
+
+def check_readme(registry: dict, figures: dict, report: Report) -> None:
+    text = README.read_text(encoding="utf-8")
+    bounds = readme_block_bounds(text)
+    if bounds is None:
+        report.fail("readme", f"el README no contiene el bloque {BEGIN} … {END}")
+        return
+    current = text[bounds[0] : bounds[1]]
+    expected = render_readme_block(registry, figures)
+    if current.strip() != expected.strip():
+        report.fail(
+            "readme",
+            "las cifras del README no coinciden con el registro. "
+            "Ejecute `python scripts/verify-sources --sync`.",
+        )
+
+
+def sync(registry: dict, blocks, index: dict[str, str], figures: dict) -> list[str]:
+    changed: list[str] = []
+    expected = expected_used_in(blocks, registry, index)
+    touched = False
+    for entry in registry["entries"]:
+        if entry.get("used_in", []) != expected[entry["id"]]:
+            entry["used_in"] = expected[entry["id"]]
+            touched = True
+    if touched:
+        REGISTRY.write_text(
+            json.dumps(registry, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
+        changed.append(str(REGISTRY.relative_to(ROOT)))
+    text = README.read_text(encoding="utf-8")
+    bounds = readme_block_bounds(text)
+    if bounds is None:
+        raise SystemExit(f"El README no contiene el bloque {BEGIN} … {END}; añádalo antes de sincronizar.")
+    updated = text[: bounds[0]] + render_readme_block(registry, figures) + text[bounds[1] :]
+    if updated != text:
+        README.write_text(updated, encoding="utf-8")
+        changed.append("README.md")
+    return changed
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--sync", action="store_true", help="regenera `used_in` y el bloque del README")
+    parser.add_argument("--json", action="store_true", help="vuelca las cifras en JSON y sale")
+    args = parser.parse_args()
+
+    blocks, missing = collect_blocks()
+    registry = load_registry()
+    try:
+        index = build_key_index(registry)
+    except ValueError as exc:
+        print(f"FALLO [esquema] {exc}")
+        return 1
+    figures = counts(blocks, registry, index)
+
+    if args.json:
+        print(json.dumps(figures, indent=2, ensure_ascii=False))
+        return 0
+
+    if args.sync:
+        changed = sync(registry, blocks, index, figures)
+        registry = load_registry()
+        index = build_key_index(registry)
+        figures = counts(blocks, registry, index)
+        print("Sincronizado:", ", ".join(changed) if changed else "sin cambios")
+
+    report = Report()
+    if missing:
+        for path in missing:
+            report.fail("bloques", f"clase sin bloque de fuentes: {path}")
+    check_schema(registry, report)
+    check_locators(registry, report)
+    check_datasets(registry, report)
+    check_catalog(registry, report)
+    check_coverage(blocks, registry, index, report)
+    check_used_in(blocks, registry, index, report)
+    check_blocks(blocks, report)
+    check_readme(registry, figures, report)
+
+    print("Verificación de fuentes — offline, sin red")
+    print(f"  rutas con bloque de fuentes ... {figures['courses']}")
+    print(f"  citas externas ............... {figures['citations']}")
+    print(f"  obras y enlaces distintos .... {figures['distinct_works']}"
+          f" ({figures['distinct_titles']} obras, {figures['distinct_urls']} enlaces)")
+    print(f"  cubiertos por el registro .... {figures['covered_works']} → {figures['coverage_pct']} %")
+    print(f"  entradas del registro ........ {figures['entries']}"
+          f" ({figures['entries_verified']} verificadas, {figures['entries_pending']} pendientes)")
+    print(f"  datasets ..................... {figures['datasets']}"
+          f" ({figures['datasets_with_license']} con licencia,"
+          f" {figures['datasets_with_checksum']} con SHA-256)")
+    for entry_type, total in sorted(figures["entries_by_type"].items()):
+        print(f"    · {entry_type:<10} {total}")
+
+    if report.errors:
+        print(f"\nFALLA con {len(report.errors)} problema(s):")
+        for error in report.errors:
+            print(f"  ✗ {error}")
+        return 1
+    print("\nOK — todas las comprobaciones pasan.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

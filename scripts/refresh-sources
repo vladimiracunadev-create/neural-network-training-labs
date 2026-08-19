@@ -1,0 +1,323 @@
+#!/usr/bin/env python3
+"""Capa en red del registro de fuentes. Manual o programada. NO bloquea.
+
+Deliberadamente separada de `scripts/verify-sources`: si la red entrara en el CI,
+el CI se volvería inestable y acabaría ignorándose. Este script sale con 0 aunque
+algo deje de resolver; lo que hace es *informar* y anotar.
+
+    python scripts/refresh-sources                 # resuelve ISBN, DOI y URLs
+    python scripts/refresh-sources --write         # además anota el resultado en el registro
+    python scripts/refresh-sources --checksums     # recalcula el SHA-256 de los datasets
+    python scripts/refresh-sources --only doi      # limita la comprobación (isbn|doi|url)
+
+Qué hace:
+
+* resuelve cada ISBN-13 en `openlibrary.org` y cada DOI en `api.crossref.org`
+  (o `api.datacite.org` para los DOI de arXiv), comparando título y autores;
+* hace una petición a cada URL de norma, documentación o dataset y anota el estado;
+* con `--checksums`, descarga los artefactos declarados y recalcula su SHA-256,
+  o lee los que publica el proveedor cuando el artefacto no es descargable;
+* actualiza `verified_on` y `accessed` de lo que sigue resolviendo;
+* **reporta lo que dejó de resolver sin borrarlo**: una fuente que hoy no responde
+  pasa a `pendiente` con su motivo, nunca desaparece del registro.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import re
+import ssl
+import sys
+import time
+import unicodedata
+import urllib.error
+import urllib.parse
+import urllib.request
+from datetime import date, timezone, datetime
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from sources_lib import REGISTRY_PATH, load_registry  # noqa: E402
+
+USER_AGENT = "neural-network-training-labs-sources/1.0 (+https://github.com/vladimiracunadev-create/neural-network-training-labs)"
+TIMEOUT = 45
+PAUSE = 0.3
+
+
+def today() -> str:
+    return datetime.now(timezone.utc).date().isoformat()
+
+
+def normalize(value: str) -> str:
+    decomposed = unicodedata.normalize("NFKD", value or "")
+    stripped = "".join(c for c in decomposed if not unicodedata.combining(c))
+    lowered = stripped.lower().replace("&", " and ")
+    return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", lowered)).strip()
+
+
+def surname(author: str) -> str:
+    return normalize(author.split(",")[0])
+
+
+def request_json(url: str, tries: int = 4) -> tuple[dict | None, str]:
+    """Con reintento exponencial: Crossref responde 429 cuando se le insiste."""
+    delay = 1.0
+    last = ""
+    for attempt in range(tries):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as response:
+                return json.loads(response.read().decode("utf-8")), ""
+        except Exception as exc:  # noqa: BLE001
+            last = str(exc)[:160]
+            transient = "429" in last or "timed out" in last.lower() or "503" in last
+            if attempt == tries - 1 or not transient:
+                return None, last
+            time.sleep(delay)
+            delay *= 2
+    return None, last
+
+
+def request_head(url: str) -> tuple[int | None, str]:
+    """HEAD, luego GET parcial, luego GET entero.
+
+    Algunos proveedores rechazan HEAD y otros responden 404 a una petición con
+    `Range`; un fallo en la primera forma no significa que el recurso no exista.
+    """
+    context = ssl.create_default_context()
+    attempts = (
+        ("HEAD", None),
+        ("GET", "bytes=0-0"),
+        ("GET", None),
+    )
+    last = "sin respuesta"
+    for method, byte_range in attempts:
+        headers = {"User-Agent": USER_AGENT}
+        if byte_range:
+            headers["Range"] = byte_range
+        try:
+            req = urllib.request.Request(url, method=method, headers=headers)
+            with urllib.request.urlopen(req, timeout=TIMEOUT, context=context) as response:
+                return response.status, ""
+        except urllib.error.HTTPError as exc:
+            last = str(exc)[:160]
+            status = exc.code
+        except Exception as exc:  # noqa: BLE001
+            last = str(exc)[:160]
+            status = None
+        time.sleep(PAUSE)
+    return status, last
+
+
+def check_isbn(entry: dict) -> dict:
+    isbn = entry["isbn13"]
+    data, error = request_json(f"https://openlibrary.org/isbn/{isbn}.json")
+    if data is None:
+        return {"ok": False, "detail": f"openlibrary no respondió: {error}"}
+    title = data.get("title", "")
+    same = normalize(entry["title"]).startswith(normalize(title)) or normalize(
+        title
+    ).startswith(normalize(entry["title"]))
+    return {
+        "ok": bool(title),
+        "title_matches": same,
+        "resolved_title": title,
+        "detail": "" if same else f"título distinto en la fuente: {title!r}",
+    }
+
+
+def check_doi(entry: dict) -> dict:
+    doi = entry["doi"]
+    if doi.lower().startswith("10.48550/"):
+        data, error = request_json(
+            "https://api.datacite.org/dois/" + urllib.parse.quote(doi, safe="")
+        )
+        if data is None or "data" not in data:
+            return {"ok": False, "detail": f"datacite no resolvió: {error or 'sin datos'}"}
+        attributes = data["data"]["attributes"]
+        title = (attributes.get("titles") or [{}])[0].get("title", "")
+        authors = [c.get("familyName") or c.get("name", "") for c in attributes.get("creators", [])]
+    else:
+        data, error = request_json(
+            "https://api.crossref.org/works/" + urllib.parse.quote(doi, safe="")
+        )
+        if data is None or data.get("status") != "ok":
+            return {"ok": False, "detail": f"crossref no resolvió: {error or 'sin datos'}"}
+        message = data["message"]
+        title = (message.get("title") or [""])[0]
+        authors = [a.get("family", "") for a in message.get("author") or []]
+    title_matches = normalize(title) == normalize(entry["title"])
+    declared = {surname(a) for a in entry["authors"]}
+    found = {normalize(a) for a in authors}
+    author_matches = not declared or bool(
+        {d for d in declared if any(d and d in f for f in found)}
+    )
+    problems = []
+    if not title_matches:
+        problems.append(f"título distinto en el registro de DOI: {title!r}")
+    if not author_matches:
+        problems.append(f"ningún autor coincide: {authors[:4]}")
+    return {
+        "ok": True,
+        "title_matches": title_matches,
+        "author_matches": author_matches,
+        "resolved_title": title,
+        "detail": "; ".join(problems),
+    }
+
+
+def check_url(entry: dict) -> dict:
+    status, error = request_head(entry["locator"])
+    ok = status is not None and 200 <= status < 400
+    return {"ok": ok, "status": status, "detail": "" if ok else error or f"estado {status}"}
+
+
+def sha256_of(url: str) -> tuple[str | None, int, str]:
+    digest = hashlib.sha256()
+    total = 0
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+        with urllib.request.urlopen(req, timeout=300) as response:
+            while True:
+                chunk = response.read(1 << 20)
+                if not chunk:
+                    break
+                digest.update(chunk)
+                total += len(chunk)
+        return digest.hexdigest(), total, ""
+    except Exception as exc:  # noqa: BLE001
+        return None, total, str(exc)[:160]
+
+
+def refresh_checksums(registry: dict, write: bool) -> list[str]:
+    problems: list[str] = []
+    for entry in registry["entries"]:
+        if entry["type"] != "dataset":
+            continue
+        artifacts = (entry.get("integrity") or {}).get("artifacts") or []
+        if not artifacts:
+            reason = (entry.get("integrity") or {}).get("pending_reason", "sin artefacto declarado")
+            print(f"  ⏳ {entry['id']:<44} sin checksum — {reason}")
+            continue
+        for artifact in artifacts:
+            digest, size, error = sha256_of(artifact["url"])
+            if digest is None:
+                problems.append(f"{entry['id']}/{artifact['artifact']}: no se pudo descargar ({error})")
+                print(f"  ✗ {entry['id']:<44} {artifact['artifact']}: {error}")
+                continue
+            if digest != artifact["sha256"]:
+                problems.append(
+                    f"{entry['id']}/{artifact['artifact']}: el SHA-256 cambió en origen "
+                    f"({artifact['sha256']} → {digest})"
+                )
+                print(f"  ⚠ {entry['id']:<44} {artifact['artifact']}: SHA-256 DISTINTO")
+                if write:
+                    artifact["sha256"] = digest
+                    artifact["bytes"] = size
+                    artifact["changed_on"] = today()
+            else:
+                print(f"  ✓ {entry['id']:<44} {artifact['artifact']}: sin cambios")
+        if write:
+            entry["integrity"]["computed_on"] = today()
+    return problems
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--write", action="store_true", help="anota el resultado en el registro")
+    parser.add_argument("--checksums", action="store_true", help="recalcula el SHA-256 de los datasets")
+    parser.add_argument(
+        "--only",
+        choices=("isbn", "doi", "url"),
+        help="limita la comprobación a un tipo de localizador",
+    )
+    args = parser.parse_args()
+
+    registry = load_registry()
+    stamp = today()
+    print(f"Refresco de fuentes en red — {stamp}")
+    print("Este script NO bloquea: informa. El que bloquea es scripts/verify-sources.\n")
+
+    if args.checksums:
+        print("Checksums de datasets:")
+        problems = refresh_checksums(registry, args.write)
+        if args.write:
+            REGISTRY_PATH.write_text(
+                json.dumps(registry, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+            )
+        print()
+        if problems:
+            print(f"{len(problems)} incidencia(s) de integridad:")
+            for problem in problems:
+                print(f"  · {problem}")
+        return 0
+
+    checked = 0
+    broken: list[tuple[str, str]] = []
+    mismatched: list[tuple[str, str]] = []
+    for entry in registry["entries"]:
+        if entry["status"] == "pendiente":
+            reason = entry.get("pending_reason", "")
+            print(f"  ⏳ {entry['id']:<58} pendiente — {reason[:70]}")
+            continue
+        kind = (
+            "isbn"
+            if entry["type"] == "book"
+            else "doi"
+            if entry["type"] == "paper"
+            else "url"
+        )
+        if args.only and args.only != kind:
+            continue
+        result = {"isbn": check_isbn, "doi": check_doi, "url": check_url}[kind](entry)
+        checked += 1
+        time.sleep(PAUSE)
+        if not result["ok"]:
+            broken.append((entry["id"], result["detail"]))
+            print(f"  ✗ {entry['id']:<58} NO RESUELVE — {result['detail'][:70]}")
+            if args.write:
+                # No se borra: se degrada a pendiente con el motivo y la fecha.
+                entry["last_failed_on"] = stamp
+                entry.setdefault("locator_last_known", entry.get("locator"))
+                entry["status"] = "pendiente"
+                entry["pending_reason"] = (
+                    f"El localizador dejó de resolver el {stamp}: {result['detail']}. "
+                    "Se conserva para no perder la referencia."
+                )
+                entry.pop("locator", None)
+            continue
+        if result.get("detail"):
+            mismatched.append((entry["id"], result["detail"]))
+            print(f"  ⚠ {entry['id']:<58} {result['detail'][:70]}")
+        else:
+            print(f"  ✓ {entry['id']:<58} resuelve")
+        if args.write:
+            entry["accessed"] = stamp
+
+    if args.write:
+        registry["verified_on"] = stamp
+        REGISTRY_PATH.write_text(
+            json.dumps(registry, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
+
+    print(f"\nComprobados {checked} localizadores.")
+    print(f"  no resuelven ......... {len(broken)}")
+    print(f"  resuelven con reparo .. {len(mismatched)}")
+    if broken:
+        print("\nDejaron de resolver (se conservan, marcados `pendiente` con --write):")
+        for entry_id, detail in broken:
+            print(f"  · {entry_id}: {detail}")
+    if mismatched:
+        print("\nResuelven pero los metadatos no cuadran del todo:")
+        for entry_id, detail in mismatched:
+            print(f"  · {entry_id}: {detail}")
+    if not args.write:
+        print("\n(Ejecución en seco: use --write para anotar el resultado en el registro.)")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
