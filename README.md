@@ -452,7 +452,7 @@ Lo que no resuelve se marca `pendiente` con su motivo: no se elimina ni se relle
 
 Las 31 rutas del programa citan **113 obras distintas** entre libros, artículos, documentación y datasets. Las 113 están en el registro: **cobertura del 100 %**.
 
-[`sources/bibliography.json`](sources/bibliography.json) las describe en 111 entradas —19 datasets, 76 artículos, 13 libros y 3 documentos oficiales—, de las que **105 tienen un localizador que resuelve** y 6 quedan pendientes con su motivo escrito. Los 19 datasets declaran licencia, y 16 de ellos traen además el SHA-256 de sus artefactos.
+[`sources/bibliography.json`](sources/bibliography.json) las describe en 111 entradas —19 datasets, 76 artículos, 13 libros y 3 documentos oficiales—, de las que **105 tienen un localizador que resuelve** y 6 quedan pendientes con su motivo escrito. Los 19 datasets declaran licencia, y 18 de ellos traen además el SHA-256 de sus artefactos.
 
 ### Datasets y licencias
 
@@ -463,7 +463,7 @@ Las 31 rutas del programa citan **113 obras distintas** entre libros, artículos
 | [Banknote Authentication](https://archive.ics.uci.edu/dataset/267/banknote+authentication) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 267 | ✅ 1 | 1 |
 | [Breast Cancer Wisconsin (Diagnostic)](https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 17 | ✅ 1 | 2 |
 | [California Housing (censo de 1990)](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html) | StatLib (Carnegie Mellon University) | sin licencia formal | cal_housing.tgz | ✅ 1 | 1 |
-| [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) | University of Toronto | sin licencia declarada · exige citar | python (cifar-10-python.tar.gz) | ⏳ pendiente | 5 |
+| [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) | University of Toronto | sin licencia declarada · exige citar | python (cifar-10-python.tar.gz) | ✅ 1 | 5 |
 | [Cora (particiones Planetoid)](https://pytorch-geometric.readthedocs.io/en/stable/generated/torch_geometric.datasets.Planetoid.html) | PyTorch Geometric | sin licencia declarada | Planetoid ind.cora.* | ✅ 8 | 1 |
 | [Credit Card Fraud Detection](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) | Machine Learning Group, Université Libre de Bruxelles | ODbL 1.0 / DbCL 1.0 | creditcard.csv | ⏳ pendiente | 1 |
 | [Dry Bean](https://archive.ics.uci.edu/dataset/602/dry+bean+dataset) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 602 | ✅ 1 | 1 |
@@ -475,10 +475,10 @@ Las 31 rutas del programa citan **113 obras distintas** entre libros, artículos
 | [Online Retail](https://archive.ics.uci.edu/dataset/352/online+retail) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 352 | ✅ 1 | 1 |
 | [Seoul Bike Sharing Demand](https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 560 | ✅ 1 | 1 |
 | [Speech Commands v0.02](https://www.tensorflow.org/datasets/catalog/speech_commands) | Google | CC BY 4.0 | v0.02 | ✅ 1 | 1 |
-| [The Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets/) | Visual Geometry Group, University of Oxford e IIIT Hyderabad | CC BY-SA 4.0 | images + annotations | ⏳ pendiente | 2 |
+| [The Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets/) | Visual Geometry Group, University of Oxford e IIIT Hyderabad | CC BY-SA 4.0 | images + annotations | ✅ 2 | 2 |
 | [Wine Quality](https://archive.ics.uci.edu/dataset/186/wine+quality) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 186 | ✅ 1 | 1 |
 
-**Huecos declarados: 6 localizadores y 3 checksums.** No se eliminan ni se rellenan por intuición; cada uno lleva su motivo en el registro.
+**Huecos declarados: 6 localizadores y 1 checksum.** No se eliminan ni se rellenan por intuición; cada uno lleva su motivo en el registro.
 
 - `neural-networks-and-deep-learning-nielsen` (book, sin localizador) — Obra publicada solo en línea: no tiene ISBN-13 y neuralnetworksanddeeplearning.com no presenta un certificado https válido para su propio nombre de host, de modo que no admite ninguna de las tres formas de localizador. Se conserva declarada.
 - `deep-sparse-rectifier-neural-networks` (paper, sin localizador) — AISTATS 2011 (PMLR v15): las actas no registran DOI.
@@ -486,9 +486,7 @@ Las 31 rutas del programa citan **113 obras distintas** entre libros, artículos
 - `random-search-for-hyper-parameter-optimization` (paper, sin localizador) — JMLR 13 (2012): la revista no registra DOI.
 - `rectified-linear-units-improve-restricted-boltzmann-machines` (paper, sin localizador) — ICML 2010: las actas no registran DOI.
 - `understanding-the-difficulty-of-training-deep-feedforward` (paper, sin localizador) — AISTATS 2010 (PMLR v9): las actas no registran DOI.
-- `cifar-10` (dataset, sin SHA-256) — El artefacto canónico (170 MB) no terminó de descargarse dentro del margen de esta verificación; la fuente sí publica su md5.
 - `credit-card-fraud-ulb` (dataset, sin SHA-256) — La descarga exige autenticación y aceptación de los términos de Kaggle: el repositorio no evita ese control, así que el SHA-256 no se puede calcular de forma anónima ni reproducible en CI.
-- `oxford-iiit-pet` (dataset, sin SHA-256) — El artefacto de imágenes (≈800 MB) no terminó de descargarse dentro del margen de esta verificación.
 
 Las cifras de esta sección las produce `python scripts/verify-sources --sync`; el mismo verificador falla en CI si alguien las edita a mano.
 <!-- fuentes:fin -->

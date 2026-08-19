@@ -291,9 +291,13 @@ def render_readme_block(registry: dict, figures: dict) -> str:
         for e in datasets
         if not ((e.get("integrity") or {}).get("artifacts"))
     ]
+    def plural(count: int, singular: str, many: str) -> str:
+        return f"{count} {singular if count == 1 else many}"
+
     lines += [
         "",
-        f"**Huecos declarados: {len(pending)} localizadores y {len(no_checksum)} checksums.** "
+        f"**Huecos declarados: {plural(len(pending), 'localizador', 'localizadores')} y "
+        f"{plural(len(no_checksum), 'checksum', 'checksums')}.** "
         "No se eliminan ni se rellenan por intuición; cada uno lleva su motivo en el registro.",
         "",
     ]

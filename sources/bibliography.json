@@ -510,9 +510,22 @@
       "provider_adapter": "torchvision",
       "integrity": {
         "algorithm": "sha256",
-        "artifacts": [],
-        "status": "pendiente",
-        "pending_reason": "El artefacto canónico (170 MB) no terminó de descargarse dentro del margen de esta verificación; la fuente sí publica su md5."
+        "artifacts": [
+          {
+            "artifact": "cifar-10-python.tar.gz",
+            "url": "https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz",
+            "sha256": "6d958be074577803d12ecdefd02955f39262c83c16fe9348329d7fe0b5c001ce",
+            "bytes": 170498071
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums",
+        "published_by_source": {
+          "algorithm": "md5",
+          "artifact": "cifar-10-python.tar.gz",
+          "value": "c58f30108f718f92721af3b95e74349a",
+          "source": "https://www.cs.toronto.edu/~kriz/cifar.html"
+        }
       },
       "used_in": [
         "advanced_labs/30_self_supervised_simclr/theory.md",
@@ -865,9 +878,22 @@
       "provider_adapter": "torchvision",
       "integrity": {
         "algorithm": "sha256",
-        "artifacts": [],
-        "status": "pendiente",
-        "pending_reason": "El artefacto de imágenes (≈800 MB) no terminó de descargarse dentro del margen de esta verificación."
+        "artifacts": [
+          {
+            "artifact": "annotations.tar.gz",
+            "url": "https://thor.robots.ox.ac.uk/~vgg/data/pets/annotations.tar.gz",
+            "sha256": "52425fb6de5c424942b7626b428656fcbd798db970a937df61750c0f1d358e91",
+            "bytes": 19173078
+          },
+          {
+            "artifact": "images.tar.gz",
+            "url": "https://thor.robots.ox.ac.uk/~vgg/data/pets/images.tar.gz",
+            "sha256": "67195c5e1c01f1ab5f9b6a5d22b8c27a580d896ece458917e61d459337fa318d",
+            "bytes": 791918971
+          }
+        ],
+        "computed_on": "2026-08-19",
+        "computed_by": "scripts/refresh-sources --checksums"
       },
       "used_in": [
         "advanced_labs/26_segmentation_unet/theory.md",
