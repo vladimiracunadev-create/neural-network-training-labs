@@ -4,7 +4,7 @@
 
 MIT cubre el código original del repositorio. No modifica la licencia ni las condiciones de los datasets. Cada manifiesto declara la fuente y, cuando es conocida, la licencia.
 
-La licencia y la procedencia de cada dataset se declaran en el registro de fuentes, [`sources/bibliography.json`](../sources/bibliography.json), con la URL canónica del proveedor, la versión concreta, el SHA-256 de sus artefactos y la cita que pide su autor. Cuando la fuente no declara licencia, el registro lo dice en lugar de suponer una.
+La licencia y la procedencia de cada dataset se declaran en el registro de fuentes, [`sources/bibliography.json`](https://github.com/vladimiracunadev-create/neural-network-training-labs/blob/main/sources/bibliography.json), con la URL canónica del proveedor, la versión concreta, el SHA-256 de sus artefactos y la cita que pide su autor. Cuando la fuente no declara licencia, el registro lo dice en lugar de suponer una.
 
 ## Datos sensibles
 

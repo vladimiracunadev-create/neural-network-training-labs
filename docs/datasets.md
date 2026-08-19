@@ -33,8 +33,8 @@ descargar. La procedencia completa de cada dataset —autoridad que responde por
 licencia tal como la declara la fuente, versión concreta, SHA-256 de cada artefacto y la
 cita académica que pide su autor— vive en el registro de fuentes:
 
-- [`sources/bibliography.json`](../sources/bibliography.json) — el registro;
-- [`sources/README.md`](../sources/README.md) — cómo se lee y cómo se amplía.
+- [`sources/bibliography.json`](https://github.com/vladimiracunadev-create/neural-network-training-labs/blob/main/sources/bibliography.json) — el registro;
+- [`sources/README.md`](https://github.com/vladimiracunadev-create/neural-network-training-labs/blob/main/sources/README.md) — cómo se lee y cómo se amplía.
 
 ```bash
 python scripts/verify-sources     # offline, bloquea en CI

@@ -14,7 +14,7 @@ El recorrido se agrupa en **siete partes**, que son tramos **contiguos** de la s
 
 | Nivel | Markdown | HTML local | Sitio de Pages |
 |---|---|---|---|
-| Índice del recorrido | [`parts/README.md`](../parts/README.md) | `index.html` (raíz) | `index.html` |
+| Índice del recorrido | [`parts/README.md`](https://github.com/vladimiracunadev-create/neural-network-training-labs/blob/main/parts/README.md) | `index.html` (raíz) | `index.html` |
 | Parte | `parts/<NN-slug>.md` | `parts/<NN-slug>.html` | `parts/<NN-slug>.html` |
 | Clase | `labs/<slug>/README.md` y sus tres documentos | `labs/<slug>/index.html` | `labs/<slug>/index.html` |
 
