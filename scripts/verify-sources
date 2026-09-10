@@ -255,7 +255,7 @@ def render_readme_block(registry: dict, figures: dict) -> str:
         BEGIN,
         "<!-- Generado por `python scripts/verify-sources --sync`. No editar a mano. -->",
         "",
-        f"Las {figures['courses']} rutas del programa citan **{figures['distinct_works']} obras "
+        f"Las {figures['courses']} clases del programa citan **{figures['distinct_works']} obras "
         f"distintas** entre libros, artículos, documentación y datasets. Las "
         f"{figures['distinct_works']} están en el registro: **cobertura del "
         f"{coverage_text} %**.",
@@ -271,7 +271,7 @@ def render_readme_block(registry: dict, figures: dict) -> str:
         "",
         "### Datasets y licencias",
         "",
-        "| Dataset | Procedencia | Licencia | Versión | SHA-256 | Rutas |",
+        "| Dataset | Procedencia | Licencia | Versión | SHA-256 | Clases |",
         "|---|---|---|---|:---:|---:|",
     ]
     for entry in datasets:
@@ -403,7 +403,7 @@ def main() -> int:
     check_readme(registry, figures, report)
 
     print("Verificación de fuentes — offline, sin red")
-    print(f"  rutas con bloque de fuentes ... {figures['courses']}")
+    print(f"  clases con bloque de fuentes . {figures['courses']}")
     print(f"  citas externas ............... {figures['citations']}")
     print(f"  obras y enlaces distintos .... {figures['distinct_works']}"
           f" ({figures['distinct_titles']} obras, {figures['distinct_urls']} enlaces)")
