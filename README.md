@@ -3,7 +3,7 @@
 
 # 🧠 Neural Network Training Labs
 
-## **7 módulos · 31 clases · 93 notebooks · de la intuición visual al modelo desplegado**
+## **7 módulos · 31 clases · ≈214 horas · 93 notebooks · de la intuición visual al modelo desplegado**
 
 **Curso práctico y verificable para comprender, entrenar, validar, explicar, exportar y
 desplegar redes neuronales: 31 clases independientes y progresivas, de la derivada escrita a mano a CNN, RNN, transformers,
@@ -63,7 +63,7 @@ ONNX/INT8/edge, entrenamiento distribuido y cadena de suministro firmable.**
 
 | Superficie | Estado |
 |---|---|
-| Clases | ✅ 31/31 construidas — 7 módulos, cada clase con identidad pedagógica y laboratorio propio |
+| Clases | ✅ 31/31 construidas — 7 módulos y ≈214 horas, cada clase con identidad pedagógica y laboratorio propio |
 | Notebooks | ✅ 93 archivos: 31 clases + 31 versiones para estudiante + 31 soluciones, con **5 ejercicios evaluables por clase** cuya solución de referencia se ejecuta en CI |
 | Datasets | ✅ 31 fichas `dataset.yaml` sobre 19 fuentes públicas reales (UCI, Torchvision, Torchaudio, Hugging Face, PyG, Kaggle); **sin fallback sintético silencioso** |
 | Protocolo | ✅ `split_seed` ≠ `training_seed`, selección por `validation`, `test` sellado con `experiment.lock.json` |
