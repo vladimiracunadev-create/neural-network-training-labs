@@ -1,24 +1,38 @@
 # Clasificación de audio con SpeechCommands
 
 <!-- nav-top -->
-> 🧭 **Ruta 28 / 31** · 🔬 [Parte 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md)
+> 🧭 **Clase 28 / 31** · 🔬 [Módulo 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md)
 >
-> [⬅️ 🧷 Segmentación semántica con U-Net](../../advanced_labs/26_segmentation_unet/README.md) · [🏠 Índice de rutas](../../parts/README.md) · [🖌️ WGAN-GP sobre Fashion-MNIST ➡️](../../advanced_labs/28_wgan_gp/README.md)
+> [⬅️ 🧷 Segmentación semántica con U-Net](../../advanced_labs/26_segmentation_unet/README.md) · [🏠 Índice de clases](../../parts/README.md) · [🖌️ WGAN-GP sobre Fashion-MNIST ➡️](../../advanced_labs/28_wgan_gp/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+Una palabra dura un segundo, pero sus frecuencias cambian rápidamente. El log-mel convierte ese cambio en una imagen tiempo–frecuencia.
+
+> **Pregunta esencial:** ¿Qué hace visible un espectrograma que la onda temporal oculta?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![De vibración a patrón tiempo–frecuencia](assets/class-map.svg)
+
+*Mapa de esta clase: De vibración a patrón tiempo–frecuencia. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Clasificar comandos hablados desde waveform y log-mel spectrograms.
 
-Es la **ruta 28 de 31** del recorrido y pertenece a 🔬 la parte 7, *Especializaciones avanzadas*. Llegas desde **Segmentación semántica con U-Net** y lo que hagas aquí lo da por supuesto **WGAN-GP sobre Fashion-MNIST**.
+**Práctica propia de esta clase:** Escuchar y visualizar señales, construir espectrogramas y medir degradación con ruido y SpecAugment.
 
-Trabajarás con el dataset **`speechcommands_v0.02`** (Torchaudio / Google Speech Commands, licencia: Creative Commons BY 4.0), y tendrás que superar la línea base **MFCC + regresión logística**, decidiendo con la métrica `accuracy` medida sobre `validation`. Nivel avanzado.
+Es la **clase 28 de 31** del programa y pertenece a 🔬 el módulo 7, *Especializaciones avanzadas*. Llegas desde **Segmentación semántica con U-Net** y lo que hagas aquí lo da por supuesto **WGAN-GP sobre Fashion-MNIST**.
+
+Trabajarás con el dataset **`speechcommands_v0.02`** (Torchaudio / Google Speech Commands, licencia: Creative Commons BY 4.0), y tendrás que superar la línea base **MFCC + regresión logística**, decidiendo con la métrica `accuracy` medida sobre `validation`. Nivel avanzado, unas **8 horas** de dedicación.
 
 **Qué recibe el modelo como entrada:** audio mono de un segundo a 16 kHz.
 
-**Lo que conviene traer resuelto de las rutas anteriores:** CNN, señales, transformada tiempo-frecuencia.
+**Lo que conviene traer resuelto de las clases anteriores:** CNN, señales, transformada tiempo-frecuencia.
 
 **Al terminar deberías ser capaz de:**
 
@@ -26,7 +40,11 @@ Trabajarás con el dataset **`speechcommands_v0.02`** (Torchaudio / Google Speec
 - Interpretar accuracy, macro_f1
 - Aplicar sellado de test y reproducibilidad
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> Un modelo preciso en audio limpio puede depender del micrófono o del fondo y fallar ante voces reales distintas.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
@@ -34,7 +52,7 @@ Esta sección es la explicación completa del tema. No hace falta abrir otro arc
 
 Un clip de un segundo a 16 kHz son 16 000 números. Puestos en fila, una red densa necesitaría decenas de millones de pesos solo en su primera capa, y aun así no aprendería gran cosa: la información que distingue «arriba» de «abajo» no está en el valor de cada muestra individual, sino en **cómo cambia el contenido en frecuencia a lo largo del tiempo**. Dos grabaciones de la misma palabra, desplazadas unos milisegundos o dichas con otro tono, tienen formas de onda numéricamente distintas y contenido fonético idéntico.
 
-La idea del laboratorio es cambiar de representación antes de modelar. La transformada de Fourier de corto tiempo convierte la señal unidimensional en una imagen bidimensional —tiempo en un eje, frecuencia en el otro, energía como intensidad— donde los rasgos que importan se vuelven **patrones locales visibles**: las bandas horizontales de los formantes vocálicos, las ráfagas anchas de las consonantes oclusivas, las transiciones diagonales entre fonemas. Una vez que el problema tiene forma de imagen, la herramienta correcta es la que ya se estudió en la ruta 03: una CNN 2D con pesos compartidos, que detecta esos patrones aparezcan donde aparezcan.
+La idea del laboratorio es cambiar de representación antes de modelar. La transformada de Fourier de corto tiempo convierte la señal unidimensional en una imagen bidimensional —tiempo en un eje, frecuencia en el otro, energía como intensidad— donde los rasgos que importan se vuelven **patrones locales visibles**: las bandas horizontales de los formantes vocálicos, las ráfagas anchas de las consonantes oclusivas, las transiciones diagonales entre fonemas. Una vez que el problema tiene forma de imagen, la herramienta correcta es la que ya se estudió en la clase 04: una CNN 2D con pesos compartidos, que detecta esos patrones aparezcan donde aparezcan.
 
 Sobre esa representación se aplican dos ajustes que no vienen de las matemáticas sino de la fisiología del oído: comprimir el eje de frecuencia según la escala mel, porque distinguimos mucho mejor entre 300 y 400 Hz que entre 8 000 y 8 100, y tomar el logaritmo de la energía, porque percibimos la intensidad de forma aproximadamente logarítmica. El resultado —el espectrograma log-mel— no es una elección arbitraria: es un preprocesamiento que descarta justo la información que el oído humano tampoco usa para reconocer palabras.
 
@@ -68,7 +86,7 @@ Las ventanas se solapan con un **salto** (hop) de unos 10 ms, así que el númer
 
 T = ⌊(longitud − N) / hop⌋ + 1 ≈ ⌊(16 000 − 400) / 160⌋ + 1 = 98.
 
-Con 64 bandas mel, la entrada de la red es un tensor de 64×98: una imagen pequeña, comparable a las de la ruta 03. Esa es la razón práctica de que el laboratorio corra en CPU. El solape no es opcional: sin él, un fonema que caiga en la frontera entre dos ventanas quedaría partido y atenuado por la ventana de Hann, que pesa poco los extremos. El solape garantiza que todo instante quede bien representado en al menos una trama.
+Con 64 bandas mel, la entrada de la red es un tensor de 64×98: una imagen pequeña, comparable a las de la clase 04. Esa es la razón práctica de que el laboratorio corra en CPU. El solape no es opcional: sin él, un fonema que caiga en la frontera entre dos ventanas quedaría partido y atenuado por la ventana de Hann, que pesa poco los extremos. El solape garantiza que todo instante quede bien representado en al menos una trama.
 
 ### El banco mel, escrito como una multiplicación de matrices
 
@@ -104,21 +122,21 @@ Waveform, espectrograma, errores por palabra y ruido. Contrastar la onda cruda c
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `accuracy`, `macro_f1`, `confusion_matrix`, `noise_robustness`. De todas ellas, la que **decide** qué modelo se conserva es `accuracy`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `accuracy`, `macro_f1`, `confusion_matrix`, `noise_robustness`. De todas ellas, la que **decide** qué modelo se conserva es `accuracy`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (10 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **8 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 23 celdas (10 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **8 ejercicios evaluables** (38 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -168,7 +186,7 @@ print(resultado["run_dir"])
 print(resultado["metrics"])
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -196,7 +214,7 @@ neural-labs train-advanced --track 27_audio_speechcommands --quick
 
 **Qué ocurre.** Se entrena el modelo completo conservando el checkpoint con el mejor valor de `accuracy` en validación, y se sella el experimento antes de evaluar `test`.
 
-**Por qué.** Igual que en las rutas centrales: `validation` decide, `test` solo confirma, y el sello deja por escrito qué se había decidido antes de mirar.
+**Por qué.** Igual que en las clases centrales: `validation` decide, `test` solo confirma, y el sello deja por escrito qué se había decidido antes de mirar.
 
 ```bash
 neural-labs train-advanced --track 27_audio_speechcommands --split-seed 42 --training-seed 43
@@ -249,6 +267,12 @@ Acentos, micrófonos y ambientes no están representados uniformemente. Una accu
 
 ## ✅ Antes de darlo por terminado
 
+La clase está aprobada cuando se cumplen estos criterios:
+
+- [ ] responde la pregunta esencial con evidencia de la ejecución
+- [ ] interpreta la visualización propia de la clase
+- [ ] distingue resultados observados de supuestos
+
 Y cuando tienes estos entregables:
 
 - [ ] notebook ejecutado
@@ -286,6 +310,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -303,11 +328,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🧷 Segmentación semántica con U-Net](../../advanced_labs/26_segmentation_unet/README.md) | [Las 31 rutas](../../parts/README.md) | [🖌️ WGAN-GP sobre Fashion-MNIST](../../advanced_labs/28_wgan_gp/README.md) |
+| [🧷 Segmentación semántica con U-Net](../../advanced_labs/26_segmentation_unet/README.md) | [Las 31 clases](../../parts/README.md) | [🖌️ WGAN-GP sobre Fashion-MNIST](../../advanced_labs/28_wgan_gp/README.md) |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔬 [Parte 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/27_audio_speechcommands/index.html) · [🖥️ Página HTML local](index.html)
+🔬 [Módulo 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/27_audio_speechcommands/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

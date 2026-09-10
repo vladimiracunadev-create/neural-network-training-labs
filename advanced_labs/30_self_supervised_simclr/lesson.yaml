@@ -15,3 +15,23 @@ deliverables:
 - reporte experimental
 - model card
 dataset: cifar10
+schema_version: '3.0'
+class_number: 31
+module_number: 7
+module_title: Especializaciones avanzadas
+essential_question: ¿Qué invariancias aprende una representación cuando nadie le entrega etiquetas?
+opening_hook: Dos transformaciones de la misma imagen deben reconocerse como par, mientras imágenes distintas se separan en el espacio de representación.
+class_practice: Inspeccionar pares aumentados, proyectar embeddings y comparar k-NN y linear probe bajo distintas intensidades de aumento.
+visual_evidence:
+  title: Acercar vistas del mismo ejemplo y separar las demás
+  asset: assets/class-map.svg
+  steps:
+  - Dos vistas aumentadas
+  - Embeddings contrastivos
+  - Evaluación sin fine-tuning
+common_misconception: Los aumentos definen lo que el modelo considera irrelevante; una invariancia mal elegida puede borrar la señal necesaria.
+estimated_hours: 8
+success_criteria:
+- responde la pregunta esencial con evidencia de la ejecución
+- interpreta la visualización propia de la clase
+- distingue resultados observados de supuestos

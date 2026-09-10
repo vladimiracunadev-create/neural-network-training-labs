@@ -1,6 +1,8 @@
-# Agregar un laboratorio
+# Agregar una clase
 
 ## 1. Registrar el dataset
+
+Antes de implementar, agregue la identidad pedagógica a `configs/classes.yaml`: número público, pregunta esencial, apertura, práctica, mapa conceptual y error frecuente. Una nueva carpeta técnica es una clase solamente cuando esa experiencia está definida.
 
 Agregue una entrada a `configs/labs.yaml` y regenere `configs/datasets.yaml`. La fuente debe ser pública, verificable y contar con licencia o condiciones consultables.
 
@@ -17,6 +19,12 @@ Use `build_model` cuando sea una arquitectura reutilizable. Las variantes especi
 ```text
 labs/XX_nombre/
 ├── README.md
+├── instructor-guide.md
+├── lesson.yaml
+├── theory.md
+├── experiments.md
+├── assessment.md
+├── assets/class-map.svg
 ├── train.py
 ├── notebook.ipynb
 ├── configs/

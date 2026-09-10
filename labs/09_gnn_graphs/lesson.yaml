@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 09_gnn_graphs
+schema_version: '3.0'
 title: GNN sobre red de citas
 level: avanzado
 estimated_hours: 8
@@ -29,3 +28,18 @@ dataset:
   source: PyTorch Geometric / Planetoid
   reference: https://pytorch-geometric.readthedocs.io/en/stable/generated/torch_geometric.datasets.Planetoid.html
   license: Consultar dataset original
+id: 09_gnn_graphs
+class_number: 10
+module_number: 3
+module_title: Familias especializadas
+essential_question: ¿Cuánto aporta conocer las conexiones además de conocer cada nodo?
+opening_hook: Dos artículos con vocabularios ambiguos pueden aclararse al observar qué trabajos citan y quiénes los citan.
+class_practice: Visualizar vecindarios, retirar aristas y comparar una GNN con una MLP que solo ve atributos.
+visual_evidence:
+  title: Aprender haciendo circular mensajes
+  asset: assets/class-map.svg
+  steps:
+  - Nodo y atributos
+  - Vecinos envían mensajes
+  - Representación agregada
+common_misconception: Añadir más capas no siempre incorpora mejor contexto; puede volver indistinguibles las representaciones de los nodos.

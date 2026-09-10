@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 03_cnn_vision
+schema_version: '3.0'
 title: CNN para visión
 level: intermedio
 estimated_hours: 6
@@ -29,3 +28,18 @@ dataset:
   source: Torchvision / University of Toronto
   reference: https://www.cs.toronto.edu/~kriz/cifar.html
   license: Consultar términos CIFAR-10
+id: 03_cnn_vision
+class_number: 4
+module_number: 2
+module_title: Arquitecturas
+essential_question: ¿Por qué una convolución reconoce un patrón aunque cambie de posición?
+opening_hook: Un borde sigue siendo un borde en cualquier zona de una fotografía. Una CNN reutiliza el mismo detector en toda la imagen.
+class_practice: Mirar filtros y mapas de activación, calcular el campo receptivo y estudiar errores por clase en CIFAR-10.
+visual_evidence:
+  title: De píxeles a rasgos visuales
+  asset: assets/class-map.svg
+  steps:
+  - Parche local
+  - Filtro compartido
+  - Mapa de activación
+common_misconception: Una activación intensa no demuestra que la red haya comprendido un objeto; solo muestra respuesta a un patrón aprendido.

@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 13_hyperparameter_search
+schema_version: '3.0'
 title: Búsqueda de hiperparámetros
 level: avanzado
 estimated_hours: 8
@@ -29,3 +28,18 @@ dataset:
   source: UCI
   reference: https://archive.ics.uci.edu/dataset/2/adult
   license: CC BY 4.0
+id: 13_hyperparameter_search
+class_number: 14
+module_number: 4
+module_title: Entrenamiento eficiente
+essential_question: ¿Cómo buscar mejores configuraciones sin convertir validation en otro conjunto de entrenamiento?
+opening_hook: Cada prueba aporta información, pero demasiadas pruebas terminan adaptándose al ruido de validation.
+class_practice: Leer una trayectoria de búsqueda, comparar muestreo aleatorio y rejilla y justificar el presupuesto experimental.
+visual_evidence:
+  title: Explorar sin perseguir el ruido
+  asset: assets/class-map.svg
+  steps:
+  - Espacio de opciones
+  - Ensayos comparables
+  - Configuración seleccionada
+common_misconception: El mejor ensayo observado no es necesariamente la mejor configuración generalizable, especialmente con muchas comparaciones.

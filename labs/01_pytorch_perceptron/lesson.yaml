@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 01_pytorch_perceptron
+schema_version: '3.0'
 title: Perceptrón con PyTorch
 level: fundamentos
 estimated_hours: 4
@@ -29,3 +28,18 @@ dataset:
   source: UCI
   reference: https://archive.ics.uci.edu/dataset/267/banknote+authentication
   license: Consultar ficha UCI
+id: 01_pytorch_perceptron
+class_number: 2
+module_number: 1
+module_title: Fundamentos
+essential_question: ¿Qué calcula PyTorch por nosotros cuando llamamos a backward()?
+opening_hook: La misma neurona de la clase anterior reaparece, pero ahora PyTorch dibuja y recorre automáticamente el grafo de operaciones.
+class_practice: Inspeccionar tensores y gradientes, comparar el cálculo manual con autograd y visualizar la frontera antes y después de normalizar.
+visual_evidence:
+  title: El camino que sigue autograd
+  asset: assets/class-map.svg
+  steps:
+  - Tensor y operaciones
+  - Grafo computacional
+  - Gradientes acumulados
+common_misconception: backward() no actualiza los pesos; calcula gradientes. El optimizador realiza la actualización en un paso separado.

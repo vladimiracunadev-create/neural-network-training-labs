@@ -1,22 +1,36 @@
 # Búsqueda de hiperparámetros
 
 <!-- nav-top -->
-> 🧭 **Ruta 14 / 31** · 🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md)
+> 🧭 **Clase 14 / 31** · 🟠 [Módulo 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md)
 >
-> [⬅️ 🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) · [🏠 Índice de rutas](../../parts/README.md) · [⚗️ Destilación de conocimiento ➡️](../../labs/14_knowledge_distillation/README.md)
+> [⬅️ 🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) · [🏠 Índice de clases](../../parts/README.md) · [⚗️ Destilación de conocimiento ➡️](../../labs/14_knowledge_distillation/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+Cada prueba aporta información, pero demasiadas pruebas terminan adaptándose al ruido de validation.
+
+> **Pregunta esencial:** ¿Cómo buscar mejores configuraciones sin convertir validation en otro conjunto de entrenamiento?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![Explorar sin perseguir el ruido](assets/class-map.svg)
+
+*Mapa de esta clase: Explorar sin perseguir el ruido. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Optimizar profundidad, ancho, dropout y learning rate sin tocar test.
 
-Es la **ruta 14 de 31** del recorrido y pertenece a 🟠 la parte 4, *Entrenar mejor, más barato y sin centralizar datos*. Llegas desde **Fusión de sensores** y lo que hagas aquí lo da por supuesto **Destilación de conocimiento**.
+**Práctica propia de esta clase:** Leer una trayectoria de búsqueda, comparar muestreo aleatorio y rejilla y justificar el presupuesto experimental.
+
+Es la **clase 14 de 31** del programa y pertenece a 🟠 el módulo 4, *Entrenar mejor, más barato y sin centralizar datos*. Llegas desde **Fusión de sensores** y lo que hagas aquí lo da por supuesto **Destilación de conocimiento**.
 
 Trabajarás con el dataset **`adult_census`** (UCI, licencia: CC BY 4.0), y tendrás que superar la línea base **Regresión logística**, decidiendo con la métrica `f1` medida sobre `validation`. Nivel avanzado, unas **8 horas** de dedicación.
 
-**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
+**Lo que conviene traer resuelto de las clases anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
 
 **Al terminar deberías ser capaz de:**
 
@@ -26,7 +40,11 @@ Trabajarás con el dataset **`adult_census`** (UCI, licencia: CC BY 4.0), y tend
 - Comparar contra la línea base: Regresión logística.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> El mejor ensayo observado no es necesariamente la mejor configuración generalizable, especialmente con muchas comparaciones.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
@@ -78,7 +96,7 @@ Hay un fenómeno adicional que conviene anticipar: los hiperparámetros **intera
 
 Este es el punto que distingue una búsqueda rigurosa de una que se engaña a sí misma, y es la razón de que el protocolo del repositorio sea especialmente estricto aquí.
 
-Cada configuración probada se evalúa en `validation`, y al final se elige la mejor. Pero elegir el máximo de n estimaciones ruidosas produce un valor **optimista**: es el mismo sesgo de selección de la ruta 10, 𝔼[max] ≥ max 𝔼. Cuanto mayor es n, mayor es el sesgo. Con cien configuraciones probadas, la métrica de validación de la ganadora incluye una porción apreciable de suerte, y **no es una estimación insesgada** de lo que rendirá con datos nuevos.
+Cada configuración probada se evalúa en `validation`, y al final se elige la mejor. Pero elegir el máximo de n estimaciones ruidosas produce un valor **optimista**: es el mismo sesgo de selección de la clase 11, 𝔼[max] ≥ max 𝔼. Cuanto mayor es n, mayor es el sesgo. Con cien configuraciones probadas, la métrica de validación de la ganadora incluye una porción apreciable de suerte, y **no es una estimación insesgada** de lo que rendirá con datos nuevos.
 
 De ahí se sigue lo que hay que hacer y lo que no. La cifra que se reporta como resultado del laboratorio es la de `test`, medida **una sola vez** con la configuración ya elegida y sellada; el valor de validación de la ganadora se reporta como lo que es, un criterio de selección y no una estimación de desempeño. Y si se quisiera además estimar honestamente el error del procedimiento completo de búsqueda, haría falta una **validación cruzada anidada**: un bucle externo para estimar y uno interno para buscar, con un costo multiplicativo que este laboratorio no asume, pero que conviene saber que existe.
 
@@ -88,21 +106,21 @@ Un último detalle sobre el presupuesto: comparar dos estrategias de búsqueda s
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `accuracy`, `balanced_accuracy`, `f1`, `roc_auc`, `pr_auc`. De todas ellas, la que **decide** qué modelo se conserva es `f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `accuracy`, `balanced_accuracy`, `f1`, `roc_auc`, `pr_auc`. De todas ellas, la que **decide** qué modelo se conserva es `f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 25 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (40 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -175,7 +193,7 @@ datos = prepare_dataset("13_hyperparameter_search", quick=True, seed=42)
 print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -302,7 +320,7 @@ Cada ejecución escribe su propio directorio con nombre único, de modo que dos 
 | `confusion_matrix.png` | Qué clases se confunden entre sí. |
 | `model_spec.json` · `inference_contract.json` | Qué entrada espera el modelo y qué devuelve: lo que necesita quien lo despliegue. |
 | `model_card.md` · `report.md` | La ficha del modelo y el informe legible de la ejecución. |
-| `hyperparameter_trials.json` | **Propio de esta ruta.** Cada combinación probada, su puntaje y la ganadora. |
+| `hyperparameter_trials.json` | **Propio de esta clase.** Cada combinación probada, su puntaje y la ganadora. |
 
 ## ⚠️ Dónde suele perderse la gente
 
@@ -319,7 +337,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 ## ✅ Antes de darlo por terminado
 
-El laboratorio está aprobado cuando se cumplen estos criterios:
+La clase está aprobada cuando se cumplen estos criterios:
 
 - [ ] cero solapamiento entre train, validation y test
 - [ ] selección basada únicamente en validation
@@ -366,6 +384,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -383,11 +402,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) | [Las 31 rutas](../../parts/README.md) | [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) |
+| [🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) | [Las 31 clases](../../parts/README.md) | [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/13_hyperparameter_search/index.html) · [🖥️ Página HTML local](index.html)
+🟠 [Módulo 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/13_hyperparameter_search/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

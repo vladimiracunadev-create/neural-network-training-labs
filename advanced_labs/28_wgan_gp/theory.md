@@ -1,9 +1,9 @@
 # Teoría — WGAN-GP sobre Fashion-MNIST
 
 <!-- nav-top -->
-> 🧭 **Ruta 29 / 31** · 🔬 [Parte 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md)
+> 🧭 **Clase 29 / 31** · 🔬 [Módulo 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md)
 >
-> [⬅️ 🎙️ Clasificación de audio con SpeechCommands](../../advanced_labs/27_audio_speechcommands/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🌫️ Difusión DDPM sobre Fashion-MNIST ➡️](../../advanced_labs/29_diffusion_ddpm/theory.md)
+> [⬅️ 🎙️ Clasificación de audio con SpeechCommands](../../advanced_labs/27_audio_speechcommands/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [🌫️ Difusión DDPM sobre Fashion-MNIST ➡️](../../advanced_labs/29_diffusion_ddpm/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -12,13 +12,13 @@ Distancia Wasserstein, crítico sin sigmoide y restricción Lipschitz mediante g
 
 ## Idea central
 
-En la ruta 08 se entrenó una GAN clásica y se vio el problema de cerca: el entrenamiento oscila, a veces se derrumba, y la pérdida no dice nada sobre la calidad de las muestras. Puede bajar mientras las imágenes empeoran. Este laboratorio explica **por qué** ocurre eso y qué cambio matemático lo arregla.
+En la clase 09 se entrenó una GAN clásica y se vio el problema de cerca: el entrenamiento oscila, a veces se derrumba, y la pérdida no dice nada sobre la calidad de las muestras. Puede bajar mientras las imágenes empeoran. Este laboratorio explica **por qué** ocurre eso y qué cambio matemático lo arregla.
 
 La raíz del fallo está en qué se mide. La GAN original minimiza, implícitamente, una divergencia de Jensen-Shannon entre la distribución real y la generada. Esa divergencia tiene una propiedad fatal al comienzo del entrenamiento: cuando las dos distribuciones apenas se solapan —y no se solapan, porque las imágenes reales viven en una variedad de dimensión muy baja dentro del espacio de píxeles— la JS es prácticamente constante. Una función constante tiene gradiente cero. El generador no recibe señal sobre *hacia dónde* moverse; solo sabe que está mal, no en qué dirección corregir.
 
 La distancia de Wasserstein resuelve exactamente eso. Mide el coste de transportar masa de una distribución a la otra, así que sigue variando de forma suave aunque los soportes sean disjuntos: siempre indica una dirección. El precio es que calcularla parece imposible —implica un ínfimo sobre todos los planes de transporte—, y aquí entra el segundo ingrediente: una dualidad clásica la convierte en un supremo sobre funciones 1-Lipschitz, algo que una red neuronal sí puede aproximar. Esa red deja de ser un clasificador y pasa a ser un **crítico**: no dice «real o falso», estima una distancia.
 
-Queda un problema práctico: obligar a una red a ser 1-Lipschitz. La WGAN original lo hacía recortando los pesos a un intervalo, un remedio brusco que limita la capacidad del crítico. WGAN-GP lo sustituye por una penalización sobre la norma del gradiente, que impone la restricción donde importa y deja la red libre en lo demás. El laboratorio contrasta esta variante contra la DCGAN de la ruta 08 y, sobre todo, verifica algo que la GAN clásica no ofrece: que la pérdida del crítico **correlacione con la calidad visual**, es decir, que por fin haya un número al que valga la pena mirar.
+Queda un problema práctico: obligar a una red a ser 1-Lipschitz. La WGAN original lo hacía recortando los pesos a un intervalo, un remedio brusco que limita la capacidad del crítico. WGAN-GP lo sustituye por una penalización sobre la norma del gradiente, que impone la restricción donde importa y deja la red libre en lo demás. El laboratorio contrasta esta variante contra la DCGAN de la clase 09 y, sobre todo, verifica algo que la GAN clásica no ofrece: que la pérdida del crítico **correlacione con la calidad visual**, es decir, que por fin haya un número al que valga la pena mirar.
 
 ## Fundamento matemático
 
@@ -96,11 +96,11 @@ Las métricas generativas aproximadas no sustituyen evaluación humana ni valida
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🎙️ Clasificación de audio con SpeechCommands](../../advanced_labs/27_audio_speechcommands/README.md) | [Las 31 rutas](../../parts/README.md) | [🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/README.md) |
+| [🎙️ Clasificación de audio con SpeechCommands](../../advanced_labs/27_audio_speechcommands/README.md) | [Las 31 clases](../../parts/README.md) | [🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔬 [Parte 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/28_wgan_gp/index.html) · [🖥️ Página HTML local](index.html)
+🔬 [Módulo 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/28_wgan_gp/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

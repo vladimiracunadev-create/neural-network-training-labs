@@ -23,7 +23,7 @@ El tracker compuesto conserva simultáneamente el archivo local y envía paráme
 
 ## Convención
 
-- Un experimento MLflow corresponde a un laboratorio.
+- Un experimento MLflow corresponde a una clase práctica.
 - Un run corresponde a una combinación de configuración, semilla, dataset y entorno.
 - Los checkpoints no deben promoverse solo por una métrica; revise model card, intervalos, subgrupos y costo.
 - No envíe tokens, credenciales ni datos sensibles como parámetros o etiquetas.

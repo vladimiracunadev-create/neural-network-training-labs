@@ -145,29 +145,42 @@ body { margin: 0; background: var(--bg); color: var(--ink);
     <div class="lab-hero">
       <div class="lab-kicker">Laboratorio 29 · Avanzada · Ruta 30 / 31 · <a href="../../parts/07-especializaciones-avanzadas.html">Parte 7 — Especializaciones avanzadas</a></div>
       <h1>🌫️ Difusión DDPM sobre Fashion-MNIST</h1>
-      <div class="lab-actions"><a class="btn btn-ghost" href="#README">📄 Guía</a><a class="btn btn-ghost" href="#experiments">🔬 Experimentos</a><a class="btn btn-ghost" href="#assessment">📝 Evaluación</a><a class="btn btn-ghost" href="notebook.ipynb">📓 Recorrido</a><a class="btn btn-ghost" href="notebook_student.ipynb">✏️ Estudiante</a><a class="btn btn-ghost" href="notebook_solution.ipynb">✅ Solución</a></div>
+      <div class="lab-actions"><a class="btn btn-ghost" href="#README">📄 Guía</a><a class="btn btn-ghost" href="#experiments">🔬 Experimentos</a><a class="btn btn-ghost" href="#assessment">📝 Evaluación</a><a class="btn btn-ghost" href="#instructor-guide">🧑‍🏫 Guía docente</a><a class="btn btn-ghost" href="notebook.ipynb">📓 Recorrido</a><a class="btn btn-ghost" href="notebook_student.ipynb">✏️ Estudiante</a><a class="btn btn-ghost" href="notebook_solution.ipynb">✅ Solución</a></div>
     </div>
     <nav class="pager"><a class="pg pg-prev" href="../../advanced_labs/28_wgan_gp/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🖌️ WGAN-GP sobre Fashion-MNIST</span></a><a class="pg pg-next" href="../../advanced_labs/30_self_supervised_simclr/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🪞 Aprendizaje autosupervisado SimCLR</span></a></nav>
     <article class="content">
       <span id="README"></span><h1 id="difusion-ddpm-sobre-fashion-mnist">Difusión DDPM sobre Fashion-MNIST</h1>
-<h2 id="que-vas-a-hacer-aqui">🎯 Qué vas a hacer aquí</h2>
+<h2 id="antes-de-tocar-el-codigo">Antes de tocar el código</h2>
+<p>Si añadimos ruido en pasos pequeños conocemos exactamente la corrupción; la red aprende a estimar qué ruido retirar en cada instante.</p>
+<blockquote>
+<p><strong>Pregunta esencial:</strong> ¿Cómo aprende un modelo a invertir un proceso que destruye gradualmente la imagen?</p>
+</blockquote>
+<p>Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.</p>
+<p><img alt="Destruir de forma conocida para aprender a reconstruir" src="assets/class-map.svg"></p>
+<p><em>Mapa de esta clase: Destruir de forma conocida para aprender a reconstruir. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.</em></p>
+<h2 id="que-vas-a-aprender-y-construir">🎯 Qué vas a aprender y construir</h2>
 <p>Aprender predicción de ruido y muestreo iterativo sobre imágenes reales.</p>
-<p>Es la <strong>ruta 30 de 31</strong> del recorrido y pertenece a 🔬 la parte 7, <em>Especializaciones avanzadas</em>. Llegas desde <strong>WGAN-GP sobre Fashion-MNIST</strong> y lo que hagas aquí lo da por supuesto <strong>Aprendizaje autosupervisado SimCLR</strong>.</p>
-<p>Trabajarás con el dataset <strong><code>fashion_mnist</code></strong> (Torchvision / Zalando Research, licencia: MIT para código; consultar dataset), y tendrás que superar la línea base <strong>Autoencoder generativo simple</strong>, decidiendo con la métrica <code>noise_mse</code> medida sobre <code>validation</code>. Nivel avanzado.</p>
+<p><strong>Práctica propia de esta clase:</strong> Visualizar la cadena directa e inversa y comparar calidad y latencia al cambiar pasos y cronograma.</p>
+<p>Es la <strong>clase 30 de 31</strong> del programa y pertenece a 🔬 el módulo 7, <em>Especializaciones avanzadas</em>. Llegas desde <strong>WGAN-GP sobre Fashion-MNIST</strong> y lo que hagas aquí lo da por supuesto <strong>Aprendizaje autosupervisado SimCLR</strong>.</p>
+<p>Trabajarás con el dataset <strong><code>fashion_mnist</code></strong> (Torchvision / Zalando Research, licencia: MIT para código; consultar dataset), y tendrás que superar la línea base <strong>Autoencoder generativo simple</strong>, decidiendo con la métrica <code>noise_mse</code> medida sobre <code>validation</code>. Nivel avanzado, unas <strong>8 horas</strong> de dedicación.</p>
 <p><strong>Qué recibe el modelo como entrada:</strong> imágenes Fashion-MNIST normalizadas.</p>
-<p><strong>Lo que conviene traer resuelto de las rutas anteriores:</strong> CNN, probabilidad, modelos generativos.</p>
+<p><strong>Lo que conviene traer resuelto de las clases anteriores:</strong> CNN, probabilidad, modelos generativos.</p>
 <p><strong>Al terminar deberías ser capaz de:</strong></p>
 <ul>
 <li>Aprender predicción de ruido y muestreo iterativo sobre imágenes reales.</li>
 <li>Interpretar noise_mse, sample_diversity</li>
 <li>Aplicar sellado de test y reproducibilidad</li>
 </ul>
-<h2 id="la-teoria-de-este-laboratorio">🧠 La teoría de este laboratorio</h2>
+<h3 id="una-idea-que-conviene-desmontar">Una idea que conviene desmontar</h3>
+<blockquote>
+<p>Menor error de predicción de ruido no garantiza automáticamente muestras perceptualmente mejores.</p>
+</blockquote>
+<h2 id="comprender-antes-de-entrenar">🧠 Comprender antes de entrenar</h2>
 <p>Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en <code>theory.md</code>, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)</p>
 <h3 id="de-que-trata">De qué trata</h3>
 <p>Las dos rutas generativas anteriores atacan el problema de frente: una GAN aprende a producir una imagen completa de un salto, a partir de ruido, y el entrenamiento consiste en un juego adversarial delicado. La difusión hace lo contrario, y esa inversión es la idea entera: en vez de aprender la tarea difícil de una vez, la <strong>descompone en muchos pasos fáciles</strong>.</p>
 <p>El razonamiento es este. Destruir una imagen es trivial: se le añade un poco de ruido gaussiano, y repitiendo el gesto mil veces queda ruido puro. Cada paso individual de esa destrucción es tan pequeño que <strong>invertirlo también es fácil</strong>: dada una imagen apenas ruidosa, quitarle ese poco de ruido es un problema de regresión sencillo, no un problema creativo. Y si se sabe invertir cada paso, se sabe invertir la cadena entera: se parte de ruido puro y se deshace la destrucción hasta llegar a una imagen. Generar deja de ser un salto y pasa a ser un descenso gradual.</p>
-<p>Eso cambia la naturaleza del entrenamiento por completo. No hay dos redes compitiendo, no hay equilibrio que mantener, no hay colapso de modos: hay <strong>una sola red y un error cuadrático medio</strong>. Se toma una imagen real, se elige un paso al azar, se la corrompe con un ruido conocido, y se entrena la red a adivinar exactamente ese ruido. Es supervisión pura, con la etiqueta generada por uno mismo, y por eso el entrenamiento es tan estable comparado con el de la ruta 28.</p>
+<p>Eso cambia la naturaleza del entrenamiento por completo. No hay dos redes compitiendo, no hay equilibrio que mantener, no hay colapso de modos: hay <strong>una sola red y un error cuadrático medio</strong>. Se toma una imagen real, se elige un paso al azar, se la corrompe con un ruido conocido, y se entrena la red a adivinar exactamente ese ruido. Es supervisión pura, con la etiqueta generada por uno mismo, y por eso el entrenamiento es tan estable comparado con el de la clase 29.</p>
 <p>El precio aparece en el otro extremo. Una GAN genera con una sola pasada por el generador; la difusión necesita recorrer la cadena entera, es decir <strong>cientos de evaluaciones de la red por muestra</strong>. Esa asimetría —entrenamiento estable y barato por paso, muestreo caro— es la característica que define a la familia, y es lo que este laboratorio mide de forma explícita en la latencia de muestreo.</p>
 <h3 id="la-matematica-paso-a-paso">La matemática, paso a paso</h3>
 <p>Un modelo de difusión aprende a generar imágenes <strong>invirtiendo</strong> un proceso que las destruye. El <strong>proceso directo</strong> (forward) parte de una imagen real x₀ y le añade ruido gaussiano en T pasos pequeños, según un <strong>cronograma</strong> de varianzas βₜ ∈ (0, 1) creciente:</p>
@@ -204,9 +217,9 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 <h3 id="que-conviene-graficar">Qué conviene graficar</h3>
 <p>Cadena de ruido, denoising, cuadrícula de muestras y costo por pasos. La cadena forward muestra cómo βₜ degrada la imagen; la secuencia de denoising ilustra la reconstrucción progresiva; la curva de costo por número de pasos T evidencia el compromiso entre calidad de muestreo y latencia.</p>
 <h3 id="que-se-mide-y-con-que-se-decide">Qué se mide y con qué se decide</h3>
-<p>El laboratorio reporta <code>noise_mse</code>, <code>sample_diversity</code>, <code>sampling_latency</code>, <code>reconstruction_proxy</code>. De todas ellas, la que <strong>decide</strong> qué modelo se conserva es <code>noise_mse</code>, y se mide siempre sobre <code>validation</code>: es la única forma de que <code>test</code> siga siendo una estimación honesta de lo que pasará con datos nuevos.</p>
+<p>La clase reporta <code>noise_mse</code>, <code>sample_diversity</code>, <code>sampling_latency</code>, <code>reconstruction_proxy</code>. De todas ellas, la que <strong>decide</strong> qué modelo se conserva es <code>noise_mse</code>, y se mide siempre sobre <code>validation</code>: es la única forma de que <code>test</code> siga siendo una estimación honesta de lo que pasará con datos nuevos.</p>
 <h2 id="los-tres-cuadernos">📓 Los tres cuadernos</h2>
-<p>El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar <code>test</code> una vez—; lo que cambia es qué te toca escribir a ti:</p>
+<p>La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar <code>test</code> una vez—; lo que cambia es qué te toca escribir a ti:</p>
 <table>
 <thead>
 <tr>
@@ -218,12 +231,12 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 <tbody>
 <tr>
 <td><a href="notebook.ipynb">📓 <code>notebook.ipynb</code></a></td>
-<td>El <strong>recorrido de referencia</strong>: 22 celdas (10 de código) con <strong>todo el código escrito y ejecutable</strong>, intercalado con las explicaciones. No trae ejercicios.</td>
+<td>El <strong>recorrido de referencia</strong>: 23 celdas (10 de código) con <strong>todo el código escrito y ejecutable</strong>, intercalado con las explicaciones. No trae ejercicios.</td>
 <td>Para leer y ejecutar de principio a fin.</td>
 </tr>
 <tr>
 <td><a href="notebook_student.ipynb">✏️ <code>notebook_student.ipynb</code></a></td>
-<td>El mismo recorrido más <strong>8 ejercicios evaluables</strong> (37 celdas en total). Las celdas de ejercicio están marcadas con <code># YOUR CODE HERE</code> y debajo de cada una hay una comprobación.</td>
+<td>El mismo recorrido más <strong>8 ejercicios evaluables</strong> (38 celdas en total). Las celdas de ejercicio están marcadas con <code># YOUR CODE HERE</code> y debajo de cada una hay una comprobación.</td>
 <td>Para practicar.</td>
 </tr>
 <tr>
@@ -234,7 +247,7 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 </tbody>
 </table>
 <h3 id="que-se-practica-en-los-ejercicios">Qué se practica en los ejercicios</h3>
-<p>Cinco de ellos no son de arquitectura sino del <strong>contrato experimental</strong>, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con <code>validation</code>, compararse con la línea base, sellar antes de abrir <code>test</code> y dejar el plan por escrito. Se resuelven con Python estándar —<strong>sin descargar el dataset ni entrenar</strong>—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.</p>
+<p>Cinco de ellos cubren el <strong>contrato experimental</strong> común: auditar la partición, decidir con <code>validation</code>, compararse con la línea base, sellar antes de abrir <code>test</code> y dejar el plan por escrito. Se resuelven con Python estándar —<strong>sin descargar el dataset ni entrenar</strong>—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.</p>
 <h3 id="como-abrirlos">Cómo abrirlos</h3>
 <p>Los cuadernos necesitan el extra <code>notebooks</code>, que instala Jupyter junto con el paquete:</p>
 <pre><code class="language-bash">pip install -e &quot;.[dev,notebooks]&quot;
@@ -308,7 +321,7 @@ resultado = train_advanced(
 print(resultado[&quot;run_dir&quot;])
 print(resultado[&quot;metrics&quot;])
 </code></pre>
-<h2 id="paso-a-paso">🪜 Paso a paso</h2>
+<h2 id="laboratorio-guiado">🪜 Laboratorio guiado</h2>
 <p>Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.</p>
 <h3 id="paso-1-estudiar-la-teoria-antes-de-ejecutar-nada">Paso 1 — Estudiar la teoría antes de ejecutar nada</h3>
 <p><strong>Qué ocurre.</strong> Leer <a href="#theory"><code>theory.md</code></a>, que desarrolla Proceso directo de ruido, predicción de epsilon, cronograma beta y muestreo inverso. y cita las obras y papers de los que procede.</p>
@@ -322,7 +335,7 @@ print(resultado[&quot;metrics&quot;])
 <p><strong>Cómo sabes que salió bien.</strong> Termina sin error y deja <code>metrics.json</code>, <code>history.json</code> y <code>best_model.pt</code> en el directorio de la ejecución.</p>
 <h3 id="paso-3-entrenar-en-serio-y-seleccionar-con-validation">Paso 3 — Entrenar en serio y seleccionar con <code>validation</code></h3>
 <p><strong>Qué ocurre.</strong> Se entrena el modelo completo conservando el checkpoint con el mejor valor de <code>noise_mse</code> en validación, y se sella el experimento antes de evaluar <code>test</code>.</p>
-<p><strong>Por qué.</strong> Igual que en las rutas centrales: <code>validation</code> decide, <code>test</code> solo confirma, y el sello deja por escrito qué se había decidido antes de mirar.</p>
+<p><strong>Por qué.</strong> Igual que en las clases centrales: <code>validation</code> decide, <code>test</code> solo confirma, y el sello deja por escrito qué se había decidido antes de mirar.</p>
 <pre><code class="language-bash">neural-labs train-advanced --track 29_diffusion_ddpm --split-seed 42 --training-seed 43
 </code></pre>
 <p><strong>Cómo sabes que salió bien.</strong> Existe <code>experiment.lock.json</code> y <code>metrics.json</code> incluye tanto el valor de validación como el de test.</p>
@@ -381,6 +394,12 @@ print(resultado[&quot;metrics&quot;])
 <h3 id="riesgos-al-interpretar-los-resultados">Riesgos al interpretar los resultados</h3>
 <p>El modelo pequeño sirve para estudio; no debe extrapolarse a generación fotográfica de alta resolución. El error de predicción de ruido (noise_mse) mide qué tan bien se estima ε, pero no equivale directamente a calidad perceptual, y los proxies de diversidad no descartan memorización de ejemplos del entrenamiento.</p>
 <h2 id="antes-de-darlo-por-terminado">✅ Antes de darlo por terminado</h2>
+<p>La clase está aprobada cuando se cumplen estos criterios:</p>
+<ul>
+<li>[ ] responde la pregunta esencial con evidencia de la ejecución</li>
+<li>[ ] interpreta la visualización propia de la clase</li>
+<li>[ ] distingue resultados observados de supuestos</li>
+</ul>
 <p>Y cuando tienes estos entregables:</p>
 <ul>
 <li>[ ] notebook ejecutado</li>
@@ -432,6 +451,10 @@ print(resultado[&quot;metrics&quot;])
 <tr>
 <td><a href="#assessment">📝 <code>assessment.md</code></a></td>
 <td>Las preguntas de evaluación y la rúbrica con la que se corrigen.</td>
+</tr>
+<tr>
+<td><a href="#instructor-guide">🧑‍🏫 <code>instructor-guide.md</code></a></td>
+<td>La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase.</td>
 </tr>
 <tr>
 <td><a href="notebook.ipynb">📓 <code>notebook.ipynb</code></a></td>
@@ -488,7 +511,7 @@ print(resultado[&quot;metrics&quot;])
 <li>Lo supera solo con una semilla concreta y no con las demás.</li>
 <li>Lo supera a costa de un tiempo o un tamaño que el problema no justifica.</li>
 </ul>
-<h3 id="el-experimento-propio-de-esta-ruta">El experimento propio de esta ruta</h3>
+<h3 id="el-experimento-propio-de-esta-clase">El experimento propio de esta clase</h3>
 <p>Además de la comparación con la línea base, aquí interesa una pregunta específica: <strong>Comparar 100 y 500 pasos, cronograma lineal y coseno, con igual dataset</strong>. Es la comparación que da sentido al tema de este laboratorio; la de la línea base solo dice si el modelo sirve, mientras que esta dice <em>qué parte</em> del diseño es la que aporta.</p>
 <h2 id="que-se-varia-y-que-se-mantiene-fijo">Qué se varía y qué se mantiene fijo</h2>
 <p>Un experimento es interpretable cuando cambia <strong>una</strong> cosa a la vez. Esta tabla dice qué papel juega cada elemento y, sobre todo, por qué:</p>
@@ -648,7 +671,7 @@ neural-labs train-advanced --track 29_diffusion_ddpm --split-seed 42 --training-
 <li><strong>Ajustar mirando <code>test</code>.</strong> En cuanto una decisión se toma con el resultado de <code>test</code>, ese conjunto deja de estimar el rendimiento con datos nuevos.</li>
 <li><strong>No registrar el entorno.</strong> Sin versiones ni hardware, una diferencia de tiempo o de resultado se vuelve inexplicable meses después.</li>
 </ul><h2 class="doc-sep" id="assessment">📝 Evaluación</h2><h1 id="evaluacion-difusion-ddpm-sobre-fashion-mnist">Evaluación — Difusión DDPM sobre Fashion-MNIST</h1>
-<h2 id="como-se-evalua-este-laboratorio">Cómo se evalúa este laboratorio</h2>
+<h2 id="como-se-evalua-esta-clase">Cómo se evalúa esta clase</h2>
 <p>No se evalúa el número final. Un modelo con una métrica alta obtenida mirando <code>test</code>, o sin compararse con nada, vale menos que uno modesto cuyo resultado se puede auditar. Lo que se califica es el <strong>proceso</strong>: si las particiones están limpias, si la decisión se tomó donde debía, si la conclusión distingue lo que se midió de lo que se supone.</p>
 <h2 id="evidencias-que-debes-entregar">Evidencias que debes entregar</h2>
 <table>
@@ -694,15 +717,21 @@ neural-labs train-advanced --track 29_diffusion_ddpm --split-seed 42 --training-
 </table>
 <h2 id="las-preguntas-y-que-se-busca-en-tu-respuesta">Las preguntas, y qué se busca en tu respuesta</h2>
 <p>No se corrige la longitud de la respuesta, sino si demuestra comprensión. Debajo de cada pregunta está lo que una buena respuesta debería contener.</p>
-<p><strong>1. Explica con tus palabras: Proceso directo de ruido, predicción de epsilon, cronograma beta y muestreo inverso.</strong></p>
+<p><strong>1. ¿Cómo aprende un modelo a invertir un proceso que destruye gradualmente la imagen?</strong></p>
+<p><em>Qué se busca:</em> Comienza con la predicción que hiciste al abrir la clase y contrástala con una gráfica, una medida o una observación concreta de tu ejecución.</p>
+<p><strong>2. Explica con tus palabras: Proceso directo de ruido, predicción de epsilon, cronograma beta y muestreo inverso.</strong></p>
 <p><em>Qué se busca:</em> Una buena respuesta conecta cuatro cosas —cómo se representa la entrada, qué calcula el modelo, qué mide la función de pérdida y cómo se actualizan los pesos— en vez de repetir la definición del libro. Si puedes explicarlo sin la fórmula delante, lo entendiste.</p>
-<p><strong>2. ¿Qué información del dataset solo puede usarse durante el entrenamiento?</strong></p>
+<p><strong>3. ¿Qué información del dataset solo puede usarse durante el entrenamiento?</strong></p>
 <p><em>Qué se busca:</em> Se espera que nombres casos concretos: las estadísticas de normalización, el vocabulario, la selección de variables, los umbrales. Todo eso se ajusta <strong>solo</strong> con <code>train</code>; calcularlo sobre el conjunto completo es una fuga silenciosa que infla el resultado sin dar ningún aviso.</p>
-<p><strong>3. ¿Por qué Autoencoder generativo simple es una comparación razonable para este problema?</strong></p>
+<p><strong>4. ¿Por qué Autoencoder generativo simple es una comparación razonable para este problema?</strong></p>
 <p><em>Qué se busca:</em> Una buena respuesta explica qué captura la línea base y qué no, y por qué superarla —o no superarla— es informativo aquí. Si la línea base ya resuelve el problema, la conclusión correcta es que la red no estaba justificada.</p>
-<p><strong>4. ¿Qué te dice <code>noise_mse</code> que no te dirían las otras métricas?</strong></p>
+<p><strong>5. ¿Qué aprendiste al realizar esta práctica: Visualizar la cadena directa e inversa y comparar calidad y latencia al cambiar pasos y cronograma.?</strong></p>
+<p><em>Qué se busca:</em> No basta con relatar los pasos. Explica qué cambió, por qué cambió y qué resultado te haría rechazar tu interpretación inicial.</p>
+<p><strong>6. Refuta con evidencia esta idea frecuente: «Menor error de predicción de ruido no garantiza automáticamente muestras perceptualmente mejores.»</strong></p>
+<p><em>Qué se busca:</em> Se busca una refutación situada en esta materia, apoyada en el mecanismo estudiado y en los resultados obtenidos, no una negación genérica.</p>
+<p><strong>7. ¿Qué te dice <code>noise_mse</code> que no te dirían las otras métricas?</strong></p>
 <p><em>Qué se busca:</em> Cada métrica pondera distinto los errores. Se espera que expliques por qué esa es la que decide aquí y en qué situación sería una mala elección.</p>
-<p><strong>5. ¿Qué cambiarías antes de usar este modelo fuera del laboratorio?</strong></p>
+<p><strong>8. ¿Qué cambiarías antes de usar este modelo fuera del laboratorio?</strong></p>
 <p><em>Qué se busca:</em> Aquí se evalúa el criterio, no la técnica: licencias y condiciones de uso de <code>fashion_mnist</code>, representatividad de la población, calibración de las probabilidades, vigilancia de la deriva, desempeño por subgrupo y supervisión humana. Un «funcionaría bien» sin condiciones se corrige como respuesta incompleta.</p>
 <h2 id="la-rubrica-explicada">La rúbrica, explicada</h2>
 <table>
@@ -757,12 +786,95 @@ neural-labs train-advanced --track 29_diffusion_ddpm --split-seed 42 --training-
 <p><strong>La aprobación exige al menos 70 % y cero errores críticos de fuga de datos.</strong> La fuga es eliminatoria por sí sola porque invalida todas las demás cifras del trabajo, por buenas que parezcan.</p>
 <h2 id="autoevaluacion-antes-de-entregar">Autoevaluación antes de entregar</h2>
 <ul>
-<li>[ ] Puedo explicar el laboratorio a alguien que no lo hizo, sin leer el código.</li>
+<li>[ ] Puedo explicar la idea central de la clase a alguien que no la cursó, sin leer el código.</li>
 <li>[ ] Sé qué decisión tomé en cada paso y con qué evidencia la tomé.</li>
 <li>[ ] Miré <code>test</code> una sola vez, después de que existiera <code>experiment.lock.json</code>.</li>
 <li>[ ] Mi conclusión dice magnitud, incertidumbre, costo, errores y condiciones.</li>
-<li>[ ] Puedo señalar al menos una limitación real de mi resultado.</li>
+<li>
+<p>[ ] Puedo señalar al menos una limitación real de mi resultado.</p>
+</li>
+<li>
+<p>[ ] responde la pregunta esencial con evidencia de la ejecución</p>
+</li>
+<li>[ ] interpreta la visualización propia de la clase</li>
+<li>[ ] distingue resultados observados de supuestos</li>
+</ul><h2 class="doc-sep" id="instructor-guide">🧑‍🏫 Guía docente</h2><h1 id="guia-docente-clase-30-difusion-ddpm-sobre-fashion-mnist">Guía docente — Clase 30: Difusión DDPM sobre Fashion-MNIST</h1>
+<blockquote>
+<p><strong>Módulo 7: Especializaciones avanzadas</strong> · Esta guía acompaña a quien facilita la clase; no es un guion que deba leerse literalmente.</p>
+</blockquote>
+<h2 id="la-conversacion-que-abre-la-clase">La conversación que abre la clase</h2>
+<p>Si añadimos ruido en pasos pequeños conocemos exactamente la corrupción; la red aprende a estimar qué ruido retirar en cada instante.</p>
+<p>Plantee primero esta pregunta y permita que el grupo formule una predicción antes de mostrar código:</p>
+<blockquote>
+<p><strong>¿Cómo aprende un modelo a invertir un proceso que destruye gradualmente la imagen?</strong></p>
+</blockquote>
+<h2 id="que-debe-quedar-comprendido">Qué debe quedar comprendido</h2>
+<ul>
+<li>Aprender predicción de ruido y muestreo iterativo sobre imágenes reales.</li>
+<li>Interpretar noise_mse, sample_diversity</li>
+<li>Aplicar sellado de test y reproducibilidad</li>
 </ul>
+<h2 id="secuencia-sugerida">Secuencia sugerida</h2>
+<table>
+<thead>
+<tr>
+<th>Momento</th>
+<th style="text-align: right;">Duración</th>
+<th>Acción docente</th>
+<th>Evidencia del estudiante</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Activación</td>
+<td style="text-align: right;">10 min</td>
+<td>Presentar el caso inicial y recoger predicciones.</td>
+<td>Explica qué espera observar y por qué.</td>
+</tr>
+<tr>
+<td>Construcción</td>
+<td style="text-align: right;">25 min</td>
+<td>Conectar intuición, representación y matemática.</td>
+<td>Dibuja o relata el mecanismo con sus propias palabras.</td>
+</tr>
+<tr>
+<td>Demostración</td>
+<td style="text-align: right;">25 min</td>
+<td>Recorrer el mapa visual y ejecutar el ejemplo mínimo.</td>
+<td>Interpreta cada transición sin limitarse a describir la figura.</td>
+</tr>
+<tr>
+<td>Investigación</td>
+<td style="text-align: right;">35 min</td>
+<td>Guiar la práctica propia de esta clase.</td>
+<td>Contrasta su predicción con una medida o gráfica.</td>
+</tr>
+<tr>
+<td>Cierre</td>
+<td style="text-align: right;">15 min</td>
+<td>Volver a la pregunta esencial y discutir límites.</td>
+<td>Entrega una conclusión breve con evidencia y una duda abierta.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="practica-propia-de-esta-materia">Práctica propia de esta materia</h2>
+<p>Visualizar la cadena directa e inversa y comparar calidad y latencia al cambiar pasos y cronograma.</p>
+<p><img alt="Destruir de forma conocida para aprender a reconstruir" src="assets/class-map.svg"></p>
+<p>La figura es un punto de entrada. Pida al estudiante que explique qué cambia entre los tres pasos y qué resultado observable invalidaría su explicación.</p>
+<h2 id="dificultad-conceptual-que-conviene-provocar">Dificultad conceptual que conviene provocar</h2>
+<blockquote>
+<p><strong>Idea engañosa:</strong> Menor error de predicción de ruido no garantiza automáticamente muestras perceptualmente mejores.</p>
+</blockquote>
+<p>No la corrija inmediatamente. Solicite un ejemplo o contraejemplo, ejecute una comparación y recién entonces reconstruya la explicación con el grupo.</p>
+<h2 id="preguntas-para-acompanar-sin-resolver">Preguntas para acompañar sin resolver</h2>
+<ul>
+<li>¿Qué observación concreta respalda esa afirmación?</li>
+<li>¿Qué variable está cambiando y cuáles permanecen controladas?</li>
+<li>¿La gráfica muestra el mecanismo o solamente una correlación?</li>
+<li>¿En qué caso dejaría de ser válida esta conclusión?</li>
+</ul>
+<h2 id="cierre-verificable">Cierre verificable</h2>
+<p>La clase termina cuando el estudiante puede responder la pregunta esencial, interpretar su visualización y señalar al menos una limitación. Una métrica aislada no reemplaza ninguna de esas tres evidencias.</p>
     </article>
     <nav class="pager"><a class="pg pg-prev" href="../../advanced_labs/28_wgan_gp/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🖌️ WGAN-GP sobre Fashion-MNIST</span></a><a class="pg pg-next" href="../../advanced_labs/30_self_supervised_simclr/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🪞 Aprendizaje autosupervisado SimCLR</span></a></nav>
   </main>

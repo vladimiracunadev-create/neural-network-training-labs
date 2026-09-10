@@ -1,9 +1,9 @@
 # Plan de experimentos — GNN sobre red de citas
 
 <!-- nav-top -->
-> 🧭 **Ruta 10 / 31** · 🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
+> 🧭 **Clase 10 / 31** · 🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
 >
-> [⬅️ 🎨 GAN generativa](../../labs/08_gan_generation/experiments.md) · [🏠 Índice de rutas](../../parts/README.md) · [🕹️ DQN para inventario con demanda real ➡️](../../labs/10_dqn_reinforcement/experiments.md)
+> [⬅️ 🎨 GAN generativa](../../labs/08_gan_generation/experiments.md) · [🏠 Índice de clases](../../parts/README.md) · [🕹️ DQN para inventario con demanda real ➡️](../../labs/10_dqn_reinforcement/experiments.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -27,7 +27,7 @@ Qué la haría falsa —y esto también es un resultado que hay que reportar—:
 - Lo supera solo con una semilla concreta y no con las demás.
 - Lo supera a costa de un tiempo o un tamaño que el problema no justifica.
 
-### El experimento propio de esta ruta
+### El experimento propio de esta clase
 
 Además de la comparación con la línea base, aquí interesa una pregunta específica: **Comparar con un mlp que ignore aristas**. Es la comparación que da sentido al tema de este laboratorio; la de la línea base solo dice si el modelo sirve, mientras que esta dice *qué parte* del diseño es la que aporta.
 
@@ -140,11 +140,11 @@ Una conclusión completa contiene cinco cosas, y se puede escribir en un párraf
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🎨 GAN generativa](../../labs/08_gan_generation/README.md) | [Las 31 rutas](../../parts/README.md) | [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) |
+| [🎨 GAN generativa](../../labs/08_gan_generation/README.md) | [Las 31 clases](../../parts/README.md) | [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/09_gnn_graphs/index.html) · [🖥️ Página HTML local](index.html)
+🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/09_gnn_graphs/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

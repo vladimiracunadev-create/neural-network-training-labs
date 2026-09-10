@@ -1,9 +1,9 @@
 # Teoría — Aumento de datos
 
 <!-- nav-top -->
-> 🧭 **Ruta 21 / 31** · 🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md)
+> 🧭 **Clase 21 / 31** · 🔴 [Módulo 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md)
 >
-> [⬅️ 🛡️ Regularización](../../labs/19_regularization_dropout_batchnorm/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🔍 Explicabilidad ➡️](../../labs/21_explainability/theory.md)
+> [⬅️ 🛡️ Regularización](../../labs/19_regularization_dropout_batchnorm/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [🔍 Explicabilidad ➡️](../../labs/21_explainability/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -40,7 +40,7 @@ El efecto sobre la función objetivo es explícito. En vez de minimizar la pérd
 
 ℒ_aug(θ) = 𝔼_(x,y) 𝔼_(T∼𝒯) [ ℓ( f_θ(T(x)), y ) ],
 
-y esa esperanza extra actúa como un regularizador: penaliza que la salida varíe cuando la entrada se mueve dentro de las transformaciones declaradas, es decir, **suaviza la función aprendida** en las direcciones que 𝒯 recorre. Por eso el aumento y el weight decay de la ruta 19 no son intercambiables: uno restringe la magnitud de los pesos, el otro restringe la forma de la función en direcciones concretas y elegidas.
+y esa esperanza extra actúa como un regularizador: penaliza que la salida varíe cuando la entrada se mueve dentro de las transformaciones declaradas, es decir, **suaviza la función aprendida** en las direcciones que 𝒯 recorre. Por eso el aumento y el weight decay de la clase 20 no son intercambiables: uno restringe la magnitud de los pesos, el otro restringe la forma de la función en direcciones concretas y elegidas.
 
 Con transformaciones estocásticas aplicadas en cada época, el modelo prácticamente **nunca ve dos veces el mismo ejemplo**, lo que dificulta la memorización. Ese es el mecanismo por el que el aumento reduce la brecha entre entrenamiento y validación, y la razón de que su efecto sea mayor cuanto más pequeño es el conjunto de datos.
 
@@ -60,7 +60,7 @@ Más allá de las transformaciones geométricas y de color, hay una familia que 
 
 x̃ = λ·xᵢ + (1 − λ)·xⱼ,   ỹ = λ·yᵢ + (1 − λ)·yⱼ,   con λ ∼ Beta(α, α).
 
-El modelo aprende así que entre dos clases la transición debe ser gradual, lo que suaviza la frontera de decisión y —efecto documentado— mejora la **calibración** de las probabilidades, que es justo lo que mide la ruta 22. **CutMix** hace lo mismo con parches: recorta una región de una imagen y la pega en otra, ponderando las etiquetas por el área ocupada, lo que preserva la estructura local que el mixup difumina.
+El modelo aprende así que entre dos clases la transición debe ser gradual, lo que suaviza la frontera de decisión y —efecto documentado— mejora la **calibración** de las probabilidades, que es justo lo que mide la clase 23. **CutMix** hace lo mismo con parches: recorta una región de una imagen y la pega en otra, ponderando las etiquetas por el área ocupada, lo que preserva la estructura local que el mixup difumina.
 
 Ambas rompen el supuesto de que la etiqueta es una clase única y exigen una pérdida que acepte objetivos blandos; la entropía cruzada la admite sin cambios, sumando los dos términos ponderados.
 
@@ -104,11 +104,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🛡️ Regularización](../../labs/19_regularization_dropout_batchnorm/README.md) | [Las 31 rutas](../../parts/README.md) | [🔍 Explicabilidad](../../labs/21_explainability/README.md) |
+| [🛡️ Regularización](../../labs/19_regularization_dropout_batchnorm/README.md) | [Las 31 clases](../../parts/README.md) | [🔍 Explicabilidad](../../labs/21_explainability/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/20_data_augmentation/index.html) · [🖥️ Página HTML local](index.html)
+🔴 [Módulo 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/20_data_augmentation/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

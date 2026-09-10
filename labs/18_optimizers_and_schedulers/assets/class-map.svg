@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc">
+<title id="title">Clase 19: Tres caminos sobre el mismo paisaje</title>
+<desc id="desc">Mapa conceptual en tres pasos: Pendiente local, Memoria o adaptación, Trayectoria de convergencia.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444"/></marker></defs>
+<style>.kicker{font:600 22px system-ui;fill:#ef4444}.title{font:700 38px system-ui;fill:#f8fafc}.question{font:400 21px system-ui;fill:#cbd5e1}.step{font:600 19px system-ui;fill:#f8fafc}.stepnum{font:700 16px system-ui;fill:#07111f}</style>
+<rect width="1200" height="500" rx="30" fill="#07111f"/>
+<text x="60" y="62" class="kicker">MÓDULO 05 · CLASE 19 · MECÁNICA FINA</text>
+<text x="60" y="120" class="title">Tres caminos sobre el mismo paisaje</text>
+<text x="60" y="170" class="question">¿Por qué distintos optimizadores recorren caminos distintos sobre la misma pérdida?</text>
+<path d="M350 313 H432" stroke="#ef4444" stroke-width="5" marker-end="url(#arrow)"/><path d="M760 313 H842" stroke="#ef4444" stroke-width="5" marker-end="url(#arrow)"/><rect x="40" y="250" width="300" height="126" rx="22" fill="#111827" stroke="#ef4444" stroke-width="3"/><circle cx="78" cy="288" r="18" fill="#ef4444"/><text x="78" y="295" text-anchor="middle" class="stepnum">1</text><text x="190" y="335" text-anchor="middle" class="step">Pendiente local</text><rect x="450" y="250" width="300" height="126" rx="22" fill="#111827" stroke="#ef4444" stroke-width="3"/><circle cx="488" cy="288" r="18" fill="#ef4444"/><text x="488" y="295" text-anchor="middle" class="stepnum">2</text><text x="600" y="335" text-anchor="middle" class="step">Memoria o adaptación</text><rect x="860" y="250" width="300" height="126" rx="22" fill="#111827" stroke="#ef4444" stroke-width="3"/><circle cx="898" cy="288" r="18" fill="#ef4444"/><text x="898" y="295" text-anchor="middle" class="stepnum">3</text><text x="1010" y="335" text-anchor="middle" class="step">Trayectoria de convergencia</text>
+<text x="600" y="445" text-anchor="middle" class="question">Observar → explicar → comprobar con evidencia</text>
+</svg>

@@ -1,9 +1,9 @@
 # Teoría — Búsqueda de hiperparámetros
 
 <!-- nav-top -->
-> 🧭 **Ruta 14 / 31** · 🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md)
+> 🧭 **Clase 14 / 31** · 🟠 [Módulo 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md)
 >
-> [⬅️ 🔀 Fusión de sensores](../../labs/12_multimodal_fusion/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [⚗️ Destilación de conocimiento ➡️](../../labs/14_knowledge_distillation/theory.md)
+> [⬅️ 🔀 Fusión de sensores](../../labs/12_multimodal_fusion/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [⚗️ Destilación de conocimiento ➡️](../../labs/14_knowledge_distillation/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -60,7 +60,7 @@ Hay un fenómeno adicional que conviene anticipar: los hiperparámetros **intera
 
 Este es el punto que distingue una búsqueda rigurosa de una que se engaña a sí misma, y es la razón de que el protocolo del repositorio sea especialmente estricto aquí.
 
-Cada configuración probada se evalúa en `validation`, y al final se elige la mejor. Pero elegir el máximo de n estimaciones ruidosas produce un valor **optimista**: es el mismo sesgo de selección de la ruta 10, 𝔼[max] ≥ max 𝔼. Cuanto mayor es n, mayor es el sesgo. Con cien configuraciones probadas, la métrica de validación de la ganadora incluye una porción apreciable de suerte, y **no es una estimación insesgada** de lo que rendirá con datos nuevos.
+Cada configuración probada se evalúa en `validation`, y al final se elige la mejor. Pero elegir el máximo de n estimaciones ruidosas produce un valor **optimista**: es el mismo sesgo de selección de la clase 11, 𝔼[max] ≥ max 𝔼. Cuanto mayor es n, mayor es el sesgo. Con cien configuraciones probadas, la métrica de validación de la ganadora incluye una porción apreciable de suerte, y **no es una estimación insesgada** de lo que rendirá con datos nuevos.
 
 De ahí se sigue lo que hay que hacer y lo que no. La cifra que se reporta como resultado del laboratorio es la de `test`, medida **una sola vez** con la configuración ya elegida y sellada; el valor de validación de la ganadora se reporta como lo que es, un criterio de selección y no una estimación de desempeño. Y si se quisiera además estimar honestamente el error del procedimiento completo de búsqueda, haría falta una **validación cruzada anidada**: un bucle externo para estimar y uno interno para buscar, con un costo multiplicativo que este laboratorio no asume, pero que conviene saber que existe.
 
@@ -98,11 +98,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) | [Las 31 rutas](../../parts/README.md) | [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) |
+| [🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) | [Las 31 clases](../../parts/README.md) | [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/13_hyperparameter_search/index.html) · [🖥️ Página HTML local](index.html)
+🟠 [Módulo 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/13_hyperparameter_search/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

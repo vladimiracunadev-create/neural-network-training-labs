@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 08_gan_generation
+schema_version: '3.0'
 title: GAN generativa
 level: avanzado
 estimated_hours: 8
@@ -29,3 +28,18 @@ dataset:
   source: Torchvision / Zalando Research
   reference: https://github.com/zalandoresearch/fashion-mnist
   license: MIT
+id: 08_gan_generation
+class_number: 9
+module_number: 3
+module_title: Familias especializadas
+essential_question: ¿Cómo sabemos si un generador aprendió diversidad y no solo unas pocas imágenes convincentes?
+opening_hook: Una muestra bonita puede ocultar que el generador repite siempre la misma prenda. La evidencia está en la colección, no en la mejor imagen.
+class_practice: Recorrer el espacio latente, comparar vecinos y medir diversidad junto con la estabilidad adversarial.
+visual_evidence:
+  title: El juego entre generar y distinguir
+  asset: assets/class-map.svg
+  steps:
+  - Ruido latente
+  - Imagen candidata
+  - Crítica y ajuste
+common_misconception: Una pérdida baja del generador no garantiza calidad ni cobertura de todos los modos de los datos.

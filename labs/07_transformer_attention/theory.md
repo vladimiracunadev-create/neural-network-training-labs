@@ -1,9 +1,9 @@
 # Teoría — Transformer para noticias
 
 <!-- nav-top -->
-> 🧭 **Ruta 8 / 31** · 🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
+> 🧭 **Clase 08 / 31** · 🔵 [Módulo 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
 >
-> [⬅️ 🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🎨 GAN generativa ➡️](../../labs/08_gan_generation/theory.md)
+> [⬅️ 🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [🎨 GAN generativa ➡️](../../labs/08_gan_generation/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -38,13 +38,13 @@ El factor 1/√d_k es la parte de la fórmula que más se copia sin entender, y 
 
 𝔼[q·k] = 0,   Var(q·k) = d_k,   desviación típica = √d_k.
 
-Es decir, **la magnitud típica del producto escalar crece con √d_k**. Con d_k = 64, los logits de atención tendrían una desviación típica de 8: valores que el softmax convierte casi en un one-hot, concentrando toda la atención en un único token. Y un softmax saturado tiene gradiente prácticamente nulo —la misma patología de la sigmoide en la ruta 00—, así que la atención dejaría de aprender a quién mirar. Dividir por √d_k devuelve la varianza a 1 y mantiene el softmax en su zona sensible, independientemente de la dimensión elegida.
+Es decir, **la magnitud típica del producto escalar crece con √d_k**. Con d_k = 64, los logits de atención tendrían una desviación típica de 8: valores que el softmax convierte casi en un one-hot, concentrando toda la atención en un único token. Y un softmax saturado tiene gradiente prácticamente nulo —la misma patología de la sigmoide en la clase 01—, así que la atención dejaría de aprender a quién mirar. Dividir por √d_k devuelve la varianza a 1 y mantiene el softmax en su zona sensible, independientemente de la dimensión elegida.
 
 De ahí también se entiende para qué sirven varias **cabezas**. Con d_model = 256 se podría hacer una sola atención de d_k = 256, pero se prefieren, por ejemplo, 8 cabezas de d_k = 32 cada una. El costo en parámetros es idéntico —las proyecciones suman lo mismo—, y a cambio el modelo obtiene ocho relaciones distintas en subespacios distintos, que luego concatena y mezcla con W_O. Una cabeza sola tiene que comprometer una única distribución de atención para todos los tipos de relación; ocho cabezas pueden especializarse, y en la práctica se observa que unas siguen la posición contigua, otras enlazan sujeto y verbo, otras marcan tokens raros.
 
 ### Lo que el transformer gana y lo que paga frente a la recurrencia
 
-La comparación con la ruta 04 se puede hacer con dos números, y explica el cambio de paradigma completo.
+La comparación con la clase 05 se puede hacer con dos números, y explica el cambio de paradigma completo.
 
 **Camino de información.** En una RNN, la señal entre las posiciones i y j debe atravesar |i − j| pasos recurrentes, multiplicándose por otras tantas matrices —de ahí el desvanecimiento—. En la atención, cualquier par de posiciones está conectado por **un solo** producto escalar: el camino máximo es O(1). Esa es la razón de fondo por la que los transformers capturan dependencias largas que a una RNN se le escapan, y no una cuestión de tamaño.
 
@@ -58,7 +58,7 @@ Hay un precio conceptual: al mirar todas las posiciones simultáneamente, **la a
 
 Los mapas de atención se visualizan en este laboratorio y conviene interpretarlos con precisión. Cada fila de softmax(Q·Kᵀ/√d_k) es una distribución de probabilidad: suma 1 y dice qué mezcla de valores V construye la representación de esa posición. Eso es todo lo que dice.
 
-En particular, **no es una explicación de la decisión**. Un peso alto significa que ese token contribuyó a la mezcla en esa capa y esa cabeza, no que la predicción dependa causalmente de él: la información puede haber viajado por la conexión residual, haber sido reescrita por la FFN, o repartirse entre varias cabezas que se compensan. Se han construido modelos con mapas de atención muy distintos y predicciones idénticas, que es la prueba de que la atención no identifica de forma única la causa. Para afirmar dependencia causal hacen falta las técnicas de la ruta 21 —perturbar la entrada y medir el cambio en la salida—, no leer los pesos.
+En particular, **no es una explicación de la decisión**. Un peso alto significa que ese token contribuyó a la mezcla en esa capa y esa cabeza, no que la predicción dependa causalmente de él: la información puede haber viajado por la conexión residual, haber sido reescrita por la FFN, o repartirse entre varias cabezas que se compensan. Se han construido modelos con mapas de atención muy distintos y predicciones idénticas, que es la prueba de que la atención no identifica de forma única la causa. Para afirmar dependencia causal hacen falta las técnicas de la clase 22 —perturbar la entrada y medir el cambio en la salida—, no leer los pesos.
 
 Históricamente la atención nació como mecanismo de *alineamiento* en traducción (Bahdanau et al., 2015), donde el decodificador aprendía a qué palabras de la frase origen mirar en cada paso. La contribución de Vaswani et al. (2017) fue mostrar que la atención por sí sola —sin recurrencia ni convolución— basta para modelar secuencias, lo que además desbloquea el paralelismo masivo que hizo posibles los modelos de lenguaje actuales.
 
@@ -95,11 +95,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) | [Las 31 rutas](../../parts/README.md) | [🎨 GAN generativa](../../labs/08_gan_generation/README.md) |
+| [🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) | [Las 31 clases](../../parts/README.md) | [🎨 GAN generativa](../../labs/08_gan_generation/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/07_transformer_attention/index.html) · [🖥️ Página HTML local](index.html)
+🔵 [Módulo 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/07_transformer_attention/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

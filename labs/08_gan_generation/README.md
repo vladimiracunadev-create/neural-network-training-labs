@@ -1,22 +1,36 @@
 # GAN generativa
 
 <!-- nav-top -->
-> 🧭 **Ruta 9 / 31** · 🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
+> 🧭 **Clase 09 / 31** · 🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
 >
-> [⬅️ 🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) · [🏠 Índice de rutas](../../parts/README.md) · [🕸️ GNN sobre red de citas ➡️](../../labs/09_gnn_graphs/README.md)
+> [⬅️ 🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) · [🏠 Índice de clases](../../parts/README.md) · [🕸️ GNN sobre red de citas ➡️](../../labs/09_gnn_graphs/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+Una muestra bonita puede ocultar que el generador repite siempre la misma prenda. La evidencia está en la colección, no en la mejor imagen.
+
+> **Pregunta esencial:** ¿Cómo sabemos si un generador aprendió diversidad y no solo unas pocas imágenes convincentes?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![El juego entre generar y distinguir](assets/class-map.svg)
+
+*Mapa de esta clase: El juego entre generar y distinguir. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Generar prendas a partir de imágenes reales de Fashion-MNIST.
 
-Es la **ruta 9 de 31** del recorrido y pertenece a 🟣 la parte 3, *Familias especializadas: generar, decidir, relacionar*. Llegas desde **Transformer para noticias** y lo que hagas aquí lo da por supuesto **GNN sobre red de citas**.
+**Práctica propia de esta clase:** Recorrer el espacio latente, comparar vecinos y medir diversidad junto con la estabilidad adversarial.
+
+Es la **clase 09 de 31** del programa y pertenece a 🟣 el módulo 3, *Familias especializadas: generar, decidir, relacionar*. Llegas desde **Transformer para noticias** y lo que hagas aquí lo da por supuesto **GNN sobre red de citas**.
 
 Trabajarás con el dataset **`fashion_mnist`** (Torchvision / Zalando Research, licencia: MIT), y tendrás que superar la línea base **PCA generativa y distribución real de referencia**, decidiendo con la métrica `f1` medida sobre `validation`. Nivel avanzado, unas **8 horas** de dedicación.
 
-**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
+**Lo que conviene traer resuelto de las clases anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
 
 **Al terminar deberías ser capaz de:**
 
@@ -26,7 +40,11 @@ Trabajarás con el dataset **`fashion_mnist`** (Torchvision / Zalando Research, 
 - Comparar contra la línea base: PCA generativa y distribución real de referencia.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> Una pérdida baja del generador no garantiza calidad ni cobertura de todos los modos de los datos.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
@@ -66,7 +84,7 @@ V(G, D*) = 2·JS(p_r ‖ p_g) − 2·log 2,
 
 de modo que minimizar en G equivale a minimizar la divergencia de Jensen-Shannon. El óptimo global se alcanza cuando p_g = p_r, y entonces D* ≡ ½ y el valor del juego es −2·log 2 ≈ −1,386.
 
-Aquí está el problema que la ruta 28 resolverá. La JS entre dos distribuciones con soportes **disjuntos** vale log 2 sea cual sea la distancia entre ellas: es constante, y su gradiente es cero. Y los soportes son disjuntos casi siempre al principio, porque las imágenes reales viven en una variedad de dimensión bajísima dentro del espacio de píxeles y las generadas, otra. La consecuencia es la paradoja característica de las GAN: **cuanto mejor es el discriminador, menos aprende el generador**, porque un D casi perfecto satura y deja de transmitir dirección. Toda la dificultad práctica de entrenar una GAN —equilibrar los dos jugadores, no dejar que ninguno gane— nace de ahí.
+Aquí está el problema que la clase 29 resolverá. La JS entre dos distribuciones con soportes **disjuntos** vale log 2 sea cual sea la distancia entre ellas: es constante, y su gradiente es cero. Y los soportes son disjuntos casi siempre al principio, porque las imágenes reales viven en una variedad de dimensión bajísima dentro del espacio de píxeles y las generadas, otra. La consecuencia es la paradoja característica de las GAN: **cuanto mejor es el discriminador, menos aprende el generador**, porque un D casi perfecto satura y deja de transmitir dirección. Toda la dificultad práctica de entrenar una GAN —equilibrar los dos jugadores, no dejar que ninguno gane— nace de ahí.
 
 ### Colapso de modos, y por qué la pérdida no sirve para decidir
 
@@ -92,21 +110,21 @@ El riesgo técnico característico es el **colapso de modos** (mode collapse): G
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `generator_loss`, `discriminator_loss`, `mmd_rbf`, `diversity`, `nearest_real_distance`, `moment_distance`. De todas ellas, la que **decide** qué modelo se conserva es `f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `generator_loss`, `discriminator_loss`, `mmd_rbf`, `diversity`, `nearest_real_distance`, `moment_distance`. De todas ellas, la que **decide** qué modelo se conserva es `f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 25 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (40 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -179,7 +197,7 @@ datos = prepare_dataset("08_gan_generation", quick=True, seed=42)
 print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -302,7 +320,7 @@ Cada ejecución escribe su propio directorio con nombre único, de modo que dos 
 | `best_model.pt` · `last_model.pt` | El checkpoint elegido por validación y el último, para poder compararlos. |
 | `model_spec.json` · `inference_contract.json` | Qué entrada espera el modelo y qué devuelve: lo que necesita quien lo despliegue. |
 | `model_card.md` · `report.md` | La ficha del modelo y el informe legible de la ejecución. |
-| `generated_samples.png` | **Propio de esta ruta.** Rejilla de muestras generadas: la evidencia visual de si hay diversidad o colapso. |
+| `generated_samples.png` | **Propio de esta clase.** Rejilla de muestras generadas: la evidencia visual de si hay diversidad o colapso. |
 
 ## ⚠️ Dónde suele perderse la gente
 
@@ -320,7 +338,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 ## ✅ Antes de darlo por terminado
 
-El laboratorio está aprobado cuando se cumplen estos criterios:
+La clase está aprobada cuando se cumplen estos criterios:
 
 - [ ] cero solapamiento entre train, validation y test
 - [ ] selección basada únicamente en validation
@@ -365,6 +383,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -382,11 +401,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) | [Las 31 rutas](../../parts/README.md) | [🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/README.md) |
+| [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) | [Las 31 clases](../../parts/README.md) | [🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/README.md) |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/08_gan_generation/index.html) · [🖥️ Página HTML local](index.html)
+🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/08_gan_generation/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

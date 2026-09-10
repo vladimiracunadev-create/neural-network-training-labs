@@ -1,22 +1,36 @@
 # Transformer para noticias
 
 <!-- nav-top -->
-> 🧭 **Ruta 8 / 31** · 🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
+> 🧭 **Clase 08 / 31** · 🔵 [Módulo 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
 >
-> [⬅️ 🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) · [🏠 Índice de rutas](../../parts/README.md) · [🎨 GAN generativa ➡️](../../labs/08_gan_generation/README.md)
+> [⬅️ 🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) · [🏠 Índice de clases](../../parts/README.md) · [🎨 GAN generativa ➡️](../../labs/08_gan_generation/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+En una noticia, una palabra cambia de significado según las palabras que la rodean. La atención construye ese contexto de forma directa.
+
+> **Pregunta esencial:** ¿Cómo decide cada palabra a qué otras palabras prestar atención?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![Preguntar, comparar y combinar contexto](assets/class-map.svg)
+
+*Mapa de esta clase: Preguntar, comparar y combinar contexto. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Aplicar atención multi-cabeza a clasificación de noticias reales.
 
-Es la **ruta 8 de 31** del recorrido y pertenece a 🔵 la parte 2, *Arquitecturas según la forma del dato*. Llegas desde **Autoencoder para fraude** y lo que hagas aquí lo da por supuesto **GAN generativa**.
+**Práctica propia de esta clase:** Calcular atención escalada, aplicar máscaras y contrastar mapas de atención con cambios reales en la predicción.
+
+Es la **clase 08 de 31** del programa y pertenece a 🔵 el módulo 2, *Arquitecturas según la forma del dato*. Llegas desde **Autoencoder para fraude** y lo que hagas aquí lo da por supuesto **GAN generativa**.
 
 Trabajarás con el dataset **`ag_news`** (Hugging Face, licencia: Consultar dataset card), y tendrás que superar la línea base **TF-IDF + regresión logística**, decidiendo con la métrica `macro_f1` medida sobre `validation`. Nivel avanzado, unas **8 horas** de dedicación.
 
-**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
+**Lo que conviene traer resuelto de las clases anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
 
 **Al terminar deberías ser capaz de:**
 
@@ -26,7 +40,11 @@ Trabajarás con el dataset **`ag_news`** (Hugging Face, licencia: Consultar data
 - Comparar contra la línea base: TF-IDF + regresión logística.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> Un mapa de atención atractivo no es por sí solo una explicación causal de la predicción.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
@@ -56,13 +74,13 @@ El factor 1/√d_k es la parte de la fórmula que más se copia sin entender, y 
 
 𝔼[q·k] = 0,   Var(q·k) = d_k,   desviación típica = √d_k.
 
-Es decir, **la magnitud típica del producto escalar crece con √d_k**. Con d_k = 64, los logits de atención tendrían una desviación típica de 8: valores que el softmax convierte casi en un one-hot, concentrando toda la atención en un único token. Y un softmax saturado tiene gradiente prácticamente nulo —la misma patología de la sigmoide en la ruta 00—, así que la atención dejaría de aprender a quién mirar. Dividir por √d_k devuelve la varianza a 1 y mantiene el softmax en su zona sensible, independientemente de la dimensión elegida.
+Es decir, **la magnitud típica del producto escalar crece con √d_k**. Con d_k = 64, los logits de atención tendrían una desviación típica de 8: valores que el softmax convierte casi en un one-hot, concentrando toda la atención en un único token. Y un softmax saturado tiene gradiente prácticamente nulo —la misma patología de la sigmoide en la clase 01—, así que la atención dejaría de aprender a quién mirar. Dividir por √d_k devuelve la varianza a 1 y mantiene el softmax en su zona sensible, independientemente de la dimensión elegida.
 
 De ahí también se entiende para qué sirven varias **cabezas**. Con d_model = 256 se podría hacer una sola atención de d_k = 256, pero se prefieren, por ejemplo, 8 cabezas de d_k = 32 cada una. El costo en parámetros es idéntico —las proyecciones suman lo mismo—, y a cambio el modelo obtiene ocho relaciones distintas en subespacios distintos, que luego concatena y mezcla con W_O. Una cabeza sola tiene que comprometer una única distribución de atención para todos los tipos de relación; ocho cabezas pueden especializarse, y en la práctica se observa que unas siguen la posición contigua, otras enlazan sujeto y verbo, otras marcan tokens raros.
 
 ### Lo que el transformer gana y lo que paga frente a la recurrencia
 
-La comparación con la ruta 04 se puede hacer con dos números, y explica el cambio de paradigma completo.
+La comparación con la clase 05 se puede hacer con dos números, y explica el cambio de paradigma completo.
 
 **Camino de información.** En una RNN, la señal entre las posiciones i y j debe atravesar |i − j| pasos recurrentes, multiplicándose por otras tantas matrices —de ahí el desvanecimiento—. En la atención, cualquier par de posiciones está conectado por **un solo** producto escalar: el camino máximo es O(1). Esa es la razón de fondo por la que los transformers capturan dependencias largas que a una RNN se le escapan, y no una cuestión de tamaño.
 
@@ -76,7 +94,7 @@ Hay un precio conceptual: al mirar todas las posiciones simultáneamente, **la a
 
 Los mapas de atención se visualizan en este laboratorio y conviene interpretarlos con precisión. Cada fila de softmax(Q·Kᵀ/√d_k) es una distribución de probabilidad: suma 1 y dice qué mezcla de valores V construye la representación de esa posición. Eso es todo lo que dice.
 
-En particular, **no es una explicación de la decisión**. Un peso alto significa que ese token contribuyó a la mezcla en esa capa y esa cabeza, no que la predicción dependa causalmente de él: la información puede haber viajado por la conexión residual, haber sido reescrita por la FFN, o repartirse entre varias cabezas que se compensan. Se han construido modelos con mapas de atención muy distintos y predicciones idénticas, que es la prueba de que la atención no identifica de forma única la causa. Para afirmar dependencia causal hacen falta las técnicas de la ruta 21 —perturbar la entrada y medir el cambio en la salida—, no leer los pesos.
+En particular, **no es una explicación de la decisión**. Un peso alto significa que ese token contribuyó a la mezcla en esa capa y esa cabeza, no que la predicción dependa causalmente de él: la información puede haber viajado por la conexión residual, haber sido reescrita por la FFN, o repartirse entre varias cabezas que se compensan. Se han construido modelos con mapas de atención muy distintos y predicciones idénticas, que es la prueba de que la atención no identifica de forma única la causa. Para afirmar dependencia causal hacen falta las técnicas de la clase 22 —perturbar la entrada y medir el cambio en la salida—, no leer los pesos.
 
 Históricamente la atención nació como mecanismo de *alineamiento* en traducción (Bahdanau et al., 2015), donde el decodificador aprendía a qué palabras de la frase origen mirar en cada paso. La contribución de Vaswani et al. (2017) fue mostrar que la atención por sí sola —sin recurrencia ni convolución— basta para modelar secuencias, lo que además desbloquea el paralelismo masivo que hizo posibles los modelos de lenguaje actuales.
 
@@ -84,21 +102,21 @@ Históricamente la atención nació como mecanismo de *alineamiento* en traducci
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `accuracy`, `balanced_accuracy`, `macro_precision`, `macro_recall`, `macro_f1`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `accuracy`, `balanced_accuracy`, `macro_precision`, `macro_recall`, `macro_f1`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 25 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (40 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -171,7 +189,7 @@ datos = prepare_dataset("07_transformer_attention", quick=True, seed=42)
 print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -314,7 +332,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 ## ✅ Antes de darlo por terminado
 
-El laboratorio está aprobado cuando se cumplen estos criterios:
+La clase está aprobada cuando se cumplen estos criterios:
 
 - [ ] cero solapamiento entre train, validation y test
 - [ ] selección basada únicamente en validation
@@ -360,6 +378,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -377,11 +396,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) | [Las 31 rutas](../../parts/README.md) | [🎨 GAN generativa](../../labs/08_gan_generation/README.md) |
+| [🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) | [Las 31 clases](../../parts/README.md) | [🎨 GAN generativa](../../labs/08_gan_generation/README.md) |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/07_transformer_attention/index.html) · [🖥️ Página HTML local](index.html)
+🔵 [Módulo 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/07_transformer_attention/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

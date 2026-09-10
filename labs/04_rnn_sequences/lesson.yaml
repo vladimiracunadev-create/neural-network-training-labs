@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 04_rnn_sequences
+schema_version: '3.0'
 title: RNN para texto
 level: intermedio
 estimated_hours: 6
@@ -29,3 +28,18 @@ dataset:
   source: Hugging Face / Stanford
   reference: https://huggingface.co/datasets/stanfordnlp/imdb
   license: Consultar dataset card
+id: 04_rnn_sequences
+class_number: 5
+module_number: 2
+module_title: Arquitecturas
+essential_question: ¿Cuánta información del comienzo de una secuencia llega realmente al final?
+opening_hook: Al leer una reseña, una negación temprana puede cambiar el sentido de una frase mucho después. La RNN intenta conservar ese contexto paso a paso.
+class_practice: Seguir el estado oculto, comparar longitudes y observar cómo el gradiente se debilita o explota con la distancia.
+visual_evidence:
+  title: Memoria y pérdida de señal en una RNN
+  asset: assets/class-map.svg
+  steps:
+  - Token actual
+  - Estado recurrente
+  - Decisión final
+common_misconception: El último estado no contiene necesariamente toda la secuencia; la información puede degradarse mucho antes de llegar a él.

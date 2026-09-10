@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 16_backpropagation_manual
+schema_version: '3.0'
 title: Backpropagation manual
 level: fundamentos
 estimated_hours: 4
@@ -29,3 +28,18 @@ dataset:
   source: UCI
   reference: https://archive.ics.uci.edu/dataset/53/iris
   license: CC BY 4.0
+id: 16_backpropagation_manual
+class_number: 17
+module_number: 5
+module_title: Mecánica fina
+essential_question: ¿Cómo se reparte la responsabilidad del error entre todas las capas?
+opening_hook: La salida conoce el error, pero las primeras capas están lejos de él. La regla de la cadena transporta esa señal hacia atrás.
+class_practice: Derivar una MLP capa por capa, comprobar el gradiente y graficar su norma a distintas profundidades.
+visual_evidence:
+  title: La responsabilidad viaja hacia atrás
+  asset: assets/class-map.svg
+  steps:
+  - Error de salida
+  - Regla de la cadena
+  - Gradiente por parámetro
+common_misconception: Un programa que ejecuta backward sin error puede seguir teniendo gradientes matemáticamente incorrectos.

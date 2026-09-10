@@ -1,22 +1,36 @@
 # Aumento de datos
 
 <!-- nav-top -->
-> 🧭 **Ruta 21 / 31** · 🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md)
+> 🧭 **Clase 21 / 31** · 🔴 [Módulo 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md)
 >
-> [⬅️ 🛡️ Regularización](../../labs/19_regularization_dropout_batchnorm/README.md) · [🏠 Índice de rutas](../../parts/README.md) · [🔍 Explicabilidad ➡️](../../labs/21_explainability/README.md)
+> [⬅️ 🛡️ Regularización](../../labs/19_regularization_dropout_batchnorm/README.md) · [🏠 Índice de clases](../../parts/README.md) · [🔍 Explicabilidad ➡️](../../labs/21_explainability/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+Voltear una fotografía de un automóvil suele conservar su clase; voltear un dígito o alterar demasiado una señal puede destruir su significado.
+
+> **Pregunta esencial:** ¿Qué transformaciones conservan la etiqueta y cuáles cambian el problema?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![Enseñar invariancias sin borrar información](assets/class-map.svg)
+
+*Mapa de esta clase: Enseñar invariancias sin borrar información. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Comparar recortes, volteos y perturbaciones sobre imágenes reales.
 
-Es la **ruta 21 de 31** del recorrido y pertenece a 🔴 la parte 5, *La mecánica fina, ahora en profundidad*. Llegas desde **Regularización** y lo que hagas aquí lo da por supuesto **Explicabilidad**.
+**Práctica propia de esta clase:** Crear una galería de transformaciones y medir precisión limpia, robustez y errores introducidos.
+
+Es la **clase 21 de 31** del programa y pertenece a 🔴 el módulo 5, *La mecánica fina, ahora en profundidad*. Llegas desde **Regularización** y lo que hagas aquí lo da por supuesto **Explicabilidad**.
 
 Trabajarás con el dataset **`cifar10`** (Torchvision / University of Toronto, licencia: Consultar términos CIFAR-10), y tendrás que superar la línea base **CNN sin aumento**, decidiendo con la métrica `macro_f1` medida sobre `validation`. Nivel intermedio, unas **6 horas** de dedicación.
 
-**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch básico, particiones train/validation/test, métricas de evaluación.
+**Lo que conviene traer resuelto de las clases anteriores:** PyTorch básico, particiones train/validation/test, métricas de evaluación.
 
 **Al terminar deberías ser capaz de:**
 
@@ -26,7 +40,11 @@ Trabajarás con el dataset **`cifar10`** (Torchvision / University of Toronto, l
 - Comparar contra la línea base: CNN sin aumento.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> Más aumento no siempre ayuda; una transformación inválida introduce etiquetas incorrectas de manera sistemática.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
@@ -58,7 +76,7 @@ El efecto sobre la función objetivo es explícito. En vez de minimizar la pérd
 
 ℒ_aug(θ) = 𝔼_(x,y) 𝔼_(T∼𝒯) [ ℓ( f_θ(T(x)), y ) ],
 
-y esa esperanza extra actúa como un regularizador: penaliza que la salida varíe cuando la entrada se mueve dentro de las transformaciones declaradas, es decir, **suaviza la función aprendida** en las direcciones que 𝒯 recorre. Por eso el aumento y el weight decay de la ruta 19 no son intercambiables: uno restringe la magnitud de los pesos, el otro restringe la forma de la función en direcciones concretas y elegidas.
+y esa esperanza extra actúa como un regularizador: penaliza que la salida varíe cuando la entrada se mueve dentro de las transformaciones declaradas, es decir, **suaviza la función aprendida** en las direcciones que 𝒯 recorre. Por eso el aumento y el weight decay de la clase 20 no son intercambiables: uno restringe la magnitud de los pesos, el otro restringe la forma de la función en direcciones concretas y elegidas.
 
 Con transformaciones estocásticas aplicadas en cada época, el modelo prácticamente **nunca ve dos veces el mismo ejemplo**, lo que dificulta la memorización. Ese es el mecanismo por el que el aumento reduce la brecha entre entrenamiento y validación, y la razón de que su efecto sea mayor cuanto más pequeño es el conjunto de datos.
 
@@ -78,7 +96,7 @@ Más allá de las transformaciones geométricas y de color, hay una familia que 
 
 x̃ = λ·xᵢ + (1 − λ)·xⱼ,   ỹ = λ·yᵢ + (1 − λ)·yⱼ,   con λ ∼ Beta(α, α).
 
-El modelo aprende así que entre dos clases la transición debe ser gradual, lo que suaviza la frontera de decisión y —efecto documentado— mejora la **calibración** de las probabilidades, que es justo lo que mide la ruta 22. **CutMix** hace lo mismo con parches: recorta una región de una imagen y la pega en otra, ponderando las etiquetas por el área ocupada, lo que preserva la estructura local que el mixup difumina.
+El modelo aprende así que entre dos clases la transición debe ser gradual, lo que suaviza la frontera de decisión y —efecto documentado— mejora la **calibración** de las probabilidades, que es justo lo que mide la clase 23. **CutMix** hace lo mismo con parches: recorta una región de una imagen y la pega en otra, ponderando las etiquetas por el área ocupada, lo que preserva la estructura local que el mixup difumina.
 
 Ambas rompen el supuesto de que la etiqueta es una clase única y exigen una pérdida que acepte objetivos blandos; la entropía cruzada la admite sin cambios, sumando los dos términos ponderados.
 
@@ -94,21 +112,21 @@ Y hay dos resultados que reportar por separado. El primero es la métrica **limp
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `accuracy`, `macro_f1`, `robust_accuracy`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `accuracy`, `macro_f1`, `robust_accuracy`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 25 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (40 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -181,7 +199,7 @@ datos = prepare_dataset("20_data_augmentation", quick=True, seed=42)
 print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -308,7 +326,7 @@ Cada ejecución escribe su propio directorio con nombre único, de modo que dos 
 | `confusion_matrix.png` | Qué clases se confunden entre sí. |
 | `model_spec.json` · `inference_contract.json` | Qué entrada espera el modelo y qué devuelve: lo que necesita quien lo despliegue. |
 | `model_card.md` · `report.md` | La ficha del modelo y el informe legible de la ejecución. |
-| `augmentation_comparison.json` | **Propio de esta ruta.** El mismo modelo con y sin aumento de datos. |
+| `augmentation_comparison.json` | **Propio de esta clase.** El mismo modelo con y sin aumento de datos. |
 
 ## ⚠️ Dónde suele perderse la gente
 
@@ -325,7 +343,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 ## ✅ Antes de darlo por terminado
 
-El laboratorio está aprobado cuando se cumplen estos criterios:
+La clase está aprobada cuando se cumplen estos criterios:
 
 - [ ] cero solapamiento entre train, validation y test
 - [ ] selección basada únicamente en validation
@@ -372,6 +390,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -389,11 +408,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🛡️ Regularización](../../labs/19_regularization_dropout_batchnorm/README.md) | [Las 31 rutas](../../parts/README.md) | [🔍 Explicabilidad](../../labs/21_explainability/README.md) |
+| [🛡️ Regularización](../../labs/19_regularization_dropout_batchnorm/README.md) | [Las 31 clases](../../parts/README.md) | [🔍 Explicabilidad](../../labs/21_explainability/README.md) |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/20_data_augmentation/index.html) · [🖥️ Página HTML local](index.html)
+🔴 [Módulo 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/20_data_augmentation/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

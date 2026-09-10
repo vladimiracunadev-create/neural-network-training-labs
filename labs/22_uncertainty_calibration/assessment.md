@@ -1,14 +1,14 @@
 # Evaluación — Incertidumbre y calibración
 
 <!-- nav-top -->
-> 🧭 **Ruta 23 / 31** · ⚫ [Parte 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md)
+> 🧭 **Clase 23 / 31** · ⚫ [Módulo 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md)
 >
-> [⬅️ 🔍 Explicabilidad](../../labs/21_explainability/assessment.md) · [🏠 Índice de rutas](../../parts/README.md) · [📦 Exportación e inferencia ➡️](../../labs/23_model_export_and_inference/assessment.md)
+> [⬅️ 🔍 Explicabilidad](../../labs/21_explainability/assessment.md) · [🏠 Índice de clases](../../parts/README.md) · [📦 Exportación e inferencia ➡️](../../labs/23_model_export_and_inference/assessment.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación**
 <!-- /nav-top -->
 
-## Cómo se evalúa este laboratorio
+## Cómo se evalúa esta clase
 
 No se evalúa el número final. Un modelo con una métrica alta obtenida mirando `test`, o sin compararse con nada, vale menos que uno modesto cuyo resultado se puede auditar. Lo que se califica es el **proceso**: si las particiones están limpias, si la decisión se tomó donde debía, si la conclusión distingue lo que se midió de lo que se supone.
 
@@ -27,27 +27,39 @@ No se evalúa el número final. Un modelo con una métrica alta obtenida mirando
 
 No se corrige la longitud de la respuesta, sino si demuestra comprensión. Debajo de cada pregunta está lo que una buena respuesta debería contener.
 
-**1. Explica con tus palabras: Calibrar logits z/T en validación y evaluar una vez en test.**
+**1. ¿Qué significa realmente que un modelo anuncie 80 % de confianza?**
+
+*Qué se busca:* Comienza con la predicción que hiciste al abrir la clase y contrástala con una gráfica, una medida o una observación concreta de tu ejecución.
+
+**2. Explica con tus palabras: Calibrar logits z/T en validación y evaluar una vez en test.**
 
 *Qué se busca:* Una buena respuesta conecta cuatro cosas —cómo se representa la entrada, qué calcula el modelo, qué mide la función de pérdida y cómo se actualizan los pesos— en vez de repetir la definición del libro. Si puedes explicarlo sin la fórmula delante, lo entendiste.
 
-**2. ¿Qué información del dataset solo puede usarse durante el entrenamiento?**
+**3. ¿Qué información del dataset solo puede usarse durante el entrenamiento?**
 
 *Qué se busca:* Se espera que nombres casos concretos: las estadísticas de normalización, el vocabulario, la selección de variables, los umbrales. Todo eso se ajusta **solo** con `train`; calcularlo sobre el conjunto completo es una fuga silenciosa que infla el resultado sin dar ningún aviso.
 
-**3. ¿Por qué Regresión logística calibrada es una comparación razonable para este problema?**
+**4. ¿Por qué Regresión logística calibrada es una comparación razonable para este problema?**
 
 *Qué se busca:* Una buena respuesta explica qué captura la línea base y qué no, y por qué superarla —o no superarla— es informativo aquí. Si la línea base ya resuelve el problema, la conclusión correcta es que la red no estaba justificada.
 
-**4. ¿Una mayor accuracy implica probabilidades confiables?**
+**5. ¿Una mayor accuracy implica probabilidades confiables?**
 
 *Qué se busca:* Esta es la pregunta propia del tema. Responde con evidencia de tu ejecución —predicciones, matriz de confusión, curvas, artefactos del directorio de la corrida—, no con una impresión general.
 
-**5. ¿Qué te dice `f1` que no te dirían las otras métricas?**
+**6. ¿Qué aprendiste al realizar esta práctica: Construir un diagrama de confiabilidad, calcular ECE y aplicar temperature scaling sin tocar test.?**
+
+*Qué se busca:* No basta con relatar los pasos. Explica qué cambió, por qué cambió y qué resultado te haría rechazar tu interpretación inicial.
+
+**7. Refuta con evidencia esta idea frecuente: «Una alta exactitud no implica probabilidades bien calibradas; son propiedades diferentes.»**
+
+*Qué se busca:* Se busca una refutación situada en esta materia, apoyada en el mecanismo estudiado y en los resultados obtenidos, no una negación genérica.
+
+**8. ¿Qué te dice `f1` que no te dirían las otras métricas?**
 
 *Qué se busca:* Cada métrica pondera distinto los errores. Se espera que expliques por qué esa es la que decide aquí y en qué situación sería una mala elección.
 
-**6. ¿Qué cambiarías antes de usar este modelo fuera del laboratorio?**
+**9. ¿Qué cambiarías antes de usar este modelo fuera del laboratorio?**
 
 *Qué se busca:* Aquí se evalúa el criterio, no la técnica: licencias y condiciones de uso de `breast_cancer_wisconsin`, representatividad de la población, calibración de las probabilidades, vigilancia de la deriva, desempeño por subgrupo y supervisión humana. Un «funcionaría bien» sin condiciones se corrige como respuesta incompleta.
 
@@ -67,7 +79,7 @@ La diferencia entre *adecuado* y *excelente* casi nunca está en la métrica: es
 
 ## Autoevaluación antes de entregar
 
-- [ ] Puedo explicar el laboratorio a alguien que no lo hizo, sin leer el código.
+- [ ] Puedo explicar la idea central de la clase a alguien que no la cursó, sin leer el código.
 - [ ] Sé qué decisión tomé en cada paso y con qué evidencia la tomé.
 - [ ] Miré `test` una sola vez, después de que existiera `experiment.lock.json`.
 - [ ] Mi conclusión dice magnitud, incertidumbre, costo, errores y condiciones.
@@ -81,11 +93,11 @@ La diferencia entre *adecuado* y *excelente* casi nunca está en la métrica: es
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🔍 Explicabilidad](../../labs/21_explainability/README.md) | [Las 31 rutas](../../parts/README.md) | [📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) |
+| [🔍 Explicabilidad](../../labs/21_explainability/README.md) | [Las 31 clases](../../parts/README.md) | [📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación** · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · **📝 Evaluación** · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-⚫ [Parte 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/22_uncertainty_calibration/index.html) · [🖥️ Página HTML local](index.html)
+⚫ [Módulo 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/22_uncertainty_calibration/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

@@ -1,18 +1,32 @@
 # Proyecto final: churn de telecomunicaciones
 
 <!-- nav-top -->
-> 🧭 **Ruta 25 / 31** · ⚫ [Parte 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md)
+> 🧭 **Clase 25 / 31** · ⚫ [Módulo 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md)
 >
-> [⬅️ 📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) · [🏠 Índice de rutas](../../parts/README.md) · [🔧 Fine-tuning eficiente de transformer ➡️](../../advanced_labs/25_transformer_finetuning/README.md)
+> [⬅️ 📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) · [🏠 Índice de clases](../../parts/README.md) · [🔧 Fine-tuning eficiente de transformer ➡️](../../advanced_labs/25_transformer_finetuning/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+Contactar a todos cuesta dinero; no contactar a nadie pierde clientes. El umbral correcto depende de costos y capacidad, no solo de F1.
+
+> **Pregunta esencial:** ¿Cómo se convierte una probabilidad de abandono en una decisión responsable de negocio?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![De datos históricos a una decisión operativa](assets/class-map.svg)
+
+*Mapa de esta clase: De datos históricos a una decisión operativa. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Resolver de extremo a extremo un problema real de abandono de clientes con documentación, evaluación y despliegue.
 
-Es la **ruta 25 de 31** del recorrido y pertenece a ⚫ la parte 6, *Confiar en el modelo y sacarlo del cuaderno*. Llegas desde **Exportación e inferencia** y lo que hagas aquí lo da por supuesto **Fine-tuning eficiente de transformer**.
+**Práctica propia de esta clase:** Recorrer el proyecto completo, construir una matriz de costos y defender una recomendación con límites explícitos.
+
+Es la **clase 25 de 31** del programa y pertenece a ⚫ el módulo 6, *Confiar en el modelo y sacarlo del cuaderno*. Llegas desde **Exportación e inferencia** y lo que hagas aquí lo da por supuesto **Fine-tuning eficiente de transformer**.
 
 Trabajarás con el dataset **`iranian_churn`** (UCI, licencia: CC BY 4.0), y tendrás que superar la línea base **Regresión logística y Gradient Boosting**, decidiendo con la métrica `f1` medida sobre `validation`. Nivel proyecto, unas **10 horas** de dedicación.
 
@@ -24,7 +38,11 @@ Trabajarás con el dataset **`iranian_churn`** (UCI, licencia: CC BY 4.0), y ten
 - Comparar contra la línea base: Regresión logística y Gradient Boosting.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> Predecir churn no demuestra por qué una persona se irá ni qué intervención logrará retenerla.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
@@ -60,7 +78,7 @@ En un dataset tabular de clientes, la fuga no viene de mezclar particiones sino 
 
 Una variable produce fuga cuando su valor se conoce **después** o **a causa** del hecho que se quiere predecir. En abandono, los ejemplos clásicos son campos de baja, motivos de cancelación, o el consumo del último mes cuando ese mes ya es posterior al momento de decisión. También cuentan las variables agregadas calculadas sobre todo el histórico —un promedio que incluye el periodo objetivo—, y los identificadores que correlacionan con la etiqueta por el orden en que se cargaron los datos.
 
-El síntoma es siempre el mismo y hay que aprender a desconfiar de él: una métrica **sospechosamente alta**. Un modelo de abandono con AUC de 0,99 casi nunca es un gran modelo; casi siempre es una fuga. El diagnóstico consiste en mirar la importancia de las variables, encontrar la que domina, y preguntarse si estaría disponible en el momento real de la predicción. Es la razón de que este proyecto exija la ruta 21 como herramienta de auditoría y no solo como capítulo de interpretabilidad.
+El síntoma es siempre el mismo y hay que aprender a desconfiar de él: una métrica **sospechosamente alta**. Un modelo de abandono con AUC de 0,99 casi nunca es un gran modelo; casi siempre es una fuga. El diagnóstico consiste en mirar la importancia de las variables, encontrar la que domina, y preguntarse si estaría disponible en el momento real de la predicción. Es la razón de que este proyecto exija la clase 22 como herramienta de auditoría y no solo como capítulo de interpretabilidad.
 
 La regla operativa que resume todo: para cada variable, responder **en qué instante se conoce su valor**. Si la respuesta es «después del corte de decisión», la variable no puede usarse, por informativa que sea.
 
@@ -72,7 +90,7 @@ Si retener a un cliente cuesta c_int y perderlo cuesta c_perd, y la intervenció
 
 p̂ > c_int / (e · c_perd).
 
-La fórmula tiene tres consecuencias que conviene declarar. Primero, **el umbral no es 0,5** salvo por coincidencia. Segundo, exige que p̂ sea una probabilidad de verdad, lo que enlaza directamente con la calibración de la ruta 22. Y tercero, cuando el presupuesto es limitado, la restricción no es un umbral sino una capacidad: se interviene sobre los k clientes de mayor p̂, y lo que hay que medir es cuántos de ellos habrían abandonado realmente.
+La fórmula tiene tres consecuencias que conviene declarar. Primero, **el umbral no es 0,5** salvo por coincidencia. Segundo, exige que p̂ sea una probabilidad de verdad, lo que enlaza directamente con la calibración de la clase 23. Y tercero, cuando el presupuesto es limitado, la restricción no es un umbral sino una capacidad: se interviene sobre los k clientes de mayor p̂, y lo que hay que medir es cuántos de ellos habrían abandonado realmente.
 
 Al reportar el impacto conviene separar dos cifras que suelen mezclarse. El desempeño del **modelo** —discriminación, calibración, estabilidad entre semillas— se mide con datos históricos. El impacto de la **intervención** —cuántas bajas se evitaron— no se puede estimar con datos observacionales, porque requiere saber qué habría pasado sin actuar: eso exige un experimento con grupo de control. Presentar el segundo como si se dedujera del primero es un error que este proyecto pide evitar explícitamente en su reporte.
 
@@ -88,21 +106,21 @@ Esa última parte es la que distingue un trabajo terminado de uno abandonado. Un
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `accuracy`, `balanced_accuracy`, `precision`, `recall`, `f1`, `roc_auc`, `pr_auc`. De todas ellas, la que **decide** qué modelo se conserva es `f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `accuracy`, `balanced_accuracy`, `precision`, `recall`, `f1`, `roc_auc`, `pr_auc`. De todas ellas, la que **decide** qué modelo se conserva es `f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 25 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (40 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -175,7 +193,7 @@ datos = prepare_dataset("24_capstone_real_project", quick=True, seed=42)
 print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -318,7 +336,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 ## ✅ Antes de darlo por terminado
 
-El laboratorio está aprobado cuando se cumplen estos criterios:
+La clase está aprobada cuando se cumplen estos criterios:
 
 - [ ] cero solapamiento entre train, validation y test
 - [ ] selección basada únicamente en validation
@@ -364,6 +382,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -381,11 +400,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) | [Las 31 rutas](../../parts/README.md) | [🔧 Fine-tuning eficiente de transformer](../../advanced_labs/25_transformer_finetuning/README.md) |
+| [📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) | [Las 31 clases](../../parts/README.md) | [🔧 Fine-tuning eficiente de transformer](../../advanced_labs/25_transformer_finetuning/README.md) |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-⚫ [Parte 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/24_capstone_real_project/index.html) · [🖥️ Página HTML local](index.html)
+⚫ [Módulo 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/24_capstone_real_project/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

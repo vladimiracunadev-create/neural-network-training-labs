@@ -1,9 +1,9 @@
 # Teoría — GNN sobre red de citas
 
 <!-- nav-top -->
-> 🧭 **Ruta 10 / 31** · 🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
+> 🧭 **Clase 10 / 31** · 🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
 >
-> [⬅️ 🎨 GAN generativa](../../labs/08_gan_generation/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🕹️ DQN para inventario con demanda real ➡️](../../labs/10_dqn_reinforcement/theory.md)
+> [⬅️ 🎨 GAN generativa](../../labs/08_gan_generation/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [🕹️ DQN para inventario con demanda real ➡️](../../labs/10_dqn_reinforcement/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -24,9 +24,9 @@ El mecanismo general se llama **paso de mensajes** (message passing): en cada ca
 
 La **red convolucional de grafos (GCN)** de Kipf & Welling define la actualización de una capa como:
 
-    H^(l+1) = σ( D̃^{−1/2} Ã D̃^{−1/2} H^(l) W^(l) )
+    H^(l+1) = σ( D_tilde^{−1/2} A_tilde D_tilde^{−1/2} H^(l) W^(l) )
 
-Desglosemos cada símbolo. H^(l) ∈ ℝ^{N×d_l} apila las representaciones de los N nodos en la capa l (H^(0) son las características de entrada). Ã = A + I es la matriz de adyacencia con **auto-lazos** añadidos, para que cada nodo se incluya a sí mismo en la agregación y no pierda su propia información. D̃ es la matriz diagonal de grados de Ã, con D̃ᵢᵢ = Σⱼ Ãᵢⱼ. W^(l) es la matriz de pesos aprendible que transforma las características, y σ es una no linealidad (ReLU). El término D̃^{−1/2} Ã D̃^{−1/2} es la **adyacencia normalizada simétricamente**: propaga las representaciones a los vecinos pero reescalando cada mensaje por 1/√(dᵢ·dⱼ), de modo que los nodos de grado muy alto (muy citados) no dominen la suma ni disparen la escala de las activaciones.
+Desglosemos cada símbolo. H^(l) ∈ ℝ^{N×d_l} apila las representaciones de los N nodos en la capa l (H^(0) son las características de entrada). A_tilde = A + I es la matriz de adyacencia con **auto-lazos** añadidos, para que cada nodo se incluya a sí mismo en la agregación y no pierda su propia información. D_tilde es la matriz diagonal de grados de A_tilde, con D_tildeᵢᵢ = Σⱼ A_tildeᵢⱼ. W^(l) es la matriz de pesos aprendible que transforma las características, y σ es una no linealidad (ReLU). El término D_tilde^{−1/2} A_tilde D_tilde^{−1/2} es la **adyacencia normalizada simétricamente**: propaga las representaciones a los vecinos pero reescalando cada mensaje por 1/√(dᵢ·dⱼ), de modo que los nodos de grado muy alto (muy citados) no dominen la suma ni disparen la escala de las activaciones.
 
 Intuitivamente, cada fila de esa multiplicación calcula, para el nodo i, un **promedio ponderado normalizado** de las características transformadas de i y de sus vecinos: hᵢ^(l+1) = σ( Σ_{j∈𝒩(i)∪{i}} (1/√(d̃ᵢ d̃ⱼ)) · hⱼ^(l) W^(l) ). Apilar L capas equivale a difundir información hasta L saltos de distancia; con L=2, cada artículo "ve" a los artículos que cita y a los que citan a esos. Un exceso de capas provoca **sobre-suavizado** (over-smoothing): las representaciones de todos los nodos convergen y se vuelven indistinguibles, por lo que en la práctica las GCN son poco profundas.
 
@@ -48,9 +48,9 @@ La elección tampoco es neutra en poder expresivo. La **media** pierde la inform
 
 ### Qué hace la normalización simétrica, y por qué solo dos capas
 
-La matriz Â = D̃^(−1/2)·Ã·D̃^(−1/2) parece una convención arbitraria y no lo es. Sin normalizar, multiplicar por A suma las representaciones de los vecinos, así que un nodo muy conectado acumula valores mucho mayores que uno periférico y las activaciones se descompensan con la profundidad. Normalizar por el grado a ambos lados hace que los autovalores de Â queden acotados en [−1, 1], y con los auto-lazos el mayor queda en 1: la propagación **no amplifica**, y por eso la red se puede apilar sin que las activaciones exploten.
+La matriz A_hat = D_tilde^(−1/2)·A_tilde·D_tilde^(−1/2) parece una convención arbitraria y no lo es. Sin normalizar, multiplicar por A suma las representaciones de los vecinos, así que un nodo muy conectado acumula valores mucho mayores que uno periférico y las activaciones se descompensan con la profundidad. Normalizar por el grado a ambos lados hace que los autovalores de A_hat queden acotados en [−1, 1], y con los auto-lazos el mayor queda en 1: la propagación **no amplifica**, y por eso la red se puede apilar sin que las activaciones exploten.
 
-Esa misma propiedad explica el límite. Aplicar Â repetidamente es un promediado iterado, y un promediado iterado sobre un grafo conexo converge a un punto fijo donde todos los nodos comparten la misma representación, proporcional al autovector dominante. Es el **sobre-suavizado**: con muchas capas, la señal que distingue a un nodo de otro se disuelve y la exactitud cae. De ahí un hecho que sorprende a quien viene de las CNN —donde más profundidad casi siempre ayuda—: las GNN de paso de mensajes suelen rendir mejor con **dos o tres capas**, y ese es el número que este laboratorio explora. El campo receptivo crece muy rápido de todos modos: dos capas ya cubren los vecinos a distancia dos, que en una red de citas puede ser una fracción notable del grafo.
+Esa misma propiedad explica el límite. Aplicar A_hat repetidamente es un promediado iterado, y un promediado iterado sobre un grafo conexo converge a un punto fijo donde todos los nodos comparten la misma representación, proporcional al autovector dominante. Es el **sobre-suavizado**: con muchas capas, la señal que distingue a un nodo de otro se disuelve y la exactitud cae. De ahí un hecho que sorprende a quien viene de las CNN —donde más profundidad casi siempre ayuda—: las GNN de paso de mensajes suelen rendir mejor con **dos o tres capas**, y ese es el número que este laboratorio explora. El campo receptivo crece muy rápido de todos modos: dos capas ya cubren los vecinos a distancia dos, que en una red de citas puede ser una fracción notable del grafo.
 
 ### La fuga de datos en un grafo no es como en una tabla
 
@@ -96,11 +96,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🎨 GAN generativa](../../labs/08_gan_generation/README.md) | [Las 31 rutas](../../parts/README.md) | [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) |
+| [🎨 GAN generativa](../../labs/08_gan_generation/README.md) | [Las 31 clases](../../parts/README.md) | [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/09_gnn_graphs/index.html) · [🖥️ Página HTML local](index.html)
+🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/09_gnn_graphs/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

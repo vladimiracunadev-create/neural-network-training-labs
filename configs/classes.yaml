@@ -1,0 +1,252 @@
+schema_version: '1.0'
+course_title: Neural Network Training Labs
+public_numbering: 1-31
+classes:
+- id: 00_numpy_neuron
+  class_number: 1
+  essential_question: '¿Cómo aprende una neurona si no existe autograd?'
+  hook: 'Imagina una frontera que empieza equivocándose al azar y se mueve un poco después de cada error. En esta clase podrás ver y calcular cada uno de esos movimientos.'
+  practice: 'Derivar el gradiente, comprobarlo con diferencias finitas y observar cómo la escala de las variables cambia el descenso.'
+  visual_title: 'Del error al movimiento de la frontera'
+  visual_steps: [Predicción inicial, Error medido, Gradiente y nueva frontera]
+  misconception: 'El gradiente no indica dónde está el mínimo; indica la pendiente local y cuánto cambia la pérdida en ese punto.'
+- id: 01_pytorch_perceptron
+  class_number: 2
+  essential_question: '¿Qué calcula PyTorch por nosotros cuando llamamos a backward()?'
+  hook: 'La misma neurona de la clase anterior reaparece, pero ahora PyTorch dibuja y recorre automáticamente el grafo de operaciones.'
+  practice: 'Inspeccionar tensores y gradientes, comparar el cálculo manual con autograd y visualizar la frontera antes y después de normalizar.'
+  visual_title: 'El camino que sigue autograd'
+  visual_steps: [Tensor y operaciones, Grafo computacional, Gradientes acumulados]
+  misconception: 'backward() no actualiza los pesos; calcula gradientes. El optimizador realiza la actualización en un paso separado.'
+- id: 02_mlp_nonlinear
+  class_number: 3
+  essential_question: '¿Qué puede aprender una capa oculta que una recta nunca podrá separar?'
+  hook: 'Dos clases pueden estar entrelazadas de manera que ninguna línea las divida. Las neuronas ocultas transforman primero el espacio para volver separable el problema.'
+  practice: 'Comparar una frontera lineal con una MLP y relacionar las activaciones ocultas con las regiones de decisión.'
+  visual_title: 'Cómo una MLP dobla el espacio'
+  visual_steps: [Datos no separables, Transformación oculta, Regiones de decisión]
+  misconception: 'Más capas no garantizan una mejor solución; añaden capacidad, costo y nuevas formas de sobreajustar.'
+- id: 03_cnn_vision
+  class_number: 4
+  essential_question: '¿Por qué una convolución reconoce un patrón aunque cambie de posición?'
+  hook: 'Un borde sigue siendo un borde en cualquier zona de una fotografía. Una CNN reutiliza el mismo detector en toda la imagen.'
+  practice: 'Mirar filtros y mapas de activación, calcular el campo receptivo y estudiar errores por clase en CIFAR-10.'
+  visual_title: 'De píxeles a rasgos visuales'
+  visual_steps: [Parche local, Filtro compartido, Mapa de activación]
+  misconception: 'Una activación intensa no demuestra que la red haya comprendido un objeto; solo muestra respuesta a un patrón aprendido.'
+- id: 04_rnn_sequences
+  class_number: 5
+  essential_question: '¿Cuánta información del comienzo de una secuencia llega realmente al final?'
+  hook: 'Al leer una reseña, una negación temprana puede cambiar el sentido de una frase mucho después. La RNN intenta conservar ese contexto paso a paso.'
+  practice: 'Seguir el estado oculto, comparar longitudes y observar cómo el gradiente se debilita o explota con la distancia.'
+  visual_title: 'Memoria y pérdida de señal en una RNN'
+  visual_steps: [Token actual, Estado recurrente, Decisión final]
+  misconception: 'El último estado no contiene necesariamente toda la secuencia; la información puede degradarse mucho antes de llegar a él.'
+- id: 05_lstm_time_series
+  class_number: 6
+  essential_question: '¿Qué decide recordar, olvidar y revelar una LSTM?'
+  hook: 'La demanda de bicicletas combina ciclos diarios, clima y tendencias. Las compuertas permiten conservar unas señales y descartar otras.'
+  practice: 'Construir ventanas cronológicas, inspeccionar compuertas y comparar el pronóstico con persistencia y media móvil.'
+  visual_title: 'Las tres decisiones de una celda LSTM'
+  visual_steps: [Olvidar contexto, Incorporar evidencia, Emitir estado]
+  misconception: 'Barajar una serie temporal antes de partirla produce una evaluación optimista porque permite que el futuro informe al pasado.'
+- id: 06_autoencoder_anomaly
+  class_number: 7
+  essential_question: '¿Cuándo un error de reconstrucción se convierte en evidencia de anomalía?'
+  hook: 'Si el modelo aprende solamente el aspecto de las transacciones normales, las operaciones extrañas deberían resultarle difíciles de reconstruir.'
+  practice: 'Comparar reconstrucciones, estudiar las distribuciones de error y elegir el umbral únicamente con validation.'
+  visual_title: 'Del patrón normal al umbral de alerta'
+  visual_steps: [Comprimir lo normal, Reconstruir, Separar por error]
+  misconception: 'Un error alto no prueba fraude; señala una observación distinta de las aprendidas y necesita interpretación contextual.'
+- id: 07_transformer_attention
+  class_number: 8
+  essential_question: '¿Cómo decide cada palabra a qué otras palabras prestar atención?'
+  hook: 'En una noticia, una palabra cambia de significado según las palabras que la rodean. La atención construye ese contexto de forma directa.'
+  practice: 'Calcular atención escalada, aplicar máscaras y contrastar mapas de atención con cambios reales en la predicción.'
+  visual_title: 'Preguntar, comparar y combinar contexto'
+  visual_steps: [Query y keys, Pesos de atención, Contexto combinado]
+  misconception: 'Un mapa de atención atractivo no es por sí solo una explicación causal de la predicción.'
+- id: 08_gan_generation
+  class_number: 9
+  essential_question: '¿Cómo sabemos si un generador aprendió diversidad y no solo unas pocas imágenes convincentes?'
+  hook: 'Una muestra bonita puede ocultar que el generador repite siempre la misma prenda. La evidencia está en la colección, no en la mejor imagen.'
+  practice: 'Recorrer el espacio latente, comparar vecinos y medir diversidad junto con la estabilidad adversarial.'
+  visual_title: 'El juego entre generar y distinguir'
+  visual_steps: [Ruido latente, Imagen candidata, Crítica y ajuste]
+  misconception: 'Una pérdida baja del generador no garantiza calidad ni cobertura de todos los modos de los datos.'
+- id: 09_gnn_graphs
+  class_number: 10
+  essential_question: '¿Cuánto aporta conocer las conexiones además de conocer cada nodo?'
+  hook: 'Dos artículos con vocabularios ambiguos pueden aclararse al observar qué trabajos citan y quiénes los citan.'
+  practice: 'Visualizar vecindarios, retirar aristas y comparar una GNN con una MLP que solo ve atributos.'
+  visual_title: 'Aprender haciendo circular mensajes'
+  visual_steps: [Nodo y atributos, Vecinos envían mensajes, Representación agregada]
+  misconception: 'Añadir más capas no siempre incorpora mejor contexto; puede volver indistinguibles las representaciones de los nodos.'
+- id: 10_dqn_reinforcement
+  class_number: 11
+  essential_question: '¿Cómo aprende una política cuando cada decisión cambia los datos que verá después?'
+  hook: 'Pedir poco hoy puede provocar una venta perdida mañana; pedir demasiado inmoviliza inventario. La recompensa conecta ambas consecuencias.'
+  practice: 'Leer trayectorias, comparar políticas y estudiar retorno, quiebres de stock y nivel de servicio por separado.'
+  visual_title: 'De una decisión presente a una recompensa futura'
+  visual_steps: [Estado de inventario, Acción de reposición, Retorno acumulado]
+  misconception: 'Maximizar retorno promedio no asegura una política estable ni un nivel de servicio aceptable en los peores episodios.'
+- id: 11_transfer_learning
+  class_number: 12
+  essential_question: '¿Cuándo conviene reutilizar representaciones y cuándo hay que volver a aprenderlas?'
+  hook: 'Un modelo que ya reconoce bordes, texturas y formas no parte de cero al ver mascotas, pero sus rasgos tampoco son perfectos para la nueva tarea.'
+  practice: 'Comparar extracción de características, fine-tuning y entrenamiento desde cero con igual presupuesto.'
+  visual_title: 'Qué se conserva y qué se adapta'
+  visual_steps: [Rasgos preentrenados, Capas congeladas, Ajuste al nuevo dominio]
+  misconception: 'Fine-tuning no siempre gana; con pocos datos o una tasa alta puede destruir representaciones útiles.'
+- id: 12_multimodal_fusion
+  class_number: 13
+  essential_question: '¿Las modalidades se complementan o una de ellas domina silenciosamente?'
+  hook: 'Acelerómetro y giroscopio observan el mismo movimiento desde perspectivas distintas; perder uno revela cuánto dependía el modelo de cada sensor.'
+  practice: 'Comparar cada modalidad, fusión temprana y tardía, y simular la ausencia de un sensor.'
+  visual_title: 'Dos señales, una decisión'
+  visual_steps: [Modalidades separadas, Representaciones alineadas, Predicción fusionada]
+  misconception: 'Concatenar señales no garantiza fusión útil; el modelo puede ignorar una modalidad por completo.'
+- id: 13_hyperparameter_search
+  class_number: 14
+  essential_question: '¿Cómo buscar mejores configuraciones sin convertir validation en otro conjunto de entrenamiento?'
+  hook: 'Cada prueba aporta información, pero demasiadas pruebas terminan adaptándose al ruido de validation.'
+  practice: 'Leer una trayectoria de búsqueda, comparar muestreo aleatorio y rejilla y justificar el presupuesto experimental.'
+  visual_title: 'Explorar sin perseguir el ruido'
+  visual_steps: [Espacio de opciones, Ensayos comparables, Configuración seleccionada]
+  misconception: 'El mejor ensayo observado no es necesariamente la mejor configuración generalizable, especialmente con muchas comparaciones.'
+- id: 14_knowledge_distillation
+  class_number: 15
+  essential_question: '¿Qué información transmiten las probabilidades suaves que una etiqueta dura no contiene?'
+  hook: 'La profesora no solo dice «gato»; también muestra cuánto se parece la imagen a otras clases. Esa estructura guía a la estudiante compacta.'
+  practice: 'Variar temperatura y mezcla de pérdidas y construir el frente precisión–latencia–tamaño.'
+  visual_title: 'Transferir relaciones, no copiar respuestas'
+  visual_steps: [Logits de profesora, Objetivos suaves, Estudiante compacta]
+  misconception: 'Una estudiante más pequeña no hereda automáticamente la calidad de la profesora; capacidad y temperatura limitan la transferencia.'
+- id: 15_federated_learning
+  class_number: 16
+  essential_question: '¿Qué ocurre cuando cada participante observa una realidad diferente?'
+  hook: 'Los teléfonos no generan muestras idénticas: cada persona se mueve de otra manera. FedAvg debe combinar aprendizajes sin centralizar esos datos.'
+  practice: 'Visualizar heterogeneidad por cliente y comparar convergencia global con desempeño individual.'
+  visual_title: 'Aprender localmente y acordar globalmente'
+  visual_steps: [Clientes heterogéneos, Actualizaciones locales, Agregación global]
+  misconception: 'No mover los datos no garantiza privacidad; las actualizaciones también pueden revelar información.'
+- id: 16_backpropagation_manual
+  class_number: 17
+  essential_question: '¿Cómo se reparte la responsabilidad del error entre todas las capas?'
+  hook: 'La salida conoce el error, pero las primeras capas están lejos de él. La regla de la cadena transporta esa señal hacia atrás.'
+  practice: 'Derivar una MLP capa por capa, comprobar el gradiente y graficar su norma a distintas profundidades.'
+  visual_title: 'La responsabilidad viaja hacia atrás'
+  visual_steps: [Error de salida, Regla de la cadena, Gradiente por parámetro]
+  misconception: 'Un programa que ejecuta backward sin error puede seguir teniendo gradientes matemáticamente incorrectos.'
+- id: 17_activations_and_losses
+  class_number: 18
+  essential_question: '¿Cómo cambia lo que aprende una red al cambiar activación o pérdida?'
+  hook: 'Dos modelos idénticos pueden reaccionar de manera opuesta al mismo ejemplo difícil si sus pérdidas asignan costos distintos.'
+  practice: 'Comparar funciones y derivadas, provocar saturación y relacionar pérdidas con desbalance y costos de error.'
+  visual_title: 'La forma de la función dirige el aprendizaje'
+  visual_steps: [Señal de entrada, Activación o pérdida, Gradiente resultante]
+  misconception: 'Elegir una pérdida es una decisión sobre qué errores importan, no un detalle intercambiable de implementación.'
+- id: 18_optimizers_and_schedulers
+  class_number: 19
+  essential_question: '¿Por qué distintos optimizadores recorren caminos distintos sobre la misma pérdida?'
+  hook: 'En un valle estrecho, avanzar siempre en la pendiente inmediata produce zigzag; momento y adaptación cambian la trayectoria.'
+  practice: 'Superponer trayectorias de SGD, Momentum y Adam y relacionarlas con la programación de la tasa.'
+  visual_title: 'Tres caminos sobre el mismo paisaje'
+  visual_steps: [Pendiente local, Memoria o adaptación, Trayectoria de convergencia]
+  misconception: 'Adam no es universalmente mejor; puede converger rápido y aun así generalizar peor que SGD.'
+- id: 19_regularization_dropout_batchnorm
+  class_number: 20
+  essential_question: '¿Cómo distinguir una red que aprendió una regla de otra que memorizó ejemplos?'
+  hook: 'El entrenamiento puede seguir mejorando mientras validation empeora. Esa separación visible es la firma del sobreajuste.'
+  practice: 'Comparar curvas train–validation, activar regularizadores por separado y medir estabilidad entre semillas.'
+  visual_title: 'Capacidad, ajuste y generalización'
+  visual_steps: [Modelo flexible, Brecha de generalización, Restricción útil]
+  misconception: 'Dropout y batch normalization no son equivalentes ni deben activarse de la misma manera durante inferencia.'
+- id: 20_data_augmentation
+  class_number: 21
+  essential_question: '¿Qué transformaciones conservan la etiqueta y cuáles cambian el problema?'
+  hook: 'Voltear una fotografía de un automóvil suele conservar su clase; voltear un dígito o alterar demasiado una señal puede destruir su significado.'
+  practice: 'Crear una galería de transformaciones y medir precisión limpia, robustez y errores introducidos.'
+  visual_title: 'Enseñar invariancias sin borrar información'
+  visual_steps: [Ejemplo original, Transformación válida, Predicción consistente]
+  misconception: 'Más aumento no siempre ayuda; una transformación inválida introduce etiquetas incorrectas de manera sistemática.'
+- id: 21_explainability
+  class_number: 22
+  essential_question: '¿Una explicación describe al modelo o solo produce una historia plausible?'
+  hook: 'Resaltar una variable importante parece convincente hasta que una pequeña perturbación cambia por completo el mapa.'
+  practice: 'Comparar atribuciones locales y globales, perturbar entradas y medir estabilidad de la explicación.'
+  visual_title: 'De la predicción a una evidencia contrastable'
+  visual_steps: [Predicción concreta, Atribución estimada, Prueba de estabilidad]
+  misconception: 'Una atribución alta no demuestra causalidad ni convierte una asociación del modelo en una razón del mundo real.'
+- id: 22_uncertainty_calibration
+  class_number: 23
+  essential_question: '¿Qué significa realmente que un modelo anuncie 80 % de confianza?'
+  hook: 'Entre muchas predicciones hechas con 80 % de confianza, aproximadamente ocho de cada diez deberían acertar. Esa promesa se puede medir.'
+  practice: 'Construir un diagrama de confiabilidad, calcular ECE y aplicar temperature scaling sin tocar test.'
+  visual_title: 'Hacer que confianza y frecuencia coincidan'
+  visual_steps: [Confianza declarada, Frecuencia observada, Recalibración]
+  misconception: 'Una alta exactitud no implica probabilidades bien calibradas; son propiedades diferentes.'
+- id: 23_model_export_and_inference
+  class_number: 24
+  essential_question: '¿Sigue siendo el mismo modelo después de exportarlo y optimizarlo?'
+  hook: 'Un archivo más pequeño y rápido no sirve si modifica silenciosamente las predicciones que se aprobaron en el notebook.'
+  practice: 'Comparar salidas PyTorch–ONNX, medir latencia y tamaño y visualizar el frente de compromiso.'
+  visual_title: 'De modelo entrenado a artefacto verificable'
+  visual_steps: [Checkpoint aprobado, Exportación y cuantización, Paridad y rendimiento]
+  misconception: 'Exportar sin errores solo prueba que se creó un archivo; no prueba paridad, velocidad ni compatibilidad reales.'
+- id: 24_capstone_real_project
+  class_number: 25
+  essential_question: '¿Cómo se convierte una probabilidad de abandono en una decisión responsable de negocio?'
+  hook: 'Contactar a todos cuesta dinero; no contactar a nadie pierde clientes. El umbral correcto depende de costos y capacidad, no solo de F1.'
+  practice: 'Recorrer el proyecto completo, construir una matriz de costos y defender una recomendación con límites explícitos.'
+  visual_title: 'De datos históricos a una decisión operativa'
+  visual_steps: [Riesgo estimado, Costo y capacidad, Acción supervisada]
+  misconception: 'Predecir churn no demuestra por qué una persona se irá ni qué intervención logrará retenerla.'
+- id: 25_transformer_finetuning
+  class_number: 26
+  essential_question: '¿Cuánta adaptación necesita un transformer para una tarea nueva?'
+  hook: 'LoRA modifica una fracción pequeña de los parámetros y plantea una pregunta medible: cuánto rendimiento se conserva por cada recurso ahorrado.'
+  practice: 'Comparar fine-tuning completo y LoRA con igual partición y reportar parámetros, memoria, latencia y macro-F1.'
+  visual_title: 'Adaptar poco sin aprender poco'
+  visual_steps: [Pesos preentrenados, Adaptadores de bajo rango, Comparación costo–calidad]
+  misconception: 'Entrenar menos parámetros no garantiza menor latencia de inferencia; el ahorro principal puede estar solo en entrenamiento y almacenamiento.'
+- id: 26_segmentation_unet
+  class_number: 27
+  essential_question: '¿Cómo recupera una U-Net el detalle espacial que pierde al comprimir?'
+  hook: 'Clasificar una imagen dice qué contiene; segmentarla exige decidir además dónde termina cada objeto, incluso en sus bordes.'
+  practice: 'Superponer máscaras, inspeccionar skip connections y comparar IoU por clase y errores de contorno.'
+  visual_title: 'Comprimir contexto y recuperar detalle'
+  visual_steps: [Encoder contextual, Skip connections, Máscara por píxel]
+  misconception: 'Una pixel accuracy alta puede ocultar una segmentación inútil cuando el fondo domina la imagen.'
+- id: 27_audio_speechcommands
+  class_number: 28
+  essential_question: '¿Qué hace visible un espectrograma que la onda temporal oculta?'
+  hook: 'Una palabra dura un segundo, pero sus frecuencias cambian rápidamente. El log-mel convierte ese cambio en una imagen tiempo–frecuencia.'
+  practice: 'Escuchar y visualizar señales, construir espectrogramas y medir degradación con ruido y SpecAugment.'
+  visual_title: 'De vibración a patrón tiempo–frecuencia'
+  visual_steps: [Onda sonora, Espectrograma log-mel, Clase y robustez]
+  misconception: 'Un modelo preciso en audio limpio puede depender del micrófono o del fondo y fallar ante voces reales distintas.'
+- id: 28_wgan_gp
+  class_number: 29
+  essential_question: '¿Por qué controlar la norma del gradiente estabiliza el juego generativo?'
+  hook: 'Cuando el crítico se vuelve demasiado abrupto, deja de ofrecer una dirección útil. La penalización obliga a mantener pendientes informativas.'
+  practice: 'Graficar normas del gradiente, comparar DCGAN y WGAN-GP y revisar diversidad con igual presupuesto.'
+  visual_title: 'Un crítico con pendientes útiles'
+  visual_steps: [Muestras reales y falsas, Crítico 1-Lipschitz, Gradiente para el generador]
+  misconception: 'La estimación Wasserstein de una ejecución no es una métrica absoluta comparable entre cualquier arquitectura o escala.'
+- id: 29_diffusion_ddpm
+  class_number: 30
+  essential_question: '¿Cómo aprende un modelo a invertir un proceso que destruye gradualmente la imagen?'
+  hook: 'Si añadimos ruido en pasos pequeños conocemos exactamente la corrupción; la red aprende a estimar qué ruido retirar en cada instante.'
+  practice: 'Visualizar la cadena directa e inversa y comparar calidad y latencia al cambiar pasos y cronograma.'
+  visual_title: 'Destruir de forma conocida para aprender a reconstruir'
+  visual_steps: [Imagen y ruido progresivo, Predicción de epsilon, Muestreo inverso]
+  misconception: 'Menor error de predicción de ruido no garantiza automáticamente muestras perceptualmente mejores.'
+- id: 30_self_supervised_simclr
+  class_number: 31
+  essential_question: '¿Qué invariancias aprende una representación cuando nadie le entrega etiquetas?'
+  hook: 'Dos transformaciones de la misma imagen deben reconocerse como par, mientras imágenes distintas se separan en el espacio de representación.'
+  practice: 'Inspeccionar pares aumentados, proyectar embeddings y comparar k-NN y linear probe bajo distintas intensidades de aumento.'
+  visual_title: 'Acercar vistas del mismo ejemplo y separar las demás'
+  visual_steps: [Dos vistas aumentadas, Embeddings contrastivos, Evaluación sin fine-tuning]
+  misconception: 'Los aumentos definen lo que el modelo considera irrelevante; una invariancia mal elegida puede borrar la señal necesaria.'

@@ -1,9 +1,9 @@
 # Teoría — Perceptrón con PyTorch
 
 <!-- nav-top -->
-> 🧭 **Ruta 2 / 31** · 🟢 [Parte 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md)
+> 🧭 **Clase 02 / 31** · 🟢 [Módulo 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md)
 >
-> [⬅️ 🔢 Neurona con NumPy](../../labs/00_numpy_neuron/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🌀 MLP multiclase ➡️](../../labs/02_mlp_nonlinear/theory.md)
+> [⬅️ 🔢 Neurona con NumPy](../../labs/00_numpy_neuron/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [🌀 MLP multiclase ➡️](../../labs/02_mlp_nonlinear/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -95,11 +95,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🔢 Neurona con NumPy](../../labs/00_numpy_neuron/README.md) | [Las 31 rutas](../../parts/README.md) | [🌀 MLP multiclase](../../labs/02_mlp_nonlinear/README.md) |
+| [🔢 Neurona con NumPy](../../labs/00_numpy_neuron/README.md) | [Las 31 clases](../../parts/README.md) | [🌀 MLP multiclase](../../labs/02_mlp_nonlinear/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟢 [Parte 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/01_pytorch_perceptron/index.html) · [🖥️ Página HTML local](index.html)
+🟢 [Módulo 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/01_pytorch_perceptron/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

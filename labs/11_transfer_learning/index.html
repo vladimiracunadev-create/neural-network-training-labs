@@ -145,16 +145,25 @@ body { margin: 0; background: var(--bg); color: var(--ink);
     <div class="lab-hero">
       <div class="lab-kicker">Laboratorio 11 · Central · Ruta 12 / 31 · <a href="../../parts/03-familias-especializadas.html">Parte 3 — Familias especializadas: generar, decidir, relacionar</a></div>
       <h1>♻️ Transfer learning con mascotas</h1>
-      <div class="lab-actions"><a class="btn btn-ghost" href="#README">📄 Guía</a><a class="btn btn-ghost" href="#experiments">🔬 Experimentos</a><a class="btn btn-ghost" href="#assessment">📝 Evaluación</a><a class="btn btn-ghost" href="notebook.ipynb">📓 Recorrido</a><a class="btn btn-ghost" href="notebook_student.ipynb">✏️ Estudiante</a><a class="btn btn-ghost" href="notebook_solution.ipynb">✅ Solución</a></div>
+      <div class="lab-actions"><a class="btn btn-ghost" href="#README">📄 Guía</a><a class="btn btn-ghost" href="#experiments">🔬 Experimentos</a><a class="btn btn-ghost" href="#assessment">📝 Evaluación</a><a class="btn btn-ghost" href="#instructor-guide">🧑‍🏫 Guía docente</a><a class="btn btn-ghost" href="notebook.ipynb">📓 Recorrido</a><a class="btn btn-ghost" href="notebook_student.ipynb">✏️ Estudiante</a><a class="btn btn-ghost" href="notebook_solution.ipynb">✅ Solución</a></div>
     </div>
     <nav class="pager"><a class="pg pg-prev" href="../../labs/10_dqn_reinforcement/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🕹️ DQN para inventario con demanda real</span></a><a class="pg pg-next" href="../../labs/12_multimodal_fusion/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🔀 Fusión de sensores</span></a></nav>
     <article class="content">
       <span id="README"></span><h1 id="transfer-learning-con-mascotas">Transfer learning con mascotas</h1>
-<h2 id="que-vas-a-hacer-aqui">🎯 Qué vas a hacer aquí</h2>
+<h2 id="antes-de-tocar-el-codigo">Antes de tocar el código</h2>
+<p>Un modelo que ya reconoce bordes, texturas y formas no parte de cero al ver mascotas, pero sus rasgos tampoco son perfectos para la nueva tarea.</p>
+<blockquote>
+<p><strong>Pregunta esencial:</strong> ¿Cuándo conviene reutilizar representaciones y cuándo hay que volver a aprenderlas?</p>
+</blockquote>
+<p>Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.</p>
+<p><img alt="Qué se conserva y qué se adapta" src="assets/class-map.svg"></p>
+<p><em>Mapa de esta clase: Qué se conserva y qué se adapta. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.</em></p>
+<h2 id="que-vas-a-aprender-y-construir">🎯 Qué vas a aprender y construir</h2>
 <p>Comparar extracción de características, fine-tuning y entrenamiento desde cero.</p>
-<p>Es la <strong>ruta 12 de 31</strong> del recorrido y pertenece a 🟣 la parte 3, <em>Familias especializadas: generar, decidir, relacionar</em>. Llegas desde <strong>DQN para inventario con demanda real</strong> y lo que hagas aquí lo da por supuesto <strong>Fusión de sensores</strong>.</p>
+<p><strong>Práctica propia de esta clase:</strong> Comparar extracción de características, fine-tuning y entrenamiento desde cero con igual presupuesto.</p>
+<p>Es la <strong>clase 12 de 31</strong> del programa y pertenece a 🟣 el módulo 3, <em>Familias especializadas: generar, decidir, relacionar</em>. Llegas desde <strong>DQN para inventario con demanda real</strong> y lo que hagas aquí lo da por supuesto <strong>Fusión de sensores</strong>.</p>
 <p>Trabajarás con el dataset <strong><code>oxford_iiit_pet</code></strong> (Torchvision / Oxford, licencia: Uso académico según fuente), y tendrás que superar la línea base <strong>CNN pequeña entrenada desde cero</strong>, decidiendo con la métrica <code>macro_f1</code> medida sobre <code>validation</code>. Nivel avanzado, unas <strong>8 horas</strong> de dedicación.</p>
-<p><strong>Lo que conviene traer resuelto de las rutas anteriores:</strong> PyTorch intermedio, optimización, lectura de artículos técnicos.</p>
+<p><strong>Lo que conviene traer resuelto de las clases anteriores:</strong> PyTorch intermedio, optimización, lectura de artículos técnicos.</p>
 <p><strong>Al terminar deberías ser capaz de:</strong></p>
 <ul>
 <li>Comparar extracción de características, fine-tuning y entrenamiento desde cero.</li>
@@ -163,7 +172,11 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 <li>Comparar contra la línea base: CNN pequeña entrenada desde cero.</li>
 <li>Interpretar intervalos de confianza, errores y limitaciones.</li>
 </ul>
-<h2 id="la-teoria-de-este-laboratorio">🧠 La teoría de este laboratorio</h2>
+<h3 id="una-idea-que-conviene-desmontar">Una idea que conviene desmontar</h3>
+<blockquote>
+<p>Fine-tuning no siempre gana; con pocos datos o una tasa alta puede destruir representaciones útiles.</p>
+</blockquote>
+<h2 id="comprender-antes-de-entrenar">🧠 Comprender antes de entrenar</h2>
 <p>Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en <code>theory.md</code>, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)</p>
 <h3 id="de-que-trata">De qué trata</h3>
 <p>Este laboratorio estudia <strong>reutilización de representaciones preentrenadas</strong> usando <code>oxford_iiit_pet</code>, un dataset público real procedente de Torchvision / Oxford.</p>
@@ -176,11 +189,11 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 <h3 id="los-tres-regimenes-en-parametros-y-en-gradiente">Los tres regímenes, en parámetros y en gradiente</h3>
 <p>Las tres estrategias que compara el laboratorio se distinguen por qué subconjunto de θ recibe gradiente, y esa diferencia se puede contar.</p>
 <p>En <strong>extracción de características</strong> se congela el cuerpo entero: <code>requires_grad = False</code> para todos sus pesos, y solo se entrena la cabeza. Con una ResNet18 —unos 11,2 millones de parámetros en el cuerpo— y una cabeza lineal de 512 entradas a las clases del problema, los parámetros entrenables bajan a unos pocos miles. Como el cuerpo no cambia, sus salidas para cada imagen son <strong>constantes durante todo el entrenamiento</strong>, lo que permite un truco muy rentable: calcularlas una sola vez, guardarlas en caché, y entrenar la cabeza sobre esos vectores. El entrenamiento pasa a ser una regresión logística sobre 512 dimensiones y corre en segundos.</p>
-<p>En <strong>fine-tuning completo</strong> todo el cuerpo recibe gradiente. Cuesta memoria —hay que guardar activaciones y estados del optimizador de 11 millones de parámetros— y exige una tasa de aprendizaje pequeña, típicamente uno o dos órdenes de magnitud menor que la del entrenamiento desde cero. La razón es la misma que en la ruta 25: la cabeza está inicializada al azar y sus primeros gradientes son grandes; si se propagan con una tasa alta, destruyen las representaciones preentrenadas antes de que la cabeza haya aprendido nada útil. El remedio habitual es un <strong>calentamiento</strong>: entrenar unas épocas solo la cabeza y descongelar después, o usar tasas discriminativas —más pequeñas en las capas iniciales, más grandes en las finales—, que es la traducción directa de que las capas iniciales necesitan cambiar menos.</p>
+<p>En <strong>fine-tuning completo</strong> todo el cuerpo recibe gradiente. Cuesta memoria —hay que guardar activaciones y estados del optimizador de 11 millones de parámetros— y exige una tasa de aprendizaje pequeña, típicamente uno o dos órdenes de magnitud menor que la del entrenamiento desde cero. La razón es la misma que en la clase 26: la cabeza está inicializada al azar y sus primeros gradientes son grandes; si se propagan con una tasa alta, destruyen las representaciones preentrenadas antes de que la cabeza haya aprendido nada útil. El remedio habitual es un <strong>calentamiento</strong>: entrenar unas épocas solo la cabeza y descongelar después, o usar tasas discriminativas —más pequeñas en las capas iniciales, más grandes en las finales—, que es la traducción directa de que las capas iniciales necesitan cambiar menos.</p>
 <p>En <strong>entrenamiento desde cero</strong> no hay transferencia: es la referencia que dice cuánto aportó realmente el preentrenamiento. Compararla con las otras dos con el mismo presupuesto de épocas es lo que convierte el laboratorio en un experimento y no en una demostración.</p>
 <h3 id="el-detalle-que-arruina-un-fine-tuning-sin-dar-error">El detalle que arruina un fine-tuning sin dar error</h3>
 <p>Hay un fallo específico de este régimen que no produce excepción, no aparece en las curvas de entrenamiento y degrada el resultado: las estadísticas de la <strong>normalización por lotes</strong>.</p>
-<p>Como se vio en la ruta 03, esas capas guardan una media y una varianza acumuladas que no se aprenden por gradiente, sino que se actualizan en cada paso hacia adelante mientras el modelo esté en modo entrenamiento. Congelar los pesos con <code>requires_grad = False</code> <strong>no congela esas estadísticas</strong>. El resultado es que, en un supuesto «cuerpo congelado», las capas de normalización siguen adaptándose a los nuevos datos y la representación se mueve, aunque ningún peso reciba gradiente. Si además el lote es pequeño, las estadísticas del nuevo dominio son ruidosas y la degradación puede ser notable. Congelar de verdad exige poner esas capas en modo evaluación explícitamente.</p>
+<p>Como se vio en la clase 04, esas capas guardan una media y una varianza acumuladas que no se aprenden por gradiente, sino que se actualizan en cada paso hacia adelante mientras el modelo esté en modo entrenamiento. Congelar los pesos con <code>requires_grad = False</code> <strong>no congela esas estadísticas</strong>. El resultado es que, en un supuesto «cuerpo congelado», las capas de normalización siguen adaptándose a los nuevos datos y la representación se mueve, aunque ningún peso reciba gradiente. Si además el lote es pequeño, las estadísticas del nuevo dominio son ruidosas y la degradación puede ser notable. Congelar de verdad exige poner esas capas en modo evaluación explícitamente.</p>
 <p>Un segundo detalle de la misma familia: la normalización de entrada debe ser <strong>la del preentrenamiento</strong>. Un modelo entrenado con las medias y desviaciones de ImageNet espera recibir imágenes normalizadas con esos mismos valores; alimentarlo con otra normalización lo sitúa fuera de la distribución para la que se calibraron sus filtros, y el rendimiento cae sin que nada lo señale.</p>
 <h3 id="cuando-la-transferencia-deja-de-ayudar">Cuándo la transferencia deja de ayudar</h3>
 <p>La transferencia no es gratis ni siempre positiva, y conocer sus límites forma parte del laboratorio.</p>
@@ -190,9 +203,9 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 <p><strong>La pregunta que deberías poder responder al terminar:</strong> ¿Cuándo el preentrenamiento deja de aportar?</p>
 </blockquote>
 <h3 id="que-se-mide-y-con-que-se-decide">Qué se mide y con qué se decide</h3>
-<p>El laboratorio reporta <code>accuracy</code>, <code>balanced_accuracy</code>, <code>macro_f1</code>. De todas ellas, la que <strong>decide</strong> qué modelo se conserva es <code>macro_f1</code>, y se mide siempre sobre <code>validation</code>: es la única forma de que <code>test</code> siga siendo una estimación honesta de lo que pasará con datos nuevos.</p>
+<p>La clase reporta <code>accuracy</code>, <code>balanced_accuracy</code>, <code>macro_f1</code>. De todas ellas, la que <strong>decide</strong> qué modelo se conserva es <code>macro_f1</code>, y se mide siempre sobre <code>validation</code>: es la única forma de que <code>test</code> siga siendo una estimación honesta de lo que pasará con datos nuevos.</p>
 <h2 id="los-tres-cuadernos">📓 Los tres cuadernos</h2>
-<p>El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar <code>test</code> una vez—; lo que cambia es qué te toca escribir a ti:</p>
+<p>La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar <code>test</code> una vez—; lo que cambia es qué te toca escribir a ti:</p>
 <table>
 <thead>
 <tr>
@@ -204,12 +217,12 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 <tbody>
 <tr>
 <td><a href="notebook.ipynb">📓 <code>notebook.ipynb</code></a></td>
-<td>El <strong>recorrido de referencia</strong>: 22 celdas (9 de código) con <strong>todo el código escrito y ejecutable</strong>, intercalado con las explicaciones. No trae ejercicios.</td>
+<td>El <strong>recorrido de referencia</strong>: 25 celdas (9 de código) con <strong>todo el código escrito y ejecutable</strong>, intercalado con las explicaciones. No trae ejercicios.</td>
 <td>Para leer y ejecutar de principio a fin.</td>
 </tr>
 <tr>
 <td><a href="notebook_student.ipynb">✏️ <code>notebook_student.ipynb</code></a></td>
-<td>El mismo recorrido más <strong>5 ejercicios evaluables</strong> (37 celdas en total). Las celdas de ejercicio están marcadas con <code># YOUR CODE HERE</code> y debajo de cada una hay una comprobación.</td>
+<td>El mismo recorrido más <strong>5 ejercicios evaluables</strong> (40 celdas en total). Las celdas de ejercicio están marcadas con <code># YOUR CODE HERE</code> y debajo de cada una hay una comprobación.</td>
 <td>Para practicar.</td>
 </tr>
 <tr>
@@ -220,7 +233,7 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 </tbody>
 </table>
 <h3 id="que-se-practica-en-los-ejercicios">Qué se practica en los ejercicios</h3>
-<p>Cinco de ellos no son de arquitectura sino del <strong>contrato experimental</strong>, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con <code>validation</code>, compararse con la línea base, sellar antes de abrir <code>test</code> y dejar el plan por escrito. Se resuelven con Python estándar —<strong>sin descargar el dataset ni entrenar</strong>—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.</p>
+<p>Cinco de ellos cubren el <strong>contrato experimental</strong> común: auditar la partición, decidir con <code>validation</code>, compararse con la línea base, sellar antes de abrir <code>test</code> y dejar el plan por escrito. Se resuelven con Python estándar —<strong>sin descargar el dataset ni entrenar</strong>—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.</p>
 <h3 id="como-abrirlos">Cómo abrirlos</h3>
 <p>Los cuadernos necesitan el extra <code>notebooks</code>, que instala Jupyter junto con el paquete:</p>
 <pre><code class="language-bash">pip install -e &quot;.[dev,notebooks]&quot;
@@ -319,7 +332,7 @@ print(resultado.metrics)   # el diccionario de métricas finales
 datos = prepare_dataset(&quot;11_transfer_learning&quot;, quick=True, seed=42)
 print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
 </code></pre>
-<h2 id="paso-a-paso">🪜 Paso a paso</h2>
+<h2 id="laboratorio-guiado">🪜 Laboratorio guiado</h2>
 <p>Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.</p>
 <h3 id="paso-1-traer-el-dataset-real-y-partirlo">Paso 1 — Traer el dataset real y partirlo</h3>
 <p><strong>Qué ocurre.</strong> Descarga <code>oxford_iiit_pet</code> desde su proveedor y construye las tres particiones —<code>train</code>, <code>validation</code> y <code>test</code>— con la semilla de partición que le pases.</p>
@@ -445,7 +458,7 @@ neural-labs train --lab 11_transfer_learning --config baseline --split-seed 42 -
 </tr>
 <tr>
 <td><code>transfer_comparison.json</code></td>
-<td><strong>Propio de esta ruta.</strong> Extracción de características frente a fine-tuning frente a entrenar desde cero.</td>
+<td><strong>Propio de esta clase.</strong> Extracción de características frente a fine-tuning frente a entrenar desde cero.</td>
 </tr>
 </tbody>
 </table>
@@ -460,7 +473,7 @@ neural-labs train --lab 11_transfer_learning --config baseline --split-seed 42 -
 <p>7.349 imágenes reales de 37 razas de perros y gatos.</p>
 <p>El dataset refleja su proceso de recolección y no representa automáticamente otros períodos, países o poblaciones. Una asociación predictiva no demuestra causalidad.</p>
 <h2 id="antes-de-darlo-por-terminado">✅ Antes de darlo por terminado</h2>
-<p>El laboratorio está aprobado cuando se cumplen estos criterios:</p>
+<p>La clase está aprobada cuando se cumplen estos criterios:</p>
 <ul>
 <li>[ ] cero solapamiento entre train, validation y test</li>
 <li>[ ] selección basada únicamente en validation</li>
@@ -520,6 +533,10 @@ neural-labs train --lab 11_transfer_learning --config baseline --split-seed 42 -
 <td>Las preguntas de evaluación y la rúbrica con la que se corrigen.</td>
 </tr>
 <tr>
+<td><a href="#instructor-guide">🧑‍🏫 <code>instructor-guide.md</code></a></td>
+<td>La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase.</td>
+</tr>
+<tr>
 <td><a href="notebook.ipynb">📓 <code>notebook.ipynb</code></a></td>
 <td>El recorrido completo con todo el código escrito y ejecutable.</td>
 </tr>
@@ -574,7 +591,7 @@ neural-labs train --lab 11_transfer_learning --config baseline --split-seed 42 -
 <li>Lo supera solo con una semilla concreta y no con las demás.</li>
 <li>Lo supera a costa de un tiempo o un tamaño que el problema no justifica.</li>
 </ul>
-<h3 id="el-experimento-propio-de-esta-ruta">El experimento propio de esta ruta</h3>
+<h3 id="el-experimento-propio-de-esta-clase">El experimento propio de esta clase</h3>
 <p>Además de la comparación con la línea base, aquí interesa una pregunta específica: <strong>Comparar congelamiento parcial y fine-tuning</strong>. Es la comparación que da sentido al tema de este laboratorio; la de la línea base solo dice si el modelo sirve, mientras que esta dice <em>qué parte</em> del diseño es la que aporta.</p>
 <h2 id="que-se-varia-y-que-se-mantiene-fijo">Qué se varía y qué se mantiene fijo</h2>
 <p>Un experimento es interpretable cuando cambia <strong>una</strong> cosa a la vez. Esta tabla dice qué papel juega cada elemento y, sobre todo, por qué:</p>
@@ -797,7 +814,7 @@ print(summarize_benchmark(registros))   # media y dispersión entre semillas
 <li><strong>Ajustar mirando <code>test</code>.</strong> En cuanto una decisión se toma con el resultado de <code>test</code>, ese conjunto deja de estimar el rendimiento con datos nuevos.</li>
 <li><strong>No registrar el entorno.</strong> Sin versiones ni hardware, una diferencia de tiempo o de resultado se vuelve inexplicable meses después.</li>
 </ul><h2 class="doc-sep" id="assessment">📝 Evaluación</h2><h1 id="evaluacion-transfer-learning-con-mascotas">Evaluación — Transfer learning con mascotas</h1>
-<h2 id="como-se-evalua-este-laboratorio">Cómo se evalúa este laboratorio</h2>
+<h2 id="como-se-evalua-esta-clase">Cómo se evalúa esta clase</h2>
 <p>No se evalúa el número final. Un modelo con una métrica alta obtenida mirando <code>test</code>, o sin compararse con nada, vale menos que uno modesto cuyo resultado se puede auditar. Lo que se califica es el <strong>proceso</strong>: si las particiones están limpias, si la decisión se tomó donde debía, si la conclusión distingue lo que se midió de lo que se supone.</p>
 <h2 id="evidencias-que-debes-entregar">Evidencias que debes entregar</h2>
 <table>
@@ -843,17 +860,23 @@ print(summarize_benchmark(registros))   # media y dispersión entre semillas
 </table>
 <h2 id="las-preguntas-y-que-se-busca-en-tu-respuesta">Las preguntas, y qué se busca en tu respuesta</h2>
 <p>No se corrige la longitud de la respuesta, sino si demuestra comprensión. Debajo de cada pregunta está lo que una buena respuesta debería contener.</p>
-<p><strong>1. Explica con tus palabras: Inicializar con pesos ImageNet y ajustar capas seleccionadas.</strong></p>
+<p><strong>1. ¿Cuándo conviene reutilizar representaciones y cuándo hay que volver a aprenderlas?</strong></p>
+<p><em>Qué se busca:</em> Comienza con la predicción que hiciste al abrir la clase y contrástala con una gráfica, una medida o una observación concreta de tu ejecución.</p>
+<p><strong>2. Explica con tus palabras: Inicializar con pesos ImageNet y ajustar capas seleccionadas.</strong></p>
 <p><em>Qué se busca:</em> Una buena respuesta conecta cuatro cosas —cómo se representa la entrada, qué calcula el modelo, qué mide la función de pérdida y cómo se actualizan los pesos— en vez de repetir la definición del libro. Si puedes explicarlo sin la fórmula delante, lo entendiste.</p>
-<p><strong>2. ¿Qué información del dataset solo puede usarse durante el entrenamiento?</strong></p>
+<p><strong>3. ¿Qué información del dataset solo puede usarse durante el entrenamiento?</strong></p>
 <p><em>Qué se busca:</em> Se espera que nombres casos concretos: las estadísticas de normalización, el vocabulario, la selección de variables, los umbrales. Todo eso se ajusta <strong>solo</strong> con <code>train</code>; calcularlo sobre el conjunto completo es una fuga silenciosa que infla el resultado sin dar ningún aviso.</p>
-<p><strong>3. ¿Por qué CNN pequeña entrenada desde cero es una comparación razonable para este problema?</strong></p>
+<p><strong>4. ¿Por qué CNN pequeña entrenada desde cero es una comparación razonable para este problema?</strong></p>
 <p><em>Qué se busca:</em> Una buena respuesta explica qué captura la línea base y qué no, y por qué superarla —o no superarla— es informativo aquí. Si la línea base ya resuelve el problema, la conclusión correcta es que la red no estaba justificada.</p>
-<p><strong>4. ¿Cuándo el preentrenamiento deja de aportar?</strong></p>
+<p><strong>5. ¿Cuándo el preentrenamiento deja de aportar?</strong></p>
 <p><em>Qué se busca:</em> Esta es la pregunta propia del tema. Responde con evidencia de tu ejecución —predicciones, matriz de confusión, curvas, artefactos del directorio de la corrida—, no con una impresión general.</p>
-<p><strong>5. ¿Qué te dice <code>macro_f1</code> que no te dirían las otras métricas?</strong></p>
+<p><strong>6. ¿Qué aprendiste al realizar esta práctica: Comparar extracción de características, fine-tuning y entrenamiento desde cero con igual presupuesto.?</strong></p>
+<p><em>Qué se busca:</em> No basta con relatar los pasos. Explica qué cambió, por qué cambió y qué resultado te haría rechazar tu interpretación inicial.</p>
+<p><strong>7. Refuta con evidencia esta idea frecuente: «Fine-tuning no siempre gana; con pocos datos o una tasa alta puede destruir representaciones útiles.»</strong></p>
+<p><em>Qué se busca:</em> Se busca una refutación situada en esta materia, apoyada en el mecanismo estudiado y en los resultados obtenidos, no una negación genérica.</p>
+<p><strong>8. ¿Qué te dice <code>macro_f1</code> que no te dirían las otras métricas?</strong></p>
 <p><em>Qué se busca:</em> Cada métrica pondera distinto los errores. Se espera que expliques por qué esa es la que decide aquí y en qué situación sería una mala elección.</p>
-<p><strong>6. ¿Qué cambiarías antes de usar este modelo fuera del laboratorio?</strong></p>
+<p><strong>9. ¿Qué cambiarías antes de usar este modelo fuera del laboratorio?</strong></p>
 <p><em>Qué se busca:</em> Aquí se evalúa el criterio, no la técnica: licencias y condiciones de uso de <code>oxford_iiit_pet</code>, representatividad de la población, calibración de las probabilidades, vigilancia de la deriva, desempeño por subgrupo y supervisión humana. Un «funcionaría bien» sin condiciones se corrige como respuesta incompleta.</p>
 <h2 id="la-rubrica-explicada">La rúbrica, explicada</h2>
 <table>
@@ -908,7 +931,7 @@ print(summarize_benchmark(registros))   # media y dispersión entre semillas
 <p><strong>La aprobación exige al menos 70 % y cero errores críticos de fuga de datos.</strong> La fuga es eliminatoria por sí sola porque invalida todas las demás cifras del trabajo, por buenas que parezcan.</p>
 <h2 id="autoevaluacion-antes-de-entregar">Autoevaluación antes de entregar</h2>
 <ul>
-<li>[ ] Puedo explicar el laboratorio a alguien que no lo hizo, sin leer el código.</li>
+<li>[ ] Puedo explicar la idea central de la clase a alguien que no la cursó, sin leer el código.</li>
 <li>[ ] Sé qué decisión tomé en cada paso y con qué evidencia la tomé.</li>
 <li>[ ] Miré <code>test</code> una sola vez, después de que existiera <code>experiment.lock.json</code>.</li>
 <li>[ ] Mi conclusión dice magnitud, incertidumbre, costo, errores y condiciones.</li>
@@ -921,7 +944,85 @@ print(summarize_benchmark(registros))   # media y dispersión entre semillas
 <li>[ ] selección basada únicamente en validation</li>
 <li>[ ] métricas finales acompañadas por incertidumbre</li>
 <li>[ ] conclusiones que distinguen evidencia de suposición</li>
+</ul><h2 class="doc-sep" id="instructor-guide">🧑‍🏫 Guía docente</h2><h1 id="guia-docente-clase-12-transfer-learning-con-mascotas">Guía docente — Clase 12: Transfer learning con mascotas</h1>
+<blockquote>
+<p><strong>Módulo 3: Familias especializadas</strong> · Esta guía acompaña a quien facilita la clase; no es un guion que deba leerse literalmente.</p>
+</blockquote>
+<h2 id="la-conversacion-que-abre-la-clase">La conversación que abre la clase</h2>
+<p>Un modelo que ya reconoce bordes, texturas y formas no parte de cero al ver mascotas, pero sus rasgos tampoco son perfectos para la nueva tarea.</p>
+<p>Plantee primero esta pregunta y permita que el grupo formule una predicción antes de mostrar código:</p>
+<blockquote>
+<p><strong>¿Cuándo conviene reutilizar representaciones y cuándo hay que volver a aprenderlas?</strong></p>
+</blockquote>
+<h2 id="que-debe-quedar-comprendido">Qué debe quedar comprendido</h2>
+<ul>
+<li>Comparar extracción de características, fine-tuning y entrenamiento desde cero.</li>
+<li>Preparar y auditar el dataset real oxford_iiit_pet sin fuga de datos.</li>
+<li>Entrenar y evaluar reutilización de representaciones preentrenadas.</li>
+<li>Comparar contra la línea base: CNN pequeña entrenada desde cero.</li>
+<li>Interpretar intervalos de confianza, errores y limitaciones.</li>
 </ul>
+<h2 id="secuencia-sugerida">Secuencia sugerida</h2>
+<table>
+<thead>
+<tr>
+<th>Momento</th>
+<th style="text-align: right;">Duración</th>
+<th>Acción docente</th>
+<th>Evidencia del estudiante</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Activación</td>
+<td style="text-align: right;">10 min</td>
+<td>Presentar el caso inicial y recoger predicciones.</td>
+<td>Explica qué espera observar y por qué.</td>
+</tr>
+<tr>
+<td>Construcción</td>
+<td style="text-align: right;">25 min</td>
+<td>Conectar intuición, representación y matemática.</td>
+<td>Dibuja o relata el mecanismo con sus propias palabras.</td>
+</tr>
+<tr>
+<td>Demostración</td>
+<td style="text-align: right;">25 min</td>
+<td>Recorrer el mapa visual y ejecutar el ejemplo mínimo.</td>
+<td>Interpreta cada transición sin limitarse a describir la figura.</td>
+</tr>
+<tr>
+<td>Investigación</td>
+<td style="text-align: right;">35 min</td>
+<td>Guiar la práctica propia de esta clase.</td>
+<td>Contrasta su predicción con una medida o gráfica.</td>
+</tr>
+<tr>
+<td>Cierre</td>
+<td style="text-align: right;">15 min</td>
+<td>Volver a la pregunta esencial y discutir límites.</td>
+<td>Entrega una conclusión breve con evidencia y una duda abierta.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="practica-propia-de-esta-materia">Práctica propia de esta materia</h2>
+<p>Comparar extracción de características, fine-tuning y entrenamiento desde cero con igual presupuesto.</p>
+<p><img alt="Qué se conserva y qué se adapta" src="assets/class-map.svg"></p>
+<p>La figura es un punto de entrada. Pida al estudiante que explique qué cambia entre los tres pasos y qué resultado observable invalidaría su explicación.</p>
+<h2 id="dificultad-conceptual-que-conviene-provocar">Dificultad conceptual que conviene provocar</h2>
+<blockquote>
+<p><strong>Idea engañosa:</strong> Fine-tuning no siempre gana; con pocos datos o una tasa alta puede destruir representaciones útiles.</p>
+</blockquote>
+<p>No la corrija inmediatamente. Solicite un ejemplo o contraejemplo, ejecute una comparación y recién entonces reconstruya la explicación con el grupo.</p>
+<h2 id="preguntas-para-acompanar-sin-resolver">Preguntas para acompañar sin resolver</h2>
+<ul>
+<li>¿Qué observación concreta respalda esa afirmación?</li>
+<li>¿Qué variable está cambiando y cuáles permanecen controladas?</li>
+<li>¿La gráfica muestra el mecanismo o solamente una correlación?</li>
+<li>¿En qué caso dejaría de ser válida esta conclusión?</li>
+</ul>
+<h2 id="cierre-verificable">Cierre verificable</h2>
+<p>La clase termina cuando el estudiante puede responder la pregunta esencial, interpretar su visualización y señalar al menos una limitación. Una métrica aislada no reemplaza ninguna de esas tres evidencias.</p>
     </article>
     <nav class="pager"><a class="pg pg-prev" href="../../labs/10_dqn_reinforcement/index.html"><span class="pg-dir">← Anterior</span><span class="pg-title">🕹️ DQN para inventario con demanda real</span></a><a class="pg pg-next" href="../../labs/12_multimodal_fusion/index.html"><span class="pg-dir">Siguiente →</span><span class="pg-title">🔀 Fusión de sensores</span></a></nav>
   </main>

@@ -3,10 +3,10 @@
 
 # 🧠 Neural Network Training Labs
 
-## **31 rutas · 93 notebooks · 19 fuentes públicas reales · de la neurona en NumPy al modelo desplegado**
+## **7 módulos · 31 clases · 93 notebooks · de la intuición visual al modelo desplegado**
 
-**Laboratorio evolutivo y verificable para entrenar, validar, explicar, exportar y
-desplegar redes neuronales: de la derivada escrita a mano a CNN, RNN, transformers,
+**Curso práctico y verificable para comprender, entrenar, validar, explicar, exportar y
+desplegar redes neuronales: 31 clases independientes y progresivas, de la derivada escrita a mano a CNN, RNN, transformers,
 GAN, GNN, refuerzo, difusión y aprendizaje autosupervisado — con semillas separadas,
 sellado del `test`, model cards, registro champion/challenger, API de inferencia,
 ONNX/INT8/edge, entrenamiento distribuido y cadena de suministro firmable.**
@@ -18,7 +18,7 @@ ONNX/INT8/edge, entrenamiento distribuido y cadena de suministro firmable.**
 [![Deploy Pages](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/deploy-pages.yml/badge.svg?branch=main)](https://github.com/vladimiracunadev-create/neural-network-training-labs/actions/workflows/deploy-pages.yml)
 
 [![Versión](https://img.shields.io/badge/versión-1.0.0-orange?style=for-the-badge)](CHANGELOG.md)
-[![Rutas](https://img.shields.io/badge/rutas-31%20·%2025%20labs%20%2B%206%20avanzadas-7c5cff?style=for-the-badge)](parts/README.md)
+[![Clases](https://img.shields.io/badge/clases-31%20en%207%20módulos-22c55e?style=for-the-badge)](parts/README.md)
 [![Notebooks](https://img.shields.io/badge/notebooks-93-2e8b57?style=for-the-badge)](#-notebooks-evaluables)
 [![Nivel](https://img.shields.io/badge/nivel-neurona%20→%20despliegue-8957e5?style=for-the-badge)](docs/learning-path.md)
 [![Idioma](https://img.shields.io/badge/idioma-español-1f6feb?style=for-the-badge)](parts/README.md)
@@ -32,7 +32,7 @@ ONNX/INT8/edge, entrenamiento distribuido y cadena de suministro firmable.**
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-sitio%20vivo-222?style=flat-square&logo=githubpages&logoColor=white)](https://vladimiracunadev-create.github.io/neural-network-training-labs/)
 
 [🌐 **Sitio de estudio (vivo)**](https://vladimiracunadev-create.github.io/neural-network-training-labs/) ·
-[🧭 Ruta](docs/learning-path.md) ·
+[🧭 Programa](docs/learning-path.md) ·
 [🔬 Protocolo de experimento](docs/experiment-protocol.md) ·
 [📚 Documentación](docs/index.md) ·
 [🗄️ Datasets](docs/datasets.md) ·
@@ -43,9 +43,9 @@ ONNX/INT8/edge, entrenamiento distribuido y cadena de suministro firmable.**
 
 <br>
 
-| 🧪 Rutas | 📓 Notebooks | 🗄️ Fuentes reales | 🧰 Comandos CLI | 📖 Guías | ⚙️ Workflows |
+| 🎓 Clases | 📓 Notebooks | 🗄️ Fuentes reales | 🧰 Comandos CLI | 🧑‍🏫 Guías docentes | ⚙️ Workflows |
 |:---:|:---:|:---:|:---:|:---:|:---:|
-| **31** | **93** | **19** | **26** | **23** | **12** |
+| **31** | **93** | **19** | **26** | **31** | **12** |
 
 </div>
 
@@ -55,7 +55,7 @@ ONNX/INT8/edge, entrenamiento distribuido y cadena de suministro firmable.**
 > Este repositorio **no reemplaza** al programa general de IA: es su
 > profundización de entrenamiento profundo. Donde
 > [`artificial-intelligence-evolution-program`](https://github.com/vladimiracunadev-create/artificial-intelligence-evolution-program)
-> recorre la evolución completa del campo, aquí se baja al taller: una ruta, un
+> recorre la evolución completa del campo, aquí se baja al taller: una clase, un
 > dataset público real, un contrato de experimento y un artefacto desplegable.
 > `python-data-science-program` y `langgraph-realworld` cubren el resto de la cadena.
 
@@ -63,8 +63,8 @@ ONNX/INT8/edge, entrenamiento distribuido y cadena de suministro firmable.**
 
 | Superficie | Estado |
 |---|---|
-| Rutas | ✅ 31/31 construidas — 25 laboratorios centrales + 6 especializaciones avanzadas |
-| Notebooks | ✅ 93 archivos: 31 recorridos + 31 estudiante + 31 solución, los tres distintos entre sí, con **5 ejercicios evaluables por laboratorio** cuya solución de referencia se ejecuta en CI |
+| Clases | ✅ 31/31 construidas — 7 módulos, cada clase con identidad pedagógica y laboratorio propio |
+| Notebooks | ✅ 93 archivos: 31 clases + 31 versiones para estudiante + 31 soluciones, con **5 ejercicios evaluables por clase** cuya solución de referencia se ejecuta en CI |
 | Datasets | ✅ 31 fichas `dataset.yaml` sobre 19 fuentes públicas reales (UCI, Torchvision, Torchaudio, Hugging Face, PyG, Kaggle); **sin fallback sintético silencioso** |
 | Protocolo | ✅ `split_seed` ≠ `training_seed`, selección por `validation`, `test` sellado con `experiment.lock.json` |
 | CLI | ✅ 26 comandos: `catalog`, `dataset`, `audit`, `train`, `benchmark`, `registry`, `serve`, `export`, `supply-chain`… |
@@ -72,7 +72,7 @@ ONNX/INT8/edge, entrenamiento distribuido y cadena de suministro firmable.**
 | Servicio | ✅ API FastAPI con `/predict`, `/drift`, `/metrics` Prometheus y OpenTelemetry opcional |
 | Exportación | ✅ ONNX con verificación de paridad e INT8; ⚪ ExecuTorch opcional según toolchain |
 | Distribuido | ✅ DDP y FSDP2 vía `torchrun`; ⚪ requiere varias GPU para valer de verdad |
-| Sitio | ✅ GitHub Pages con navegación anterior/siguiente por laboratorio |
+| Sitio | ✅ GitHub Pages con navegación anterior/siguiente por clase |
 | CI | ✅ estructura, contratos de notebooks/nbgrader, `ruff`, tests sin red y auditoría SBOM + SHA-256 |
 | Entrenamientos largos y descargas | ⚪ pruebas externas marcadas aparte — **no se fingen en CI** |
 
@@ -83,11 +83,24 @@ descargas y los entrenamientos largos viven en workflows separados (`real-data-s
 `advanced-smoke`, `benchmark`, `distributed`, `edge`) precisamente para que un fallo de red
 se vea como lo que es, y no quede tapado por un dataset sintético.
 
-## 🌟 Qué hace diferente a este laboratorio
+## 🌟 Qué hace diferente a este programa
+
+### Cada clase tiene voz, pregunta y práctica propias
+
+El protocolo científico es común, pero la experiencia no es una plantilla repintada. Cada clase
+abre con una situación concreta, pide una predicción, presenta un mapa visual propio, propone una
+práctica ligada a su materia y desmonta un error conceptual frecuente. La identidad de las 31
+clases vive en [`configs/classes.yaml`](configs/classes.yaml), y cada carpeta publica además una
+guía docente independiente y un recurso visual accesible.
+
+Puedes cursarlas en secuencia o abrir una de forma aislada: cada clase declara prerrequisitos,
+recapitula el contexto mínimo y contiene teoría, notebooks, experimento, evaluación, solución,
+datos y comandos propios. La progresión ayuda, pero ninguna clase depende de archivos producidos
+por una ejecución anterior.
 
 - Enseña el **protocolo de experimento antes que la arquitectura**: sin `experiment.lock.json`, ningún resultado en `test` cuenta.
 - Separa dos aleatoriedades que casi todo el material mezcla: **la partición** (`split_seed`) y **el entrenamiento** (`training_seed`).
-- Cada ruta termina en un **artefacto verificable**: model card, contrato de inferencia, métricas con intervalos y reporte.
+- Cada clase termina en un **artefacto verificable**: model card, contrato de inferencia, métricas con intervalos y reporte.
 - Los cuadernos **no son la misma plantilla repintada**: visión mira errores por clase, texto mira atención, series hace backtesting, grafos compara GCN/GraphSAGE/GAT, generación mide colapso.
 - Los datasets se **descargan de su fuente**, con licencia declarada; una descarga fallida falla, no se disfraza.
 - No declara “producción” sin evidencia: calibración, subgrupos, deriva y latencia se miden, no se prometen.
@@ -104,7 +117,7 @@ flowchart LR
     F --> G["🔬 25–30<br/>Especializaciones<br/>LoRA · U-Net · audio · WGAN-GP · DDPM · SimCLR"]
 ```
 
-Y dentro de **cada** ruta, siempre el mismo contrato:
+Y dentro de **cada** clase, siempre el mismo contrato:
 
 ```text
 fuente pública real → descarga y licencia → train / validation / test
@@ -117,126 +130,127 @@ fuente pública real → descarga y licencia → train / validation / test
 
 <a id="laboratorios"></a>
 
-## 🗂️ Las 31 rutas, en orden
+## 🗂️ Las 31 clases, en orden
 
-> **El número es el orden.** Se estudia de la **00** a la **30**, sin saltos: la
-> navegación *anterior / siguiente* de cada laboratorio —en el Markdown, en el sitio
-> y en la página HTML local— sigue exactamente esta secuencia. Las siete partes de
+> **El número público es el orden.** Se estudia de la **clase 01** a la **clase 31**.
+> Los identificadores técnicos `00_*`–`30_*` se conservan para no romper código, comandos ni enlaces.
+> La navegación *anterior / siguiente* de Markdown, el sitio y la página HTML local sigue exactamente
+> esa secuencia. Los siete módulos de
 > abajo son tramos **contiguos** de ese mismo recorrido, no un orden alternativo.
 >
-> 🗺️ **[Índice del recorrido](parts/README.md)** — las siete partes y las 31 clases en una sola página.
-> Cada parte tiene además su propia página: [1](parts/01-fundamentos.md) ·
+> 🗺️ **[Índice del curso](parts/README.md)** — los siete módulos y las 31 clases en una sola página.
+> Cada módulo tiene además su propia página: [1](parts/01-fundamentos.md) ·
 > [2](parts/02-arquitecturas.md) · [3](parts/03-familias-especializadas.md) ·
 > [4](parts/04-entrenamiento-eficiente.md) · [5](parts/05-mecanica-fina.md) ·
 > [6](parts/06-confianza-y-despliegue.md) · [7](parts/07-especializaciones-avanzadas.md).
 
-Cada laboratorio publica cuatro documentos enlazados entre sí —
+Cada clase publica cuatro documentos enlazados entre sí —
 [`README.md`](labs/03_cnn_vision/README.md) (guía),
 [`theory.md`](labs/03_cnn_vision/theory.md) (teoría y referencias),
 [`experiments.md`](labs/03_cnn_vision/experiments.md) (plan experimental) y
 [`assessment.md`](labs/03_cnn_vision/assessment.md) (evaluación y rúbrica) —
 más sus tres cuadernos y su página `index.html` autocontenida.
 
-### 🟢 Parte 1 · Rutas 00–02 — Fundamentos: de la derivada a la primera red
+### 🟢 Módulo 1 · Clases 01–03 — Fundamentos: de la derivada a la primera red
 
-> 📄 Página de la parte: **[Parte 1 — Fundamentos: de la derivada a la primera red](parts/01-fundamentos.md)**
+> 📄 Página del módulo: **[Módulo 1 — Fundamentos: de la derivada a la primera red](parts/01-fundamentos.md)**
 
 Se construye una red desde cero antes de usar cualquier abstracción.
 **Al terminar:** entiendes qué calcula, qué deriva y qué actualiza un entrenamiento.
 
-| # | Ruta | Qué resuelve | Dataset |
+| # | Clase | Qué resuelve | Dataset |
 |---:|---|---|---|
-| 00 | [🔢 Neurona con NumPy](labs/00_numpy_neuron/README.md) | Propagación, entropía cruzada y descenso de gradiente sin autograd | Breast Cancer Wisconsin |
-| 01 | [🧩 Perceptrón con PyTorch](labs/01_pytorch_perceptron/README.md) | Tensores, autograd, optimizadores y clasificador lineal | Banknote Authentication |
-| 02 | [🌀 MLP multiclase](labs/02_mlp_nonlinear/README.md) | Capas densas, activaciones y la primera frontera no lineal | Dry Bean |
+| 01 | [🔢 Neurona con NumPy](labs/00_numpy_neuron/README.md) | Propagación, entropía cruzada y descenso de gradiente sin autograd | Breast Cancer Wisconsin |
+| 02 | [🧩 Perceptrón con PyTorch](labs/01_pytorch_perceptron/README.md) | Tensores, autograd, optimizadores y clasificador lineal | Banknote Authentication |
+| 03 | [🌀 MLP multiclase](labs/02_mlp_nonlinear/README.md) | Capas densas, activaciones y la primera frontera no lineal | Dry Bean |
 
-### 🔵 Parte 2 · Rutas 03–07 — Arquitecturas según la forma del dato
+### 🔵 Módulo 2 · Clases 04–08 — Arquitecturas según la forma del dato
 
-> 📄 Página de la parte: **[Parte 2 — Arquitecturas según la forma del dato](parts/02-arquitecturas.md)**
+> 📄 Página del módulo: **[Módulo 2 — Arquitecturas según la forma del dato](parts/02-arquitecturas.md)**
 
 Cada estructura —imagen, secuencia, serie, señal sin etiqueta, texto— pide su propio
 sesgo inductivo. **Al terminar:** eliges arquitectura por la forma del problema, no por la moda.
 
-| # | Ruta | Qué resuelve | Dataset |
+| # | Clase | Qué resuelve | Dataset |
 |---:|---|---|---|
-| 03 | [🖼️ CNN para visión](labs/03_cnn_vision/README.md) | Convolución, pooling y análisis de errores por clase | CIFAR-10 |
-| 04 | [🔁 RNN para texto](labs/04_rnn_sequences/README.md) | Embeddings, padding y recurrencia sobre sentimiento | IMDb |
-| 05 | [📈 LSTM para series temporales](labs/05_lstm_time_series/README.md) | Memoria larga y pronóstico que respeta el orden temporal | Seoul Bike |
-| 06 | [🧬 Autoencoder para fraude](labs/06_autoencoder_anomaly/README.md) | Anomalías por error de reconstrucción, sin etiquetas de fraude | Credit Card Fraud |
-| 07 | [🔭 Transformer para noticias](labs/07_transformer_attention/README.md) | Atención multi-cabeza implementada desde cero | AG News |
+| 04 | [🖼️ CNN para visión](labs/03_cnn_vision/README.md) | Convolución, pooling y análisis de errores por clase | CIFAR-10 |
+| 05 | [🔁 RNN para texto](labs/04_rnn_sequences/README.md) | Embeddings, padding y recurrencia sobre sentimiento | IMDb |
+| 06 | [📈 LSTM para series temporales](labs/05_lstm_time_series/README.md) | Memoria larga y pronóstico que respeta el orden temporal | Seoul Bike |
+| 07 | [🧬 Autoencoder para fraude](labs/06_autoencoder_anomaly/README.md) | Anomalías por error de reconstrucción, sin etiquetas de fraude | Credit Card Fraud |
+| 08 | [🔭 Transformer para noticias](labs/07_transformer_attention/README.md) | Atención multi-cabeza implementada desde cero | AG News |
 
-### 🟣 Parte 3 · Rutas 08–12 — Familias especializadas: generar, decidir, relacionar
+### 🟣 Módulo 3 · Clases 09–13 — Familias especializadas: generar, decidir, relacionar
 
-> 📄 Página de la parte: **[Parte 3 — Familias especializadas: generar, decidir, relacionar](parts/03-familias-especializadas.md)**
+> 📄 Página del módulo: **[Módulo 3 — Familias especializadas: generar, decidir, relacionar](parts/03-familias-especializadas.md)**
 
 Tres regímenes donde una métrica de acierto ya no cuenta toda la historia, más las
 dos formas de reutilizar y combinar información. **Al terminar:** evalúas sistemas
 sin una única etiqueta correcta.
 
-| # | Ruta | Qué resuelve | Dataset |
+| # | Clase | Qué resuelve | Dataset |
 |---:|---|---|---|
-| 08 | [🎨 GAN generativa](labs/08_gan_generation/README.md) | Juego adversarial, diversidad y colapso de modo | Fashion-MNIST |
-| 09 | [🕸️ GNN sobre red de citas](labs/09_gnn_graphs/README.md) | GCN, GraphSAGE y GAT sobre texto más enlaces | Cora |
-| 10 | [🕹️ DQN para inventario](labs/10_dqn_reinforcement/README.md) | Double Dueling DQN sobre demanda real observada | Online Retail |
-| 11 | [♻️ Transfer learning](labs/11_transfer_learning/README.md) | Extracción de features vs. fine-tuning vs. desde cero | Oxford-IIIT Pet |
-| 12 | [🔀 Fusión de sensores](labs/12_multimodal_fusion/README.md) | Combinar acelerómetro y giroscopio para reconocer actividad | UCI HAR |
+| 09 | [🎨 GAN generativa](labs/08_gan_generation/README.md) | Juego adversarial, diversidad y colapso de modo | Fashion-MNIST |
+| 10 | [🕸️ GNN sobre red de citas](labs/09_gnn_graphs/README.md) | GCN, GraphSAGE y GAT sobre texto más enlaces | Cora |
+| 11 | [🕹️ DQN para inventario](labs/10_dqn_reinforcement/README.md) | Double Dueling DQN sobre demanda real observada | Online Retail |
+| 12 | [♻️ Transfer learning](labs/11_transfer_learning/README.md) | Extracción de features vs. fine-tuning vs. desde cero | Oxford-IIIT Pet |
+| 13 | [🔀 Fusión de sensores](labs/12_multimodal_fusion/README.md) | Combinar acelerómetro y giroscopio para reconocer actividad | UCI HAR |
 
-### 🟠 Parte 4 · Rutas 13–15 — Entrenar mejor, más barato y sin centralizar datos
+### 🟠 Módulo 4 · Clases 14–16 — Entrenar mejor, más barato y sin centralizar datos
 
-> 📄 Página de la parte: **[Parte 4 — Entrenar mejor, más barato y sin centralizar datos](parts/04-entrenamiento-eficiente.md)**
+> 📄 Página del módulo: **[Módulo 4 — Entrenar mejor, más barato y sin centralizar datos](parts/04-entrenamiento-eficiente.md)**
 
 **Al terminar:** mejoras un modelo sin tocar `test` y sabes qué cuesta cada mejora.
 
-| # | Ruta | Qué resuelve | Dataset |
+| # | Clase | Qué resuelve | Dataset |
 |---:|---|---|---|
-| 13 | [🎛️ Búsqueda de hiperparámetros](labs/13_hyperparameter_search/README.md) | Profundidad, ancho, dropout y learning rate sin filtrar test | Adult Census |
-| 14 | [⚗️ Destilación de conocimiento](labs/14_knowledge_distillation/README.md) | Profesora profunda → estudiante compacta y desplegable | CIFAR-10 |
-| 15 | [🌐 Aprendizaje federado](labs/15_federated_learning/README.md) | FedAvg con participantes reales como clientes naturales | UCI HAR (por sujeto) |
+| 14 | [🎛️ Búsqueda de hiperparámetros](labs/13_hyperparameter_search/README.md) | Profundidad, ancho, dropout y learning rate sin filtrar test | Adult Census |
+| 15 | [⚗️ Destilación de conocimiento](labs/14_knowledge_distillation/README.md) | Profesora profunda → estudiante compacta y desplegable | CIFAR-10 |
+| 16 | [🌐 Aprendizaje federado](labs/15_federated_learning/README.md) | FedAvg con participantes reales como clientes naturales | UCI HAR (por sujeto) |
 
-### 🔴 Parte 5 · Rutas 16–20 — La mecánica fina, ahora en profundidad
+### 🔴 Módulo 5 · Clases 17–21 — La mecánica fina, ahora en profundidad
 
-> 📄 Página de la parte: **[Parte 5 — La mecánica fina, ahora en profundidad](parts/05-mecanica-fina.md)**
+> 📄 Página del módulo: **[Módulo 5 — La mecánica fina, ahora en profundidad](parts/05-mecanica-fina.md)**
 
 Segunda pasada por el motor, ya con la experiencia de haber entrenado modelos reales:
-lo que en la ruta 00 era una fórmula, aquí es una decisión de diseño medible.
+lo que en la clase 01 era una fórmula, aquí es una decisión de diseño medible.
 **Al terminar:** explicas *por qué* un entrenamiento converge, se estanca o sobreajusta.
 
-| # | Ruta | Qué resuelve | Dataset |
+| # | Clase | Qué resuelve | Dataset |
 |---:|---|---|---|
-| 16 | [∂ Backpropagation manual](labs/16_backpropagation_manual/README.md) | Derivar y programar la retropropagación paso a paso | Iris |
-| 17 | [📐 Activaciones y pérdidas](labs/17_activations_and_losses/README.md) | ReLU, GELU y Tanh; pérdidas para clases desbalanceadas | Wine Quality |
-| 18 | [⚙️ Optimizadores y schedulers](labs/18_optimizers_and_schedulers/README.md) | SGD, Momentum, Adam y planificación de la tasa | California Housing |
-| 19 | [🛡️ Regularización](labs/19_regularization_dropout_batchnorm/README.md) | Dropout, weight decay y batch normalization, medidos | Fashion-MNIST |
-| 20 | [🔄 Aumento de datos](labs/20_data_augmentation/README.md) | Recortes, volteos y perturbaciones sobre imágenes reales | CIFAR-10 |
+| 17 | [∂ Backpropagation manual](labs/16_backpropagation_manual/README.md) | Derivar y programar la retropropagación paso a paso | Iris |
+| 18 | [📐 Activaciones y pérdidas](labs/17_activations_and_losses/README.md) | ReLU, GELU y Tanh; pérdidas para clases desbalanceadas | Wine Quality |
+| 19 | [⚙️ Optimizadores y schedulers](labs/18_optimizers_and_schedulers/README.md) | SGD, Momentum, Adam y planificación de la tasa | California Housing |
+| 20 | [🛡️ Regularización](labs/19_regularization_dropout_batchnorm/README.md) | Dropout, weight decay y batch normalization, medidos | Fashion-MNIST |
+| 21 | [🔄 Aumento de datos](labs/20_data_augmentation/README.md) | Recortes, volteos y perturbaciones sobre imágenes reales | CIFAR-10 |
 
-### ⚫ Parte 6 · Rutas 21–24 — Confiar en el modelo y sacarlo del cuaderno
+### ⚫ Módulo 6 · Clases 22–25 — Confiar en el modelo y sacarlo del cuaderno
 
-> 📄 Página de la parte: **[Parte 6 — Confiar en el modelo y sacarlo del cuaderno](parts/06-confianza-y-despliegue.md)**
+> 📄 Página del módulo: **[Módulo 6 — Confiar en el modelo y sacarlo del cuaderno](parts/06-confianza-y-despliegue.md)**
 
 **Al terminar:** respondes «¿por qué predijo esto?», «¿cuánto te fías?» y «¿cuánto tarda en producción?».
 
-| # | Ruta | Qué resuelve | Dataset |
+| # | Clase | Qué resuelve | Dataset |
 |---:|---|---|---|
-| 21 | [🔍 Explicabilidad](labs/21_explainability/README.md) | Integrated Gradients e importancia por permutación | Adult Census |
-| 22 | [🎯 Incertidumbre y calibración](labs/22_uncertainty_calibration/README.md) | Brier score, ECE y temperature scaling | Breast Cancer Wisconsin |
-| 23 | [📦 Exportación e inferencia](labs/23_model_export_and_inference/README.md) | ONNX, paridad de salidas y latencia por lotes | CIFAR-10 |
-| 24 | [🏁 Proyecto final: churn](labs/24_capstone_real_project/README.md) | Extremo a extremo, con documentación, evaluación y despliegue | Iranian Churn |
+| 22 | [🔍 Explicabilidad](labs/21_explainability/README.md) | Integrated Gradients e importancia por permutación | Adult Census |
+| 23 | [🎯 Incertidumbre y calibración](labs/22_uncertainty_calibration/README.md) | Brier score, ECE y temperature scaling | Breast Cancer Wisconsin |
+| 24 | [📦 Exportación e inferencia](labs/23_model_export_and_inference/README.md) | ONNX, paridad de salidas y latencia por lotes | CIFAR-10 |
+| 25 | [🏁 Proyecto final: churn](labs/24_capstone_real_project/README.md) | Extremo a extremo, con documentación, evaluación y despliegue | Iranian Churn |
 
-### 🔬 Parte 7 · Rutas 25–30 — Especializaciones avanzadas
+### 🔬 Módulo 7 · Clases 26–31 — Especializaciones avanzadas
 
-> 📄 Página de la parte: **[Parte 7 — Especializaciones avanzadas](parts/07-especializaciones-avanzadas.md)**
+> 📄 Página del módulo: **[Módulo 7 — Especializaciones avanzadas](parts/07-especializaciones-avanzadas.md)**
 
 Mismo contrato de semillas, selección por validación y sellado del test, con
 arquitecturas de frontera y pesos preentrenados descargados de su proveedor.
 
-| # | Ruta | Qué resuelve | Dataset |
+| # | Clase | Qué resuelve | Dataset |
 |---:|---|---|---|
-| 25 | [🔧 Fine-tuning eficiente](advanced_labs/25_transformer_finetuning/README.md) | DistilBERT completo frente a LoRA | AG News |
-| 26 | [🧷 Segmentación U-Net](advanced_labs/26_segmentation_unet/README.md) | Mascota, fondo y borde, píxel a píxel | Oxford-IIIT Pet (seg.) |
-| 27 | [🎙️ Audio SpeechCommands](advanced_labs/27_audio_speechcommands/README.md) | Comandos reales vía espectrogramas log-mel | SpeechCommands v0.02 |
-| 28 | [🖌️ WGAN-GP](advanced_labs/28_wgan_gp/README.md) | Estabilidad generativa con penalización de gradiente | Fashion-MNIST |
-| 29 | [🌫️ Difusión DDPM](advanced_labs/29_diffusion_ddpm/README.md) | Predicción de ruido y muestreo iterativo | Fashion-MNIST |
-| 30 | [🪞 SimCLR autosupervisado](advanced_labs/30_self_supervised_simclr/README.md) | Preentrenamiento contrastivo y linear probe | CIFAR-10 |
+| 26 | [🔧 Fine-tuning eficiente](advanced_labs/25_transformer_finetuning/README.md) | DistilBERT completo frente a LoRA | AG News |
+| 27 | [🧷 Segmentación U-Net](advanced_labs/26_segmentation_unet/README.md) | Mascota, fondo y borde, píxel a píxel | Oxford-IIIT Pet (seg.) |
+| 28 | [🎙️ Audio SpeechCommands](advanced_labs/27_audio_speechcommands/README.md) | Comandos reales vía espectrogramas log-mel | SpeechCommands v0.02 |
+| 29 | [🖌️ WGAN-GP](advanced_labs/28_wgan_gp/README.md) | Estabilidad generativa con penalización de gradiente | Fashion-MNIST |
+| 30 | [🌫️ Difusión DDPM](advanced_labs/29_diffusion_ddpm/README.md) | Predicción de ruido y muestreo iterativo | Fashion-MNIST |
+| 31 | [🪞 SimCLR autosupervisado](advanced_labs/30_self_supervised_simclr/README.md) | Preentrenamiento contrastivo y linear probe | CIFAR-10 |
 
 ```bash
 neural-labs catalog
@@ -265,7 +279,7 @@ pip install -e ".[full,dev,serving,mlops,data-versioning]"
 
 Se recomienda Python 3.11 o 3.12 para la mayor compatibilidad de extras científicos.
 
-## 📦 Contrato de un laboratorio
+## 📦 Estructura práctica de una clase
 
 ```text
 labs/03_cnn_vision/
@@ -284,26 +298,27 @@ labs/03_cnn_vision/
 ```
 
 Los cuatro documentos están **enlazados entre sí y con el recorrido**: cada uno abre con
-su posición (`Ruta 4 / 31`), los saltos al laboratorio anterior y siguiente, el vínculo al
+su posición (`Clase 04 / 31`), los saltos a la clase anterior y siguiente, el vínculo al
 índice y una barra con los otros tres documentos; y cierra con la tabla de navegación,
 los cuadernos y las salidas al sitio de estudio. La misma navegación existe en la página
 `index.html`, que además funciona sin conexión.
 
-Por encima de la clase está la **parte**: siete páginas que agrupan tramos contiguos del
-recorrido, cada una con su secuencia, su tabla de clases y sus saltos a la parte anterior y
-siguiente. Así se navega portada → parte → clase → clase siguiente **sin ver nunca el árbol
+Por encima de la clase está el **módulo**: siete páginas que agrupan tramos contiguos del
+recorrido, cada una con su secuencia, su tabla de clases y sus saltos al módulo anterior y
+siguiente. Así se navega portada → módulo → clase → clase siguiente **sin ver nunca el árbol
 de carpetas**: todos los enlaces apuntan a archivos, no a directorios.
 
 ```text
-parts/README.md                      ← índice: 7 partes y las 31 clases
-parts/02-arquitecturas.md · .html    ← una página por parte, en ambos formatos
+parts/README.md                      ← índice: 7 módulos y las 31 clases
+parts/02-arquitecturas.md · .html    ← una página por módulo, en ambos formatos
 labs/03_cnn_vision/README.md         ← la clase
 ```
 
 Las tres superficies se generan desde la misma fuente y se verifican en CI:
 
 ```bash
-python scripts/build_lab_docs.py       # 124 documentos + 7 partes + índice
+python scripts/build_class_materials.py # identidad, guía docente y mapa de cada clase
+python scripts/build_lab_docs.py        # documentos de 31 clases + 7 módulos + índice
 python scripts/generate_lab_html.py    # 39 páginas HTML autocontenidas
 python scripts/generate_site.py        # sitio de GitHub Pages en site/
 ```
@@ -424,7 +439,7 @@ publicar procedencia. Ver [`docs/supply-chain-security.md`](docs/supply-chain-se
 
 ## 📚 Fuentes y libros de referencia
 
-El contenido no sale de una plantilla: cada laboratorio ancla su teoría en la literatura de
+El contenido no sale de una plantilla: cada clase ancla su teoría en la literatura de
 referencia del área y en los papers seminales de su arquitectura. Las referencias apuntan a
 las obras; **no se reproduce su contenido, la redacción es original**.
 
@@ -450,13 +465,13 @@ Lo que no resuelve se marca `pendiente` con su motivo: no se elimina ni se relle
 <!-- fuentes:inicio -->
 <!-- Generado por `python scripts/verify-sources --sync`. No editar a mano. -->
 
-Las 31 rutas del programa citan **113 obras distintas** entre libros, artículos, documentación y datasets. Las 113 están en el registro: **cobertura del 100 %**.
+Las 31 clases del programa citan **113 obras distintas** entre libros, artículos, documentación y datasets. Las 113 están en el registro: **cobertura del 100 %**.
 
 [`sources/bibliography.json`](sources/bibliography.json) las describe en 111 entradas —19 datasets, 76 artículos, 13 libros y 3 documentos oficiales—, de las que **105 tienen un localizador que resuelve** y 6 quedan pendientes con su motivo escrito. Los 19 datasets declaran licencia, y 18 de ellos traen además el SHA-256 de sus artefactos.
 
 ### Datasets y licencias
 
-| Dataset | Procedencia | Licencia | Versión | SHA-256 | Rutas |
+| Dataset | Procedencia | Licencia | Versión | SHA-256 | Clases |
 |---|---|---|---|:---:|---:|
 | [Adult](https://archive.ics.uci.edu/dataset/2/adult) | UCI Machine Learning Repository | CC BY 4.0 | ficha UCI 2 | ✅ 1 | 2 |
 | [AG News Topic Classification Dataset](https://huggingface.co/datasets/fancyzhx/ag_news) | Distribuido por Hugging Face Datasets | `unknown` | rev. eb185aa | ✅ 2 | 2 |
@@ -508,7 +523,7 @@ Las cifras de esta sección las produce `python scripts/verify-sources --sync`; 
 
 ### ✅ Lo que sí es
 
-- 🧪 un **taller completo de entrenamiento**: 31 rutas de la neurona en NumPy a difusión y SimCLR, cada una con teoría, laboratorio, evaluación y notebook;
+- 🧪 un **taller completo de entrenamiento**: 31 clases de la neurona en NumPy a difusión y SimCLR, cada una con teoría, laboratorio, evaluación y notebook;
 - 🔬 material **ejecutable y verificable**: 93 notebooks, 19 fuentes públicas reales y un contrato de experimento que se sella antes de mirar `test`;
 - 🚢 el **ciclo entero de ingeniería**: model card, registro champion/challenger, API de inferencia, ONNX/INT8, distribuido y SBOM firmable;
 - 📖 contenido **abierto y en español**, legible en GitHub o en un sitio de estudio con navegación anterior/siguiente;
@@ -531,7 +546,7 @@ Las cifras de esta sección las produce `python scripts/verify-sources --sync`; 
 
 ## 💡 Idea fuerza
 
-> El valor de este laboratorio no está en acumular arquitecturas, sino en
+> El valor de este programa no está en acumular arquitecturas, sino en
 > **entrenar con un protocolo que resista ser auditado**: partición sellada,
 > validación que decide, test que se abre una sola vez y un artefacto que declara
 > lo que sabe y lo que no. Una métrica sin `experiment.lock.json` no es un
@@ -576,7 +591,7 @@ Empieza por [`docs/study-site.md`](docs/study-site.md),
 
 ## 🧭 Alcance responsable
 
-Los laboratorios sirven para aprendizaje, investigación y prototipos. **No** convierten
+Las clases y sus laboratorios sirven para aprendizaje, investigación y prototipos. **No** convierten
 automáticamente un modelo en una solución apta para decisiones médicas, financieras,
 laborales o de seguridad. Cada despliegue debe revisar licencias, privacidad,
 representatividad, calibración, deriva, subgrupos, seguridad y supervisión humana.
@@ -595,7 +610,7 @@ y servicios externos conservan sus propias licencias y términos.
 
 [⬆️ Empezar por la neurona en NumPy](labs/00_numpy_neuron/README.md) ·
 [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/) ·
-[🧭 Ruta de aprendizaje](docs/learning-path.md) ·
+[🧭 Programa de clases](docs/learning-path.md) ·
 [🔬 Protocolo de experimento](docs/experiment-protocol.md) ·
 [🗺️ Roadmap](ROADMAP.md)
 

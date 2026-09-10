@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 07_transformer_attention
+schema_version: '3.0'
 title: Transformer para noticias
 level: avanzado
 estimated_hours: 8
@@ -29,3 +28,18 @@ dataset:
   source: Hugging Face
   reference: https://huggingface.co/datasets/fancyzhx/ag_news
   license: Consultar dataset card
+id: 07_transformer_attention
+class_number: 8
+module_number: 2
+module_title: Arquitecturas
+essential_question: ¿Cómo decide cada palabra a qué otras palabras prestar atención?
+opening_hook: En una noticia, una palabra cambia de significado según las palabras que la rodean. La atención construye ese contexto de forma directa.
+class_practice: Calcular atención escalada, aplicar máscaras y contrastar mapas de atención con cambios reales en la predicción.
+visual_evidence:
+  title: Preguntar, comparar y combinar contexto
+  asset: assets/class-map.svg
+  steps:
+  - Query y keys
+  - Pesos de atención
+  - Contexto combinado
+common_misconception: Un mapa de atención atractivo no es por sí solo una explicación causal de la predicción.

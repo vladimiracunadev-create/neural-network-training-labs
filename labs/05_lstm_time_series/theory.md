@@ -1,9 +1,9 @@
 # Teoría — LSTM para series temporales
 
 <!-- nav-top -->
-> 🧭 **Ruta 6 / 31** · 🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
+> 🧭 **Clase 06 / 31** · 🔵 [Módulo 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
 >
-> [⬅️ 🔁 RNN para texto](../../labs/04_rnn_sequences/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🧬 Autoencoder para fraude ➡️](../../labs/06_autoencoder_anomaly/theory.md)
+> [⬅️ 🔁 RNN para texto](../../labs/04_rnn_sequences/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [🧬 Autoencoder para fraude ➡️](../../labs/06_autoencoder_anomaly/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -46,7 +46,7 @@ La formulación debe conectarse con cuatro elementos: representación de entrada
 
 ### Por qué las puertas resuelven el desvanecimiento
 
-La ruta 04 dejó el diagnóstico: el gradiente de una RNN simple se multiplica por W_hᵀ·diag(σ′) en cada paso, y ese producto se apaga exponencialmente. La LSTM no lo mitiga, **cambia la operación**, y ahí está toda su ventaja.
+La clase 05 dejó el diagnóstico: el gradiente de una RNN simple se multiplica por W_hᵀ·diag(σ′) en cada paso, y ese producto se apaga exponencialmente. La LSTM no lo mitiga, **cambia la operación**, y ahí está toda su ventaja.
 
 Derivando la actualización del estado de celda cₜ = fₜ ⊙ cₜ₋₁ + iₜ ⊙ c̃ₜ respecto del estado anterior:
 
@@ -54,7 +54,7 @@ Derivando la actualización del estado de celda cₜ = fₜ ⊙ cₜ₋₁ + i�
 
 de modo que el gradiente que atraviesa k pasos por la vía de la celda se multiplica por Π fₜ, un **producto de escalares entre 0 y 1**, y no por un producto de matrices con activaciones saturantes. La diferencia es cualitativa: cuando la puerta de olvido se mantiene cerca de 1 —el modelo ha decidido conservar esa memoria—, el factor es cerca de 1 y el gradiente **atraviesa cientos de pasos casi intacto**. Ese camino se conoce como *carrusel de error constante*, y es lo que permite aprender dependencias largas.
 
-Obsérvese la estructura: la actualización es **aditiva**, cₜ = (algo)·cₜ₋₁ + (algo), mientras que en la RNN simple era completamente multiplicativa, hₜ = tanh(W·hₜ₋₁ + …). Es la misma idea que reaparece en las conexiones residuales de la ruta 03 y en los atajos de la 07: dejar un camino donde la señal se suma en vez de transformarse es lo que mantiene vivo el gradiente. Y aún así la LSTM no es inmune —si las puertas de olvido se cierran, la memoria y su gradiente se pierden—: la diferencia es que ahora eso es una **decisión aprendida** y no una fatalidad de la arquitectura.
+Obsérvese la estructura: la actualización es **aditiva**, cₜ = (algo)·cₜ₋₁ + (algo), mientras que en la RNN simple era completamente multiplicativa, hₜ = tanh(W·hₜ₋₁ + …). Es la misma idea que reaparece en las conexiones residuales de la clase 04 y en los atajos de la 07: dejar un camino donde la señal se suma en vez de transformarse es lo que mantiene vivo el gradiente. Y aún así la LSTM no es inmune —si las puertas de olvido se cierran, la memoria y su gradiente se pierden—: la diferencia es que ahora eso es una **decisión aprendida** y no una fatalidad de la arquitectura.
 
 De ahí una recomendación práctica bien establecida: inicializar el sesgo de la puerta de olvido en un valor positivo (típicamente 1). Con b_f = 1, la sigmoide arranca en σ(1) ≈ 0,73, así que la red empieza **conservando** memoria por defecto y aprende luego a olvidar. Con b_f = 0 arranca en 0,5 y el gradiente ya se reduce a la mitad por paso desde la primera época, justo cuando aún no ha aprendido nada que valga la pena conservar.
 
@@ -111,11 +111,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) | [Las 31 rutas](../../parts/README.md) | [🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) |
+| [🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) | [Las 31 clases](../../parts/README.md) | [🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/05_lstm_time_series/index.html) · [🖥️ Página HTML local](index.html)
+🔵 [Módulo 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/05_lstm_time_series/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

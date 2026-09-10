@@ -15,3 +15,23 @@ deliverables:
 - reporte experimental
 - model card
 dataset: ag_news
+schema_version: '3.0'
+class_number: 26
+module_number: 7
+module_title: Especializaciones avanzadas
+essential_question: ¿Cuánta adaptación necesita un transformer para una tarea nueva?
+opening_hook: 'LoRA modifica una fracción pequeña de los parámetros y plantea una pregunta medible: cuánto rendimiento se conserva por cada recurso ahorrado.'
+class_practice: Comparar fine-tuning completo y LoRA con igual partición y reportar parámetros, memoria, latencia y macro-F1.
+visual_evidence:
+  title: Adaptar poco sin aprender poco
+  asset: assets/class-map.svg
+  steps:
+  - Pesos preentrenados
+  - Adaptadores de bajo rango
+  - Comparación costo–calidad
+common_misconception: Entrenar menos parámetros no garantiza menor latencia de inferencia; el ahorro principal puede estar solo en entrenamiento y almacenamiento.
+estimated_hours: 8
+success_criteria:
+- responde la pregunta esencial con evidencia de la ejecución
+- interpreta la visualización propia de la clase
+- distingue resultados observados de supuestos

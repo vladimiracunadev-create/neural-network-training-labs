@@ -1,24 +1,38 @@
 # Difusión DDPM sobre Fashion-MNIST
 
 <!-- nav-top -->
-> 🧭 **Ruta 30 / 31** · 🔬 [Parte 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md)
+> 🧭 **Clase 30 / 31** · 🔬 [Módulo 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md)
 >
-> [⬅️ 🖌️ WGAN-GP sobre Fashion-MNIST](../../advanced_labs/28_wgan_gp/README.md) · [🏠 Índice de rutas](../../parts/README.md) · [🪞 Aprendizaje autosupervisado SimCLR ➡️](../../advanced_labs/30_self_supervised_simclr/README.md)
+> [⬅️ 🖌️ WGAN-GP sobre Fashion-MNIST](../../advanced_labs/28_wgan_gp/README.md) · [🏠 Índice de clases](../../parts/README.md) · [🪞 Aprendizaje autosupervisado SimCLR ➡️](../../advanced_labs/30_self_supervised_simclr/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+Si añadimos ruido en pasos pequeños conocemos exactamente la corrupción; la red aprende a estimar qué ruido retirar en cada instante.
+
+> **Pregunta esencial:** ¿Cómo aprende un modelo a invertir un proceso que destruye gradualmente la imagen?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![Destruir de forma conocida para aprender a reconstruir](assets/class-map.svg)
+
+*Mapa de esta clase: Destruir de forma conocida para aprender a reconstruir. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Aprender predicción de ruido y muestreo iterativo sobre imágenes reales.
 
-Es la **ruta 30 de 31** del recorrido y pertenece a 🔬 la parte 7, *Especializaciones avanzadas*. Llegas desde **WGAN-GP sobre Fashion-MNIST** y lo que hagas aquí lo da por supuesto **Aprendizaje autosupervisado SimCLR**.
+**Práctica propia de esta clase:** Visualizar la cadena directa e inversa y comparar calidad y latencia al cambiar pasos y cronograma.
 
-Trabajarás con el dataset **`fashion_mnist`** (Torchvision / Zalando Research, licencia: MIT para código; consultar dataset), y tendrás que superar la línea base **Autoencoder generativo simple**, decidiendo con la métrica `noise_mse` medida sobre `validation`. Nivel avanzado.
+Es la **clase 30 de 31** del programa y pertenece a 🔬 el módulo 7, *Especializaciones avanzadas*. Llegas desde **WGAN-GP sobre Fashion-MNIST** y lo que hagas aquí lo da por supuesto **Aprendizaje autosupervisado SimCLR**.
+
+Trabajarás con el dataset **`fashion_mnist`** (Torchvision / Zalando Research, licencia: MIT para código; consultar dataset), y tendrás que superar la línea base **Autoencoder generativo simple**, decidiendo con la métrica `noise_mse` medida sobre `validation`. Nivel avanzado, unas **8 horas** de dedicación.
 
 **Qué recibe el modelo como entrada:** imágenes Fashion-MNIST normalizadas.
 
-**Lo que conviene traer resuelto de las rutas anteriores:** CNN, probabilidad, modelos generativos.
+**Lo que conviene traer resuelto de las clases anteriores:** CNN, probabilidad, modelos generativos.
 
 **Al terminar deberías ser capaz de:**
 
@@ -26,7 +40,11 @@ Trabajarás con el dataset **`fashion_mnist`** (Torchvision / Zalando Research, 
 - Interpretar noise_mse, sample_diversity
 - Aplicar sellado de test y reproducibilidad
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> Menor error de predicción de ruido no garantiza automáticamente muestras perceptualmente mejores.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
@@ -36,7 +54,7 @@ Las dos rutas generativas anteriores atacan el problema de frente: una GAN apren
 
 El razonamiento es este. Destruir una imagen es trivial: se le añade un poco de ruido gaussiano, y repitiendo el gesto mil veces queda ruido puro. Cada paso individual de esa destrucción es tan pequeño que **invertirlo también es fácil**: dada una imagen apenas ruidosa, quitarle ese poco de ruido es un problema de regresión sencillo, no un problema creativo. Y si se sabe invertir cada paso, se sabe invertir la cadena entera: se parte de ruido puro y se deshace la destrucción hasta llegar a una imagen. Generar deja de ser un salto y pasa a ser un descenso gradual.
 
-Eso cambia la naturaleza del entrenamiento por completo. No hay dos redes compitiendo, no hay equilibrio que mantener, no hay colapso de modos: hay **una sola red y un error cuadrático medio**. Se toma una imagen real, se elige un paso al azar, se la corrompe con un ruido conocido, y se entrena la red a adivinar exactamente ese ruido. Es supervisión pura, con la etiqueta generada por uno mismo, y por eso el entrenamiento es tan estable comparado con el de la ruta 28.
+Eso cambia la naturaleza del entrenamiento por completo. No hay dos redes compitiendo, no hay equilibrio que mantener, no hay colapso de modos: hay **una sola red y un error cuadrático medio**. Se toma una imagen real, se elige un paso al azar, se la corrompe con un ruido conocido, y se entrena la red a adivinar exactamente ese ruido. Es supervisión pura, con la etiqueta generada por uno mismo, y por eso el entrenamiento es tan estable comparado con el de la clase 29.
 
 El precio aparece en el otro extremo. Una GAN genera con una sola pasada por el generador; la difusión necesita recorrer la cadena entera, es decir **cientos de evaluaciones de la red por muestra**. Esa asimetría —entrenamiento estable y barato por paso, muestreo caro— es la característica que define a la familia, y es lo que este laboratorio mide de forma explícita en la latencia de muestreo.
 
@@ -110,21 +128,21 @@ Cadena de ruido, denoising, cuadrícula de muestras y costo por pasos. La cadena
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `noise_mse`, `sample_diversity`, `sampling_latency`, `reconstruction_proxy`. De todas ellas, la que **decide** qué modelo se conserva es `noise_mse`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `noise_mse`, `sample_diversity`, `sampling_latency`, `reconstruction_proxy`. De todas ellas, la que **decide** qué modelo se conserva es `noise_mse`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (10 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **8 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 23 celdas (10 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **8 ejercicios evaluables** (38 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -174,7 +192,7 @@ print(resultado["run_dir"])
 print(resultado["metrics"])
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -202,7 +220,7 @@ neural-labs train-advanced --track 29_diffusion_ddpm --quick
 
 **Qué ocurre.** Se entrena el modelo completo conservando el checkpoint con el mejor valor de `noise_mse` en validación, y se sella el experimento antes de evaluar `test`.
 
-**Por qué.** Igual que en las rutas centrales: `validation` decide, `test` solo confirma, y el sello deja por escrito qué se había decidido antes de mirar.
+**Por qué.** Igual que en las clases centrales: `validation` decide, `test` solo confirma, y el sello deja por escrito qué se había decidido antes de mirar.
 
 ```bash
 neural-labs train-advanced --track 29_diffusion_ddpm --split-seed 42 --training-seed 43
@@ -255,6 +273,12 @@ El modelo pequeño sirve para estudio; no debe extrapolarse a generación fotogr
 
 ## ✅ Antes de darlo por terminado
 
+La clase está aprobada cuando se cumplen estos criterios:
+
+- [ ] responde la pregunta esencial con evidencia de la ejecución
+- [ ] interpreta la visualización propia de la clase
+- [ ] distingue resultados observados de supuestos
+
 Y cuando tienes estos entregables:
 
 - [ ] notebook ejecutado
@@ -292,6 +316,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -309,11 +334,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🖌️ WGAN-GP sobre Fashion-MNIST](../../advanced_labs/28_wgan_gp/README.md) | [Las 31 rutas](../../parts/README.md) | [🪞 Aprendizaje autosupervisado SimCLR](../../advanced_labs/30_self_supervised_simclr/README.md) |
+| [🖌️ WGAN-GP sobre Fashion-MNIST](../../advanced_labs/28_wgan_gp/README.md) | [Las 31 clases](../../parts/README.md) | [🪞 Aprendizaje autosupervisado SimCLR](../../advanced_labs/30_self_supervised_simclr/README.md) |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔬 [Parte 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/29_diffusion_ddpm/index.html) · [🖥️ Página HTML local](index.html)
+🔬 [Módulo 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/29_diffusion_ddpm/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

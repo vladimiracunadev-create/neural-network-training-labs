@@ -1,9 +1,9 @@
 # Teoría — Regularización
 
 <!-- nav-top -->
-> 🧭 **Ruta 20 / 31** · 🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md)
+> 🧭 **Clase 20 / 31** · 🔴 [Módulo 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md)
 >
-> [⬅️ ⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🔄 Aumento de datos ➡️](../../labs/20_data_augmentation/theory.md)
+> [⬅️ ⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [🔄 Aumento de datos ➡️](../../labs/20_data_augmentation/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -40,7 +40,7 @@ log p(θ | D) = log p(D | θ) + log p(θ) + const,
 
 y con p(θ) = 𝒩(0, σ²I), el segundo término es −‖θ‖²/(2σ²), es decir, el término L2 con λ = 1/σ². La lectura es que regularizar equivale a declarar una creencia previa: **los pesos pequeños son más probables que los grandes**, y λ mide cuánta evidencia hace falta para abandonar esa creencia.
 
-Su efecto sobre el gradiente es un encogimiento multiplicativo, θ ← (1 − η·λ)·θ − η·g, que empuja continuamente hacia cero y solo se contrarresta donde los datos lo exigen. Dos consecuencias prácticas: los **sesgos no se regularizan** —desplazan la función, no controlan su complejidad, y encogerlos solo introduce error—, y en Adam hay que usar la forma desacoplada de AdamW por la razón que explica la ruta 18.
+Su efecto sobre el gradiente es un encogimiento multiplicativo, θ ← (1 − η·λ)·θ − η·g, que empuja continuamente hacia cero y solo se contrarresta donde los datos lo exigen. Dos consecuencias prácticas: los **sesgos no se regularizan** —desplazan la función, no controlan su complejidad, y encogerlos solo introduce error—, y en Adam hay que usar la forma desacoplada de AdamW por la razón que explica la clase 19.
 
 ### Dropout: por qué se escala y qué apaga exactamente
 
@@ -104,11 +104,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md) | [Las 31 rutas](../../parts/README.md) | [🔄 Aumento de datos](../../labs/20_data_augmentation/README.md) |
+| [⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md) | [Las 31 clases](../../parts/README.md) | [🔄 Aumento de datos](../../labs/20_data_augmentation/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/19_regularization_dropout_batchnorm/index.html) · [🖥️ Página HTML local](index.html)
+🔴 [Módulo 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/19_regularization_dropout_batchnorm/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

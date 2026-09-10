@@ -1,9 +1,9 @@
 # Teoría — Backpropagation manual
 
 <!-- nav-top -->
-> 🧭 **Ruta 17 / 31** · 🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md)
+> 🧭 **Clase 17 / 31** · 🔴 [Módulo 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md)
 >
-> [⬅️ 🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [📐 Activaciones y funciones de pérdida ➡️](../../labs/17_activations_and_losses/theory.md)
+> [⬅️ 🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [📐 Activaciones y funciones de pérdida ➡️](../../labs/17_activations_and_losses/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -74,9 +74,9 @@ Escribir la retropropagación a mano deja tres ideas que las rutas siguientes da
 
 La primera es que el paso hacia atrás **reutiliza** cantidades del paso hacia adelante —las activaciones, las máscaras de la ReLU— y por eso hay que conservarlas. Esa es la razón concreta de que el consumo de memoria de un entrenamiento crezca con la profundidad y con el tamaño de lote, y de que existan técnicas que recalculan activaciones para ahorrarla.
 
-La segunda es que la retropropagación **no es más que la regla de la cadena organizada** para no repetir cálculos: se calcula δ una vez por capa y se reutiliza para los pesos y para propagar hacia atrás. Sin esa organización, derivar cada parámetro por separado costaría un número de operaciones proporcional al número de parámetros; con ella, el costo total es del orden del doble del paso hacia adelante, independientemente de cuántos parámetros haya. Es exactamente lo que `autograd` automatiza en la ruta 01.
+La segunda es que la retropropagación **no es más que la regla de la cadena organizada** para no repetir cálculos: se calcula δ una vez por capa y se reutiliza para los pesos y para propagar hacia atrás. Sin esa organización, derivar cada parámetro por separado costaría un número de operaciones proporcional al número de parámetros; con ella, el costo total es del orden del doble del paso hacia adelante, independientemente de cuántos parámetros haya. Es exactamente lo que `autograd` automatiza en la clase 02.
 
-La tercera es que el producto de jacobianos que aparece al encadenar capas es el origen del desvanecimiento y la explosión del gradiente. Aquí se ve en una red pequeña y sin consecuencias graves; en la ruta 04 es lo que impide aprender dependencias largas, y en la 05 lo que las puertas de la LSTM vienen a resolver.
+La tercera es que el producto de jacobianos que aparece al encadenar capas es el origen del desvanecimiento y la explosión del gradiente. Aquí se ve en una red pequeña y sin consecuencias graves; en la clase 05 es lo que impide aprender dependencias largas, y en la 05 lo que las puertas de la LSTM vienen a resolver.
 
 ## Protocolo científico
 
@@ -111,11 +111,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md) | [Las 31 rutas](../../parts/README.md) | [📐 Activaciones y funciones de pérdida](../../labs/17_activations_and_losses/README.md) |
+| [🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md) | [Las 31 clases](../../parts/README.md) | [📐 Activaciones y funciones de pérdida](../../labs/17_activations_and_losses/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/16_backpropagation_manual/index.html) · [🖥️ Página HTML local](index.html)
+🔴 [Módulo 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/16_backpropagation_manual/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

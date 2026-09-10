@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 22_uncertainty_calibration
+schema_version: '3.0'
 title: Incertidumbre y calibración
 level: avanzado
 estimated_hours: 8
@@ -29,3 +28,18 @@ dataset:
   source: UCI
   reference: https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic
   license: CC BY 4.0
+id: 22_uncertainty_calibration
+class_number: 23
+module_number: 6
+module_title: Confianza y despliegue
+essential_question: ¿Qué significa realmente que un modelo anuncie 80 % de confianza?
+opening_hook: Entre muchas predicciones hechas con 80 % de confianza, aproximadamente ocho de cada diez deberían acertar. Esa promesa se puede medir.
+class_practice: Construir un diagrama de confiabilidad, calcular ECE y aplicar temperature scaling sin tocar test.
+visual_evidence:
+  title: Hacer que confianza y frecuencia coincidan
+  asset: assets/class-map.svg
+  steps:
+  - Confianza declarada
+  - Frecuencia observada
+  - Recalibración
+common_misconception: Una alta exactitud no implica probabilidades bien calibradas; son propiedades diferentes.

@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 00_numpy_neuron
+schema_version: '3.0'
 title: Neurona con NumPy
 level: fundamentos
 estimated_hours: 4
@@ -29,3 +28,18 @@ dataset:
   source: UCI
   reference: https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic
   license: CC BY 4.0
+id: 00_numpy_neuron
+class_number: 1
+module_number: 1
+module_title: Fundamentos
+essential_question: ¿Cómo aprende una neurona si no existe autograd?
+opening_hook: Imagina una frontera que empieza equivocándose al azar y se mueve un poco después de cada error. En esta clase podrás ver y calcular cada uno de esos movimientos.
+class_practice: Derivar el gradiente, comprobarlo con diferencias finitas y observar cómo la escala de las variables cambia el descenso.
+visual_evidence:
+  title: Del error al movimiento de la frontera
+  asset: assets/class-map.svg
+  steps:
+  - Predicción inicial
+  - Error medido
+  - Gradiente y nueva frontera
+common_misconception: El gradiente no indica dónde está el mínimo; indica la pendiente local y cuánto cambia la pérdida en ese punto.

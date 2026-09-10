@@ -1,9 +1,9 @@
 # Teoría — Aprendizaje autosupervisado SimCLR
 
 <!-- nav-top -->
-> 🧭 **Ruta 31 / 31** · 🔬 [Parte 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md)
+> 🧭 **Clase 31 / 31** · 🔬 [Módulo 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md)
 >
-> [⬅️ 🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · *fin del recorrido* ➡️
+> [⬅️ 🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/theory.md) · [🏠 Índice de clases](../../parts/README.md) · *fin del recorrido* ➡️
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -12,7 +12,7 @@ Dos vistas, similitud coseno, pérdida NT-Xent y evaluación linear probe.
 
 ## Idea central
 
-Todas las rutas anteriores necesitan etiquetas. Alguien tuvo que mirar 50 000 imágenes de CIFAR-10 y escribir «avión», «gato», «camión». Ese trabajo es caro, lento y, en muchos dominios reales —imágenes médicas, defectos industriales, sensores— directamente inviable a escala. La pregunta de este laboratorio es si se puede aprender una representación útil **sin ninguna etiqueta**, y cuánto se pierde por hacerlo.
+Todas las clases anteriores necesitan etiquetas. Alguien tuvo que mirar 50 000 imágenes de CIFAR-10 y escribir «avión», «gato», «camión». Ese trabajo es caro, lento y, en muchos dominios reales —imágenes médicas, defectos industriales, sensores— directamente inviable a escala. La pregunta de este laboratorio es si se puede aprender una representación útil **sin ninguna etiqueta**, y cuánto se pierde por hacerlo.
 
 La respuesta contrastiva parte de una intuición sencilla: aunque no sepamos *qué* hay en una imagen, sí sabemos algo con certeza absoluta —dos recortes distintos de la misma foto muestran la misma cosa, y un recorte de otra foto muestra algo distinto—. Eso basta para inventar una tarea de aprendizaje que no requiere anotador: acerca en el espacio de representación las dos vistas de una misma imagen, aleja las vistas de imágenes diferentes. La etiqueta la genera la propia estructura de los datos.
 
@@ -98,11 +98,11 @@ La elección de aumentos define invariancias y puede borrar información relevan
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/README.md) | [Las 31 rutas](../../parts/README.md) | *— fin del recorrido* |
+| [🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/README.md) | [Las 31 clases](../../parts/README.md) | *— fin del recorrido* |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔬 [Parte 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/30_self_supervised_simclr/index.html) · [🖥️ Página HTML local](index.html)
+🔬 [Módulo 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/30_self_supervised_simclr/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

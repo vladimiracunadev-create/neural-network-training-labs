@@ -1,22 +1,36 @@
 # Fusión de sensores
 
 <!-- nav-top -->
-> 🧭 **Ruta 13 / 31** · 🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
+> 🧭 **Clase 13 / 31** · 🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
 >
-> [⬅️ ♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/README.md) · [🏠 Índice de rutas](../../parts/README.md) · [🎛️ Búsqueda de hiperparámetros ➡️](../../labs/13_hyperparameter_search/README.md)
+> [⬅️ ♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/README.md) · [🏠 Índice de clases](../../parts/README.md) · [🎛️ Búsqueda de hiperparámetros ➡️](../../labs/13_hyperparameter_search/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+Acelerómetro y giroscopio observan el mismo movimiento desde perspectivas distintas; perder uno revela cuánto dependía el modelo de cada sensor.
+
+> **Pregunta esencial:** ¿Las modalidades se complementan o una de ellas domina silenciosamente?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![Dos señales, una decisión](assets/class-map.svg)
+
+*Mapa de esta clase: Dos señales, una decisión. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Fusionar acelerómetro y giroscopio de smartphones para reconocer actividades.
 
-Es la **ruta 13 de 31** del recorrido y pertenece a 🟣 la parte 3, *Familias especializadas: generar, decidir, relacionar*. Llegas desde **Transfer learning con mascotas** y lo que hagas aquí lo da por supuesto **Búsqueda de hiperparámetros**.
+**Práctica propia de esta clase:** Comparar cada modalidad, fusión temprana y tardía, y simular la ausencia de un sensor.
+
+Es la **clase 13 de 31** del programa y pertenece a 🟣 el módulo 3, *Familias especializadas: generar, decidir, relacionar*. Llegas desde **Transfer learning con mascotas** y lo que hagas aquí lo da por supuesto **Búsqueda de hiperparámetros**.
 
 Trabajarás con el dataset **`uci_har`** (UCI, licencia: CC BY 4.0), y tendrás que superar la línea base **Acelerómetro solo, giroscopio solo y regresión logística**, decidiendo con la métrica `macro_f1` medida sobre `validation`. Nivel avanzado, unas **8 horas** de dedicación.
 
-**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
+**Lo que conviene traer resuelto de las clases anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
 
 **Al terminar deberías ser capaz de:**
 
@@ -26,7 +40,11 @@ Trabajarás con el dataset **`uci_har`** (UCI, licencia: CC BY 4.0), y tendrás 
 - Comparar contra la línea base: Acelerómetro solo, giroscopio solo y regresión logística.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> Concatenar señales no garantiza fusión útil; el modelo puede ignorar una modalidad por completo.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
@@ -84,7 +102,7 @@ Aquí hay una trampa específica de las señales de sensores, y es la razón por
 
 Las ventanas de UCI HAR se construyen con **solapamiento** —cada ventana comparte la mitad de sus muestras con la siguiente—. Si esas ventanas se reparten al azar entre `train` y `test`, dos ventanas casi idénticas acaban una en cada lado, y el modelo evalúa sobre datos que prácticamente ha visto. La exactitud sube varios puntos sin que nada falle a la vista, y el resultado no se sostiene con datos nuevos.
 
-Peor aún: aunque las ventanas no se solaparan, repartir al azar mezcla al **mismo sujeto** entre entrenamiento y evaluación. Cada persona camina, se sienta y sube escaleras con una firma característica, así que el modelo puede reconocer al sujeto y usar eso para predecir su actividad. Lo que se mide entonces no es «reconocer actividades» sino «reconocer a estas doce personas», y el modelo se derrumba con un usuario nuevo. La partición correcta es **por sujeto**: unos sujetos completos para entrenar, otros distintos para evaluar. Es exactamente el escenario que explora la ruta 15, y la razón de que ambos laboratorios usen el mismo dataset con particiones distintas.
+Peor aún: aunque las ventanas no se solaparan, repartir al azar mezcla al **mismo sujeto** entre entrenamiento y evaluación. Cada persona camina, se sienta y sube escaleras con una firma característica, así que el modelo puede reconocer al sujeto y usar eso para predecir su actividad. Lo que se mide entonces no es «reconocer actividades» sino «reconocer a estas doce personas», y el modelo se derrumba con un usuario nuevo. La partición correcta es **por sujeto**: unos sujetos completos para entrenar, otros distintos para evaluar. Es exactamente el escenario que explora la clase 16, y la razón de que ambos laboratorios usen el mismo dataset con particiones distintas.
 
 Sobre el preprocesamiento, dos reglas que se derivan del mismo principio. La normalización se ajusta **solo con `train`**, y con las estadísticas de cada canal por separado: acelerómetro y giroscopio miden magnitudes físicas distintas —aceleración y velocidad angular— y en unidades distintas, así que estandarizarlos juntos deja a uno dominando la escala del otro. Y si los sensores tuvieran frecuencias de muestreo distintas, habría que remuestrearlos a una rejilla común antes de concatenar; asumir alineación sin comprobarla es una fuente silenciosa de degradación.
 
@@ -92,21 +110,21 @@ Sobre el preprocesamiento, dos reglas que se derivan del mismo principio. La nor
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `accuracy`, `balanced_accuracy`, `macro_f1`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `accuracy`, `balanced_accuracy`, `macro_f1`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 25 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (40 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -179,7 +197,7 @@ datos = prepare_dataset("12_multimodal_fusion", quick=True, seed=42)
 print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -322,7 +340,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 ## ✅ Antes de darlo por terminado
 
-El laboratorio está aprobado cuando se cumplen estos criterios:
+La clase está aprobada cuando se cumplen estos criterios:
 
 - [ ] cero solapamiento entre train, validation y test
 - [ ] selección basada únicamente en validation
@@ -368,6 +386,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -385,11 +404,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/README.md) | [Las 31 rutas](../../parts/README.md) | [🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/README.md) |
+| [♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/README.md) | [Las 31 clases](../../parts/README.md) | [🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/README.md) |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/12_multimodal_fusion/index.html) · [🖥️ Página HTML local](index.html)
+🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/12_multimodal_fusion/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

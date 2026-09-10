@@ -15,3 +15,23 @@ deliverables:
 - reporte experimental
 - model card
 dataset: fashion_mnist
+schema_version: '3.0'
+class_number: 30
+module_number: 7
+module_title: Especializaciones avanzadas
+essential_question: ¿Cómo aprende un modelo a invertir un proceso que destruye gradualmente la imagen?
+opening_hook: Si añadimos ruido en pasos pequeños conocemos exactamente la corrupción; la red aprende a estimar qué ruido retirar en cada instante.
+class_practice: Visualizar la cadena directa e inversa y comparar calidad y latencia al cambiar pasos y cronograma.
+visual_evidence:
+  title: Destruir de forma conocida para aprender a reconstruir
+  asset: assets/class-map.svg
+  steps:
+  - Imagen y ruido progresivo
+  - Predicción de epsilon
+  - Muestreo inverso
+common_misconception: Menor error de predicción de ruido no garantiza automáticamente muestras perceptualmente mejores.
+estimated_hours: 8
+success_criteria:
+- responde la pregunta esencial con evidencia de la ejecución
+- interpreta la visualización propia de la clase
+- distingue resultados observados de supuestos

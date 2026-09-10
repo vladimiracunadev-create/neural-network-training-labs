@@ -1,9 +1,9 @@
 # Teoría — Activaciones y funciones de pérdida
 
 <!-- nav-top -->
-> 🧭 **Ruta 18 / 31** · 🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md)
+> 🧭 **Clase 18 / 31** · 🔴 [Módulo 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md)
 >
-> [⬅️ ∂ Backpropagation manual](../../labs/16_backpropagation_manual/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [⚙️ Optimizadores y schedulers ➡️](../../labs/18_optimizers_and_schedulers/theory.md)
+> [⬅️ ∂ Backpropagation manual](../../labs/16_backpropagation_manual/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [⚙️ Optimizadores y schedulers ➡️](../../labs/18_optimizers_and_schedulers/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -72,7 +72,7 @@ La **Focal Loss** cambia el eje: en vez de ponderar por clase, pondera por **dif
 
 donde p_t es la probabilidad asignada a la clase verdadera. El factor (1 − p_t)^γ vale casi 0 cuando el ejemplo ya está bien clasificado —p_t ≈ 1— y casi 1 cuando está mal. Con γ = 2, un ejemplo con p_t = 0,9 ve su pérdida reducida cien veces, mientras que uno con p_t = 0,1 apenas se toca. El efecto es que el gradiente se concentra en lo que el modelo aún no domina, sin necesidad de conocer las frecuencias de clase.
 
-El **remuestreo** actúa antes de la pérdida, replicando ejemplos de la minoría o descartando de la mayoría. Cambia la distribución que ve el modelo, lo que tiene una consecuencia que se olvida a menudo: las probabilidades que produzca quedarán **descalibradas** respecto de la distribución real, y habrá que corregirlas si se van a interpretar como probabilidades. Es justo el problema que aborda la ruta 22.
+El **remuestreo** actúa antes de la pérdida, replicando ejemplos de la minoría o descartando de la mayoría. Cambia la distribución que ve el modelo, lo que tiene una consecuencia que se olvida a menudo: las probabilidades que produzca quedarán **descalibradas** respecto de la distribución real, y habrá que corregirlas si se van a interpretar como probabilidades. Es justo el problema que aborda la clase 23.
 
 Y la elección de la pérdida arrastra la elección de la métrica. Optimizar con pesos de clase y reportar exactitud es incoherente: se está pidiendo al modelo que priorice la minoría y midiéndolo con una cifra que premia la mayoría. Por eso este laboratorio decide con `macro_f1`, que promedia por clase y da a la minoritaria el mismo peso que a la mayoritaria.
 
@@ -109,11 +109,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md) | [Las 31 rutas](../../parts/README.md) | [⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md) |
+| [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md) | [Las 31 clases](../../parts/README.md) | [⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/17_activations_and_losses/index.html) · [🖥️ Página HTML local](index.html)
+🔴 [Módulo 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/17_activations_and_losses/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

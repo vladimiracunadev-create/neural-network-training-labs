@@ -1,9 +1,9 @@
 # Plan de experimentos — Aprendizaje federado por participante
 
 <!-- nav-top -->
-> 🧭 **Ruta 16 / 31** · 🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md)
+> 🧭 **Clase 16 / 31** · 🟠 [Módulo 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md)
 >
-> [⬅️ ⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/experiments.md) · [🏠 Índice de rutas](../../parts/README.md) · [∂ Backpropagation manual ➡️](../../labs/16_backpropagation_manual/experiments.md)
+> [⬅️ ⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/experiments.md) · [🏠 Índice de clases](../../parts/README.md) · [∂ Backpropagation manual ➡️](../../labs/16_backpropagation_manual/experiments.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -27,7 +27,7 @@ Qué la haría falsa —y esto también es un resultado que hay que reportar—:
 - Lo supera solo con una semilla concreta y no con las demás.
 - Lo supera a costa de un tiempo o un tamaño que el problema no justifica.
 
-### El experimento propio de esta ruta
+### El experimento propio de esta clase
 
 Además de la comparación con la línea base, aquí interesa una pregunta específica: **Medir rendimiento global y por participante**. Es la comparación que da sentido al tema de este laboratorio; la de la línea base solo dice si el modelo sirve, mientras que esta dice *qué parte* del diseño es la que aporta.
 
@@ -140,11 +140,11 @@ Una conclusión completa contiene cinco cosas, y se puede escribir en un párraf
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) | [Las 31 rutas](../../parts/README.md) | [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md) |
+| [⚗️ Destilación de conocimiento](../../labs/14_knowledge_distillation/README.md) | [Las 31 clases](../../parts/README.md) | [∂ Backpropagation manual](../../labs/16_backpropagation_manual/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/15_federated_learning/index.html) · [🖥️ Página HTML local](index.html)
+🟠 [Módulo 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/15_federated_learning/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

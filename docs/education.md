@@ -1,10 +1,10 @@
 # Educación y evaluación
 
-Cada laboratorio ofrece tres cuadernos con papeles distintos: `notebook.ipynb` es el recorrido de referencia y no lleva ejercicios; `notebook_student.ipynb` añade la práctica; `notebook_solution.ipynb` la trae resuelta. Los ejercicios llevan metadatos nbgrader, pruebas visibles y espacio para evaluación escrita.
+Cada clase ofrece tres cuadernos con papeles distintos: `notebook.ipynb` es el recorrido de referencia y no lleva ejercicios; `notebook_student.ipynb` añade la práctica; `notebook_solution.ipynb` la trae resuelta. Los ejercicios llevan metadatos nbgrader, pruebas visibles y espacio para evaluación escrita.
 
 ## Los cinco ejercicios evaluables
 
-Cada laboratorio incluye **cinco ejercicios de 5 puntos**, iguales en estructura para las 31 rutas y parametrizados con los datos de cada una —su métrica de selección, su línea base y su experimento propio—:
+Cada clase incluye **cinco ejercicios de 5 puntos** sobre el protocolo común, parametrizados con su métrica, línea base y experimento. La evaluación añade preguntas disciplinares sobre la práctica, la visualización y el error conceptual propio de esa clase:
 
 | Identificador | Qué se practica |
 |---|---|
@@ -14,7 +14,7 @@ Cada laboratorio incluye **cinco ejercicios de 5 puntos**, iguales en estructura
 | `sellado_del_test` | No abrir `test` sin `experiment.lock.json`. |
 | `plan_experimental` | Dejar por escrito hipótesis, variable que cambia, controles, semillas y conclusión. |
 
-Cubren el contrato experimental en vez de la arquitectura, que es lo que estos laboratorios enseñan y un tutorial no. Se resuelven con la biblioteca estándar —sin descargar datasets ni entrenar—, así que la corrección es de segundos y no necesita GPU. Cada celda de ejercicio va seguida de una celda de comprobación bloqueada que debe pasar sin error.
+Los cinco ejercicios automáticos cubren el contrato experimental y se resuelven sin descargar datos ni entrenar, por lo que se corrigen en segundos. No sustituyen la comprensión de la arquitectura: `assessment.md` evalúa además el mecanismo, la práctica, la gráfica y el error conceptual propio de cada clase.
 
 La solución de referencia de los 31 laboratorios **se ejecuta en la integración continua** (`tests/test_notebook_exercises_v3.py`): un ejercicio cuya solución no corre es peor que no tenerlo, porque el estudiante no puede saber si el fallo es suyo o del material.
 

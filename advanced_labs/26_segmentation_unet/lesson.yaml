@@ -15,3 +15,23 @@ deliverables:
 - reporte experimental
 - model card
 dataset: oxford_iiit_pet_segmentation
+schema_version: '3.0'
+class_number: 27
+module_number: 7
+module_title: Especializaciones avanzadas
+essential_question: ¿Cómo recupera una U-Net el detalle espacial que pierde al comprimir?
+opening_hook: Clasificar una imagen dice qué contiene; segmentarla exige decidir además dónde termina cada objeto, incluso en sus bordes.
+class_practice: Superponer máscaras, inspeccionar skip connections y comparar IoU por clase y errores de contorno.
+visual_evidence:
+  title: Comprimir contexto y recuperar detalle
+  asset: assets/class-map.svg
+  steps:
+  - Encoder contextual
+  - Skip connections
+  - Máscara por píxel
+common_misconception: Una pixel accuracy alta puede ocultar una segmentación inútil cuando el fondo domina la imagen.
+estimated_hours: 8
+success_criteria:
+- responde la pregunta esencial con evidencia de la ejecución
+- interpreta la visualización propia de la clase
+- distingue resultados observados de supuestos

@@ -1,22 +1,36 @@
 # Backpropagation manual
 
 <!-- nav-top -->
-> 🧭 **Ruta 17 / 31** · 🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md)
+> 🧭 **Clase 17 / 31** · 🔴 [Módulo 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md)
 >
-> [⬅️ 🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md) · [🏠 Índice de rutas](../../parts/README.md) · [📐 Activaciones y funciones de pérdida ➡️](../../labs/17_activations_and_losses/README.md)
+> [⬅️ 🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md) · [🏠 Índice de clases](../../parts/README.md) · [📐 Activaciones y funciones de pérdida ➡️](../../labs/17_activations_and_losses/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+La salida conoce el error, pero las primeras capas están lejos de él. La regla de la cadena transporta esa señal hacia atrás.
+
+> **Pregunta esencial:** ¿Cómo se reparte la responsabilidad del error entre todas las capas?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![La responsabilidad viaja hacia atrás](assets/class-map.svg)
+
+*Mapa de esta clase: La responsabilidad viaja hacia atrás. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Derivar y programar backpropagation en una MLP pequeña.
 
-Es la **ruta 17 de 31** del recorrido y pertenece a 🔴 la parte 5, *La mecánica fina, ahora en profundidad*. Llegas desde **Aprendizaje federado por participante** y lo que hagas aquí lo da por supuesto **Activaciones y funciones de pérdida**.
+**Práctica propia de esta clase:** Derivar una MLP capa por capa, comprobar el gradiente y graficar su norma a distintas profundidades.
+
+Es la **clase 17 de 31** del programa y pertenece a 🔴 el módulo 5, *La mecánica fina, ahora en profundidad*. Llegas desde **Aprendizaje federado por participante** y lo que hagas aquí lo da por supuesto **Activaciones y funciones de pérdida**.
 
 Trabajarás con el dataset **`iris`** (UCI, licencia: CC BY 4.0), y tendrás que superar la línea base **Regresión logística multinomial**, decidiendo con la métrica `macro_f1` medida sobre `validation`. Nivel fundamentos, unas **4 horas** de dedicación.
 
-**Lo que conviene traer resuelto de las rutas anteriores:** Python básico, NumPy, álgebra lineal elemental.
+**Lo que conviene traer resuelto de las clases anteriores:** Python básico, NumPy, álgebra lineal elemental.
 
 **Al terminar deberías ser capaz de:**
 
@@ -26,7 +40,11 @@ Trabajarás con el dataset **`iris`** (UCI, licencia: CC BY 4.0), y tendrás que
 - Comparar contra la línea base: Regresión logística multinomial.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> Un programa que ejecuta backward sin error puede seguir teniendo gradientes matemáticamente incorrectos.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
@@ -92,29 +110,29 @@ Escribir la retropropagación a mano deja tres ideas que las rutas siguientes da
 
 La primera es que el paso hacia atrás **reutiliza** cantidades del paso hacia adelante —las activaciones, las máscaras de la ReLU— y por eso hay que conservarlas. Esa es la razón concreta de que el consumo de memoria de un entrenamiento crezca con la profundidad y con el tamaño de lote, y de que existan técnicas que recalculan activaciones para ahorrarla.
 
-La segunda es que la retropropagación **no es más que la regla de la cadena organizada** para no repetir cálculos: se calcula δ una vez por capa y se reutiliza para los pesos y para propagar hacia atrás. Sin esa organización, derivar cada parámetro por separado costaría un número de operaciones proporcional al número de parámetros; con ella, el costo total es del orden del doble del paso hacia adelante, independientemente de cuántos parámetros haya. Es exactamente lo que `autograd` automatiza en la ruta 01.
+La segunda es que la retropropagación **no es más que la regla de la cadena organizada** para no repetir cálculos: se calcula δ una vez por capa y se reutiliza para los pesos y para propagar hacia atrás. Sin esa organización, derivar cada parámetro por separado costaría un número de operaciones proporcional al número de parámetros; con ella, el costo total es del orden del doble del paso hacia adelante, independientemente de cuántos parámetros haya. Es exactamente lo que `autograd` automatiza en la clase 02.
 
-La tercera es que el producto de jacobianos que aparece al encadenar capas es el origen del desvanecimiento y la explosión del gradiente. Aquí se ve en una red pequeña y sin consecuencias graves; en la ruta 04 es lo que impide aprender dependencias largas, y en la 05 lo que las puertas de la LSTM vienen a resolver.
+La tercera es que el producto de jacobianos que aparece al encadenar capas es el origen del desvanecimiento y la explosión del gradiente. Aquí se ve en una red pequeña y sin consecuencias graves; en la clase 05 es lo que impide aprender dependencias largas, y en la 05 lo que las puertas de la LSTM vienen a resolver.
 
 > **La pregunta que deberías poder responder al terminar:** ¿Dónde aparecen gradientes que explotan o desaparecen?
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `accuracy`, `macro_f1`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `accuracy`, `macro_f1`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 25 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (40 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -187,7 +205,7 @@ datos = prepare_dataset("16_backpropagation_manual", quick=True, seed=42)
 print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -330,7 +348,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 ## ✅ Antes de darlo por terminado
 
-El laboratorio está aprobado cuando se cumplen estos criterios:
+La clase está aprobada cuando se cumplen estos criterios:
 
 - [ ] cero solapamiento entre train, validation y test
 - [ ] selección basada únicamente en validation
@@ -378,6 +396,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -395,11 +414,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md) | [Las 31 rutas](../../parts/README.md) | [📐 Activaciones y funciones de pérdida](../../labs/17_activations_and_losses/README.md) |
+| [🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md) | [Las 31 clases](../../parts/README.md) | [📐 Activaciones y funciones de pérdida](../../labs/17_activations_and_losses/README.md) |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/16_backpropagation_manual/index.html) · [🖥️ Página HTML local](index.html)
+🔴 [Módulo 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/16_backpropagation_manual/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

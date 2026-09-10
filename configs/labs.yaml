@@ -242,7 +242,7 @@ labs:
   - accuracy
   - macro_f1
   objective: Clasificar publicaciones científicas usando texto y enlaces de citas.
-  math: H^(l+1)=σ(D^-1/2 Â D^-1/2 H^l W^l).
+  math: H^(l+1)=σ(D^-1/2 A_hat D^-1/2 H^l W^l).
   notes: Usa las máscaras públicas fijas de train, validación y test.
   selection_metric: f1
   estimated_hours: 8

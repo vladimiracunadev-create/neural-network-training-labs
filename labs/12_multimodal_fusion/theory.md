@@ -1,9 +1,9 @@
 # Teoría — Fusión de sensores
 
 <!-- nav-top -->
-> 🧭 **Ruta 13 / 31** · 🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
+> 🧭 **Clase 13 / 31** · 🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
 >
-> [⬅️ ♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🎛️ Búsqueda de hiperparámetros ➡️](../../labs/13_hyperparameter_search/theory.md)
+> [⬅️ ♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [🎛️ Búsqueda de hiperparámetros ➡️](../../labs/13_hyperparameter_search/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -66,7 +66,7 @@ Aquí hay una trampa específica de las señales de sensores, y es la razón por
 
 Las ventanas de UCI HAR se construyen con **solapamiento** —cada ventana comparte la mitad de sus muestras con la siguiente—. Si esas ventanas se reparten al azar entre `train` y `test`, dos ventanas casi idénticas acaban una en cada lado, y el modelo evalúa sobre datos que prácticamente ha visto. La exactitud sube varios puntos sin que nada falle a la vista, y el resultado no se sostiene con datos nuevos.
 
-Peor aún: aunque las ventanas no se solaparan, repartir al azar mezcla al **mismo sujeto** entre entrenamiento y evaluación. Cada persona camina, se sienta y sube escaleras con una firma característica, así que el modelo puede reconocer al sujeto y usar eso para predecir su actividad. Lo que se mide entonces no es «reconocer actividades» sino «reconocer a estas doce personas», y el modelo se derrumba con un usuario nuevo. La partición correcta es **por sujeto**: unos sujetos completos para entrenar, otros distintos para evaluar. Es exactamente el escenario que explora la ruta 15, y la razón de que ambos laboratorios usen el mismo dataset con particiones distintas.
+Peor aún: aunque las ventanas no se solaparan, repartir al azar mezcla al **mismo sujeto** entre entrenamiento y evaluación. Cada persona camina, se sienta y sube escaleras con una firma característica, así que el modelo puede reconocer al sujeto y usar eso para predecir su actividad. Lo que se mide entonces no es «reconocer actividades» sino «reconocer a estas doce personas», y el modelo se derrumba con un usuario nuevo. La partición correcta es **por sujeto**: unos sujetos completos para entrenar, otros distintos para evaluar. Es exactamente el escenario que explora la clase 16, y la razón de que ambos laboratorios usen el mismo dataset con particiones distintas.
 
 Sobre el preprocesamiento, dos reglas que se derivan del mismo principio. La normalización se ajusta **solo con `train`**, y con las estadísticas de cada canal por separado: acelerómetro y giroscopio miden magnitudes físicas distintas —aceleración y velocidad angular— y en unidades distintas, así que estandarizarlos juntos deja a uno dominando la escala del otro. Y si los sensores tuvieran frecuencias de muestreo distintas, habría que remuestrearlos a una rejilla común antes de concatenar; asumir alineación sin comprobarla es una fuente silenciosa de degradación.
 
@@ -101,11 +101,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/README.md) | [Las 31 rutas](../../parts/README.md) | [🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/README.md) |
+| [♻️ Transfer learning con mascotas](../../labs/11_transfer_learning/README.md) | [Las 31 clases](../../parts/README.md) | [🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/12_multimodal_fusion/index.html) · [🖥️ Página HTML local](index.html)
+🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/12_multimodal_fusion/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

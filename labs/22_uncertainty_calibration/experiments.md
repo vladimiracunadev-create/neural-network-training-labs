@@ -1,9 +1,9 @@
 # Plan de experimentos — Incertidumbre y calibración
 
 <!-- nav-top -->
-> 🧭 **Ruta 23 / 31** · ⚫ [Parte 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md)
+> 🧭 **Clase 23 / 31** · ⚫ [Módulo 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md)
 >
-> [⬅️ 🔍 Explicabilidad](../../labs/21_explainability/experiments.md) · [🏠 Índice de rutas](../../parts/README.md) · [📦 Exportación e inferencia ➡️](../../labs/23_model_export_and_inference/experiments.md)
+> [⬅️ 🔍 Explicabilidad](../../labs/21_explainability/experiments.md) · [🏠 Índice de clases](../../parts/README.md) · [📦 Exportación e inferencia ➡️](../../labs/23_model_export_and_inference/experiments.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -27,7 +27,7 @@ Qué la haría falsa —y esto también es un resultado que hay que reportar—:
 - Lo supera solo con una semilla concreta y no con las demás.
 - Lo supera a costa de un tiempo o un tamaño que el problema no justifica.
 
-### El experimento propio de esta ruta
+### El experimento propio de esta clase
 
 Además de la comparación con la línea base, aquí interesa una pregunta específica: **Comparar ece y brier antes y después**. Es la comparación que da sentido al tema de este laboratorio; la de la línea base solo dice si el modelo sirve, mientras que esta dice *qué parte* del diseño es la que aporta.
 
@@ -140,11 +140,11 @@ Una conclusión completa contiene cinco cosas, y se puede escribir en un párraf
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🔍 Explicabilidad](../../labs/21_explainability/README.md) | [Las 31 rutas](../../parts/README.md) | [📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) |
+| [🔍 Explicabilidad](../../labs/21_explainability/README.md) | [Las 31 clases](../../parts/README.md) | [📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-⚫ [Parte 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/22_uncertainty_calibration/index.html) · [🖥️ Página HTML local](index.html)
+⚫ [Módulo 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/22_uncertainty_calibration/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

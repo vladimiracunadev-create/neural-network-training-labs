@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 10_dqn_reinforcement
+schema_version: '3.0'
 title: DQN para inventario con demanda real
 level: avanzado
 estimated_hours: 8
@@ -8,12 +7,10 @@ prerequisites:
 - optimización
 - lectura de artículos técnicos
 learning_outcomes:
-- Aprender una política de reposición usando una secuencia de demanda observada en
-  transacciones reales.
+- Aprender una política de reposición usando una secuencia de demanda observada en transacciones reales.
 - Preparar y auditar el dataset real online_retail sin fuga de datos.
 - Entrenar y evaluar valor de acciones con demanda histórica.
-- 'Comparar contra la línea base: Política de reposición periódica basada en demanda
-  media histórica.'
+- 'Comparar contra la línea base: Política de reposición periódica basada en demanda media histórica.'
 - Interpretar intervalos de confianza, errores y limitaciones.
 deliverables:
 - notebook ejecutado
@@ -31,3 +28,18 @@ dataset:
   source: UCI
   reference: https://archive.ics.uci.edu/dataset/352/online+retail
   license: CC BY 4.0
+id: 10_dqn_reinforcement
+class_number: 11
+module_number: 3
+module_title: Familias especializadas
+essential_question: ¿Cómo aprende una política cuando cada decisión cambia los datos que verá después?
+opening_hook: Pedir poco hoy puede provocar una venta perdida mañana; pedir demasiado inmoviliza inventario. La recompensa conecta ambas consecuencias.
+class_practice: Leer trayectorias, comparar políticas y estudiar retorno, quiebres de stock y nivel de servicio por separado.
+visual_evidence:
+  title: De una decisión presente a una recompensa futura
+  asset: assets/class-map.svg
+  steps:
+  - Estado de inventario
+  - Acción de reposición
+  - Retorno acumulado
+common_misconception: Maximizar retorno promedio no asegura una política estable ni un nivel de servicio aceptable en los peores episodios.

@@ -1,9 +1,9 @@
 # Plan de experimentos — LSTM para series temporales
 
 <!-- nav-top -->
-> 🧭 **Ruta 6 / 31** · 🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
+> 🧭 **Clase 06 / 31** · 🔵 [Módulo 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
 >
-> [⬅️ 🔁 RNN para texto](../../labs/04_rnn_sequences/experiments.md) · [🏠 Índice de rutas](../../parts/README.md) · [🧬 Autoencoder para fraude ➡️](../../labs/06_autoencoder_anomaly/experiments.md)
+> [⬅️ 🔁 RNN para texto](../../labs/04_rnn_sequences/experiments.md) · [🏠 Índice de clases](../../parts/README.md) · [🧬 Autoencoder para fraude ➡️](../../labs/06_autoencoder_anomaly/experiments.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -27,7 +27,7 @@ Qué la haría falsa —y esto también es un resultado que hay que reportar—:
 - Lo supera solo con una semilla concreta y no con las demás.
 - Lo supera a costa de un tiempo o un tamaño que el problema no justifica.
 
-### El experimento propio de esta ruta
+### El experimento propio de esta clase
 
 Además de la comparación con la línea base, aquí interesa una pregunta específica: **Comparar ventanas, variables y horizonte**. Es la comparación que da sentido al tema de este laboratorio; la de la línea base solo dice si el modelo sirve, mientras que esta dice *qué parte* del diseño es la que aporta.
 
@@ -140,11 +140,11 @@ Una conclusión completa contiene cinco cosas, y se puede escribir en un párraf
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) | [Las 31 rutas](../../parts/README.md) | [🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) |
+| [🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) | [Las 31 clases](../../parts/README.md) | [🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/05_lstm_time_series/index.html) · [🖥️ Página HTML local](index.html)
+🔵 [Módulo 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/05_lstm_time_series/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

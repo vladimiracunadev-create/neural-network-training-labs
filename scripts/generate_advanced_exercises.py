@@ -33,10 +33,12 @@ from lab_exercises import exercises, graded_metadata, test_metadata  # noqa: E40
 
 ROOT = Path(__file__).resolve().parents[1]
 TRACKS = yaml.safe_load((ROOT / "configs" / "advanced_tracks.yaml").read_text(encoding="utf-8"))["tracks"]
+CLASS_PROFILES = {item["id"]: item for item in yaml.safe_load((ROOT / "configs" / "classes.yaml").read_text(encoding="utf-8"))["classes"]}
 
 # Marcadores del bloque gestionado por este script.
 INTRO_MARK = "<!-- ejercicios-evaluables -->"
 WALKTHROUGH_MARK = "<!-- sin-ejercicios -->"
+CLASS_INTRO_MARK = "<!-- identidad-de-clase -->"
 
 
 def _managed_ids() -> set[str]:
@@ -61,10 +63,25 @@ def strip_block(cells: list[Any]) -> list[Any]:
                 or cell_id.startswith("ej-")
                 or cell_id.startswith("ejercicios-")
                 or INTRO_MARK in source
-                or WALKTHROUGH_MARK in source):
+                or WALKTHROUGH_MARK in source
+                or CLASS_INTRO_MARK in source):
             continue
         kept.append(cell)
     return kept
+
+
+def add_class_intro(cells: list[Any], track_id: str) -> list[Any]:
+    profile = CLASS_PROFILES[track_id]
+    number = int(profile["class_number"])
+    intro = new_markdown_cell(
+        f"{CLASS_INTRO_MARK}\n## Clase {number:02d} · Antes de ejecutar\n\n"
+        f"{profile['hook']}\n\n> **Pregunta esencial:** {profile['essential_question']}\n\n"
+        f"![{profile['visual_title']}](assets/class-map.svg)\n\n"
+        f"**Práctica propia:** {profile['practice']}\n\n"
+        f"> **Error conceptual que debes poder detectar:** {profile['misconception']}"
+    )
+    intro.id = "identidad-de-clase"
+    return cells[:1] + [intro] + cells[1:]
 
 
 def exercise_cells(track: dict[str, Any], metric: str, *, solution: bool) -> list[Any]:
@@ -125,9 +142,9 @@ def main() -> int:
         solution = nbformat.read(folder / "notebook_solution.ipynb", as_version=4)
         walkthrough = nbformat.read(folder / "notebook.ipynb", as_version=4)
 
-        base_student = strip_block(list(student.cells))
-        base_solution = strip_block(list(solution.cells))
-        base_walkthrough = strip_block(list(walkthrough.cells))
+        base_student = add_class_intro(strip_block(list(student.cells)), track_id)
+        base_solution = add_class_intro(strip_block(list(solution.cells)), track_id)
+        base_walkthrough = add_class_intro(strip_block(list(walkthrough.cells)), track_id)
 
         student.cells = base_student + exercise_cells(track, metric, solution=False)
         solution.cells = base_solution + exercise_cells(track, metric, solution=True)

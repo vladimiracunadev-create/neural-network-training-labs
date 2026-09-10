@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 23_model_export_and_inference
+schema_version: '3.0'
 title: Exportación e inferencia
 level: avanzado
 estimated_hours: 8
@@ -29,3 +28,18 @@ dataset:
   source: Torchvision / University of Toronto
   reference: https://www.cs.toronto.edu/~kriz/cifar.html
   license: Consultar términos CIFAR-10
+id: 23_model_export_and_inference
+class_number: 24
+module_number: 6
+module_title: Confianza y despliegue
+essential_question: ¿Sigue siendo el mismo modelo después de exportarlo y optimizarlo?
+opening_hook: Un archivo más pequeño y rápido no sirve si modifica silenciosamente las predicciones que se aprobaron en el notebook.
+class_practice: Comparar salidas PyTorch–ONNX, medir latencia y tamaño y visualizar el frente de compromiso.
+visual_evidence:
+  title: De modelo entrenado a artefacto verificable
+  asset: assets/class-map.svg
+  steps:
+  - Checkpoint aprobado
+  - Exportación y cuantización
+  - Paridad y rendimiento
+common_misconception: Exportar sin errores solo prueba que se creó un archivo; no prueba paridad, velocidad ni compatibilidad reales.

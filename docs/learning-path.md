@@ -1,4 +1,8 @@
-# Ruta de aprendizaje
+# Programa de clases
+
+El curso reúne **31 clases numeradas del 01 al 31** en siete módulos. Los identificadores técnicos de carpeta conservan `00`–`30` por compatibilidad. Cada clase puede estudiarse de forma independiente: presenta el contexto mínimo, su pregunta esencial, un mapa visual, teoría, práctica, evaluación, guía docente y solución.
+
+La secuencia completa sigue siendo recomendable porque cada módulo recupera ideas anteriores con mayor profundidad. Independencia significa que una clase no necesita artefactos generados por otra ejecución; no significa que todos los temas tengan la misma dificultad.
 
 1. **Neurona con NumPy** — `00_numpy_neuron`: Implementar propagación, entropía cruzada y descenso de gradiente sin autograd.
 2. **Perceptrón con PyTorch** — `01_pytorch_perceptron`: Aprender tensores, autograd, optimizadores y un clasificador lineal.
@@ -28,7 +32,7 @@
 
 ## Proyecto final
 
-El laboratorio 24 integra descarga gobernada, análisis tabular, línea base, MLP, selección por validación, evaluación final, model card y reporte. Debe ampliarse con evaluación de sesgo, costos de error y monitoreo de deriva antes de cualquier aplicación real.
+La clase 25 integra descarga gobernada, análisis tabular, línea base, MLP, selección por validación, evaluación final, model card y reporte. Debe ampliarse con evaluación de sesgo, costos de error y monitoreo de deriva antes de cualquier aplicación real.
 
 ## Especializaciones avanzadas
 

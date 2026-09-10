@@ -1,9 +1,9 @@
 # Plan de experimentos — Exportación e inferencia
 
 <!-- nav-top -->
-> 🧭 **Ruta 24 / 31** · ⚫ [Parte 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md)
+> 🧭 **Clase 24 / 31** · ⚫ [Módulo 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md)
 >
-> [⬅️ 🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/experiments.md) · [🏠 Índice de rutas](../../parts/README.md) · [🏁 Proyecto final: churn de telecomunicaciones ➡️](../../labs/24_capstone_real_project/experiments.md)
+> [⬅️ 🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/experiments.md) · [🏠 Índice de clases](../../parts/README.md) · [🏁 Proyecto final: churn de telecomunicaciones ➡️](../../labs/24_capstone_real_project/experiments.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -27,7 +27,7 @@ Qué la haría falsa —y esto también es un resultado que hay que reportar—:
 - Lo supera solo con una semilla concreta y no con las demás.
 - Lo supera a costa de un tiempo o un tamaño que el problema no justifica.
 
-### El experimento propio de esta ruta
+### El experimento propio de esta clase
 
 Además de la comparación con la línea base, aquí interesa una pregunta específica: **Comparar pytorch y onnx runtime**. Es la comparación que da sentido al tema de este laboratorio; la de la línea base solo dice si el modelo sirve, mientras que esta dice *qué parte* del diseño es la que aporta.
 
@@ -140,11 +140,11 @@ Una conclusión completa contiene cinco cosas, y se puede escribir en un párraf
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md) | [Las 31 rutas](../../parts/README.md) | [🏁 Proyecto final: churn de telecomunicaciones](../../labs/24_capstone_real_project/README.md) |
+| [🎯 Incertidumbre y calibración](../../labs/22_uncertainty_calibration/README.md) | [Las 31 clases](../../parts/README.md) | [🏁 Proyecto final: churn de telecomunicaciones](../../labs/24_capstone_real_project/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-⚫ [Parte 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/23_model_export_and_inference/index.html) · [🖥️ Página HTML local](index.html)
+⚫ [Módulo 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/23_model_export_and_inference/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

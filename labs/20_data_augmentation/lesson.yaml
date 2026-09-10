@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 20_data_augmentation
+schema_version: '3.0'
 title: Aumento de datos
 level: intermedio
 estimated_hours: 6
@@ -29,3 +28,18 @@ dataset:
   source: Torchvision / University of Toronto
   reference: https://www.cs.toronto.edu/~kriz/cifar.html
   license: Consultar términos CIFAR-10
+id: 20_data_augmentation
+class_number: 21
+module_number: 5
+module_title: Mecánica fina
+essential_question: ¿Qué transformaciones conservan la etiqueta y cuáles cambian el problema?
+opening_hook: Voltear una fotografía de un automóvil suele conservar su clase; voltear un dígito o alterar demasiado una señal puede destruir su significado.
+class_practice: Crear una galería de transformaciones y medir precisión limpia, robustez y errores introducidos.
+visual_evidence:
+  title: Enseñar invariancias sin borrar información
+  asset: assets/class-map.svg
+  steps:
+  - Ejemplo original
+  - Transformación válida
+  - Predicción consistente
+common_misconception: Más aumento no siempre ayuda; una transformación inválida introduce etiquetas incorrectas de manera sistemática.

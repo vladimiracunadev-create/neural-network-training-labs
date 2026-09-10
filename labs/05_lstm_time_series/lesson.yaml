@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 05_lstm_time_series
+schema_version: '3.0'
 title: LSTM para series temporales
 level: intermedio
 estimated_hours: 6
@@ -29,3 +28,18 @@ dataset:
   source: UCI
   reference: https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand
   license: CC BY 4.0
+id: 05_lstm_time_series
+class_number: 6
+module_number: 2
+module_title: Arquitecturas
+essential_question: ¿Qué decide recordar, olvidar y revelar una LSTM?
+opening_hook: La demanda de bicicletas combina ciclos diarios, clima y tendencias. Las compuertas permiten conservar unas señales y descartar otras.
+class_practice: Construir ventanas cronológicas, inspeccionar compuertas y comparar el pronóstico con persistencia y media móvil.
+visual_evidence:
+  title: Las tres decisiones de una celda LSTM
+  asset: assets/class-map.svg
+  steps:
+  - Olvidar contexto
+  - Incorporar evidencia
+  - Emitir estado
+common_misconception: Barajar una serie temporal antes de partirla produce una evaluación optimista porque permite que el futuro informe al pasado.

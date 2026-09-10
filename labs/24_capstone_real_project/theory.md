@@ -1,9 +1,9 @@
 # Teoría — Proyecto final: churn de telecomunicaciones
 
 <!-- nav-top -->
-> 🧭 **Ruta 25 / 31** · ⚫ [Parte 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md)
+> 🧭 **Clase 25 / 31** · ⚫ [Módulo 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md)
 >
-> [⬅️ 📦 Exportación e inferencia](../../labs/23_model_export_and_inference/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🔧 Fine-tuning eficiente de transformer ➡️](../../advanced_labs/25_transformer_finetuning/theory.md)
+> [⬅️ 📦 Exportación e inferencia](../../labs/23_model_export_and_inference/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [🔧 Fine-tuning eficiente de transformer ➡️](../../advanced_labs/25_transformer_finetuning/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -44,7 +44,7 @@ En un dataset tabular de clientes, la fuga no viene de mezclar particiones sino 
 
 Una variable produce fuga cuando su valor se conoce **después** o **a causa** del hecho que se quiere predecir. En abandono, los ejemplos clásicos son campos de baja, motivos de cancelación, o el consumo del último mes cuando ese mes ya es posterior al momento de decisión. También cuentan las variables agregadas calculadas sobre todo el histórico —un promedio que incluye el periodo objetivo—, y los identificadores que correlacionan con la etiqueta por el orden en que se cargaron los datos.
 
-El síntoma es siempre el mismo y hay que aprender a desconfiar de él: una métrica **sospechosamente alta**. Un modelo de abandono con AUC de 0,99 casi nunca es un gran modelo; casi siempre es una fuga. El diagnóstico consiste en mirar la importancia de las variables, encontrar la que domina, y preguntarse si estaría disponible en el momento real de la predicción. Es la razón de que este proyecto exija la ruta 21 como herramienta de auditoría y no solo como capítulo de interpretabilidad.
+El síntoma es siempre el mismo y hay que aprender a desconfiar de él: una métrica **sospechosamente alta**. Un modelo de abandono con AUC de 0,99 casi nunca es un gran modelo; casi siempre es una fuga. El diagnóstico consiste en mirar la importancia de las variables, encontrar la que domina, y preguntarse si estaría disponible en el momento real de la predicción. Es la razón de que este proyecto exija la clase 22 como herramienta de auditoría y no solo como capítulo de interpretabilidad.
 
 La regla operativa que resume todo: para cada variable, responder **en qué instante se conoce su valor**. Si la respuesta es «después del corte de decisión», la variable no puede usarse, por informativa que sea.
 
@@ -56,7 +56,7 @@ Si retener a un cliente cuesta c_int y perderlo cuesta c_perd, y la intervenció
 
 p̂ > c_int / (e · c_perd).
 
-La fórmula tiene tres consecuencias que conviene declarar. Primero, **el umbral no es 0,5** salvo por coincidencia. Segundo, exige que p̂ sea una probabilidad de verdad, lo que enlaza directamente con la calibración de la ruta 22. Y tercero, cuando el presupuesto es limitado, la restricción no es un umbral sino una capacidad: se interviene sobre los k clientes de mayor p̂, y lo que hay que medir es cuántos de ellos habrían abandonado realmente.
+La fórmula tiene tres consecuencias que conviene declarar. Primero, **el umbral no es 0,5** salvo por coincidencia. Segundo, exige que p̂ sea una probabilidad de verdad, lo que enlaza directamente con la calibración de la clase 23. Y tercero, cuando el presupuesto es limitado, la restricción no es un umbral sino una capacidad: se interviene sobre los k clientes de mayor p̂, y lo que hay que medir es cuántos de ellos habrían abandonado realmente.
 
 Al reportar el impacto conviene separar dos cifras que suelen mezclarse. El desempeño del **modelo** —discriminación, calibración, estabilidad entre semillas— se mide con datos históricos. El impacto de la **intervención** —cuántas bajas se evitaron— no se puede estimar con datos observacionales, porque requiere saber qué habría pasado sin actuar: eso exige un experimento con grupo de control. Presentar el segundo como si se dedujera del primero es un error que este proyecto pide evitar explícitamente en su reporte.
 
@@ -99,11 +99,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) | [Las 31 rutas](../../parts/README.md) | [🔧 Fine-tuning eficiente de transformer](../../advanced_labs/25_transformer_finetuning/README.md) |
+| [📦 Exportación e inferencia](../../labs/23_model_export_and_inference/README.md) | [Las 31 clases](../../parts/README.md) | [🔧 Fine-tuning eficiente de transformer](../../advanced_labs/25_transformer_finetuning/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-⚫ [Parte 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/24_capstone_real_project/index.html) · [🖥️ Página HTML local](index.html)
+⚫ [Módulo 6 — Confiar en el modelo y sacarlo del cuaderno](../../parts/06-confianza-y-despliegue.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/24_capstone_real_project/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

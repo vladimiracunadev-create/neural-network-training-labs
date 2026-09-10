@@ -4,7 +4,8 @@ El detalle vive en [`docs/roadmap.md`](docs/roadmap.md). Este resumen orienta ha
 
 ## ✅ Entregado en 1.0.0
 
-- **31 rutas de aprendizaje** (25 laboratorios centrales + 6 especializaciones avanzadas) y **93 cuadernos** con contrato nbgrader: recorrido, estudiante y solución son tres documentos distintos, y cada laboratorio trae **5 ejercicios evaluables** sobre el contrato experimental cuya solución de referencia se ejecuta en la integración continua.
+- **31 clases numeradas del 01 al 31**, agrupadas en 7 módulos, con identidad pedagógica propia: pregunta esencial, apertura, práctica disciplinar, mapa conceptual, error frecuente y guía docente independiente.
+- **93 cuadernos** con contrato nbgrader: recorrido, estudiante y solución son documentos distintos; cada clase combina ejercicios experimentales comunes con evaluación específica de su materia.
 - Contrato de experimento reproducible: `split_seed` y `training_seed` independientes, selección por `validation`, sellado de `test` con `experiment.lock.json`.
 - Registro de modelos local y MLflow opcional con alias champion/challenger y puertas de promoción.
 - API de inferencia FastAPI con métricas Prometheus, OpenTelemetry y endpoint de deriva.

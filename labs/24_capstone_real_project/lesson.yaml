@@ -1,12 +1,10 @@
-schema_version: '2.0'
-lab: 24_capstone_real_project
+schema_version: '3.0'
 title: 'Proyecto final: churn de telecomunicaciones'
 level: proyecto
 estimated_hours: 10
 prerequisites: []
 learning_outcomes:
-- Resolver de extremo a extremo un problema real de abandono de clientes con documentación,
-  evaluación y despliegue.
+- Resolver de extremo a extremo un problema real de abandono de clientes con documentación, evaluación y despliegue.
 - Preparar y auditar el dataset real iranian_churn sin fuga de datos.
 - Entrenar y evaluar proyecto integral de churn.
 - 'Comparar contra la línea base: Regresión logística y Gradient Boosting.'
@@ -27,3 +25,18 @@ dataset:
   source: UCI
   reference: https://archive.ics.uci.edu/dataset/563/iranian+churn+dataset
   license: CC BY 4.0
+id: 24_capstone_real_project
+class_number: 25
+module_number: 6
+module_title: Confianza y despliegue
+essential_question: ¿Cómo se convierte una probabilidad de abandono en una decisión responsable de negocio?
+opening_hook: Contactar a todos cuesta dinero; no contactar a nadie pierde clientes. El umbral correcto depende de costos y capacidad, no solo de F1.
+class_practice: Recorrer el proyecto completo, construir una matriz de costos y defender una recomendación con límites explícitos.
+visual_evidence:
+  title: De datos históricos a una decisión operativa
+  asset: assets/class-map.svg
+  steps:
+  - Riesgo estimado
+  - Costo y capacidad
+  - Acción supervisada
+common_misconception: Predecir churn no demuestra por qué una persona se irá ni qué intervención logrará retenerla.

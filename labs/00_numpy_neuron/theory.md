@@ -1,9 +1,9 @@
 # Teoría — Neurona con NumPy
 
 <!-- nav-top -->
-> 🧭 **Ruta 1 / 31** · 🟢 [Parte 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md)
+> 🧭 **Clase 01 / 31** · 🟢 [Módulo 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md)
 >
-> ⬅️ *inicio del recorrido* · [🏠 Índice de rutas](../../parts/README.md) · [🧩 Perceptrón con PyTorch ➡️](../../labs/01_pytorch_perceptron/theory.md)
+> ⬅️ *inicio del recorrido* · [🏠 Índice de clases](../../parts/README.md) · [🧩 Perceptrón con PyTorch ➡️](../../labs/01_pytorch_perceptron/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -74,7 +74,7 @@ H = (1/N)·Xᵀ·S·X,   con S = diag(pᵢ·(1 − pᵢ)),
 
 y como cada pᵢ·(1 − pᵢ) > 0, la matriz S es definida positiva y H resulta semidefinida positiva para cualquier X. Una función convexa no tiene mínimos locales distintos del global: cualquier punto donde el gradiente se anule es la solución óptima. Por eso aquí el descenso de gradiente converge al mismo sitio venga de donde venga la inicialización, y la única semilla que importa es la de la partición de datos.
 
-Conviene guardar esa observación, porque explica un contraste que se vuelve central a partir de la ruta 02: en cuanto se añade una capa oculta con no linealidad, la superficie de pérdida deja de ser convexa, aparecen múltiples mínimos y puntos de silla, y **la inicialización empieza a cambiar el resultado**. Ese es el momento exacto en que `training_seed` se convierte en una variable experimental que hay que controlar y reportar, y no en un detalle.
+Conviene guardar esa observación, porque explica un contraste que se vuelve central a partir de la clase 03: en cuanto se añade una capa oculta con no linealidad, la superficie de pérdida deja de ser convexa, aparecen múltiples mínimos y puntos de silla, y **la inicialización empieza a cambiar el resultado**. Ese es el momento exacto en que `training_seed` se convierte en una variable experimental que hay que controlar y reportar, y no en un detalle.
 
 Un caso límite conviene conocerlo: si las clases son **linealmente separables**, la verosimilitud no tiene máximo finito —los pesos crecen sin cota empujando las probabilidades hacia 0 y 1— y el entrenamiento diverge lentamente. La regularización L2 lo resuelve añadiendo (λ/2)·‖w‖², que vuelve la pérdida estrictamente convexa y garantiza un óptimo finito.
 
@@ -92,7 +92,7 @@ El segundo es cómo saber que la derivada está bien programada. La comprobació
 
 ∂L/∂θ ≈ ( L(θ + ε) − L(θ − ε) ) / (2ε),
 
-cuyo error es O(ε²) frente al O(ε) de la diferencia hacia adelante. Con ε ≈ 10⁻⁵ en float64, el error relativo entre el gradiente analítico y el numérico debería quedar por debajo de 10⁻⁷; por encima de 10⁻⁴ hay un fallo real en la derivación. Esta técnica es la que la ruta 16 aplica capa por capa a una red completa.
+cuyo error es O(ε²) frente al O(ε) de la diferencia hacia adelante. Con ε ≈ 10⁻⁵ en float64, el error relativo entre el gradiente analítico y el numérico debería quedar por debajo de 10⁻⁷; por encima de 10⁻⁴ hay un fallo real en la derivación. Esta técnica es la que la clase 17 aplica capa por capa a una red completa.
 
 Sobre la escala de las variables: como el gradiente es proporcional a xᵢⱼ, una característica medida en miles produce gradientes miles de veces mayores que una medida en unidades. Con una tasa de aprendizaje única, la dirección de descenso queda dominada por la variable de mayor escala y el resto avanza a paso de tortuga. En términos de la hessiana, la relación entre su mayor y su menor autovalor —el **número de condición**— se dispara, y la convergencia del descenso de gradiente se degrada en la misma proporción. Estandarizar las 30 características de este dataset no es cosmética: es lo que hace que el problema sea resoluble en un número razonable de épocas. Y se ajusta **solo con `train`**, porque usar la media y la desviación del conjunto completo filtraría información de `test` al preprocesamiento.
 
@@ -129,11 +129,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| *— inicio del recorrido* | [Las 31 rutas](../../parts/README.md) | [🧩 Perceptrón con PyTorch](../../labs/01_pytorch_perceptron/README.md) |
+| *— inicio del recorrido* | [Las 31 clases](../../parts/README.md) | [🧩 Perceptrón con PyTorch](../../labs/01_pytorch_perceptron/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟢 [Parte 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/00_numpy_neuron/index.html) · [🖥️ Página HTML local](index.html)
+🟢 [Módulo 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/00_numpy_neuron/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

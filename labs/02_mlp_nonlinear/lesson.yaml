@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 02_mlp_nonlinear
+schema_version: '3.0'
 title: MLP multiclase
 level: fundamentos
 estimated_hours: 4
@@ -29,3 +28,18 @@ dataset:
   source: UCI
   reference: https://archive.ics.uci.edu/dataset/602/dry+bean+dataset
   license: CC BY 4.0
+id: 02_mlp_nonlinear
+class_number: 3
+module_number: 1
+module_title: Fundamentos
+essential_question: ¿Qué puede aprender una capa oculta que una recta nunca podrá separar?
+opening_hook: Dos clases pueden estar entrelazadas de manera que ninguna línea las divida. Las neuronas ocultas transforman primero el espacio para volver separable el problema.
+class_practice: Comparar una frontera lineal con una MLP y relacionar las activaciones ocultas con las regiones de decisión.
+visual_evidence:
+  title: Cómo una MLP dobla el espacio
+  asset: assets/class-map.svg
+  steps:
+  - Datos no separables
+  - Transformación oculta
+  - Regiones de decisión
+common_misconception: Más capas no garantizan una mejor solución; añaden capacidad, costo y nuevas formas de sobreajustar.

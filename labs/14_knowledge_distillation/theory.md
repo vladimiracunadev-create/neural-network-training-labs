@@ -1,9 +1,9 @@
 # Teoría — Destilación de conocimiento
 
 <!-- nav-top -->
-> 🧭 **Ruta 15 / 31** · 🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md)
+> 🧭 **Clase 15 / 31** · 🟠 [Módulo 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md)
 >
-> [⬅️ 🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🌐 Aprendizaje federado por participante ➡️](../../labs/15_federated_learning/theory.md)
+> [⬅️ 🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [🌐 Aprendizaje federado por participante ➡️](../../labs/15_federated_learning/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -62,7 +62,7 @@ Los **parámetros** miden el tamaño en disco y en memoria. Los **FLOPs** miden 
 
 Hay un supuesto sin el cual todo el método se cae, y merece enunciarse: la destilación presupone que **existe** una red pequeña capaz de resolver la tarea, y que el problema era encontrarla, no que faltara capacidad. Si la arquitectura del estudiante no tiene capacidad suficiente para representar la función, ninguna cantidad de destilación la creará; el profesor solo puede guiar la búsqueda hacia una buena solución dentro del espacio que el estudiante ya podía representar. De ahí que un estudiante demasiado pequeño no mejore con destilación, y que la elección de su arquitectura sea parte del experimento.
 
-Conviene además situar la destilación entre sus alternativas, porque resuelven el mismo problema por vías distintas y son combinables. La **poda** elimina pesos o canales de la red grande según su importancia; la **cuantización** —que se estudia en la ruta 23— reduce la precisión numérica de 32 a 8 bits, con un factor 4 de reducción casi garantizado y soporte de hardware. Frente a ambas, la destilación tiene una ventaja específica: permite cambiar la **arquitectura** por completo, no solo encoger la existente.
+Conviene además situar la destilación entre sus alternativas, porque resuelven el mismo problema por vías distintas y son combinables. La **poda** elimina pesos o canales de la red grande según su importancia; la **cuantización** —que se estudia en la clase 24— reduce la precisión numérica de 32 a 8 bits, con un factor 4 de reducción casi garantizado y soporte de hardware. Frente a ambas, la destilación tiene una ventaja específica: permite cambiar la **arquitectura** por completo, no solo encoger la existente.
 
 ### Cómo evaluar honestamente al estudiante
 
@@ -106,11 +106,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/README.md) | [Las 31 rutas](../../parts/README.md) | [🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md) |
+| [🎛️ Búsqueda de hiperparámetros](../../labs/13_hyperparameter_search/README.md) | [Las 31 clases](../../parts/README.md) | [🌐 Aprendizaje federado por participante](../../labs/15_federated_learning/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟠 [Parte 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/14_knowledge_distillation/index.html) · [🖥️ Página HTML local](index.html)
+🟠 [Módulo 4 — Entrenar mejor, más barato y sin centralizar datos](../../parts/04-entrenamiento-eficiente.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/14_knowledge_distillation/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

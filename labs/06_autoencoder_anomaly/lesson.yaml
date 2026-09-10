@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 06_autoencoder_anomaly
+schema_version: '3.0'
 title: Autoencoder para fraude
 level: intermedio
 estimated_hours: 6
@@ -29,3 +28,18 @@ dataset:
   source: Kaggle / ULB
   reference: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
   license: Uso sujeto a términos de Kaggle y autor
+id: 06_autoencoder_anomaly
+class_number: 7
+module_number: 2
+module_title: Arquitecturas
+essential_question: ¿Cuándo un error de reconstrucción se convierte en evidencia de anomalía?
+opening_hook: Si el modelo aprende solamente el aspecto de las transacciones normales, las operaciones extrañas deberían resultarle difíciles de reconstruir.
+class_practice: Comparar reconstrucciones, estudiar las distribuciones de error y elegir el umbral únicamente con validation.
+visual_evidence:
+  title: Del patrón normal al umbral de alerta
+  asset: assets/class-map.svg
+  steps:
+  - Comprimir lo normal
+  - Reconstruir
+  - Separar por error
+common_misconception: Un error alto no prueba fraude; señala una observación distinta de las aprendidas y necesita interpretación contextual.

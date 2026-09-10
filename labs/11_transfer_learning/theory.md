@@ -1,9 +1,9 @@
 # Teoría — Transfer learning con mascotas
 
 <!-- nav-top -->
-> 🧭 **Ruta 12 / 31** · 🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
+> 🧭 **Clase 12 / 31** · 🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
 >
-> [⬅️ 🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🔀 Fusión de sensores ➡️](../../labs/12_multimodal_fusion/theory.md)
+> [⬅️ 🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [🔀 Fusión de sensores ➡️](../../labs/12_multimodal_fusion/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -34,7 +34,7 @@ Las tres estrategias que compara el laboratorio se distinguen por qué subconjun
 
 En **extracción de características** se congela el cuerpo entero: `requires_grad = False` para todos sus pesos, y solo se entrena la cabeza. Con una ResNet18 —unos 11,2 millones de parámetros en el cuerpo— y una cabeza lineal de 512 entradas a las clases del problema, los parámetros entrenables bajan a unos pocos miles. Como el cuerpo no cambia, sus salidas para cada imagen son **constantes durante todo el entrenamiento**, lo que permite un truco muy rentable: calcularlas una sola vez, guardarlas en caché, y entrenar la cabeza sobre esos vectores. El entrenamiento pasa a ser una regresión logística sobre 512 dimensiones y corre en segundos.
 
-En **fine-tuning completo** todo el cuerpo recibe gradiente. Cuesta memoria —hay que guardar activaciones y estados del optimizador de 11 millones de parámetros— y exige una tasa de aprendizaje pequeña, típicamente uno o dos órdenes de magnitud menor que la del entrenamiento desde cero. La razón es la misma que en la ruta 25: la cabeza está inicializada al azar y sus primeros gradientes son grandes; si se propagan con una tasa alta, destruyen las representaciones preentrenadas antes de que la cabeza haya aprendido nada útil. El remedio habitual es un **calentamiento**: entrenar unas épocas solo la cabeza y descongelar después, o usar tasas discriminativas —más pequeñas en las capas iniciales, más grandes en las finales—, que es la traducción directa de que las capas iniciales necesitan cambiar menos.
+En **fine-tuning completo** todo el cuerpo recibe gradiente. Cuesta memoria —hay que guardar activaciones y estados del optimizador de 11 millones de parámetros— y exige una tasa de aprendizaje pequeña, típicamente uno o dos órdenes de magnitud menor que la del entrenamiento desde cero. La razón es la misma que en la clase 26: la cabeza está inicializada al azar y sus primeros gradientes son grandes; si se propagan con una tasa alta, destruyen las representaciones preentrenadas antes de que la cabeza haya aprendido nada útil. El remedio habitual es un **calentamiento**: entrenar unas épocas solo la cabeza y descongelar después, o usar tasas discriminativas —más pequeñas en las capas iniciales, más grandes en las finales—, que es la traducción directa de que las capas iniciales necesitan cambiar menos.
 
 En **entrenamiento desde cero** no hay transferencia: es la referencia que dice cuánto aportó realmente el preentrenamiento. Compararla con las otras dos con el mismo presupuesto de épocas es lo que convierte el laboratorio en un experimento y no en una demostración.
 
@@ -42,7 +42,7 @@ En **entrenamiento desde cero** no hay transferencia: es la referencia que dice 
 
 Hay un fallo específico de este régimen que no produce excepción, no aparece en las curvas de entrenamiento y degrada el resultado: las estadísticas de la **normalización por lotes**.
 
-Como se vio en la ruta 03, esas capas guardan una media y una varianza acumuladas que no se aprenden por gradiente, sino que se actualizan en cada paso hacia adelante mientras el modelo esté en modo entrenamiento. Congelar los pesos con `requires_grad = False` **no congela esas estadísticas**. El resultado es que, en un supuesto «cuerpo congelado», las capas de normalización siguen adaptándose a los nuevos datos y la representación se mueve, aunque ningún peso reciba gradiente. Si además el lote es pequeño, las estadísticas del nuevo dominio son ruidosas y la degradación puede ser notable. Congelar de verdad exige poner esas capas en modo evaluación explícitamente.
+Como se vio en la clase 04, esas capas guardan una media y una varianza acumuladas que no se aprenden por gradiente, sino que se actualizan en cada paso hacia adelante mientras el modelo esté en modo entrenamiento. Congelar los pesos con `requires_grad = False` **no congela esas estadísticas**. El resultado es que, en un supuesto «cuerpo congelado», las capas de normalización siguen adaptándose a los nuevos datos y la representación se mueve, aunque ningún peso reciba gradiente. Si además el lote es pequeño, las estadísticas del nuevo dominio son ruidosas y la degradación puede ser notable. Congelar de verdad exige poner esas capas en modo evaluación explícitamente.
 
 Un segundo detalle de la misma familia: la normalización de entrada debe ser **la del preentrenamiento**. Un modelo entrenado con las medias y desviaciones de ImageNet espera recibir imágenes normalizadas con esos mismos valores; alimentarlo con otra normalización lo sitúa fuera de la distribución para la que se calibraron sus filtros, y el rendimiento cae sin que nada lo señale.
 
@@ -86,11 +86,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) | [Las 31 rutas](../../parts/README.md) | [🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) |
+| [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) | [Las 31 clases](../../parts/README.md) | [🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/11_transfer_learning/index.html) · [🖥️ Página HTML local](index.html)
+🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/11_transfer_learning/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

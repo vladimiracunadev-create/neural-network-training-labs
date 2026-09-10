@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 14_knowledge_distillation
+schema_version: '3.0'
 title: Destilación de conocimiento
 level: avanzado
 estimated_hours: 8
@@ -29,3 +28,18 @@ dataset:
   source: Torchvision / University of Toronto
   reference: https://www.cs.toronto.edu/~kriz/cifar.html
   license: Consultar términos CIFAR-10
+id: 14_knowledge_distillation
+class_number: 15
+module_number: 4
+module_title: Entrenamiento eficiente
+essential_question: ¿Qué información transmiten las probabilidades suaves que una etiqueta dura no contiene?
+opening_hook: La profesora no solo dice «gato»; también muestra cuánto se parece la imagen a otras clases. Esa estructura guía a la estudiante compacta.
+class_practice: Variar temperatura y mezcla de pérdidas y construir el frente precisión–latencia–tamaño.
+visual_evidence:
+  title: Transferir relaciones, no copiar respuestas
+  asset: assets/class-map.svg
+  steps:
+  - Logits de profesora
+  - Objetivos suaves
+  - Estudiante compacta
+common_misconception: Una estudiante más pequeña no hereda automáticamente la calidad de la profesora; capacidad y temperatura limitan la transferencia.

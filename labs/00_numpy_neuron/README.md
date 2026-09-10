@@ -1,22 +1,36 @@
 # Neurona con NumPy
 
 <!-- nav-top -->
-> 🧭 **Ruta 1 / 31** · 🟢 [Parte 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md)
+> 🧭 **Clase 01 / 31** · 🟢 [Módulo 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md)
 >
-> ⬅️ *inicio del recorrido* · [🏠 Índice de rutas](../../parts/README.md) · [🧩 Perceptrón con PyTorch ➡️](../../labs/01_pytorch_perceptron/README.md)
+> ⬅️ *inicio del recorrido* · [🏠 Índice de clases](../../parts/README.md) · [🧩 Perceptrón con PyTorch ➡️](../../labs/01_pytorch_perceptron/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+Imagina una frontera que empieza equivocándose al azar y se mueve un poco después de cada error. En esta clase podrás ver y calcular cada uno de esos movimientos.
+
+> **Pregunta esencial:** ¿Cómo aprende una neurona si no existe autograd?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![Del error al movimiento de la frontera](assets/class-map.svg)
+
+*Mapa de esta clase: Del error al movimiento de la frontera. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Implementar propagación, entropía cruzada y descenso de gradiente sin autograd.
 
-Es la **ruta 1 de 31** del recorrido y pertenece a 🟢 la parte 1, *Fundamentos: de la derivada a la primera red*. Es el punto de partida; después viene **Perceptrón con PyTorch**.
+**Práctica propia de esta clase:** Derivar el gradiente, comprobarlo con diferencias finitas y observar cómo la escala de las variables cambia el descenso.
+
+Es la **clase 01 de 31** del programa y pertenece a 🟢 el módulo 1, *Fundamentos: de la derivada a la primera red*. Es el punto de partida; después viene **Perceptrón con PyTorch**.
 
 Trabajarás con el dataset **`breast_cancer_wisconsin`** (UCI, licencia: CC BY 4.0), y tendrás que superar la línea base **DummyClassifier y regresión logística de scikit-learn**, decidiendo con la métrica `f1` medida sobre `validation`. Nivel fundamentos, unas **4 horas** de dedicación.
 
-**Lo que conviene traer resuelto de las rutas anteriores:** Python básico, NumPy, álgebra lineal elemental.
+**Lo que conviene traer resuelto de las clases anteriores:** Python básico, NumPy, álgebra lineal elemental.
 
 **Al terminar deberías ser capaz de:**
 
@@ -26,7 +40,11 @@ Trabajarás con el dataset **`breast_cancer_wisconsin`** (UCI, licencia: CC BY 4
 - Comparar contra la línea base: DummyClassifier y regresión logística de scikit-learn.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> El gradiente no indica dónde está el mínimo; indica la pendiente local y cuánto cambia la pérdida en ese punto.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
@@ -92,7 +110,7 @@ H = (1/N)·Xᵀ·S·X,   con S = diag(pᵢ·(1 − pᵢ)),
 
 y como cada pᵢ·(1 − pᵢ) > 0, la matriz S es definida positiva y H resulta semidefinida positiva para cualquier X. Una función convexa no tiene mínimos locales distintos del global: cualquier punto donde el gradiente se anule es la solución óptima. Por eso aquí el descenso de gradiente converge al mismo sitio venga de donde venga la inicialización, y la única semilla que importa es la de la partición de datos.
 
-Conviene guardar esa observación, porque explica un contraste que se vuelve central a partir de la ruta 02: en cuanto se añade una capa oculta con no linealidad, la superficie de pérdida deja de ser convexa, aparecen múltiples mínimos y puntos de silla, y **la inicialización empieza a cambiar el resultado**. Ese es el momento exacto en que `training_seed` se convierte en una variable experimental que hay que controlar y reportar, y no en un detalle.
+Conviene guardar esa observación, porque explica un contraste que se vuelve central a partir de la clase 03: en cuanto se añade una capa oculta con no linealidad, la superficie de pérdida deja de ser convexa, aparecen múltiples mínimos y puntos de silla, y **la inicialización empieza a cambiar el resultado**. Ese es el momento exacto en que `training_seed` se convierte en una variable experimental que hay que controlar y reportar, y no en un detalle.
 
 Un caso límite conviene conocerlo: si las clases son **linealmente separables**, la verosimilitud no tiene máximo finito —los pesos crecen sin cota empujando las probabilidades hacia 0 y 1— y el entrenamiento diverge lentamente. La regularización L2 lo resuelve añadiendo (λ/2)·‖w‖², que vuelve la pérdida estrictamente convexa y garantiza un óptimo finito.
 
@@ -110,7 +128,7 @@ El segundo es cómo saber que la derivada está bien programada. La comprobació
 
 ∂L/∂θ ≈ ( L(θ + ε) − L(θ − ε) ) / (2ε),
 
-cuyo error es O(ε²) frente al O(ε) de la diferencia hacia adelante. Con ε ≈ 10⁻⁵ en float64, el error relativo entre el gradiente analítico y el numérico debería quedar por debajo de 10⁻⁷; por encima de 10⁻⁴ hay un fallo real en la derivación. Esta técnica es la que la ruta 16 aplica capa por capa a una red completa.
+cuyo error es O(ε²) frente al O(ε) de la diferencia hacia adelante. Con ε ≈ 10⁻⁵ en float64, el error relativo entre el gradiente analítico y el numérico debería quedar por debajo de 10⁻⁷; por encima de 10⁻⁴ hay un fallo real en la derivación. Esta técnica es la que la clase 17 aplica capa por capa a una red completa.
 
 Sobre la escala de las variables: como el gradiente es proporcional a xᵢⱼ, una característica medida en miles produce gradientes miles de veces mayores que una medida en unidades. Con una tasa de aprendizaje única, la dirección de descenso queda dominada por la variable de mayor escala y el resto avanza a paso de tortuga. En términos de la hessiana, la relación entre su mayor y su menor autovalor —el **número de condición**— se dispara, y la convergencia del descenso de gradiente se degrada en la misma proporción. Estandarizar las 30 características de este dataset no es cosmética: es lo que hace que el problema sea resoluble en un número razonable de épocas. Y se ajusta **solo con `train`**, porque usar la media y la desviación del conjunto completo filtraría información de `test` al preprocesamiento.
 
@@ -118,21 +136,21 @@ Sobre la escala de las variables: como el gradiente es proporcional a xᵢⱼ, u
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `accuracy`, `balanced_accuracy`, `precision`, `recall`, `f1`, `roc_auc`, `pr_auc`. De todas ellas, la que **decide** qué modelo se conserva es `f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `accuracy`, `balanced_accuracy`, `precision`, `recall`, `f1`, `roc_auc`, `pr_auc`. De todas ellas, la que **decide** qué modelo se conserva es `f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 25 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (40 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -205,7 +223,7 @@ datos = prepare_dataset("00_numpy_neuron", quick=True, seed=42)
 print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -332,7 +350,7 @@ Cada ejecución escribe su propio directorio con nombre único, de modo que dos 
 | `confusion_matrix.png` | Qué clases se confunden entre sí. |
 | `model_spec.json` · `inference_contract.json` | Qué entrada espera el modelo y qué devuelve: lo que necesita quien lo despliegue. |
 | `model_card.md` · `report.md` | La ficha del modelo y el informe legible de la ejecución. |
-| `last_model.npz` | **Propio de esta ruta.** El estado de la última época, para contrastarlo con el mejor. |
+| `last_model.npz` | **Propio de esta clase.** El estado de la última época, para contrastarlo con el mejor. |
 
 ## ⚠️ Dónde suele perderse la gente
 
@@ -349,7 +367,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 ## ✅ Antes de darlo por terminado
 
-El laboratorio está aprobado cuando se cumplen estos criterios:
+La clase está aprobada cuando se cumplen estos criterios:
 
 - [ ] cero solapamiento entre train, validation y test
 - [ ] selección basada únicamente en validation
@@ -397,6 +415,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -414,11 +433,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| *— inicio del recorrido* | [Las 31 rutas](../../parts/README.md) | [🧩 Perceptrón con PyTorch](../../labs/01_pytorch_perceptron/README.md) |
+| *— inicio del recorrido* | [Las 31 clases](../../parts/README.md) | [🧩 Perceptrón con PyTorch](../../labs/01_pytorch_perceptron/README.md) |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟢 [Parte 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/00_numpy_neuron/index.html) · [🖥️ Página HTML local](index.html)
+🟢 [Módulo 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/00_numpy_neuron/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

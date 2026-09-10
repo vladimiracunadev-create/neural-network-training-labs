@@ -1,9 +1,9 @@
 # Plan de experimentos — CNN para visión
 
 <!-- nav-top -->
-> 🧭 **Ruta 4 / 31** · 🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
+> 🧭 **Clase 04 / 31** · 🔵 [Módulo 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
 >
-> [⬅️ 🌀 MLP multiclase](../../labs/02_mlp_nonlinear/experiments.md) · [🏠 Índice de rutas](../../parts/README.md) · [🔁 RNN para texto ➡️](../../labs/04_rnn_sequences/experiments.md)
+> [⬅️ 🌀 MLP multiclase](../../labs/02_mlp_nonlinear/experiments.md) · [🏠 Índice de clases](../../parts/README.md) · [🔁 RNN para texto ➡️](../../labs/04_rnn_sequences/experiments.md)
 >
 > [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -27,7 +27,7 @@ Qué la haría falsa —y esto también es un resultado que hay que reportar—:
 - Lo supera solo con una semilla concreta y no con las demás.
 - Lo supera a costa de un tiempo o un tamaño que el problema no justifica.
 
-### El experimento propio de esta ruta
+### El experimento propio de esta clase
 
 Además de la comparación con la línea base, aquí interesa una pregunta específica: **Comparar kernel, normalización y aumento**. Es la comparación que da sentido al tema de este laboratorio; la de la línea base solo dice si el modelo sirve, mientras que esta dice *qué parte* del diseño es la que aporta.
 
@@ -140,11 +140,11 @@ Una conclusión completa contiene cinco cosas, y se puede escribir en un párraf
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🌀 MLP multiclase](../../labs/02_mlp_nonlinear/README.md) | [Las 31 rutas](../../parts/README.md) | [🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) |
+| [🌀 MLP multiclase](../../labs/02_mlp_nonlinear/README.md) | [Las 31 clases](../../parts/README.md) | [🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · [🧠 Teoría](theory.md) · **🔬 Experimentos** · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/03_cnn_vision/index.html) · [🖥️ Página HTML local](index.html)
+🔵 [Módulo 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/03_cnn_vision/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

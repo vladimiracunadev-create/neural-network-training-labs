@@ -30,9 +30,9 @@ El registro desacopla nombres de arquitectura de sus implementaciones. Agregar u
 
 La orquestación histórica permanece para compatibilidad, pero las nuevas capacidades se construyen sobre contratos separados y módulos por dominio.
 
-## Estructura de un laboratorio
+## Estructura de una clase
 
-Cada laboratorio (`labs/NN_slug/` o `advanced_labs/NN_slug/`) es autocontenido:
+Cada clase (`labs/NN_slug/` o `advanced_labs/NN_slug/`) es autocontenida. `configs/classes.yaml` define su número público, pregunta esencial, apertura, práctica, mapa visual y error conceptual:
 
 ```text
 labs/03_cnn_vision/
@@ -40,22 +40,26 @@ labs/03_cnn_vision/
 ├── theory.md            # fundamento matemático + sección "🔗 Referencias" (libros y papers)
 ├── experiments.md       # hipótesis, variables controladas y tabla multi-semilla
 ├── assessment.md        # preguntas y rúbrica de evaluación
+├── instructor-guide.md  # mediación docente, tiempos y actividad propia
 ├── lesson.yaml          # resultados de aprendizaje, prerrequisitos y entregables
+├── assets/class-map.svg # mapa conceptual accesible y específico
 ├── train.py             # interfaz de terminal que usa el mismo código del cuaderno
 ├── notebook.ipynb       # recorrido completo · notebook_student · notebook_solution
 ├── configs/             # baseline.yaml e improved.yaml
 └── data/dataset.yaml    # procedencia, licencia y política de partición
 ```
 
-La teoría de cada laboratorio se ancla en la literatura de referencia del tema y en los papers seminales de su arquitectura; la lista de fuentes por área vive en el README raíz y la cita concreta, en la sección `🔗 Referencias` de cada `theory.md`.
+La teoría de cada clase se ancla en la literatura de referencia del tema y en los papers seminales de su arquitectura; la lista de fuentes por área vive en el README raíz y la cita concreta, en la sección `🔗 Referencias` de cada `theory.md`.
 
 ## Scripts
 
 ```text
 scripts/
 ├── validate_repository.py           # valida estructura, catálogo y contratos de notebooks
-├── build_lab_docs.py                # guía, experimentos, evaluación, partes y navegación (idempotente)
-├── generate_lab_html.py             # página HTML autocontenida por laboratorio y por parte + índice offline
+├── build_class_materials.py         # identidad, guía docente y mapa visual de las 31 clases
+├── normalize_class_language.py      # migra el lenguaje curricular sin alterar identificadores técnicos
+├── build_lab_docs.py                # guía, experimentos, evaluación, módulos y navegación (idempotente)
+├── generate_lab_html.py             # página HTML autocontenida por clase y por módulo + índice offline
 ├── generate_site.py                 # genera el sitio de estudio (GitHub Pages) con navegación
 ├── generate_specialized_notebooks.py
 ├── prepare_datasets.py · audit_splits.py · check_dataset_sources.py
@@ -64,7 +68,7 @@ scripts/
 └── validate_nbgrader.py
 ```
 
-`build_lab_docs.py`, `generate_lab_html.py` y `generate_site.py` mantienen el recorrido de estudio en sus tres superficies —Markdown, HTML versionado y sitio de Pages— a partir de una única fuente: el Markdown de los laboratorios. Si cambian los títulos o el orden, se ejecutan en ese orden y todo queda sincronizado; los dos primeros aceptan `--check` y la CI los usa para impedir que las superficies se desincronicen. Consulta [Sitio de estudio y navegación](study-site.md).
+`build_class_materials.py`, `build_lab_docs.py`, `generate_lab_html.py` y `generate_site.py` mantienen el programa en sus tres superficies —Markdown, HTML versionado y sitio de Pages— a partir de la identidad pedagógica de `configs/classes.yaml` y del Markdown de las clases. Si cambian los títulos o el orden, se ejecutan en ese orden y todo queda sincronizado; los tres primeros aceptan `--check` y la CI los usa para impedir que las superficies se desincronicen. Consulta [Sitio de estudio y navegación](study-site.md).
 
 ## Flujos de integración continua
 

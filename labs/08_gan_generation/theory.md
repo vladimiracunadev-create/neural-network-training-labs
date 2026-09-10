@@ -1,9 +1,9 @@
 # Teoría — GAN generativa
 
 <!-- nav-top -->
-> 🧭 **Ruta 9 / 31** · 🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
+> 🧭 **Clase 09 / 31** · 🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
 >
-> [⬅️ 🔭 Transformer para noticias](../../labs/07_transformer_attention/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🕸️ GNN sobre red de citas ➡️](../../labs/09_gnn_graphs/theory.md)
+> [⬅️ 🔭 Transformer para noticias](../../labs/07_transformer_attention/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [🕸️ GNN sobre red de citas ➡️](../../labs/09_gnn_graphs/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -48,7 +48,7 @@ V(G, D*) = 2·JS(p_r ‖ p_g) − 2·log 2,
 
 de modo que minimizar en G equivale a minimizar la divergencia de Jensen-Shannon. El óptimo global se alcanza cuando p_g = p_r, y entonces D* ≡ ½ y el valor del juego es −2·log 2 ≈ −1,386.
 
-Aquí está el problema que la ruta 28 resolverá. La JS entre dos distribuciones con soportes **disjuntos** vale log 2 sea cual sea la distancia entre ellas: es constante, y su gradiente es cero. Y los soportes son disjuntos casi siempre al principio, porque las imágenes reales viven en una variedad de dimensión bajísima dentro del espacio de píxeles y las generadas, otra. La consecuencia es la paradoja característica de las GAN: **cuanto mejor es el discriminador, menos aprende el generador**, porque un D casi perfecto satura y deja de transmitir dirección. Toda la dificultad práctica de entrenar una GAN —equilibrar los dos jugadores, no dejar que ninguno gane— nace de ahí.
+Aquí está el problema que la clase 29 resolverá. La JS entre dos distribuciones con soportes **disjuntos** vale log 2 sea cual sea la distancia entre ellas: es constante, y su gradiente es cero. Y los soportes son disjuntos casi siempre al principio, porque las imágenes reales viven en una variedad de dimensión bajísima dentro del espacio de píxeles y las generadas, otra. La consecuencia es la paradoja característica de las GAN: **cuanto mejor es el discriminador, menos aprende el generador**, porque un D casi perfecto satura y deja de transmitir dirección. Toda la dificultad práctica de entrenar una GAN —equilibrar los dos jugadores, no dejar que ninguno gane— nace de ahí.
 
 ### Colapso de modos, y por qué la pérdida no sirve para decidir
 
@@ -102,11 +102,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) | [Las 31 rutas](../../parts/README.md) | [🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/README.md) |
+| [🔭 Transformer para noticias](../../labs/07_transformer_attention/README.md) | [Las 31 clases](../../parts/README.md) | [🕸️ GNN sobre red de citas](../../labs/09_gnn_graphs/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/08_gan_generation/index.html) · [🖥️ Página HTML local](index.html)
+🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/08_gan_generation/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

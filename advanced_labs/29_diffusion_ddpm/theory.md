@@ -1,9 +1,9 @@
 # Teoría — Difusión DDPM sobre Fashion-MNIST
 
 <!-- nav-top -->
-> 🧭 **Ruta 30 / 31** · 🔬 [Parte 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md)
+> 🧭 **Clase 30 / 31** · 🔬 [Módulo 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md)
 >
-> [⬅️ 🖌️ WGAN-GP sobre Fashion-MNIST](../../advanced_labs/28_wgan_gp/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🪞 Aprendizaje autosupervisado SimCLR ➡️](../../advanced_labs/30_self_supervised_simclr/theory.md)
+> [⬅️ 🖌️ WGAN-GP sobre Fashion-MNIST](../../advanced_labs/28_wgan_gp/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [🪞 Aprendizaje autosupervisado SimCLR ➡️](../../advanced_labs/30_self_supervised_simclr/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -16,7 +16,7 @@ Las dos rutas generativas anteriores atacan el problema de frente: una GAN apren
 
 El razonamiento es este. Destruir una imagen es trivial: se le añade un poco de ruido gaussiano, y repitiendo el gesto mil veces queda ruido puro. Cada paso individual de esa destrucción es tan pequeño que **invertirlo también es fácil**: dada una imagen apenas ruidosa, quitarle ese poco de ruido es un problema de regresión sencillo, no un problema creativo. Y si se sabe invertir cada paso, se sabe invertir la cadena entera: se parte de ruido puro y se deshace la destrucción hasta llegar a una imagen. Generar deja de ser un salto y pasa a ser un descenso gradual.
 
-Eso cambia la naturaleza del entrenamiento por completo. No hay dos redes compitiendo, no hay equilibrio que mantener, no hay colapso de modos: hay **una sola red y un error cuadrático medio**. Se toma una imagen real, se elige un paso al azar, se la corrompe con un ruido conocido, y se entrena la red a adivinar exactamente ese ruido. Es supervisión pura, con la etiqueta generada por uno mismo, y por eso el entrenamiento es tan estable comparado con el de la ruta 28.
+Eso cambia la naturaleza del entrenamiento por completo. No hay dos redes compitiendo, no hay equilibrio que mantener, no hay colapso de modos: hay **una sola red y un error cuadrático medio**. Se toma una imagen real, se elige un paso al azar, se la corrompe con un ruido conocido, y se entrena la red a adivinar exactamente ese ruido. Es supervisión pura, con la etiqueta generada por uno mismo, y por eso el entrenamiento es tan estable comparado con el de la clase 29.
 
 El precio aparece en el otro extremo. Una GAN genera con una sola pasada por el generador; la difusión necesita recorrer la cadena entera, es decir **cientos de evaluaciones de la red por muestra**. Esa asimetría —entrenamiento estable y barato por paso, muestreo caro— es la característica que define a la familia, y es lo que este laboratorio mide de forma explícita en la latencia de muestreo.
 
@@ -105,11 +105,11 @@ El modelo pequeño sirve para estudio; no debe extrapolarse a generación fotogr
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🖌️ WGAN-GP sobre Fashion-MNIST](../../advanced_labs/28_wgan_gp/README.md) | [Las 31 rutas](../../parts/README.md) | [🪞 Aprendizaje autosupervisado SimCLR](../../advanced_labs/30_self_supervised_simclr/README.md) |
+| [🖌️ WGAN-GP sobre Fashion-MNIST](../../advanced_labs/28_wgan_gp/README.md) | [Las 31 clases](../../parts/README.md) | [🪞 Aprendizaje autosupervisado SimCLR](../../advanced_labs/30_self_supervised_simclr/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔬 [Parte 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/29_diffusion_ddpm/index.html) · [🖥️ Página HTML local](index.html)
+🔬 [Módulo 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/29_diffusion_ddpm/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

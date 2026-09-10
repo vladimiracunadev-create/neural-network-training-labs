@@ -1,24 +1,38 @@
 # Aprendizaje autosupervisado SimCLR
 
 <!-- nav-top -->
-> 🧭 **Ruta 31 / 31** · 🔬 [Parte 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md)
+> 🧭 **Clase 31 / 31** · 🔬 [Módulo 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md)
 >
-> [⬅️ 🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/README.md) · [🏠 Índice de rutas](../../parts/README.md) · *fin del recorrido* ➡️
+> [⬅️ 🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/README.md) · [🏠 Índice de clases](../../parts/README.md) · *fin del recorrido* ➡️
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+Dos transformaciones de la misma imagen deben reconocerse como par, mientras imágenes distintas se separan en el espacio de representación.
+
+> **Pregunta esencial:** ¿Qué invariancias aprende una representación cuando nadie le entrega etiquetas?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![Acercar vistas del mismo ejemplo y separar las demás](assets/class-map.svg)
+
+*Mapa de esta clase: Acercar vistas del mismo ejemplo y separar las demás. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Preentrenar representaciones con dos vistas reales y evaluar mediante linear probe.
 
-Es la **ruta 31 de 31** del recorrido y pertenece a 🔬 la parte 7, *Especializaciones avanzadas*. Llegas desde **Difusión DDPM sobre Fashion-MNIST**.
+**Práctica propia de esta clase:** Inspeccionar pares aumentados, proyectar embeddings y comparar k-NN y linear probe bajo distintas intensidades de aumento.
 
-Trabajarás con el dataset **`cifar10`** (Torchvision / University of Toronto, licencia: Consultar términos CIFAR-10), y tendrás que superar la línea base **ResNet18 aleatoria + linear probe**, decidiendo con la métrica `nt_xent` medida sobre `validation`. Nivel avanzado.
+Es la **clase 31 de 31** del programa y pertenece a 🔬 el módulo 7, *Especializaciones avanzadas*. Llegas desde **Difusión DDPM sobre Fashion-MNIST**.
+
+Trabajarás con el dataset **`cifar10`** (Torchvision / University of Toronto, licencia: Consultar términos CIFAR-10), y tendrás que superar la línea base **ResNet18 aleatoria + linear probe**, decidiendo con la métrica `nt_xent` medida sobre `validation`. Nivel avanzado, unas **8 horas** de dedicación.
 
 **Qué recibe el modelo como entrada:** imágenes CIFAR-10.
 
-**Lo que conviene traer resuelto de las rutas anteriores:** CNN, embeddings, aprendizaje contrastivo.
+**Lo que conviene traer resuelto de las clases anteriores:** CNN, embeddings, aprendizaje contrastivo.
 
 **Al terminar deberías ser capaz de:**
 
@@ -26,13 +40,17 @@ Trabajarás con el dataset **`cifar10`** (Torchvision / University of Toronto, l
 - Interpretar nt_xent, linear_probe_accuracy
 - Aplicar sellado de test y reproducibilidad
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> Los aumentos definen lo que el modelo considera irrelevante; una invariancia mal elegida puede borrar la señal necesaria.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
 ### De qué trata
 
-Todas las rutas anteriores necesitan etiquetas. Alguien tuvo que mirar 50 000 imágenes de CIFAR-10 y escribir «avión», «gato», «camión». Ese trabajo es caro, lento y, en muchos dominios reales —imágenes médicas, defectos industriales, sensores— directamente inviable a escala. La pregunta de este laboratorio es si se puede aprender una representación útil **sin ninguna etiqueta**, y cuánto se pierde por hacerlo.
+Todas las clases anteriores necesitan etiquetas. Alguien tuvo que mirar 50 000 imágenes de CIFAR-10 y escribir «avión», «gato», «camión». Ese trabajo es caro, lento y, en muchos dominios reales —imágenes médicas, defectos industriales, sensores— directamente inviable a escala. La pregunta de este laboratorio es si se puede aprender una representación útil **sin ninguna etiqueta**, y cuánto se pierde por hacerlo.
 
 La respuesta contrastiva parte de una intuición sencilla: aunque no sepamos *qué* hay en una imagen, sí sabemos algo con certeza absoluta —dos recortes distintos de la misma foto muestran la misma cosa, y un recorte de otra foto muestra algo distinto—. Eso basta para inventar una tarea de aprendizaje que no requiere anotador: acerca en el espacio de representación las dos vistas de una misma imagen, aleja las vistas de imágenes diferentes. La etiqueta la genera la propia estructura de los datos.
 
@@ -102,21 +120,21 @@ Pares aumentados, proyección 2D, vecinos y curva de linear probe. Ver los pares
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `nt_xent`, `linear_probe_accuracy`, `knn_accuracy`, `embedding_uniformity`. De todas ellas, la que **decide** qué modelo se conserva es `nt_xent`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `nt_xent`, `linear_probe_accuracy`, `knn_accuracy`, `embedding_uniformity`. De todas ellas, la que **decide** qué modelo se conserva es `nt_xent`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (10 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **8 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 23 celdas (10 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **8 ejercicios evaluables** (38 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -166,7 +184,7 @@ print(resultado["run_dir"])
 print(resultado["metrics"])
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -194,7 +212,7 @@ neural-labs train-advanced --track 30_self_supervised_simclr --quick
 
 **Qué ocurre.** Se entrena el modelo completo conservando el checkpoint con el mejor valor de `nt_xent` en validación, y se sella el experimento antes de evaluar `test`.
 
-**Por qué.** Igual que en las rutas centrales: `validation` decide, `test` solo confirma, y el sello deja por escrito qué se había decidido antes de mirar.
+**Por qué.** Igual que en las clases centrales: `validation` decide, `test` solo confirma, y el sello deja por escrito qué se había decidido antes de mirar.
 
 ```bash
 neural-labs train-advanced --track 30_self_supervised_simclr --split-seed 42 --training-seed 43
@@ -247,6 +265,12 @@ La elección de aumentos define invariancias y puede borrar información relevan
 
 ## ✅ Antes de darlo por terminado
 
+La clase está aprobada cuando se cumplen estos criterios:
+
+- [ ] responde la pregunta esencial con evidencia de la ejecución
+- [ ] interpreta la visualización propia de la clase
+- [ ] distingue resultados observados de supuestos
+
 Y cuando tienes estos entregables:
 
 - [ ] notebook ejecutado
@@ -285,6 +309,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -302,11 +327,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/README.md) | [Las 31 rutas](../../parts/README.md) | *— fin del recorrido* |
+| [🌫️ Difusión DDPM sobre Fashion-MNIST](../../advanced_labs/29_diffusion_ddpm/README.md) | [Las 31 clases](../../parts/README.md) | *— fin del recorrido* |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔬 [Parte 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/30_self_supervised_simclr/index.html) · [🖥️ Página HTML local](index.html)
+🔬 [Módulo 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/30_self_supervised_simclr/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

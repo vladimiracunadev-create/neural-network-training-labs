@@ -15,3 +15,23 @@ deliverables:
 - reporte experimental
 - model card
 dataset: fashion_mnist
+schema_version: '3.0'
+class_number: 29
+module_number: 7
+module_title: Especializaciones avanzadas
+essential_question: ¿Por qué controlar la norma del gradiente estabiliza el juego generativo?
+opening_hook: Cuando el crítico se vuelve demasiado abrupto, deja de ofrecer una dirección útil. La penalización obliga a mantener pendientes informativas.
+class_practice: Graficar normas del gradiente, comparar DCGAN y WGAN-GP y revisar diversidad con igual presupuesto.
+visual_evidence:
+  title: Un crítico con pendientes útiles
+  asset: assets/class-map.svg
+  steps:
+  - Muestras reales y falsas
+  - Crítico 1-Lipschitz
+  - Gradiente para el generador
+common_misconception: La estimación Wasserstein de una ejecución no es una métrica absoluta comparable entre cualquier arquitectura o escala.
+estimated_hours: 8
+success_criteria:
+- responde la pregunta esencial con evidencia de la ejecución
+- interpreta la visualización propia de la clase
+- distingue resultados observados de supuestos

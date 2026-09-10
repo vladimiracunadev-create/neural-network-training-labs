@@ -16,6 +16,10 @@ from lab_exercises import exercises, graded_metadata, test_metadata  # noqa: E40
 
 ROOT = Path(__file__).resolve().parents[1]
 LABS = yaml.safe_load((ROOT / "configs" / "labs.yaml").read_text(encoding="utf-8"))["labs"]
+CLASS_PROFILES = {
+    item["id"]: item
+    for item in yaml.safe_load((ROOT / "configs" / "classes.yaml").read_text(encoding="utf-8"))["classes"]
+}
 
 DOMAIN_CONTENT = {
     "vision": {
@@ -134,9 +138,20 @@ def build_notebook(lab: dict[str, Any], *, variant: str) -> nbformat.NotebookNod
     domain = domain_for(lab)
     content = DOMAIN_CONTENT[domain]
     lab_id = lab["id"]
+    profile = CLASS_PROFILES[lab_id]
+    class_number = int(profile["class_number"])
     cells = [
-        new_markdown_cell(f"# {lab['title']}\n\n**Laboratorio:** `{lab_id}`  \n**Dataset real:** {lab['dataset']}  \n**Fuente:** {lab['source']}  \n**Versión:** {VARIANT_LABEL[variant]}"),
-        new_markdown_cell(f"## Objetivo\n\n{lab['objective']}\n\n**Pregunta guía:** {content['question']}"),
+        new_markdown_cell(f"# Clase {class_number:02d} · {lab['title']}\n\n**Identificador técnico:** `{lab_id}`  \n**Dataset real:** {lab['dataset']}  \n**Fuente:** {lab['source']}  \n**Versión:** {VARIANT_LABEL[variant]}"),
+        new_markdown_cell(
+            f"## Antes de ejecutar\n\n{profile['hook']}\n\n"
+            f"> **Pregunta esencial:** {profile['essential_question']}\n\n"
+            "Escribe una predicción breve. No busques acertar: la recuperarás al final para explicar qué evidencia cambió tu idea."
+        ),
+        new_markdown_cell(
+            f"![{profile['visual_title']}](assets/class-map.svg)\n\n"
+            f"**Cómo leer el mapa:** {' → '.join(profile['visual_steps'])}."
+        ),
+        new_markdown_cell(f"## Objetivo\n\n{lab['objective']}\n\n**Práctica propia:** {profile['practice']}"),
         new_markdown_cell("## Contrato científico\n\n1. `split_seed` define las particiones.  \n2. `training_seed` define inicialización y batches.  \n3. Toda selección ocurre con validation.  \n4. `experiment.lock.json` congela decisiones antes de abrir test.  \n5. Test se informa una sola vez."),
         new_code_cell("from pathlib import Path\nimport json\nimport yaml\nimport torch\n\nfrom neural_labs.catalog import ROOT, get_lab, get_dataset\nfrom neural_labs.datasets import prepare_dataset, audit_bundle\nfrom neural_labs.baselines import run_baseline\nfrom neural_labs.experiments import run_lab\n\nLAB_ID = '" + lab_id + "'\nSPLIT_SEED = 42\nTRAINING_SEED = 42\nQUICK = True"),
         new_code_cell("lab = get_lab(LAB_ID)\ndataset_card = get_dataset(LAB_ID)\nlab, dataset_card"),
@@ -154,7 +169,14 @@ def build_notebook(lab: dict[str, Any], *, variant: str) -> nbformat.NotebookNod
         new_code_cell("# result = run_lab(\n#     LAB_ID, quick=QUICK, config_name='baseline',\n#     split_seed=SPLIT_SEED, training_seed=TRAINING_SEED, device='auto',\n# )\n# result.run_dir, result.metrics"),
         new_markdown_cell("## Inspección de artefactos"),
         new_code_cell("# sorted(path.name for path in result.run_dir.iterdir())"),
-        new_markdown_cell("## Interpretación y responsabilidad\n\nDocumenta resultados negativos, sesgos, grupos con peor desempeño, costo computacional y usos no recomendados."),
+        new_markdown_cell(
+            "## Interpretación y responsabilidad\n\nDocumenta resultados negativos, sesgos, grupos con peor desempeño, costo computacional y usos no recomendados.\n\n"
+            f"> **Error conceptual que debes poder detectar:** {profile['misconception']}"
+        ),
+        new_markdown_cell(
+            f"## Actividad propia de esta clase\n\n{profile['practice']}\n\n"
+            "Cierra la actividad volviendo a tu predicción inicial: indica qué observaste, qué explicación propones y qué nueva prueba harías."
+        ),
         *exercise_cells(lab, variant),
         new_markdown_cell("## Próximos pasos\n\nEjecuta primero con `--quick`; después usa el dataset completo, varias semillas y el pipeline de benchmark."),
     ]
@@ -163,7 +185,7 @@ def build_notebook(lab: dict[str, Any], *, variant: str) -> nbformat.NotebookNod
         {
             "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
             "language_info": {"name": "python", "version": "3.11"},
-            "neural_labs": {"lab_id": lab_id, "domain": domain, "variant": variant},
+            "neural_labs": {"lab_id": lab_id, "class_number": class_number, "domain": domain, "variant": variant},
         }
     )
     return notebook

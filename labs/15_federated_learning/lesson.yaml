@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 15_federated_learning
+schema_version: '3.0'
 title: Aprendizaje federado por participante
 level: avanzado
 estimated_hours: 8
@@ -29,3 +28,18 @@ dataset:
   source: UCI
   reference: https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones
   license: CC BY 4.0
+id: 15_federated_learning
+class_number: 16
+module_number: 4
+module_title: Entrenamiento eficiente
+essential_question: ¿Qué ocurre cuando cada participante observa una realidad diferente?
+opening_hook: 'Los teléfonos no generan muestras idénticas: cada persona se mueve de otra manera. FedAvg debe combinar aprendizajes sin centralizar esos datos.'
+class_practice: Visualizar heterogeneidad por cliente y comparar convergencia global con desempeño individual.
+visual_evidence:
+  title: Aprender localmente y acordar globalmente
+  asset: assets/class-map.svg
+  steps:
+  - Clientes heterogéneos
+  - Actualizaciones locales
+  - Agregación global
+common_misconception: No mover los datos no garantiza privacidad; las actualizaciones también pueden revelar información.

@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 11_transfer_learning
+schema_version: '3.0'
 title: Transfer learning con mascotas
 level: avanzado
 estimated_hours: 8
@@ -29,3 +28,18 @@ dataset:
   source: Torchvision / Oxford
   reference: https://www.robots.ox.ac.uk/~vgg/data/pets/
   license: Uso académico según fuente
+id: 11_transfer_learning
+class_number: 12
+module_number: 3
+module_title: Familias especializadas
+essential_question: ¿Cuándo conviene reutilizar representaciones y cuándo hay que volver a aprenderlas?
+opening_hook: Un modelo que ya reconoce bordes, texturas y formas no parte de cero al ver mascotas, pero sus rasgos tampoco son perfectos para la nueva tarea.
+class_practice: Comparar extracción de características, fine-tuning y entrenamiento desde cero con igual presupuesto.
+visual_evidence:
+  title: Qué se conserva y qué se adapta
+  asset: assets/class-map.svg
+  steps:
+  - Rasgos preentrenados
+  - Capas congeladas
+  - Ajuste al nuevo dominio
+common_misconception: Fine-tuning no siempre gana; con pocos datos o una tasa alta puede destruir representaciones útiles.

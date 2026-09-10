@@ -13,7 +13,7 @@ theme:
     - content.code.copy
 nav:
   - Inicio: index.md
-  - Ruta de aprendizaje: learning-path.md
+  - Programa de 31 clases: learning-path.md
   - Sitio de estudio y navegación: study-site.md
   - Arquitectura: architecture.md
   - Protocolo experimental: experiment-protocol.md
@@ -32,7 +32,7 @@ nav:
   - Entrenamiento distribuido: distributed-training.md
   - Rendimiento: performance.md
   - Seguridad de suministro: supply-chain-security.md
-  - Agregar laboratorio: adding-a-lab.md
+  - Agregar una clase: adding-a-lab.md
   - Guía docente: teaching-guide.md
   - Roadmap: roadmap.md
 markdown_extensions:

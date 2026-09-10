@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 12_multimodal_fusion
+schema_version: '3.0'
 title: Fusión de sensores
 level: avanzado
 estimated_hours: 8
@@ -29,3 +28,18 @@ dataset:
   source: UCI
   reference: https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones
   license: CC BY 4.0
+id: 12_multimodal_fusion
+class_number: 13
+module_number: 3
+module_title: Familias especializadas
+essential_question: ¿Las modalidades se complementan o una de ellas domina silenciosamente?
+opening_hook: Acelerómetro y giroscopio observan el mismo movimiento desde perspectivas distintas; perder uno revela cuánto dependía el modelo de cada sensor.
+class_practice: Comparar cada modalidad, fusión temprana y tardía, y simular la ausencia de un sensor.
+visual_evidence:
+  title: Dos señales, una decisión
+  asset: assets/class-map.svg
+  steps:
+  - Modalidades separadas
+  - Representaciones alineadas
+  - Predicción fusionada
+common_misconception: Concatenar señales no garantiza fusión útil; el modelo puede ignorar una modalidad por completo.

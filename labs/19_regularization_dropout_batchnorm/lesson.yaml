@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 19_regularization_dropout_batchnorm
+schema_version: '3.0'
 title: Regularización
 level: intermedio
 estimated_hours: 6
@@ -29,3 +28,18 @@ dataset:
   source: Torchvision / Zalando Research
   reference: https://github.com/zalandoresearch/fashion-mnist
   license: MIT
+id: 19_regularization_dropout_batchnorm
+class_number: 20
+module_number: 5
+module_title: Mecánica fina
+essential_question: ¿Cómo distinguir una red que aprendió una regla de otra que memorizó ejemplos?
+opening_hook: El entrenamiento puede seguir mejorando mientras validation empeora. Esa separación visible es la firma del sobreajuste.
+class_practice: Comparar curvas train–validation, activar regularizadores por separado y medir estabilidad entre semillas.
+visual_evidence:
+  title: Capacidad, ajuste y generalización
+  asset: assets/class-map.svg
+  steps:
+  - Modelo flexible
+  - Brecha de generalización
+  - Restricción útil
+common_misconception: Dropout y batch normalization no son equivalentes ni deben activarse de la misma manera durante inferencia.

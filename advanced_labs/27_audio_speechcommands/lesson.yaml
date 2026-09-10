@@ -15,3 +15,23 @@ deliverables:
 - reporte experimental
 - model card
 dataset: speechcommands_v0.02
+schema_version: '3.0'
+class_number: 28
+module_number: 7
+module_title: Especializaciones avanzadas
+essential_question: ¿Qué hace visible un espectrograma que la onda temporal oculta?
+opening_hook: Una palabra dura un segundo, pero sus frecuencias cambian rápidamente. El log-mel convierte ese cambio en una imagen tiempo–frecuencia.
+class_practice: Escuchar y visualizar señales, construir espectrogramas y medir degradación con ruido y SpecAugment.
+visual_evidence:
+  title: De vibración a patrón tiempo–frecuencia
+  asset: assets/class-map.svg
+  steps:
+  - Onda sonora
+  - Espectrograma log-mel
+  - Clase y robustez
+common_misconception: Un modelo preciso en audio limpio puede depender del micrófono o del fondo y fallar ante voces reales distintas.
+estimated_hours: 8
+success_criteria:
+- responde la pregunta esencial con evidencia de la ejecución
+- interpreta la visualización propia de la clase
+- distingue resultados observados de supuestos

@@ -1,5 +1,4 @@
-schema_version: '2.0'
-lab: 18_optimizers_and_schedulers
+schema_version: '3.0'
 title: Optimizadores y schedulers
 level: fundamentos
 estimated_hours: 4
@@ -29,3 +28,18 @@ dataset:
   source: scikit-learn / StatLib
   reference: https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html
   license: Consultar fuente StatLib
+id: 18_optimizers_and_schedulers
+class_number: 19
+module_number: 5
+module_title: Mecánica fina
+essential_question: ¿Por qué distintos optimizadores recorren caminos distintos sobre la misma pérdida?
+opening_hook: En un valle estrecho, avanzar siempre en la pendiente inmediata produce zigzag; momento y adaptación cambian la trayectoria.
+class_practice: Superponer trayectorias de SGD, Momentum y Adam y relacionarlas con la programación de la tasa.
+visual_evidence:
+  title: Tres caminos sobre el mismo paisaje
+  asset: assets/class-map.svg
+  steps:
+  - Pendiente local
+  - Memoria o adaptación
+  - Trayectoria de convergencia
+common_misconception: Adam no es universalmente mejor; puede converger rápido y aun así generalizar peor que SGD.

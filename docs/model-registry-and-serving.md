@@ -18,4 +18,4 @@ El backend opcional registra el modelo PyTorch, adjunta artefactos y asigna alia
 
 La API FastAPI carga el alias configurado y expone salud, contrato, predicción y métricas. El contrato define shape, clases, preprocesador, vocabulario y formatos aceptados.
 
-No todos los laboratorios comparten el mismo tipo de serving. GAN, grafos y ciertos modelos especializados requieren endpoints específicos y se marcan como no servibles por la API genérica.
+No todas las clases comparten el mismo tipo de serving. GAN, grafos y ciertos modelos especializados requieren endpoints específicos y se marcan como no servibles por la API genérica.

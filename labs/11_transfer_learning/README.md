@@ -1,22 +1,36 @@
 # Transfer learning con mascotas
 
 <!-- nav-top -->
-> 🧭 **Ruta 12 / 31** · 🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
+> 🧭 **Clase 12 / 31** · 🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
 >
-> [⬅️ 🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) · [🏠 Índice de rutas](../../parts/README.md) · [🔀 Fusión de sensores ➡️](../../labs/12_multimodal_fusion/README.md)
+> [⬅️ 🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) · [🏠 Índice de clases](../../parts/README.md) · [🔀 Fusión de sensores ➡️](../../labs/12_multimodal_fusion/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+Un modelo que ya reconoce bordes, texturas y formas no parte de cero al ver mascotas, pero sus rasgos tampoco son perfectos para la nueva tarea.
+
+> **Pregunta esencial:** ¿Cuándo conviene reutilizar representaciones y cuándo hay que volver a aprenderlas?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![Qué se conserva y qué se adapta](assets/class-map.svg)
+
+*Mapa de esta clase: Qué se conserva y qué se adapta. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Comparar extracción de características, fine-tuning y entrenamiento desde cero.
 
-Es la **ruta 12 de 31** del recorrido y pertenece a 🟣 la parte 3, *Familias especializadas: generar, decidir, relacionar*. Llegas desde **DQN para inventario con demanda real** y lo que hagas aquí lo da por supuesto **Fusión de sensores**.
+**Práctica propia de esta clase:** Comparar extracción de características, fine-tuning y entrenamiento desde cero con igual presupuesto.
+
+Es la **clase 12 de 31** del programa y pertenece a 🟣 el módulo 3, *Familias especializadas: generar, decidir, relacionar*. Llegas desde **DQN para inventario con demanda real** y lo que hagas aquí lo da por supuesto **Fusión de sensores**.
 
 Trabajarás con el dataset **`oxford_iiit_pet`** (Torchvision / Oxford, licencia: Uso académico según fuente), y tendrás que superar la línea base **CNN pequeña entrenada desde cero**, decidiendo con la métrica `macro_f1` medida sobre `validation`. Nivel avanzado, unas **8 horas** de dedicación.
 
-**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
+**Lo que conviene traer resuelto de las clases anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
 
 **Al terminar deberías ser capaz de:**
 
@@ -26,7 +40,11 @@ Trabajarás con el dataset **`oxford_iiit_pet`** (Torchvision / Oxford, licencia
 - Comparar contra la línea base: CNN pequeña entrenada desde cero.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> Fine-tuning no siempre gana; con pocos datos o una tasa alta puede destruir representaciones útiles.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
@@ -52,7 +70,7 @@ Las tres estrategias que compara el laboratorio se distinguen por qué subconjun
 
 En **extracción de características** se congela el cuerpo entero: `requires_grad = False` para todos sus pesos, y solo se entrena la cabeza. Con una ResNet18 —unos 11,2 millones de parámetros en el cuerpo— y una cabeza lineal de 512 entradas a las clases del problema, los parámetros entrenables bajan a unos pocos miles. Como el cuerpo no cambia, sus salidas para cada imagen son **constantes durante todo el entrenamiento**, lo que permite un truco muy rentable: calcularlas una sola vez, guardarlas en caché, y entrenar la cabeza sobre esos vectores. El entrenamiento pasa a ser una regresión logística sobre 512 dimensiones y corre en segundos.
 
-En **fine-tuning completo** todo el cuerpo recibe gradiente. Cuesta memoria —hay que guardar activaciones y estados del optimizador de 11 millones de parámetros— y exige una tasa de aprendizaje pequeña, típicamente uno o dos órdenes de magnitud menor que la del entrenamiento desde cero. La razón es la misma que en la ruta 25: la cabeza está inicializada al azar y sus primeros gradientes son grandes; si se propagan con una tasa alta, destruyen las representaciones preentrenadas antes de que la cabeza haya aprendido nada útil. El remedio habitual es un **calentamiento**: entrenar unas épocas solo la cabeza y descongelar después, o usar tasas discriminativas —más pequeñas en las capas iniciales, más grandes en las finales—, que es la traducción directa de que las capas iniciales necesitan cambiar menos.
+En **fine-tuning completo** todo el cuerpo recibe gradiente. Cuesta memoria —hay que guardar activaciones y estados del optimizador de 11 millones de parámetros— y exige una tasa de aprendizaje pequeña, típicamente uno o dos órdenes de magnitud menor que la del entrenamiento desde cero. La razón es la misma que en la clase 26: la cabeza está inicializada al azar y sus primeros gradientes son grandes; si se propagan con una tasa alta, destruyen las representaciones preentrenadas antes de que la cabeza haya aprendido nada útil. El remedio habitual es un **calentamiento**: entrenar unas épocas solo la cabeza y descongelar después, o usar tasas discriminativas —más pequeñas en las capas iniciales, más grandes en las finales—, que es la traducción directa de que las capas iniciales necesitan cambiar menos.
 
 En **entrenamiento desde cero** no hay transferencia: es la referencia que dice cuánto aportó realmente el preentrenamiento. Compararla con las otras dos con el mismo presupuesto de épocas es lo que convierte el laboratorio en un experimento y no en una demostración.
 
@@ -60,7 +78,7 @@ En **entrenamiento desde cero** no hay transferencia: es la referencia que dice 
 
 Hay un fallo específico de este régimen que no produce excepción, no aparece en las curvas de entrenamiento y degrada el resultado: las estadísticas de la **normalización por lotes**.
 
-Como se vio en la ruta 03, esas capas guardan una media y una varianza acumuladas que no se aprenden por gradiente, sino que se actualizan en cada paso hacia adelante mientras el modelo esté en modo entrenamiento. Congelar los pesos con `requires_grad = False` **no congela esas estadísticas**. El resultado es que, en un supuesto «cuerpo congelado», las capas de normalización siguen adaptándose a los nuevos datos y la representación se mueve, aunque ningún peso reciba gradiente. Si además el lote es pequeño, las estadísticas del nuevo dominio son ruidosas y la degradación puede ser notable. Congelar de verdad exige poner esas capas en modo evaluación explícitamente.
+Como se vio en la clase 04, esas capas guardan una media y una varianza acumuladas que no se aprenden por gradiente, sino que se actualizan en cada paso hacia adelante mientras el modelo esté en modo entrenamiento. Congelar los pesos con `requires_grad = False` **no congela esas estadísticas**. El resultado es que, en un supuesto «cuerpo congelado», las capas de normalización siguen adaptándose a los nuevos datos y la representación se mueve, aunque ningún peso reciba gradiente. Si además el lote es pequeño, las estadísticas del nuevo dominio son ruidosas y la degradación puede ser notable. Congelar de verdad exige poner esas capas en modo evaluación explícitamente.
 
 Un segundo detalle de la misma familia: la normalización de entrada debe ser **la del preentrenamiento**. Un modelo entrenado con las medias y desviaciones de ImageNet espera recibir imágenes normalizadas con esos mismos valores; alimentarlo con otra normalización lo sitúa fuera de la distribución para la que se calibraron sus filtros, y el rendimiento cae sin que nada lo señale.
 
@@ -76,21 +94,21 @@ El segundo factor es el **tamaño del conjunto destino**, y determina qué régi
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `accuracy`, `balanced_accuracy`, `macro_f1`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `accuracy`, `balanced_accuracy`, `macro_f1`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 25 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (40 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -163,7 +181,7 @@ datos = prepare_dataset("11_transfer_learning", quick=True, seed=42)
 print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -290,7 +308,7 @@ Cada ejecución escribe su propio directorio con nombre único, de modo que dos 
 | `confusion_matrix.png` | Qué clases se confunden entre sí. |
 | `model_spec.json` · `inference_contract.json` | Qué entrada espera el modelo y qué devuelve: lo que necesita quien lo despliegue. |
 | `model_card.md` · `report.md` | La ficha del modelo y el informe legible de la ejecución. |
-| `transfer_comparison.json` | **Propio de esta ruta.** Extracción de características frente a fine-tuning frente a entrenar desde cero. |
+| `transfer_comparison.json` | **Propio de esta clase.** Extracción de características frente a fine-tuning frente a entrenar desde cero. |
 
 ## ⚠️ Dónde suele perderse la gente
 
@@ -307,7 +325,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 ## ✅ Antes de darlo por terminado
 
-El laboratorio está aprobado cuando se cumplen estos criterios:
+La clase está aprobada cuando se cumplen estos criterios:
 
 - [ ] cero solapamiento entre train, validation y test
 - [ ] selección basada únicamente en validation
@@ -352,6 +370,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -369,11 +388,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) | [Las 31 rutas](../../parts/README.md) | [🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) |
+| [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) | [Las 31 clases](../../parts/README.md) | [🔀 Fusión de sensores](../../labs/12_multimodal_fusion/README.md) |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/11_transfer_learning/index.html) · [🖥️ Página HTML local](index.html)
+🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/11_transfer_learning/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

@@ -1,22 +1,36 @@
 # LSTM para series temporales
 
 <!-- nav-top -->
-> 🧭 **Ruta 6 / 31** · 🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
+> 🧭 **Clase 06 / 31** · 🔵 [Módulo 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
 >
-> [⬅️ 🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) · [🏠 Índice de rutas](../../parts/README.md) · [🧬 Autoencoder para fraude ➡️](../../labs/06_autoencoder_anomaly/README.md)
+> [⬅️ 🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) · [🏠 Índice de clases](../../parts/README.md) · [🧬 Autoencoder para fraude ➡️](../../labs/06_autoencoder_anomaly/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+La demanda de bicicletas combina ciclos diarios, clima y tendencias. Las compuertas permiten conservar unas señales y descartar otras.
+
+> **Pregunta esencial:** ¿Qué decide recordar, olvidar y revelar una LSTM?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![Las tres decisiones de una celda LSTM](assets/class-map.svg)
+
+*Mapa de esta clase: Las tres decisiones de una celda LSTM. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Pronosticar demanda horaria respetando el orden temporal.
 
-Es la **ruta 6 de 31** del recorrido y pertenece a 🔵 la parte 2, *Arquitecturas según la forma del dato*. Llegas desde **RNN para texto** y lo que hagas aquí lo da por supuesto **Autoencoder para fraude**.
+**Práctica propia de esta clase:** Construir ventanas cronológicas, inspeccionar compuertas y comparar el pronóstico con persistencia y media móvil.
+
+Es la **clase 06 de 31** del programa y pertenece a 🔵 el módulo 2, *Arquitecturas según la forma del dato*. Llegas desde **RNN para texto** y lo que hagas aquí lo da por supuesto **Autoencoder para fraude**.
 
 Trabajarás con el dataset **`seoul_bike`** (UCI, licencia: CC BY 4.0), y tendrás que superar la línea base **Persistencia, media móvil y Ridge**, decidiendo con la métrica `rmse` medida sobre `validation`. Nivel intermedio, unas **6 horas** de dedicación.
 
-**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch básico, particiones train/validation/test, métricas de evaluación.
+**Lo que conviene traer resuelto de las clases anteriores:** PyTorch básico, particiones train/validation/test, métricas de evaluación.
 
 **Al terminar deberías ser capaz de:**
 
@@ -26,7 +40,11 @@ Trabajarás con el dataset **`seoul_bike`** (UCI, licencia: CC BY 4.0), y tendr�
 - Comparar contra la línea base: Persistencia, media móvil y Ridge.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> Barajar una serie temporal antes de partirla produce una evaluación optimista porque permite que el futuro informe al pasado.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
@@ -64,7 +82,7 @@ La formulación debe conectarse con cuatro elementos: representación de entrada
 
 ### Por qué las puertas resuelven el desvanecimiento
 
-La ruta 04 dejó el diagnóstico: el gradiente de una RNN simple se multiplica por W_hᵀ·diag(σ′) en cada paso, y ese producto se apaga exponencialmente. La LSTM no lo mitiga, **cambia la operación**, y ahí está toda su ventaja.
+La clase 05 dejó el diagnóstico: el gradiente de una RNN simple se multiplica por W_hᵀ·diag(σ′) en cada paso, y ese producto se apaga exponencialmente. La LSTM no lo mitiga, **cambia la operación**, y ahí está toda su ventaja.
 
 Derivando la actualización del estado de celda cₜ = fₜ ⊙ cₜ₋₁ + iₜ ⊙ c̃ₜ respecto del estado anterior:
 
@@ -72,7 +90,7 @@ Derivando la actualización del estado de celda cₜ = fₜ ⊙ cₜ₋₁ + i�
 
 de modo que el gradiente que atraviesa k pasos por la vía de la celda se multiplica por Π fₜ, un **producto de escalares entre 0 y 1**, y no por un producto de matrices con activaciones saturantes. La diferencia es cualitativa: cuando la puerta de olvido se mantiene cerca de 1 —el modelo ha decidido conservar esa memoria—, el factor es cerca de 1 y el gradiente **atraviesa cientos de pasos casi intacto**. Ese camino se conoce como *carrusel de error constante*, y es lo que permite aprender dependencias largas.
 
-Obsérvese la estructura: la actualización es **aditiva**, cₜ = (algo)·cₜ₋₁ + (algo), mientras que en la RNN simple era completamente multiplicativa, hₜ = tanh(W·hₜ₋₁ + …). Es la misma idea que reaparece en las conexiones residuales de la ruta 03 y en los atajos de la 07: dejar un camino donde la señal se suma en vez de transformarse es lo que mantiene vivo el gradiente. Y aún así la LSTM no es inmune —si las puertas de olvido se cierran, la memoria y su gradiente se pierden—: la diferencia es que ahora eso es una **decisión aprendida** y no una fatalidad de la arquitectura.
+Obsérvese la estructura: la actualización es **aditiva**, cₜ = (algo)·cₜ₋₁ + (algo), mientras que en la RNN simple era completamente multiplicativa, hₜ = tanh(W·hₜ₋₁ + …). Es la misma idea que reaparece en las conexiones residuales de la clase 04 y en los atajos de la 07: dejar un camino donde la señal se suma en vez de transformarse es lo que mantiene vivo el gradiente. Y aún así la LSTM no es inmune —si las puertas de olvido se cierran, la memoria y su gradiente se pierden—: la diferencia es que ahora eso es una **decisión aprendida** y no una fatalidad de la arquitectura.
 
 De ahí una recomendación práctica bien establecida: inicializar el sesgo de la puerta de olvido en un valor positivo (típicamente 1). Con b_f = 1, la sigmoide arranca en σ(1) ≈ 0,73, así que la red empieza **conservando** memoria por defecto y aprende luego a olvidar. Con b_f = 0 arranca en 0,5 y el gradiente ya se reduce a la mitad por paso desde la primera época, justo cuando aún no ha aprendido nada que valga la pena conservar.
 
@@ -100,21 +118,21 @@ Y la línea base debe ser honesta. En series temporales, el modelo **ingenuo** �
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `mae`, `rmse`, `mape`, `r2`. De todas ellas, la que **decide** qué modelo se conserva es `rmse`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `mae`, `rmse`, `mape`, `r2`. De todas ellas, la que **decide** qué modelo se conserva es `rmse`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 25 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (40 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -187,7 +205,7 @@ datos = prepare_dataset("05_lstm_time_series", quick=True, seed=42)
 print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -330,7 +348,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 ## ✅ Antes de darlo por terminado
 
-El laboratorio está aprobado cuando se cumplen estos criterios:
+La clase está aprobada cuando se cumplen estos criterios:
 
 - [ ] cero solapamiento entre train, validation y test
 - [ ] selección basada únicamente en validation
@@ -378,6 +396,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -395,11 +414,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) | [Las 31 rutas](../../parts/README.md) | [🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) |
+| [🔁 RNN para texto](../../labs/04_rnn_sequences/README.md) | [Las 31 clases](../../parts/README.md) | [🧬 Autoencoder para fraude](../../labs/06_autoencoder_anomaly/README.md) |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/05_lstm_time_series/index.html) · [🖥️ Página HTML local](index.html)
+🔵 [Módulo 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/05_lstm_time_series/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

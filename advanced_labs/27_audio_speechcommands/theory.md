@@ -1,9 +1,9 @@
 # Teoría — Clasificación de audio con SpeechCommands
 
 <!-- nav-top -->
-> 🧭 **Ruta 28 / 31** · 🔬 [Parte 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md)
+> 🧭 **Clase 28 / 31** · 🔬 [Módulo 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md)
 >
-> [⬅️ 🧷 Segmentación semántica con U-Net](../../advanced_labs/26_segmentation_unet/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [🖌️ WGAN-GP sobre Fashion-MNIST ➡️](../../advanced_labs/28_wgan_gp/theory.md)
+> [⬅️ 🧷 Segmentación semántica con U-Net](../../advanced_labs/26_segmentation_unet/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [🖌️ WGAN-GP sobre Fashion-MNIST ➡️](../../advanced_labs/28_wgan_gp/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -14,7 +14,7 @@ Waveform, espectrograma log-mel, convolución 2D y robustez ante ruido.
 
 Un clip de un segundo a 16 kHz son 16 000 números. Puestos en fila, una red densa necesitaría decenas de millones de pesos solo en su primera capa, y aun así no aprendería gran cosa: la información que distingue «arriba» de «abajo» no está en el valor de cada muestra individual, sino en **cómo cambia el contenido en frecuencia a lo largo del tiempo**. Dos grabaciones de la misma palabra, desplazadas unos milisegundos o dichas con otro tono, tienen formas de onda numéricamente distintas y contenido fonético idéntico.
 
-La idea del laboratorio es cambiar de representación antes de modelar. La transformada de Fourier de corto tiempo convierte la señal unidimensional en una imagen bidimensional —tiempo en un eje, frecuencia en el otro, energía como intensidad— donde los rasgos que importan se vuelven **patrones locales visibles**: las bandas horizontales de los formantes vocálicos, las ráfagas anchas de las consonantes oclusivas, las transiciones diagonales entre fonemas. Una vez que el problema tiene forma de imagen, la herramienta correcta es la que ya se estudió en la ruta 03: una CNN 2D con pesos compartidos, que detecta esos patrones aparezcan donde aparezcan.
+La idea del laboratorio es cambiar de representación antes de modelar. La transformada de Fourier de corto tiempo convierte la señal unidimensional en una imagen bidimensional —tiempo en un eje, frecuencia en el otro, energía como intensidad— donde los rasgos que importan se vuelven **patrones locales visibles**: las bandas horizontales de los formantes vocálicos, las ráfagas anchas de las consonantes oclusivas, las transiciones diagonales entre fonemas. Una vez que el problema tiene forma de imagen, la herramienta correcta es la que ya se estudió en la clase 04: una CNN 2D con pesos compartidos, que detecta esos patrones aparezcan donde aparezcan.
 
 Sobre esa representación se aplican dos ajustes que no vienen de las matemáticas sino de la fisiología del oído: comprimir el eje de frecuencia según la escala mel, porque distinguimos mucho mejor entre 300 y 400 Hz que entre 8 000 y 8 100, y tomar el logaritmo de la energía, porque percibimos la intensidad de forma aproximadamente logarítmica. El resultado —el espectrograma log-mel— no es una elección arbitraria: es un preprocesamiento que descarta justo la información que el oído humano tampoco usa para reconocer palabras.
 
@@ -48,7 +48,7 @@ Las ventanas se solapan con un **salto** (hop) de unos 10 ms, así que el númer
 
 T = ⌊(longitud − N) / hop⌋ + 1 ≈ ⌊(16 000 − 400) / 160⌋ + 1 = 98.
 
-Con 64 bandas mel, la entrada de la red es un tensor de 64×98: una imagen pequeña, comparable a las de la ruta 03. Esa es la razón práctica de que el laboratorio corra en CPU. El solape no es opcional: sin él, un fonema que caiga en la frontera entre dos ventanas quedaría partido y atenuado por la ventana de Hann, que pesa poco los extremos. El solape garantiza que todo instante quede bien representado en al menos una trama.
+Con 64 bandas mel, la entrada de la red es un tensor de 64×98: una imagen pequeña, comparable a las de la clase 04. Esa es la razón práctica de que el laboratorio corra en CPU. El solape no es opcional: sin él, un fonema que caiga en la frontera entre dos ventanas quedaría partido y atenuado por la ventana de Hann, que pesa poco los extremos. El solape garantiza que todo instante quede bien representado en al menos una trama.
 
 ### El banco mel, escrito como una multiplicación de matrices
 
@@ -99,11 +99,11 @@ Acentos, micrófonos y ambientes no están representados uniformemente. Una accu
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🧷 Segmentación semántica con U-Net](../../advanced_labs/26_segmentation_unet/README.md) | [Las 31 rutas](../../parts/README.md) | [🖌️ WGAN-GP sobre Fashion-MNIST](../../advanced_labs/28_wgan_gp/README.md) |
+| [🧷 Segmentación semántica con U-Net](../../advanced_labs/26_segmentation_unet/README.md) | [Las 31 clases](../../parts/README.md) | [🖌️ WGAN-GP sobre Fashion-MNIST](../../advanced_labs/28_wgan_gp/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔬 [Parte 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/27_audio_speechcommands/index.html) · [🖥️ Página HTML local](index.html)
+🔬 [Módulo 7 — Especializaciones avanzadas](../../parts/07-especializaciones-avanzadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/27_audio_speechcommands/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

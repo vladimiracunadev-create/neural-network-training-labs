@@ -1,22 +1,36 @@
 # GNN sobre red de citas
 
 <!-- nav-top -->
-> 🧭 **Ruta 10 / 31** · 🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
+> 🧭 **Clase 10 / 31** · 🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md)
 >
-> [⬅️ 🎨 GAN generativa](../../labs/08_gan_generation/README.md) · [🏠 Índice de rutas](../../parts/README.md) · [🕹️ DQN para inventario con demanda real ➡️](../../labs/10_dqn_reinforcement/README.md)
+> [⬅️ 🎨 GAN generativa](../../labs/08_gan_generation/README.md) · [🏠 Índice de clases](../../parts/README.md) · [🕹️ DQN para inventario con demanda real ➡️](../../labs/10_dqn_reinforcement/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+Dos artículos con vocabularios ambiguos pueden aclararse al observar qué trabajos citan y quiénes los citan.
+
+> **Pregunta esencial:** ¿Cuánto aporta conocer las conexiones además de conocer cada nodo?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![Aprender haciendo circular mensajes](assets/class-map.svg)
+
+*Mapa de esta clase: Aprender haciendo circular mensajes. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Clasificar publicaciones científicas usando texto y enlaces de citas.
 
-Es la **ruta 10 de 31** del recorrido y pertenece a 🟣 la parte 3, *Familias especializadas: generar, decidir, relacionar*. Llegas desde **GAN generativa** y lo que hagas aquí lo da por supuesto **DQN para inventario con demanda real**.
+**Práctica propia de esta clase:** Visualizar vecindarios, retirar aristas y comparar una GNN con una MLP que solo ve atributos.
+
+Es la **clase 10 de 31** del programa y pertenece a 🟣 el módulo 3, *Familias especializadas: generar, decidir, relacionar*. Llegas desde **GAN generativa** y lo que hagas aquí lo da por supuesto **DQN para inventario con demanda real**.
 
 Trabajarás con el dataset **`cora`** (PyTorch Geometric / Planetoid, licencia: Consultar dataset original), y tendrás que superar la línea base **MLP sin aristas**, decidiendo con la métrica `f1` medida sobre `validation`. Nivel avanzado, unas **8 horas** de dedicación.
 
-**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
+**Lo que conviene traer resuelto de las clases anteriores:** PyTorch intermedio, optimización, lectura de artículos técnicos.
 
 **Al terminar deberías ser capaz de:**
 
@@ -26,7 +40,11 @@ Trabajarás con el dataset **`cora`** (PyTorch Geometric / Planetoid, licencia: 
 - Comparar contra la línea base: MLP sin aristas.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> Añadir más capas no siempre incorpora mejor contexto; puede volver indistinguibles las representaciones de los nodos.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
@@ -42,9 +60,9 @@ El mecanismo general se llama **paso de mensajes** (message passing): en cada ca
 
 La **red convolucional de grafos (GCN)** de Kipf & Welling define la actualización de una capa como:
 
-    H^(l+1) = σ( D̃^{−1/2} Ã D̃^{−1/2} H^(l) W^(l) )
+    H^(l+1) = σ( D_tilde^{−1/2} A_tilde D_tilde^{−1/2} H^(l) W^(l) )
 
-Desglosemos cada símbolo. H^(l) ∈ ℝ^{N×d_l} apila las representaciones de los N nodos en la capa l (H^(0) son las características de entrada). Ã = A + I es la matriz de adyacencia con **auto-lazos** añadidos, para que cada nodo se incluya a sí mismo en la agregación y no pierda su propia información. D̃ es la matriz diagonal de grados de Ã, con D̃ᵢᵢ = Σⱼ Ãᵢⱼ. W^(l) es la matriz de pesos aprendible que transforma las características, y σ es una no linealidad (ReLU). El término D̃^{−1/2} Ã D̃^{−1/2} es la **adyacencia normalizada simétricamente**: propaga las representaciones a los vecinos pero reescalando cada mensaje por 1/√(dᵢ·dⱼ), de modo que los nodos de grado muy alto (muy citados) no dominen la suma ni disparen la escala de las activaciones.
+Desglosemos cada símbolo. H^(l) ∈ ℝ^{N×d_l} apila las representaciones de los N nodos en la capa l (H^(0) son las características de entrada). A_tilde = A + I es la matriz de adyacencia con **auto-lazos** añadidos, para que cada nodo se incluya a sí mismo en la agregación y no pierda su propia información. D_tilde es la matriz diagonal de grados de A_tilde, con D_tildeᵢᵢ = Σⱼ A_tildeᵢⱼ. W^(l) es la matriz de pesos aprendible que transforma las características, y σ es una no linealidad (ReLU). El término D_tilde^{−1/2} A_tilde D_tilde^{−1/2} es la **adyacencia normalizada simétricamente**: propaga las representaciones a los vecinos pero reescalando cada mensaje por 1/√(dᵢ·dⱼ), de modo que los nodos de grado muy alto (muy citados) no dominen la suma ni disparen la escala de las activaciones.
 
 Intuitivamente, cada fila de esa multiplicación calcula, para el nodo i, un **promedio ponderado normalizado** de las características transformadas de i y de sus vecinos: hᵢ^(l+1) = σ( Σ_{j∈𝒩(i)∪{i}} (1/√(d̃ᵢ d̃ⱼ)) · hⱼ^(l) W^(l) ). Apilar L capas equivale a difundir información hasta L saltos de distancia; con L=2, cada artículo "ve" a los artículos que cita y a los que citan a esos. Un exceso de capas provoca **sobre-suavizado** (over-smoothing): las representaciones de todos los nodos convergen y se vuelven indistinguibles, por lo que en la práctica las GCN son poco profundas.
 
@@ -66,9 +84,9 @@ La elección tampoco es neutra en poder expresivo. La **media** pierde la inform
 
 ### Qué hace la normalización simétrica, y por qué solo dos capas
 
-La matriz Â = D̃^(−1/2)·Ã·D̃^(−1/2) parece una convención arbitraria y no lo es. Sin normalizar, multiplicar por A suma las representaciones de los vecinos, así que un nodo muy conectado acumula valores mucho mayores que uno periférico y las activaciones se descompensan con la profundidad. Normalizar por el grado a ambos lados hace que los autovalores de Â queden acotados en [−1, 1], y con los auto-lazos el mayor queda en 1: la propagación **no amplifica**, y por eso la red se puede apilar sin que las activaciones exploten.
+La matriz A_hat = D_tilde^(−1/2)·A_tilde·D_tilde^(−1/2) parece una convención arbitraria y no lo es. Sin normalizar, multiplicar por A suma las representaciones de los vecinos, así que un nodo muy conectado acumula valores mucho mayores que uno periférico y las activaciones se descompensan con la profundidad. Normalizar por el grado a ambos lados hace que los autovalores de A_hat queden acotados en [−1, 1], y con los auto-lazos el mayor queda en 1: la propagación **no amplifica**, y por eso la red se puede apilar sin que las activaciones exploten.
 
-Esa misma propiedad explica el límite. Aplicar Â repetidamente es un promediado iterado, y un promediado iterado sobre un grafo conexo converge a un punto fijo donde todos los nodos comparten la misma representación, proporcional al autovector dominante. Es el **sobre-suavizado**: con muchas capas, la señal que distingue a un nodo de otro se disuelve y la exactitud cae. De ahí un hecho que sorprende a quien viene de las CNN —donde más profundidad casi siempre ayuda—: las GNN de paso de mensajes suelen rendir mejor con **dos o tres capas**, y ese es el número que este laboratorio explora. El campo receptivo crece muy rápido de todos modos: dos capas ya cubren los vecinos a distancia dos, que en una red de citas puede ser una fracción notable del grafo.
+Esa misma propiedad explica el límite. Aplicar A_hat repetidamente es un promediado iterado, y un promediado iterado sobre un grafo conexo converge a un punto fijo donde todos los nodos comparten la misma representación, proporcional al autovector dominante. Es el **sobre-suavizado**: con muchas capas, la señal que distingue a un nodo de otro se disuelve y la exactitud cae. De ahí un hecho que sorprende a quien viene de las CNN —donde más profundidad casi siempre ayuda—: las GNN de paso de mensajes suelen rendir mejor con **dos o tres capas**, y ese es el número que este laboratorio explora. El campo receptivo crece muy rápido de todos modos: dos capas ya cubren los vecinos a distancia dos, que en una red de citas puede ser una fracción notable del grafo.
 
 ### La fuga de datos en un grafo no es como en una tabla
 
@@ -86,21 +104,21 @@ Por último, una comparación que este laboratorio pide y que conviene entender:
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `accuracy`, `macro_f1`. De todas ellas, la que **decide** qué modelo se conserva es `f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `accuracy`, `macro_f1`. De todas ellas, la que **decide** qué modelo se conserva es `f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 25 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (40 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -173,7 +191,7 @@ datos = prepare_dataset("09_gnn_graphs", quick=True, seed=42)
 print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -296,7 +314,7 @@ Cada ejecución escribe su propio directorio con nombre único, de modo que dos 
 | `best_model.pt` · `last_model.pt` | El checkpoint elegido por validación y el último, para poder compararlos. |
 | `model_spec.json` · `inference_contract.json` | Qué entrada espera el modelo y qué devuelve: lo que necesita quien lo despliegue. |
 | `model_card.md` · `report.md` | La ficha del modelo y el informe legible de la ejecución. |
-| `graph_model_comparison.json` | **Propio de esta ruta.** Puntaje de GCN, GraphSAGE y GAT, y cuál se seleccionó. |
+| `graph_model_comparison.json` | **Propio de esta clase.** Puntaje de GCN, GraphSAGE y GAT, y cuál se seleccionó. |
 
 ## ⚠️ Dónde suele perderse la gente
 
@@ -314,7 +332,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 ## ✅ Antes de darlo por terminado
 
-El laboratorio está aprobado cuando se cumplen estos criterios:
+La clase está aprobada cuando se cumplen estos criterios:
 
 - [ ] cero solapamiento entre train, validation y test
 - [ ] selección basada únicamente en validation
@@ -359,6 +377,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -376,11 +395,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🎨 GAN generativa](../../labs/08_gan_generation/README.md) | [Las 31 rutas](../../parts/README.md) | [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) |
+| [🎨 GAN generativa](../../labs/08_gan_generation/README.md) | [Las 31 clases](../../parts/README.md) | [🕹️ DQN para inventario con demanda real](../../labs/10_dqn_reinforcement/README.md) |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟣 [Parte 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/09_gnn_graphs/index.html) · [🖥️ Página HTML local](index.html)
+🟣 [Módulo 3 — Familias especializadas: generar, decidir, relacionar](../../parts/03-familias-especializadas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/09_gnn_graphs/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

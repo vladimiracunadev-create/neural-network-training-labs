@@ -1,22 +1,36 @@
 # Regularización
 
 <!-- nav-top -->
-> 🧭 **Ruta 20 / 31** · 🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md)
+> 🧭 **Clase 20 / 31** · 🔴 [Módulo 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md)
 >
-> [⬅️ ⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md) · [🏠 Índice de rutas](../../parts/README.md) · [🔄 Aumento de datos ➡️](../../labs/20_data_augmentation/README.md)
+> [⬅️ ⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md) · [🏠 Índice de clases](../../parts/README.md) · [🔄 Aumento de datos ➡️](../../labs/20_data_augmentation/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+El entrenamiento puede seguir mejorando mientras validation empeora. Esa separación visible es la firma del sobreajuste.
+
+> **Pregunta esencial:** ¿Cómo distinguir una red que aprendió una regla de otra que memorizó ejemplos?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![Capacidad, ajuste y generalización](assets/class-map.svg)
+
+*Mapa de esta clase: Capacidad, ajuste y generalización. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Medir dropout, weight decay y batch normalization.
 
-Es la **ruta 20 de 31** del recorrido y pertenece a 🔴 la parte 5, *La mecánica fina, ahora en profundidad*. Llegas desde **Optimizadores y schedulers** y lo que hagas aquí lo da por supuesto **Aumento de datos**.
+**Práctica propia de esta clase:** Comparar curvas train–validation, activar regularizadores por separado y medir estabilidad entre semillas.
+
+Es la **clase 20 de 31** del programa y pertenece a 🔴 el módulo 5, *La mecánica fina, ahora en profundidad*. Llegas desde **Optimizadores y schedulers** y lo que hagas aquí lo da por supuesto **Aumento de datos**.
 
 Trabajarás con el dataset **`fashion_mnist`** (Torchvision / Zalando Research, licencia: MIT), y tendrás que superar la línea base **MLP sin regularización**, decidiendo con la métrica `macro_f1` medida sobre `validation`. Nivel intermedio, unas **6 horas** de dedicación.
 
-**Lo que conviene traer resuelto de las rutas anteriores:** PyTorch básico, particiones train/validation/test, métricas de evaluación.
+**Lo que conviene traer resuelto de las clases anteriores:** PyTorch básico, particiones train/validation/test, métricas de evaluación.
 
 **Al terminar deberías ser capaz de:**
 
@@ -26,7 +40,11 @@ Trabajarás con el dataset **`fashion_mnist`** (Torchvision / Zalando Research, 
 - Comparar contra la línea base: MLP sin regularización.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> Dropout y batch normalization no son equivalentes ni deben activarse de la misma manera durante inferencia.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
@@ -58,7 +76,7 @@ log p(θ | D) = log p(D | θ) + log p(θ) + const,
 
 y con p(θ) = 𝒩(0, σ²I), el segundo término es −‖θ‖²/(2σ²), es decir, el término L2 con λ = 1/σ². La lectura es que regularizar equivale a declarar una creencia previa: **los pesos pequeños son más probables que los grandes**, y λ mide cuánta evidencia hace falta para abandonar esa creencia.
 
-Su efecto sobre el gradiente es un encogimiento multiplicativo, θ ← (1 − η·λ)·θ − η·g, que empuja continuamente hacia cero y solo se contrarresta donde los datos lo exigen. Dos consecuencias prácticas: los **sesgos no se regularizan** —desplazan la función, no controlan su complejidad, y encogerlos solo introduce error—, y en Adam hay que usar la forma desacoplada de AdamW por la razón que explica la ruta 18.
+Su efecto sobre el gradiente es un encogimiento multiplicativo, θ ← (1 − η·λ)·θ − η·g, que empuja continuamente hacia cero y solo se contrarresta donde los datos lo exigen. Dos consecuencias prácticas: los **sesgos no se regularizan** —desplazan la función, no controlan su complejidad, y encogerlos solo introduce error—, y en Adam hay que usar la forma desacoplada de AdamW por la razón que explica la clase 19.
 
 ### Dropout: por qué se escala y qué apaga exactamente
 
@@ -94,21 +112,21 @@ La **parada temprana** merece contarse como parte del mismo conjunto de herramie
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `accuracy`, `macro_f1`, `generalization_gap`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `accuracy`, `macro_f1`, `generalization_gap`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 25 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (40 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -181,7 +199,7 @@ datos = prepare_dataset("19_regularization_dropout_batchnorm", quick=True, seed=
 print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -308,7 +326,7 @@ Cada ejecución escribe su propio directorio con nombre único, de modo que dos 
 | `confusion_matrix.png` | Qué clases se confunden entre sí. |
 | `model_spec.json` · `inference_contract.json` | Qué entrada espera el modelo y qué devuelve: lo que necesita quien lo despliegue. |
 | `model_card.md` · `report.md` | La ficha del modelo y el informe legible de la ejecución. |
-| `variant_comparison.json` | **Propio de esta ruta.** Una fila por variante comparada, con su métrica de validación. |
+| `variant_comparison.json` | **Propio de esta clase.** Una fila por variante comparada, con su métrica de validación. |
 
 ## ⚠️ Dónde suele perderse la gente
 
@@ -325,7 +343,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 ## ✅ Antes de darlo por terminado
 
-El laboratorio está aprobado cuando se cumplen estos criterios:
+La clase está aprobada cuando se cumplen estos criterios:
 
 - [ ] cero solapamiento entre train, validation y test
 - [ ] selección basada únicamente en validation
@@ -372,6 +390,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -389,11 +408,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md) | [Las 31 rutas](../../parts/README.md) | [🔄 Aumento de datos](../../labs/20_data_augmentation/README.md) |
+| [⚙️ Optimizadores y schedulers](../../labs/18_optimizers_and_schedulers/README.md) | [Las 31 clases](../../parts/README.md) | [🔄 Aumento de datos](../../labs/20_data_augmentation/README.md) |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔴 [Parte 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/19_regularization_dropout_batchnorm/index.html) · [🖥️ Página HTML local](index.html)
+🔴 [Módulo 5 — La mecánica fina, ahora en profundidad](../../parts/05-mecanica-fina.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/19_regularization_dropout_batchnorm/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

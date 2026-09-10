@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Construye el material de cada laboratorio y las páginas de parte en Markdown.
+"""Construye el material de cada clase y las páginas de módulo en Markdown.
 
-Cada laboratorio publica cuatro documentos. Tres se generan enteros desde los
+Cada clase publica cuatro documentos. Tres se generan enteros desde los
 datos del repositorio y uno es la fuente redactada a mano:
 
 * `README.md` — la **clase completa**: qué se va a hacer, la teoría incrustada
@@ -65,7 +65,7 @@ DOCS = [
     ("assessment.md", "📝", "Evaluación"),
 ]
 
-# Las siete partes del recorrido. Son tramos CONTIGUOS de la secuencia 00 → 30:
+# Los siete módulos del recorrido. Son tramos CONTIGUOS de la secuencia 00 → 30:
 # `first` y `last` son el prefijo numérico del primer y último laboratorio, de modo
 # que ninguna clase queda fuera y ninguna aparece en dos partes.
 PARTS = [
@@ -118,7 +118,7 @@ PARTS = [
         "first": 16, "last": 20,
         "summary": (
             "Segunda pasada por el motor, ya con la experiencia de haber entrenado modelos reales: "
-            "lo que en la ruta 00 era una fórmula, aquí es una decisión de diseño que se mide, se "
+            "lo que en la clase 01 era una fórmula, aquí es una decisión de diseño que se mide, se "
             "compara entre semillas y se justifica."
         ),
         "outcome": "explicas por qué un entrenamiento converge, se estanca o sobreajusta.",
@@ -141,7 +141,7 @@ PARTS = [
         "summary": (
             "Mismo contrato de semillas, selección por validación y sellado del test, con "
             "arquitecturas de frontera y pesos preentrenados descargados de su proveedor. "
-            "Se pueden tomar en cualquier orden una vez completadas las rutas 00–24."
+            "Se pueden tomar en cualquier orden una vez completadas las clases 01–25."
         ),
         "outcome": "trabajas con arquitecturas actuales sin renunciar al protocolo.",
     },
@@ -196,6 +196,12 @@ def _catalog() -> dict[str, dict]:
     return entries
 
 
+def _class_profiles() -> dict[str, dict]:
+    """Carga la identidad pedagógica, escrita a mano, de cada clase."""
+    profiles = _yaml(ROOT / "configs" / "classes.yaml").get("classes") or []
+    return {item["id"]: item for item in profiles}
+
+
 def part_for(num: int) -> dict:
     """Parte a la que pertenece un laboratorio, por su prefijo numérico."""
     for part in PARTS:
@@ -206,6 +212,7 @@ def part_for(num: int) -> dict:
 
 def collect_labs() -> list[dict]:
     catalog = _catalog()
+    profiles = _class_profiles()
     labs: list[dict] = []
     for base, category in (("labs", "Central"), ("advanced_labs", "Avanzada")):
         base_dir = ROOT / base
@@ -231,6 +238,7 @@ def collect_labs() -> list[dict]:
                 "baseline_cfg": _yaml(lab_dir / "configs/baseline.yaml"),
                 "improved_cfg": _yaml(lab_dir / "configs/improved.yaml"),
                 "catalog": catalog.get(slug, {}),
+                "profile": profiles.get(slug, {}),
             })
     return labs
 
@@ -255,7 +263,7 @@ def top_block(lab: dict, prev: dict | None, nxt: dict | None,
         jumps.append(f'[⬅️ {label(prev)}]({doc_link(prev, current_doc if (prev["dir"] / current_doc).exists() else "README.md")})')
     else:
         jumps.append("⬅️ *inicio del recorrido*")
-    jumps.append("[🏠 Índice de rutas](../../parts/README.md)")
+    jumps.append("[🏠 Índice de clases](../../parts/README.md)")
     if nxt:
         jumps.append(f'[{label(nxt)} ➡️]({doc_link(nxt, current_doc if (nxt["dir"] / current_doc).exists() else "README.md")})')
     else:
@@ -268,11 +276,11 @@ def top_block(lab: dict, prev: dict | None, nxt: dict | None,
         tabs.append(f"**{emoji} {name}**" if doc == current_doc else f"[{emoji} {name}]({doc})")
 
     part = lab["part"]
-    part_link = f'[Parte {part["num"]} — {part["title"]}](../../parts/{part["slug"]}.md)'
+    part_link = f'[Módulo {part["num"]} — {part["title"]}](../../parts/{part["slug"]}.md)'
 
     return (
         "<!-- nav-top -->\n"
-        f"> 🧭 **Ruta {index + 1} / {total}** · {part['emoji']} {part_link}\n"
+        f"> 🧭 **Clase {index + 1:02d} / {total}** · {part['emoji']} {part_link}\n"
         ">\n"
         f"> {' · '.join(jumps)}\n"
         ">\n"
@@ -302,7 +310,7 @@ def bottom_block(lab: dict, prev: dict | None, nxt: dict | None, current_doc: st
     # `index.html` lo genera scripts/generate_lab_html.py a partir de este Markdown;
     # el enlace es incondicional para que el orden de generación sea determinista.
     salidas = [
-        f'{part["emoji"]} [Parte {part["num"]} — {part["title"]}](../../parts/{part["slug"]}.md)',
+        f'{part["emoji"]} [Módulo {part["num"]} — {part["title"]}](../../parts/{part["slug"]}.md)',
         "[🏠 Portada del repositorio](../../README.md)",
         f'[🌐 Sitio de estudio]({SITE}/labs/{lab["slug"]}/index.html)',
         "[🖥️ Página HTML local](index.html)",
@@ -311,10 +319,10 @@ def bottom_block(lab: dict, prev: dict | None, nxt: dict | None, current_doc: st
     return (
         "<!-- nav-bottom -->\n"
         "## 🧭 Navegación del recorrido\n\n"
-        "| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |\n"
+        "| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |\n"
         "|---|:---:|---|\n"
-        f"| {prev_cell} | [Las 31 rutas](../../parts/README.md) | {next_cell} |\n\n"
-        f"**En este laboratorio:** {' · '.join(docs)}\n\n"
+        f"| {prev_cell} | [Las 31 clases](../../parts/README.md) | {next_cell} |\n\n"
+        f"**Material de esta clase:** {' · '.join(docs)}\n\n"
         f"{' · '.join(salidas)}\n"
         "<!-- /nav-bottom -->"
     )
@@ -563,7 +571,7 @@ def _notebooks_section(lab: dict) -> list[str]:
     lines = [
         "## 📓 Los tres cuadernos",
         "",
-        "El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. "
+        "La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. "
         "Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, "
         "entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca "
         "escribir a ti:",
@@ -582,8 +590,7 @@ def _notebooks_section(lab: dict) -> list[str]:
         "",
         "### Qué se practica en los ejercicios",
         "",
-        "Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a "
-        "estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea "
+        "Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea "
         "base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin "
         "descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está "
         "parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento "
@@ -789,7 +796,7 @@ def _advanced_steps(lab: dict) -> list[str]:
         3, "Entrenar en serio y seleccionar con `validation`",
         "Se entrena el modelo completo conservando el checkpoint con el mejor valor de `" + str(metric)
         + "` en validación, y se sella el experimento antes de evaluar `test`.",
-        "Igual que en las rutas centrales: `validation` decide, `test` solo confirma, y el sello deja por "
+        "Igual que en las clases centrales: `validation` decide, `test` solo confirma, y el sello deja por "
         "escrito qué se había decidido antes de mirar.",
         f"neural-labs train-advanced --track {slug} --split-seed 42 --training-seed 43{lora}",
         "Existe `experiment.lock.json` y `metrics.json` incluye tanto el valor de validación como el de test.",
@@ -859,10 +866,10 @@ def _artifact_table(lab: dict) -> list[str]:
         ]
 
     for name, description in EXTRA_ARTIFACTS.get(architecture, []):
-        rows.append((f"`{name}`", f"**Propio de esta ruta.** {description}"))
+        rows.append((f"`{name}`", f"**Propio de esta clase.** {description}"))
     if lab["slug"] in LAB_SPECIFIC_STEPS:
         name, description = LAB_SPECIFIC_STEPS[lab["slug"]]
-        rows.append((f"`{name}`", f"**Propio de esta ruta.** {description}"))
+        rows.append((f"`{name}`", f"**Propio de esta clase.** {description}"))
 
     return ["| Archivo | Qué contiene y qué mirar |", "|---|---|"] + [
         f"| {name} | {description} |" for name, description in rows
@@ -1065,6 +1072,7 @@ def _theory_embedded(lab: dict) -> list[str]:
 
 def guia_doc(lab: dict, index: int, total: int, prev: dict | None, nxt: dict | None) -> str:
     catalog, lesson = lab["catalog"], lab["lesson"]
+    profile = lab.get("profile") or {}
     advanced = lab["category"] == "Avanzada"
     objective = str(catalog.get("objective") or lesson.get("title") or lab["title"]).strip()
     metrics = catalog.get("metrics") or []
@@ -1078,10 +1086,35 @@ def guia_doc(lab: dict, index: int, total: int, prev: dict | None, nxt: dict | N
     level = LEVEL_ES.get(level.lower(), level)
     part = lab["part"]
 
-    parts: list[str] = ["## 🎯 Qué vas a hacer aquí", "", objective, ""]
+    essential_question = str(profile.get("essential_question") or lesson.get("essential_question") or "").strip()
+    hook = str(profile.get("hook") or lesson.get("opening_hook") or "").strip()
+    practice = str(profile.get("practice") or lesson.get("class_practice") or objective).strip()
+    misconception = str(profile.get("misconception") or lesson.get("common_misconception") or "").strip()
+    visual_title = str(profile.get("visual_title") or "Mapa conceptual de la clase").strip()
 
-    situar = (f'Es la **ruta {index + 1} de {total}** del recorrido y pertenece a {part["emoji"]} '
-              f'la parte {part["num"]}, *{part["title"]}*.')
+    parts: list[str] = ["## Antes de tocar el código", ""]
+    if hook:
+        parts += [hook, ""]
+    if essential_question:
+        parts += [f"> **Pregunta esencial:** {essential_question}", ""]
+    parts += [
+        "Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que "
+        "decir qué evidencia la confirmó, la corrigió o la dejó abierta.",
+        "",
+        f"![{visual_title}](assets/class-map.svg)",
+        "",
+        f"*Mapa de esta clase: {visual_title}. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*",
+        "",
+        "## 🎯 Qué vas a aprender y construir",
+        "",
+        objective,
+        "",
+        f"**Práctica propia de esta clase:** {practice}",
+        "",
+    ]
+
+    situar = (f'Es la **clase {index + 1:02d} de {total}** del programa y pertenece a {part["emoji"]} '
+              f'el módulo {part["num"]}, *{part["title"]}*.')
     if prev:
         situar += f' Llegas desde **{prev["title"]}**'
         situar += f' y lo que hagas aquí lo da por supuesto **{nxt["title"]}**.' if nxt else "."
@@ -1107,7 +1140,7 @@ def guia_doc(lab: dict, index: int, total: int, prev: dict | None, nxt: dict | N
 
     prerequisites = lesson.get("prerequisites") or []
     if prerequisites:
-        parts += ["**Lo que conviene traer resuelto de las rutas anteriores:** "
+        parts += ["**Lo que conviene traer resuelto de las clases anteriores:** "
                   + ", ".join(str(item) for item in prerequisites) + ".", ""]
 
     outcomes = lesson.get("learning_outcomes") or []
@@ -1116,7 +1149,15 @@ def guia_doc(lab: dict, index: int, total: int, prev: dict | None, nxt: dict | N
         parts += [f"- {item}" for item in outcomes]
         parts += [""]
 
-    parts += ["## 🧠 La teoría de este laboratorio", ""]
+    if misconception:
+        parts += [
+            "### Una idea que conviene desmontar",
+            "",
+            f"> {misconception}",
+            "",
+        ]
+
+    parts += ["## 🧠 Comprender antes de entrenar", ""]
     embedded = _theory_embedded(lab)
     if embedded:
         parts += [
@@ -1136,7 +1177,7 @@ def guia_doc(lab: dict, index: int, total: int, prev: dict | None, nxt: dict | N
         parts += [
             "### Qué se mide y con qué se decide",
             "",
-            f"El laboratorio reporta {listed}."
+            f"La clase reporta {listed}."
             + (f" De todas ellas, la que **decide** qué modelo se conserva es `{selection}`, y se mide "
                "siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación "
                "honesta de lo que pasará con datos nuevos." if selection else ""),
@@ -1146,7 +1187,7 @@ def guia_doc(lab: dict, index: int, total: int, prev: dict | None, nxt: dict | N
     parts += _notebooks_section(lab)
     parts += _commands_section(lab)
 
-    parts += ["## 🪜 Paso a paso", ""]
+    parts += ["## 🪜 Laboratorio guiado", ""]
     parts += [
         "Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que "
         "salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y "
@@ -1177,7 +1218,7 @@ def guia_doc(lab: dict, index: int, total: int, prev: dict | None, nxt: dict | N
     deliverables = lesson.get("deliverables") or []
     parts += ["## ✅ Antes de darlo por terminado", ""]
     if criteria:
-        parts += ["El laboratorio está aprobado cuando se cumplen estos criterios:", ""]
+        parts += ["La clase está aprobada cuando se cumplen estos criterios:", ""]
         parts += [f"- [ ] {item}" for item in criteria]
         parts += [""]
     if deliverables:
@@ -1216,6 +1257,7 @@ def guia_doc(lab: dict, index: int, total: int, prev: dict | None, nxt: dict | N
         ("🧠 `theory.md`", "theory.md", "La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba."),
         ("🔬 `experiments.md`", "experiments.md", "El plan experimental y la tabla multi-semilla que hay que completar."),
         ("📝 `assessment.md`", "assessment.md", "Las preguntas de evaluación y la rúbrica con la que se corrigen."),
+        ("🧑‍🏫 `instructor-guide.md`", "instructor-guide.md", "La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase."),
         ("📓 `notebook.ipynb`", "notebook.ipynb", "El recorrido completo con todo el código escrito y ejecutable."),
         ("✏️ `notebook_student.ipynb`", "notebook_student.ipynb", "El mismo recorrido con las celdas de ejercicio vacías."),
         ("✅ `notebook_solution.ipynb`", "notebook_solution.ipynb", "Los ejercicios resueltos, para contrastar."),
@@ -1294,7 +1336,7 @@ def experiments_doc(lab: dict) -> str:
 
     if experiment:
         parts += [
-            "### El experimento propio de esta ruta",
+            "### El experimento propio de esta clase",
             "",
             f"Además de la comparación con la línea base, aquí interesa una pregunta específica: "
             f"**{experiment.rstrip('.')}**. Es la comparación que da sentido al tema de este "
@@ -1493,6 +1535,7 @@ RUBRIC = [
 
 def assessment_doc(lab: dict) -> str:
     catalog, lesson = lab["catalog"], lab["lesson"]
+    profile = lab.get("profile") or {}
     math = str(catalog.get("math") or "").strip().rstrip(".")
     reference = catalog.get("baseline") or "la línea base del laboratorio"
     selection = lab["baseline_cfg"].get("selection_metric") or catalog.get("selection_metric") or "la métrica de selección"
@@ -1500,7 +1543,7 @@ def assessment_doc(lab: dict) -> str:
     dataset_name = lab["dataset"].get("name") or catalog.get("dataset") or "el dataset"
 
     parts: list[str] = [
-        "## Cómo se evalúa este laboratorio",
+        "## Cómo se evalúa esta clase",
         "",
         "No se evalúa el número final. Un modelo con una métrica alta obtenida mirando `test`, o sin "
         "compararse con nada, vale menos que uno modesto cuyo resultado se puede auditar. Lo que se "
@@ -1532,6 +1575,12 @@ def assessment_doc(lab: dict) -> str:
     ]
 
     questions: list[tuple[str, str]] = []
+    if profile.get("essential_question"):
+        questions.append((
+            str(profile["essential_question"]),
+            "Comienza con la predicción que hiciste al abrir la clase y contrástala con una gráfica, "
+            "una medida o una observación concreta de tu ejecución.",
+        ))
     if math:
         questions.append((
             f"Explica con tus palabras: {math}.",
@@ -1557,6 +1606,18 @@ def assessment_doc(lab: dict) -> str:
             "Esta es la pregunta propia del tema. Responde con evidencia de tu ejecución —predicciones, "
             "matriz de confusión, curvas, artefactos del directorio de la corrida—, no con una "
             "impresión general.",
+        ))
+    if profile.get("practice"):
+        questions.append((
+            f"¿Qué aprendiste al realizar esta práctica: {profile['practice']}?",
+            "No basta con relatar los pasos. Explica qué cambió, por qué cambió y qué resultado te "
+            "haría rechazar tu interpretación inicial.",
+        ))
+    if profile.get("misconception"):
+        questions.append((
+            f"Refuta con evidencia esta idea frecuente: «{profile['misconception']}»",
+            "Se busca una refutación situada en esta materia, apoyada en el mecanismo estudiado y "
+            "en los resultados obtenidos, no una negación genérica.",
         ))
     questions.append((
         f"¿Qué te dice `{selection}` que no te dirían las otras métricas?",
@@ -1595,7 +1656,7 @@ def assessment_doc(lab: dict) -> str:
         "",
         "## Autoevaluación antes de entregar",
         "",
-        "- [ ] Puedo explicar el laboratorio a alguien que no lo hizo, sin leer el código.",
+        "- [ ] Puedo explicar la idea central de la clase a alguien que no la cursó, sin leer el código.",
         "- [ ] Sé qué decisión tomé en cada paso y con qué evidencia la tomé.",
         f"- [ ] Miré `test` una sola vez, después de que existiera `experiment.lock.json`.",
         "- [ ] Mi conclusión dice magnitud, incertidumbre, costo, errores y condiciones.",
@@ -1631,7 +1692,7 @@ def part_page(part: dict, labs: list[dict], prev: dict | None, nxt: dict | None)
              for lab in members} - {""}
     levels = sorted(found, key=lambda level: (order.index(level) if level in order else len(order), level))
 
-    meta = [f"**Rutas:** {part['first']:02d}–{part['last']:02d}", f"**Clases:** {len(members)}"]
+    meta = [f"**Clases:** {positions[members[0]['slug']]:02d}–{positions[members[-1]['slug']]:02d}"]
     if levels:
         meta.append(f"**Nivel:** {' · '.join(levels)}")
     if hours:
@@ -1650,7 +1711,7 @@ def part_page(part: dict, labs: list[dict], prev: dict | None, nxt: dict | None)
     for lab in members:
         hours_cell = f'{_lab_hours(lab)}' if _lab_hours(lab) else "—"
         rows.append(
-            f'| {lab["num"]} | {lab["emoji"]} [{lab["title"]}](../{lab["base"]}/{lab["slug"]}/README.md) '
+            f'| {positions[lab["slug"]]:02d} | {lab["emoji"]} [{lab["title"]}](../{lab["base"]}/{lab["slug"]}/README.md) '
             f'| {_lab_summary(lab)} | `{lab["dataset"].get("name") or lab["catalog"].get("dataset") or "—"}` '
             f'| {hours_cell} |'
         )
@@ -1661,21 +1722,21 @@ def part_page(part: dict, labs: list[dict], prev: dict | None, nxt: dict | None)
         for doc, emoji, name in DOCS if (first["dir"] / doc).exists()
     )
 
-    prev_cell = (f'[⬅️ Parte {prev["num"]} — {prev["title"]}]({prev["slug"]}.md)'
-                 if prev else "⬅️ *primera parte*")
-    next_cell = (f'[Parte {nxt["num"]} — {nxt["title"]} ➡️]({nxt["slug"]}.md)'
-                 if nxt else "*última parte* ➡️")
+    prev_cell = (f'[⬅️ Módulo {prev["num"]} — {prev["title"]}]({prev["slug"]}.md)'
+                 if prev else "⬅️ *primer módulo*")
+    next_cell = (f'[Módulo {nxt["num"]} — {nxt["title"]} ➡️]({nxt["slug"]}.md)'
+                 if nxt else "*último módulo* ➡️")
 
     lines = [
-        f'# {part["emoji"]} Parte {part["num"]} — {part["title"]}',
+        f'# {part["emoji"]} Módulo {part["num"]} — {part["title"]}',
         "",
-        f"> 🧭 {prev_cell} · [🏠 Índice de partes](README.md) · [📘 Portada](../README.md) · {next_cell}",
+        f"> 🧭 {prev_cell} · [🏠 Índice de módulos](README.md) · [📘 Portada](../README.md) · {next_cell}",
         "",
         " · ".join(meta),
         "",
         part["summary"],
         "",
-        "## 🧭 Secuencia de la parte",
+        "## 🧭 Secuencia del módulo",
         "",
         "```mermaid",
         "flowchart LR",
@@ -1683,18 +1744,18 @@ def part_page(part: dict, labs: list[dict], prev: dict | None, nxt: dict | None)
         edges,
         "```",
         "",
-        "## 📚 Clases de esta parte",
+        "## 📚 Clases de este módulo",
         "",
         "| # | Clase | Qué resuelve | Dataset | Horas |",
         "|---:|---|---|---|---:|",
         "\n".join(rows),
         "",
         f'> Empieza por {first["emoji"]} **[{first["title"]}](../{first["base"]}/{first["slug"]}/README.md)** '
-        f'(ruta {positions[first["slug"]]} de {len(labs)}). Sus documentos: {docs_row}.',
+        f'(clase {positions[first["slug"]]:02d} de {len(labs)}). Sus documentos: {docs_row}.',
         "",
         "## 🎯 Qué llevas al terminar",
         "",
-        f'Al completar esta parte, {part["outcome"]}',
+        f'Al completar este módulo, {part["outcome"]}',
         "",
         "Todas las clases comparten el mismo contrato: los transformadores se ajustan solo con",
         "`train`, `validation` decide el modelo y `test` se abre una única vez tras escribir",
@@ -1702,7 +1763,7 @@ def part_page(part: dict, labs: list[dict], prev: dict | None, nxt: dict | None)
         "",
         "---",
         "",
-        f"{prev_cell} · [🏠 Índice de partes](README.md) · [📘 Portada del repositorio](../README.md) · {next_cell}",
+        f"{prev_cell} · [🏠 Índice de módulos](README.md) · [📘 Portada del repositorio](../README.md) · {next_cell}",
         "",
     ]
     return "\n".join(lines)
@@ -1714,7 +1775,7 @@ def parts_index(labs: list[dict]) -> str:
         members = [lab for lab in labs if lab["part"] is part]
         rows.append(
             f'| {part["emoji"]} **{part["num"]}** | [{part["title"]}]({part["slug"]}.md) '
-            f'| {part["first"]:02d}–{part["last"]:02d} | {len(members)} | {part["outcome"]} |'
+            f'| {part["first"] + 1:02d}–{part["last"] + 1:02d} | {len(members)} | {part["outcome"]} |'
         )
 
     lines = [
@@ -1723,23 +1784,23 @@ def parts_index(labs: list[dict]) -> str:
         "> 🧭 [📘 Portada del repositorio](../README.md) · "
         f'[🌐 Sitio de estudio]({SITE}/) · [🖥️ Índice HTML offline](../index.html)',
         "",
-        f"Las **{len(labs)} rutas** se estudian en orden, de la **00** a la **{labs[-1]['num']}**.",
-        "Las siete partes de abajo son tramos **contiguos** de esa misma secuencia: cada una agrupa",
+        f"Las **{len(labs)} clases** se estudian en orden, de la **01** a la **{len(labs):02d}**.",
+        "Los siete módulos de abajo son tramos **contiguos** de esa misma secuencia: cada uno agrupa",
         "las clases consecutivas que comparten propósito, y termina justo donde empieza la siguiente.",
         "",
-        "| Parte | Título | Rutas | Clases | Qué llevas al terminar |",
+        "| Módulo | Título | Clases | Cantidad | Qué llevas al terminar |",
         "|:---:|---|:---:|:---:|---|",
         "\n".join(rows),
         "",
         "## 📚 Todas las clases, en orden",
         "",
-        "| # | Clase | Parte | Dataset |",
+        "| # | Clase | Módulo | Dataset |",
         "|---:|---|---|---|",
     ]
-    for lab in labs:
+    for class_number, lab in enumerate(labs, start=1):
         part = lab["part"]
         lines.append(
-            f'| {lab["num"]} | {lab["emoji"]} [{lab["title"]}](../{lab["base"]}/{lab["slug"]}/README.md) '
+            f'| {class_number:02d} | {lab["emoji"]} [{lab["title"]}](../{lab["base"]}/{lab["slug"]}/README.md) '
             f'| {part["emoji"]} [{part["num"]}]({part["slug"]}.md) '
             f'| `{lab["dataset"].get("name") or lab["catalog"].get("dataset") or "—"}` |'
         )
@@ -1747,7 +1808,7 @@ def parts_index(labs: list[dict]) -> str:
         "",
         "---",
         "",
-        f'[📘 Portada del repositorio](../README.md) · [▶️ Empezar por la ruta {labs[0]["num"]}]'
+        f'[📘 Portada del repositorio](../README.md) · [▶️ Empezar por la clase 01]'
         f'(../{labs[0]["base"]}/{labs[0]["slug"]}/README.md)',
         "",
     ]

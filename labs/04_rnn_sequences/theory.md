@@ -1,9 +1,9 @@
 # Teoría — RNN para texto
 
 <!-- nav-top -->
-> 🧭 **Ruta 5 / 31** · 🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
+> 🧭 **Clase 05 / 31** · 🔵 [Módulo 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md)
 >
-> [⬅️ 🖼️ CNN para visión](../../labs/03_cnn_vision/theory.md) · [🏠 Índice de rutas](../../parts/README.md) · [📈 LSTM para series temporales ➡️](../../labs/05_lstm_time_series/theory.md)
+> [⬅️ 🖼️ CNN para visión](../../labs/03_cnn_vision/theory.md) · [🏠 Índice de clases](../../parts/README.md) · [📈 LSTM para series temporales ➡️](../../labs/05_lstm_time_series/theory.md)
 >
 > [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
@@ -50,7 +50,7 @@ Los dos extremos exigen remedios distintos y asimétricos. La explosión se atac
 
 g ← g · min(1, τ / ‖g‖).
 
-Es barato, no cambia la dirección de descenso y basta para evitar que un solo paso destruya el modelo; el repositorio lo aplica por defecto con `gradient_clip_norm`. El desvanecimiento, en cambio, **no tiene un remedio análogo**: no se puede amplificar una señal que ya se perdió. Solo se arregla cambiando la arquitectura para que exista un camino por el que el gradiente fluya sin multiplicarse —las puertas de la LSTM de la ruta siguiente, o la atención directa entre posiciones de la ruta 07—.
+Es barato, no cambia la dirección de descenso y basta para evitar que un solo paso destruya el modelo; el repositorio lo aplica por defecto con `gradient_clip_norm`. El desvanecimiento, en cambio, **no tiene un remedio análogo**: no se puede amplificar una señal que ya se perdió. Solo se arregla cambiando la arquitectura para que exista un camino por el que el gradiente fluya sin multiplicarse —las puertas de la LSTM de la ruta siguiente, o la atención directa entre posiciones de la clase 08—.
 
 Un remedio parcial que sí ayuda es la **inicialización ortogonal** de W_h. Una matriz ortogonal tiene todos sus valores singulares iguales a 1, así que al inicio del entrenamiento no amplifica ni atenúa; el problema reaparece a medida que los pesos se alejan de esa condición, pero el arranque es mucho más sano.
 
@@ -102,11 +102,11 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🖼️ CNN para visión](../../labs/03_cnn_vision/README.md) | [Las 31 rutas](../../parts/README.md) | [📈 LSTM para series temporales](../../labs/05_lstm_time_series/README.md) |
+| [🖼️ CNN para visión](../../labs/03_cnn_vision/README.md) | [Las 31 clases](../../parts/README.md) | [📈 LSTM para series temporales](../../labs/05_lstm_time_series/README.md) |
 
-**En este laboratorio:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** [📄 Guía](README.md) · **🧠 Teoría** · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🔵 [Parte 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/04_rnn_sequences/index.html) · [🖥️ Página HTML local](index.html)
+🔵 [Módulo 2 — Arquitecturas según la forma del dato](../../parts/02-arquitecturas.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/04_rnn_sequences/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->

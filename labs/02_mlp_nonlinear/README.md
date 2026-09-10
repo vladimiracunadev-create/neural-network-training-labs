@@ -1,22 +1,36 @@
 # MLP multiclase
 
 <!-- nav-top -->
-> 🧭 **Ruta 3 / 31** · 🟢 [Parte 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md)
+> 🧭 **Clase 03 / 31** · 🟢 [Módulo 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md)
 >
-> [⬅️ 🧩 Perceptrón con PyTorch](../../labs/01_pytorch_perceptron/README.md) · [🏠 Índice de rutas](../../parts/README.md) · [🖼️ CNN para visión ➡️](../../labs/03_cnn_vision/README.md)
+> [⬅️ 🧩 Perceptrón con PyTorch](../../labs/01_pytorch_perceptron/README.md) · [🏠 Índice de clases](../../parts/README.md) · [🖼️ CNN para visión ➡️](../../labs/03_cnn_vision/README.md)
 >
 > **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md)
 <!-- /nav-top -->
 
-## 🎯 Qué vas a hacer aquí
+## Antes de tocar el código
+
+Dos clases pueden estar entrelazadas de manera que ninguna línea las divida. Las neuronas ocultas transforman primero el espacio para volver separable el problema.
+
+> **Pregunta esencial:** ¿Qué puede aprender una capa oculta que una recta nunca podrá separar?
+
+Haz una predicción antes de ejecutar el notebook. Al final volverás a ella y tendrás que decir qué evidencia la confirmó, la corrigió o la dejó abierta.
+
+![Cómo una MLP dobla el espacio](assets/class-map.svg)
+
+*Mapa de esta clase: Cómo una MLP dobla el espacio. La figura no es decorativa; úsala para explicar el mecanismo con tus propias palabras.*
+
+## 🎯 Qué vas a aprender y construir
 
 Resolver clasificación no lineal con capas densas, activaciones y regularización.
 
-Es la **ruta 3 de 31** del recorrido y pertenece a 🟢 la parte 1, *Fundamentos: de la derivada a la primera red*. Llegas desde **Perceptrón con PyTorch** y lo que hagas aquí lo da por supuesto **CNN para visión**.
+**Práctica propia de esta clase:** Comparar una frontera lineal con una MLP y relacionar las activaciones ocultas con las regiones de decisión.
+
+Es la **clase 03 de 31** del programa y pertenece a 🟢 el módulo 1, *Fundamentos: de la derivada a la primera red*. Llegas desde **Perceptrón con PyTorch** y lo que hagas aquí lo da por supuesto **CNN para visión**.
 
 Trabajarás con el dataset **`dry_bean`** (UCI, licencia: CC BY 4.0), y tendrás que superar la línea base **Regresión logística multinomial y Random Forest**, decidiendo con la métrica `macro_f1` medida sobre `validation`. Nivel fundamentos, unas **4 horas** de dedicación.
 
-**Lo que conviene traer resuelto de las rutas anteriores:** Python básico, NumPy, álgebra lineal elemental.
+**Lo que conviene traer resuelto de las clases anteriores:** Python básico, NumPy, álgebra lineal elemental.
 
 **Al terminar deberías ser capaz de:**
 
@@ -26,7 +40,11 @@ Trabajarás con el dataset **`dry_bean`** (UCI, licencia: CC BY 4.0), y tendrás
 - Comparar contra la línea base: Regresión logística multinomial y Random Forest.
 - Interpretar intervalos de confianza, errores y limitaciones.
 
-## 🧠 La teoría de este laboratorio
+### Una idea que conviene desmontar
+
+> Más capas no garantizan una mejor solución; añaden capacidad, costo y nuevas formas de sobreajustar.
+
+## 🧠 Comprender antes de entrenar
 
 Esta sección es la explicación completa del tema. No hace falta abrir otro archivo para entender lo que viene después: aquí está la idea, la matemática que la sostiene y sus límites. (El mismo texto vive en `theory.md`, que es la fuente desde la que se genera esta guía, junto con la bibliografía del final.)
 
@@ -68,7 +86,7 @@ Con dos capas, la retropropagación cabe en cuatro líneas y conviene tenerlas e
 
 donde ⊙ es el producto elemento a elemento y 𝟙[a > 0] la máscara de la ReLU. Vale la pena leer la segunda línea despacio: el error de la capa de salida viaja hacia atrás multiplicado por W₂ᵀ —la misma matriz del paso hacia adelante, transpuesta— y luego se **apaga** en las posiciones donde la neurona estaba inactiva. Una neurona que no participó en la predicción tampoco recibe corrección.
 
-Que δ² = p − Y no es evidente, y es el mismo regalo que aparecía en la ruta 00. Derivando la entropía cruzada categórica respecto de los logits, el término del softmax ∂pₖ/∂z_j = pₖ·(δ_kj − p_j) se combina con ∂L/∂pₖ = −y_k/pₖ y todo se simplifica a p − y. Softmax con entropía cruzada, igual que sigmoide con entropía cruzada binaria, están emparejadas para que el gradiente sea el error puro.
+Que δ² = p − Y no es evidente, y es el mismo regalo que aparecía en la clase 01. Derivando la entropía cruzada categórica respecto de los logits, el término del softmax ∂pₖ/∂z_j = pₖ·(δ_kj − p_j) se combina con ∂L/∂pₖ = −y_k/pₖ y todo se simplifica a p − y. Softmax con entropía cruzada, igual que sigmoide con entropía cruzada binaria, están emparejadas para que el gradiente sea el error puro.
 
 Sobre el softmax hay una propiedad que se usa en toda implementación seria: es **invariante a desplazamientos**, softmax(z + c) = softmax(z) para cualquier constante c. Restar el máximo, softmax(z − max z), no cambia el resultado y garantiza que el mayor exponente sea e⁰ = 1, evitando el desbordamiento de e^z con logits grandes. Es lo que `CrossEntropyLoss` hace internamente, y la razón de que la última capa deba devolver logits crudos.
 
@@ -78,13 +96,13 @@ Contar los parámetros es inmediato y conviene hacerlo antes de entrenar. Cada c
 
 |θ| = (d·H₁ + H₁) + (H₁·H₂ + H₂) + … + (H_L·C + C).
 
-El modelo tabular de este repositorio usa por defecto dos capas ocultas de 128 y 64 unidades. Con las 16 características de forma del dataset y sus 7 variedades, la cuenta es 16·128 + 128 + 128·64 + 64 + 64·7 + 7 = **10 887 parámetros**. Frente a los 13 611 granos del conjunto completo, la red tiene casi un parámetro por ejemplo: es exactamente la situación en la que memorizar es una estrategia disponible, y la que justifica el dropout y el weight decay que se estudian en la ruta 19.
+El modelo tabular de este repositorio usa por defecto dos capas ocultas de 128 y 64 unidades. Con las 16 características de forma del dataset y sus 7 variedades, la cuenta es 16·128 + 128 + 128·64 + 64 + 64·7 + 7 = **10 887 parámetros**. Frente a los 13 611 granos del conjunto completo, la red tiene casi un parámetro por ejemplo: es exactamente la situación en la que memorizar es una estrategia disponible, y la que justifica el dropout y el weight decay que se estudian en la clase 20.
 
 La **inicialización** no es un detalle. Si todos los pesos se ponen a cero, todas las neuronas ocultas calculan lo mismo, reciben el mismo gradiente y siguen siendo idénticas para siempre: la red se comporta como si tuviera una sola neurona oculta. Es el problema de **simetría**, y por eso los pesos se inicializan al azar. Pero la escala de ese azar importa: si la varianza es alta, las preactivaciones crecen capa a capa y saturan; si es baja, se encogen y la señal se apaga.
 
-La receta que usan las redes con ReLU es la de **He**: muestrear W de una normal de varianza 2/fan_in, donde fan_in es el número de entradas de la capa. El factor 2 compensa exactamente que la ReLU anula la mitad de las activaciones y por tanto reduce la varianza a la mitad. Para activaciones simétricas como tanh, la inicialización de **Glorot** usa 2/(fan_in + fan_out), que equilibra la propagación en ambos sentidos. Es la primera aparición de una idea que la ruta 18 desarrolla: gran parte del arte del entrenamiento consiste en mantener la varianza de las activaciones y de los gradientes dentro de un rango sano de extremo a extremo de la red.
+La receta que usan las redes con ReLU es la de **He**: muestrear W de una normal de varianza 2/fan_in, donde fan_in es el número de entradas de la capa. El factor 2 compensa exactamente que la ReLU anula la mitad de las activaciones y por tanto reduce la varianza a la mitad. Para activaciones simétricas como tanh, la inicialización de **Glorot** usa 2/(fan_in + fan_out), que equilibra la propagación en ambos sentidos. Es la primera aparición de una idea que la clase 19 desarrolla: gran parte del arte del entrenamiento consiste en mantener la varianza de las activaciones y de los gradientes dentro de un rango sano de extremo a extremo de la red.
 
-De ahí sale también el fallo característico de la ReLU: si una neurona recibe una actualización que deja su preactivación negativa para **todos** los ejemplos, su gradiente es cero permanentemente y no vuelve a aprender nunca. Es la **ReLU muerta**, y su causa habitual es una tasa de aprendizaje demasiado alta. Las variantes Leaky ReLU y GELU, que se comparan en la ruta 17, existen precisamente para dejar pasar algo de gradiente en la zona negativa.
+De ahí sale también el fallo característico de la ReLU: si una neurona recibe una actualización que deja su preactivación negativa para **todos** los ejemplos, su gradiente es cero permanentemente y no vuelve a aprender nunca. Es la **ReLU muerta**, y su causa habitual es una tasa de aprendizaje demasiado alta. Las variantes Leaky ReLU y GELU, que se comparan en la clase 18, existen precisamente para dejar pasar algo de gradiente en la zona negativa.
 
 ### Por qué la profundidad gana a la anchura
 
@@ -96,21 +114,21 @@ La lectura práctica es que añadir una capa multiplica la capacidad expresiva m
 
 ### Qué se mide y con qué se decide
 
-El laboratorio reporta `accuracy`, `balanced_accuracy`, `macro_precision`, `macro_recall`, `macro_f1`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
+La clase reporta `accuracy`, `balanced_accuracy`, `macro_precision`, `macro_recall`, `macro_f1`. De todas ellas, la que **decide** qué modelo se conserva es `macro_f1`, y se mide siempre sobre `validation`: es la única forma de que `test` siga siendo una estimación honesta de lo que pasará con datos nuevos.
 
 ## 📓 Los tres cuadernos
 
-El laboratorio se puede recorrer en Jupyter, y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
+La clase se puede recorrer en Jupyter y trae tres cuadernos con papeles distintos. Los tres siguen el mismo camino —descargar el dataset real, auditar la partición, entrenar, sellar el experimento y evaluar `test` una vez—; lo que cambia es qué te toca escribir a ti:
 
 | Cuaderno | Qué trae | Cuándo usarlo |
 |---|---|---|
-| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 22 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
-| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (37 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
+| [📓 `notebook.ipynb`](notebook.ipynb) | El **recorrido de referencia**: 25 celdas (9 de código) con **todo el código escrito y ejecutable**, intercalado con las explicaciones. No trae ejercicios. | Para leer y ejecutar de principio a fin. |
+| [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido más **5 ejercicios evaluables** (40 celdas en total). Las celdas de ejercicio están marcadas con `# YOUR CODE HERE` y debajo de cada una hay una comprobación. | Para practicar. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los mismos ejercicios **resueltos**, marcados con `# SOLUCIÓN DE REFERENCIA`. Cada solución se ejecuta en la integración continua, así que se sabe que pasa. | Para contrastar después de intentarlo. |
 
 ### Qué se practica en los ejercicios
 
-Cinco de ellos no son de arquitectura sino del **contrato experimental**, que es lo que distingue a estos laboratorios de un tutorial: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
+Cinco de ellos cubren el **contrato experimental** común: auditar la partición, decidir con `validation`, compararse con la línea base, sellar antes de abrir `test` y dejar el plan por escrito. Se resuelven con Python estándar —**sin descargar el dataset ni entrenar**—, así que se corrigen en segundos y sin GPU, y cada uno está parametrizado con los valores de este laboratorio: su métrica de selección, su línea base y su experimento propio.
 
 ### Cómo abrirlos
 
@@ -183,7 +201,7 @@ datos = prepare_dataset("02_mlp_nonlinear", quick=True, seed=42)
 print(datos.summary)       # tamaño de cada partición y metadatos de la fuente
 ```
 
-## 🪜 Paso a paso
+## 🪜 Laboratorio guiado
 
 Cada paso dice qué ocurre por dentro, por qué se hace en ese orden y cómo comprobar que salió bien. El orden no es una convención de estilo: es el que ejecuta el código, y alterarlo invalida el resultado.
 
@@ -326,7 +344,7 @@ El dataset refleja su proceso de recolección y no representa automáticamente o
 
 ## ✅ Antes de darlo por terminado
 
-El laboratorio está aprobado cuando se cumplen estos criterios:
+La clase está aprobada cuando se cumplen estos criterios:
 
 - [ ] cero solapamiento entre train, validation y test
 - [ ] selección basada únicamente en validation
@@ -377,6 +395,7 @@ Todo lo que necesitas está en esta carpeta. Cada enlace abre el archivo directa
 | [🧠 `theory.md`](theory.md) | La teoría completa con su bibliografía; es la fuente del apartado teórico de arriba. |
 | [🔬 `experiments.md`](experiments.md) | El plan experimental y la tabla multi-semilla que hay que completar. |
 | [📝 `assessment.md`](assessment.md) | Las preguntas de evaluación y la rúbrica con la que se corrigen. |
+| [🧑‍🏫 `instructor-guide.md`](instructor-guide.md) | La apertura, los tiempos y las intervenciones sugeridas para facilitar esta clase. |
 | [📓 `notebook.ipynb`](notebook.ipynb) | El recorrido completo con todo el código escrito y ejecutable. |
 | [✏️ `notebook_student.ipynb`](notebook_student.ipynb) | El mismo recorrido con las celdas de ejercicio vacías. |
 | [✅ `notebook_solution.ipynb`](notebook_solution.ipynb) | Los ejercicios resueltos, para contrastar. |
@@ -394,11 +413,11 @@ Los datasets se descargan de su proveedor original y conservan su licencia; este
 <!-- nav-bottom -->
 ## 🧭 Navegación del recorrido
 
-| ⬅️ Laboratorio anterior | 🏠 Índice | Laboratorio siguiente ➡️ |
+| ⬅️ Clase anterior | 🏠 Índice | Clase siguiente ➡️ |
 |---|:---:|---|
-| [🧩 Perceptrón con PyTorch](../../labs/01_pytorch_perceptron/README.md) | [Las 31 rutas](../../parts/README.md) | [🖼️ CNN para visión](../../labs/03_cnn_vision/README.md) |
+| [🧩 Perceptrón con PyTorch](../../labs/01_pytorch_perceptron/README.md) | [Las 31 clases](../../parts/README.md) | [🖼️ CNN para visión](../../labs/03_cnn_vision/README.md) |
 
-**En este laboratorio:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
+**Material de esta clase:** **📄 Guía** · [🧠 Teoría](theory.md) · [🔬 Experimentos](experiments.md) · [📝 Evaluación](assessment.md) · [📓 Recorrido](notebook.ipynb) · [✏️ Estudiante](notebook_student.ipynb) · [✅ Solución](notebook_solution.ipynb)
 
-🟢 [Parte 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/02_mlp_nonlinear/index.html) · [🖥️ Página HTML local](index.html)
+🟢 [Módulo 1 — Fundamentos: de la derivada a la primera red](../../parts/01-fundamentos.md) · [🏠 Portada del repositorio](../../README.md) · [🌐 Sitio de estudio](https://vladimiracunadev-create.github.io/neural-network-training-labs/labs/02_mlp_nonlinear/index.html) · [🖥️ Página HTML local](index.html)
 <!-- /nav-bottom -->
